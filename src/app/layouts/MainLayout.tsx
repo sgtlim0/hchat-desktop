@@ -1,0 +1,84 @@
+import { useEffect } from 'react'
+import { useSessionStore } from '@/entities/session/session.store'
+import { useSettingsStore } from '@/entities/settings/settings.store'
+import { Sidebar } from '@/widgets/sidebar/Sidebar'
+import { HomeScreen } from '@/pages/home/HomeScreen'
+import { ChatPage } from '@/pages/chat/ChatPage'
+import { SettingsScreen } from '@/pages/settings/SettingsScreen'
+import { AllChatsScreen } from '@/pages/all-chats/AllChatsScreen'
+import { ProjectsScreen } from '@/pages/projects/ProjectsScreen'
+import { ProjectDetailScreen } from '@/pages/projects/ProjectDetailScreen'
+import { QuickChatPage } from '@/pages/quick-chat/QuickChatPage'
+import { SearchModal } from '@/widgets/search/SearchModal'
+
+export function MainLayout() {
+  const sidebarOpen = useSettingsStore((s) => s.sidebarOpen)
+  const toggleSidebar = useSettingsStore((s) => s.toggleSidebar)
+  const settingsOpen = useSettingsStore((s) => s.settingsOpen)
+  const setSettingsOpen = useSettingsStore((s) => s.setSettingsOpen)
+
+  const view = useSessionStore((s) => s.view)
+  const currentSessionId = useSessionStore((s) => s.currentSessionId)
+  const searchOpen = useSessionStore((s) => s.searchOpen)
+  const setSearchOpen = useSessionStore((s) => s.setSearchOpen)
+
+  // Keyboard shortcuts
+  useEffect(() => {
+    function handleKeyDown(e: KeyboardEvent) {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault()
+        setSearchOpen(!searchOpen)
+      }
+      if ((e.metaKey || e.ctrlKey) && e.key === 'b') {
+        e.preventDefault()
+        toggleSidebar()
+      }
+      if ((e.metaKey || e.ctrlKey) && e.key === ',') {
+        e.preventDefault()
+        setSettingsOpen(!settingsOpen)
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [searchOpen, settingsOpen, setSearchOpen, toggleSidebar, setSettingsOpen])
+
+  // View dispatch
+  function renderContent() {
+    if (settingsOpen) {
+      return <SettingsScreen />
+    }
+
+    if (view === 'projects') {
+      return <ProjectsScreen />
+    }
+
+    if (view === 'projectDetail') {
+      return <ProjectDetailScreen />
+    }
+
+    if (view === 'allChats') {
+      return <AllChatsScreen />
+    }
+
+    if (view === 'quickChat') {
+      return <QuickChatPage />
+    }
+
+    if (currentSessionId && view === 'chat') {
+      return <ChatPage />
+    }
+
+    return <HomeScreen />
+  }
+
+  return (
+    <>
+      {sidebarOpen && <Sidebar />}
+      <main className="flex-1 overflow-hidden">
+        {renderContent()}
+      </main>
+      {searchOpen && <SearchModal />}
+    </>
+  )
+}
