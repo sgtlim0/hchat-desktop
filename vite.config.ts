@@ -4,7 +4,7 @@ import path from 'path'
 
 // https://vite.dev/config/
 export default defineConfig({
-  base: '/hchat-desktop/',
+  base: process.env.GITHUB_PAGES ? '/hchat-desktop/' : '/',
   plugins: [react()],
   resolve: {
     alias: {
