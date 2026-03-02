@@ -1,6 +1,8 @@
 import type { AwsCredentials, ChatStreamEvent } from '@/shared/types'
 import { BEDROCK_MODEL_MAP } from '@/shared/constants'
 
+const API_BASE = import.meta.env.VITE_API_BASE_URL || ''
+
 interface StreamChatParams {
   credentials: AwsCredentials
   modelId: string
@@ -15,7 +17,7 @@ interface StreamChatParams {
 export async function* streamChat(params: StreamChatParams): AsyncGenerator<ChatStreamEvent> {
   const bedrockModelId = BEDROCK_MODEL_MAP[params.modelId] ?? params.modelId
 
-  const response = await fetch('/api/chat', {
+  const response = await fetch(`${API_BASE}/api/chat`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
@@ -74,7 +76,7 @@ export async function testConnection(credentials: AwsCredentials, modelId: strin
   const bedrockModelId = BEDROCK_MODEL_MAP[modelId] ?? modelId
 
   try {
-    const response = await fetch('/api/chat/test', {
+    const response = await fetch(`${API_BASE}/api/chat/test`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
