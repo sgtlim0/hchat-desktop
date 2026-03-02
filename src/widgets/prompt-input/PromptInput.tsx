@@ -183,7 +183,10 @@ export function PromptInput({
   return (
     <div className="rounded-xl border border-border-input bg-input p-3 flex items-end gap-2">
       {/* Attachment button */}
-      <button className="p-2 hover:bg-hover rounded-lg transition flex-shrink-0">
+      <button
+        aria-label={t('chat.attach')}
+        className="p-2 hover:bg-hover rounded-lg transition flex-shrink-0 focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
+      >
         <Plus size={20} className="text-text-secondary" />
       </button>
 
@@ -207,7 +210,8 @@ export function PromptInput({
         {isSending ? (
           <button
             onClick={handleStop}
-            className="p-2 hover:bg-hover rounded-lg transition"
+            aria-label={t('chat.stop')}
+            className="p-2 hover:bg-hover rounded-lg transition focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
           >
             <Square size={20} className="text-text-secondary" />
           </button>
@@ -215,7 +219,8 @@ export function PromptInput({
           <button
             onClick={handleSend}
             disabled={!input.trim()}
-            className={`p-2 rounded-lg transition ${
+            aria-label={t('chat.send')}
+            className={`p-2 rounded-lg transition focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 ${
               input.trim()
                 ? 'bg-primary hover:opacity-90 text-white'
                 : 'bg-hover text-text-tertiary cursor-not-allowed'

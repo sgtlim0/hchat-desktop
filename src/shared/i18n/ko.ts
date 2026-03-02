@@ -63,6 +63,12 @@ const ko = {
   'chat.exportHtml': 'HTML (.html)',
   'chat.exportJson': 'JSON (.json)',
   'chat.exportTxt': '텍스트 (.txt)',
+  'chat.favorite': '즐겨찾기 추가',
+  'chat.unfavorite': '즐겨찾기 해제',
+  'chat.moreActions': '더 보기',
+  'chat.attach': '파일 첨부',
+  'chat.stop': '생성 중지',
+  'chat.send': '메시지 전송',
   'chat.deleteChat': '대화 삭제',
   'chat.waitingResponse': '응답 대기 중...',
 

@@ -222,7 +222,7 @@ export function SettingsScreen() {
                     {t('settings.api.autoRoutingDesc')}
                   </p>
                 </div>
-                <Toggle checked={autoRouting} onChange={setAutoRouting} />
+                <Toggle checked={autoRouting} onChange={setAutoRouting} ariaLabel={t('settings.api.autoRouting')} />
               </div>
             </div>
 
@@ -398,7 +398,7 @@ export function SettingsScreen() {
                     {darkMode ? t('settings.custom.darkModeOn') : t('settings.custom.darkModeOff')}
                   </p>
                 </div>
-                <Toggle checked={darkMode} onChange={toggleDarkMode} />
+                <Toggle checked={darkMode} onChange={toggleDarkMode} ariaLabel={t('settings.custom.darkMode')} />
               </div>
             </div>
             <div className="space-y-4 pt-6 border-t border-border">
@@ -407,6 +407,7 @@ export function SettingsScreen() {
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => setLanguage('ko')}
+                  aria-pressed={language === 'ko'}
                   className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
                     language === 'ko'
                       ? 'bg-primary text-white'
@@ -417,6 +418,7 @@ export function SettingsScreen() {
                 </button>
                 <button
                   onClick={() => setLanguage('en')}
+                  aria-pressed={language === 'en'}
                   className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
                     language === 'en'
                       ? 'bg-primary text-white'
@@ -576,7 +578,8 @@ export function SettingsScreen() {
           <h2 className="text-lg font-bold text-text-primary">{t('settings.title')}</h2>
           <button
             onClick={() => setSettingsOpen(false)}
-            className="p-1.5 hover:bg-hover rounded-lg transition"
+            aria-label={t('common.close')}
+            className="p-1.5 hover:bg-hover rounded-lg transition focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
           >
             <X size={18} className="text-text-secondary" />
           </button>

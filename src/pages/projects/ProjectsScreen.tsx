@@ -57,8 +57,11 @@ export function ProjectsScreen() {
             return (
               <div
                 key={project.id}
+                role="button"
+                tabIndex={0}
                 onClick={() => handleProjectClick(project.id)}
-                className="border border-border rounded-xl p-6 hover:border-primary/40 hover:shadow-sm cursor-pointer transition group"
+                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleProjectClick(project.id) } }}
+                className="border border-border rounded-xl p-6 hover:border-primary/40 hover:shadow-sm cursor-pointer transition group focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
               >
                 <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
                   <FolderOpen className="w-5 h-5 text-primary" />

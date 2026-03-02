@@ -63,6 +63,12 @@ const en = {
   'chat.exportHtml': 'HTML (.html)',
   'chat.exportJson': 'JSON (.json)',
   'chat.exportTxt': 'Text (.txt)',
+  'chat.favorite': 'Add to favorites',
+  'chat.unfavorite': 'Remove from favorites',
+  'chat.moreActions': 'More actions',
+  'chat.attach': 'Attach file',
+  'chat.stop': 'Stop generation',
+  'chat.send': 'Send message',
   'chat.deleteChat': 'Delete Chat',
   'chat.waitingResponse': 'Waiting for response...',
 

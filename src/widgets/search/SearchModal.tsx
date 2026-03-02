@@ -140,6 +140,9 @@ export function SearchModal() {
     <div
       className="fixed inset-0 z-50 bg-black/40 flex items-start justify-center pt-[120px]"
       onClick={handleBackdropClick}
+      role="dialog"
+      aria-modal="true"
+      aria-label={t('search.placeholder')}
     >
       <div className="bg-page rounded-xl w-[560px] shadow-2xl border border-border overflow-hidden">
         {/* Search Input */}
@@ -183,6 +186,8 @@ export function SearchModal() {
                     return (
                       <div
                         key={result.id}
+                        role="option"
+                        aria-selected={isSelected}
                         onClick={() => handleSelect(result)}
                         className={`flex items-center gap-3 px-4 py-2.5 cursor-pointer transition ${
                           isSelected ? 'bg-hover' : 'hover:bg-hover/50'
@@ -218,6 +223,8 @@ export function SearchModal() {
                     return (
                       <div
                         key={result.id}
+                        role="option"
+                        aria-selected={isSelected}
                         onClick={() => handleSelect(result)}
                         className={`flex items-center gap-3 px-4 py-2.5 cursor-pointer transition ${
                           isSelected ? 'bg-hover' : 'hover:bg-hover/50'
@@ -250,6 +257,8 @@ export function SearchModal() {
                     return (
                       <div
                         key={result.id}
+                        role="option"
+                        aria-selected={isSelected}
                         onClick={() => handleSelect(result)}
                         className={`flex items-center gap-3 px-4 py-2.5 cursor-pointer transition ${
                           isSelected ? 'bg-hover' : 'hover:bg-hover/50'

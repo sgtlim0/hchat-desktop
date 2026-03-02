@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-H Chat Desktop — a Progressive Web App chat interface for AI models (Claude Opus, Sonnet, Haiku). Built with React 19, TypeScript, Vite 7, Zustand, and Tailwind CSS 3. Currently Phase 1 (frontend only with mock data, no backend API integration).
+H Chat Desktop — AI 모델(Claude, GPT, Gemini)과 대화하는 Progressive Web App. React 19, TypeScript 5.9, Vite 7, Zustand 5, Tailwind CSS 3 기반. Phase 3 완료 — 멀티 프로바이더, 그룹 채팅, 내보내기, IndexedDB 영속성, i18n 지원.
 
 ## Commands
 
@@ -14,9 +14,10 @@ npm run dev          # Vite dev server (localhost:5173)
 npm run build        # TypeScript check + Vite production build
 npm run lint         # ESLint
 npm run preview      # Preview production build locally
+npm test             # Vitest unit/integration tests
+npm run test:ui      # Vitest interactive UI
+npm run test:coverage # Coverage report (target: 80%+)
 ```
-
-No test framework is configured yet.
 
 ## Architecture
 
@@ -24,15 +25,19 @@ Uses **Feature-Sliced Design (FSD)** with `@/` path alias mapping to `src/`:
 
 ```
 src/
-├── app/layouts/         # MainLayout — view routing dispatch, keyboard shortcuts
-├── pages/               # 8 screens: home, chat, all-chats, projects, settings, quick-chat
+├── app/layouts/         # MainLayout — view routing dispatch, keyboard shortcuts, hydration
+├── pages/               # 12 screens: home, chat, all-chats, projects, settings, quick-chat,
+│                        #   group-chat, memory, swarm, schedule, project-detail
 ├── widgets/             # Complex feature components (message-list, prompt-input, sidebar, search)
-├── entities/            # Zustand stores: session, settings, project
+├── entities/            # 8 Zustand stores: session, settings, project, group-chat,
+│                        #   channel, memory, swarm, schedule
 ├── shared/
 │   ├── ui/              # 11 reusable components (Button, Avatar, Toggle, etc.)
-│   ├── lib/             # Utilities: mock-data, model-meta, time formatting
+│   ├── lib/             # Utilities, Bedrock client, provider factory, Dexie DB
+│   ├── lib/providers/   # Multi-provider: OpenAI, Gemini, factory, router
+│   ├── i18n/            # Custom i18n system (ko/en)
 │   ├── types/           # TypeScript interfaces (Message, Session, Project, etc.)
-│   ├── constants.ts     # Models list, default model, layout constants
+│   ├── constants.ts     # Models list, BEDROCK_MODEL_MAP, default model
 │   └── styles/          # globals.css with CSS variables for light/dark theme
 ```
 
@@ -45,10 +50,22 @@ No React Router. Navigation is state-driven via Zustand:
 
 ### State Management (Zustand)
 
-Three stores in `src/entities/`:
-- **SessionStore** — sessions, messages (keyed by sessionId), currentSessionId, view state
-- **SettingsStore** — selectedModel, darkMode, sidebarOpen, settingsOpen
+8 stores in `src/entities/`, all persisted via IndexedDB (Dexie):
+- **SessionStore** — sessions, messages (keyed by sessionId), currentSessionId, view state, streaming
+- **SettingsStore** — selectedModel, darkMode, sidebarOpen, credentials, language, systemPrompt
 - **ProjectStore** — projects, selectedProjectId
+- **GroupChatStore** — multi-model parallel chat
+- **ChannelStore** — Slack/Telegram channel config (mock)
+- **MemoryStore** — context memory management (mock)
+- **SwarmStore** — agent orchestration (mock)
+- **ScheduleStore** — scheduled tasks (mock)
+
+### Multi-Provider System
+
+Factory pattern in `shared/lib/providers/`:
+- `factory.ts` — model ID → provider routing
+- Bedrock: via Modal backend API (`VITE_API_BASE_URL`)
+- OpenAI/Gemini: direct browser API calls
 
 ### Message Model
 
@@ -61,24 +78,45 @@ interface Message {
 }
 ```
 
-### Theming
-
-CSS variables in `globals.css` with `.dark` class toggle. Tailwind extends custom colors mapped to these variables (primary, page, sidebar, card, text-primary, text-secondary, border, etc.).
-
 ### Keyboard Shortcuts (MainLayout)
 
 - `Cmd/Ctrl+K` — Search modal
 - `Cmd/Ctrl+B` — Toggle sidebar
 - `Cmd/Ctrl+,` — Toggle settings
 
+## Backend (Modal)
+
+Python + FastAPI serverless backend on Modal (modal.com):
+
+```bash
+modal serve backend/app.py     # Local dev server
+modal deploy backend/app.py    # Production deploy
+```
+
+- **Production**: https://sgtlim0--hchat-api-api.modal.run
+- **Endpoints**: `POST /api/chat` (SSE), `POST /api/chat/test`, `GET /api/health`
+- SSE format: `data: {"type":"text|done|error", ...}\n\n`
+
 ## Deployment
 
-GitHub Actions deploys to GitHub Pages on push to `main`. Base path switches via `GITHUB_PAGES` env var in `vite.config.ts` (`/hchat-desktop/` for Pages, `/` otherwise).
+- **Frontend**: Vercel (`vercel --prod`) — https://hchat-desktop.vercel.app
+- **Backend**: Modal (`modal deploy backend/app.py`)
+- **Env vars**: `VITE_API_BASE_URL` (empty=Vite proxy, Modal URL=production)
 
-## Current Limitations (Phase 1)
+## Feature Status
 
-- All data is mock (no API calls, no persistence)
-- Search UI exists but not wired to real filtering
-- Tool call display only (no execution)
-- File upload UI exists but not functional
-- Data lost on page refresh
+### ✅ Functional
+- Multi-provider chat (Bedrock, OpenAI, Gemini) with SSE streaming
+- Group chat (multi-model parallel comparison)
+- Export (Markdown, HTML, JSON, TXT)
+- Full-text search across sessions/messages
+- IndexedDB persistence (sessions, messages, settings)
+- i18n (Korean/English)
+- PWA (installable, service worker caching)
+- Dark mode
+
+### ⚠️ UI Only (Mock Backend)
+- Memory panel (CRUD works, no LLM auto-extraction)
+- Schedule manager (CRUD works, no cron execution)
+- Agent swarm builder (CRUD works, no agent execution)
+- Channel connections (config UI, no real webhooks)

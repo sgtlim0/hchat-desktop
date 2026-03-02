@@ -72,6 +72,7 @@ export function AllChatsScreen() {
       <div className="flex items-center gap-2 mb-6">
         <button
           onClick={() => setFilter('all')}
+          aria-pressed={filter === 'all'}
           className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
             filter === 'all'
               ? 'bg-primary text-white'
@@ -82,6 +83,7 @@ export function AllChatsScreen() {
         </button>
         <button
           onClick={() => setFilter('favorites')}
+          aria-pressed={filter === 'favorites'}
           className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
             filter === 'favorites'
               ? 'bg-primary text-white'
@@ -92,6 +94,7 @@ export function AllChatsScreen() {
         </button>
         <button
           onClick={() => setFilter('pinned')}
+          aria-pressed={filter === 'pinned'}
           className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
             filter === 'pinned'
               ? 'bg-primary text-white'
@@ -102,6 +105,7 @@ export function AllChatsScreen() {
         </button>
         <button
           onClick={() => setFilter('projects')}
+          aria-pressed={filter === 'projects'}
           className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
             filter === 'projects'
               ? 'bg-primary text-white'
@@ -135,8 +139,11 @@ export function AllChatsScreen() {
                   {groupSessions.map((session) => (
                     <div
                       key={session.id}
+                      role="button"
+                      tabIndex={0}
                       onClick={() => selectSession(session.id)}
-                      className="flex items-center gap-3 p-3 rounded-lg hover:bg-hover cursor-pointer transition"
+                      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); selectSession(session.id) } }}
+                      className="flex items-center gap-3 p-3 rounded-lg hover:bg-hover cursor-pointer transition focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
                     >
                       <MessageSquare className="w-4 h-4 text-text-tertiary flex-shrink-0" />
                       <div className="flex-1 min-w-0">

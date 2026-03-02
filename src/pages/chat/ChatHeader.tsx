@@ -100,7 +100,8 @@ export function ChatHeader({ sessionId }: ChatHeaderProps) {
         )}
         <button
           onClick={() => toggleFavorite(session.id)}
-          className="p-1.5 hover:bg-hover rounded-lg transition"
+          aria-label={session.isFavorite ? t('chat.unfavorite') : t('chat.favorite')}
+          className="p-1.5 hover:bg-hover rounded-lg transition focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
         >
           <Star
             size={16}
@@ -112,7 +113,9 @@ export function ChatHeader({ sessionId }: ChatHeaderProps) {
         <div className="relative" ref={menuRef}>
           <button
             onClick={() => setMenuOpen((prev) => !prev)}
-            className="p-1.5 hover:bg-hover rounded-lg transition"
+            aria-label={t('chat.moreActions')}
+            aria-expanded={menuOpen}
+            className="p-1.5 hover:bg-hover rounded-lg transition focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
           >
             <MoreHorizontal size={16} className="text-text-tertiary" />
           </button>

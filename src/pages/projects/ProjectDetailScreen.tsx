@@ -109,7 +109,10 @@ export function ProjectDetailScreen() {
           </div>
         ) : (
           <div
+            role="button"
+            tabIndex={0}
             onClick={() => setEditingInstructions(project.instructions)}
+            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setEditingInstructions(project.instructions) } }}
             className="bg-card border border-border rounded-lg px-4 py-3 text-sm text-text-primary cursor-text hover:bg-hover/50 transition min-h-[120px]"
           >
             {project.instructions || (
@@ -137,7 +140,8 @@ export function ProjectDetailScreen() {
             >
               <button
                 onClick={() => handleDeleteMemory(memory.id)}
-                className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition text-text-tertiary hover:text-danger"
+                aria-label={t('common.delete')}
+                className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition text-text-tertiary hover:text-danger focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
               >
                 <Trash2 className="w-3.5 h-3.5" />
               </button>
@@ -166,8 +170,11 @@ export function ProjectDetailScreen() {
             {relatedSessions.map((session) => (
               <div
                 key={session.id}
+                role="button"
+                tabIndex={0}
                 onClick={() => handleSessionClick(session.id)}
-                className="flex items-center gap-3 p-3 rounded-lg hover:bg-hover cursor-pointer transition border border-border"
+                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleSessionClick(session.id) } }}
+                className="flex items-center gap-3 p-3 rounded-lg hover:bg-hover cursor-pointer transition border border-border focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
               >
                 <Check className="w-4 h-4 text-primary flex-shrink-0" />
                 <div className="flex-1 min-w-0">
