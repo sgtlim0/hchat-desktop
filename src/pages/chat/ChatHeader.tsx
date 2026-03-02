@@ -1,8 +1,10 @@
 import { useState, useRef, useEffect } from 'react'
-import { Star, Pencil, MoreHorizontal, Trash2, Download } from 'lucide-react'
+import { Star, Pencil, MoreHorizontal, Trash2, Download, ChevronRight } from 'lucide-react'
 import { useSessionStore } from '@/entities/session/session.store'
 import { useProjectStore } from '@/entities/project/project.store'
 import { getModelName } from '@/shared/lib/model-meta'
+import { exportChat } from '@/shared/lib/export-chat'
+import type { ExportFormat } from '@/shared/types'
 
 interface ChatHeaderProps {
   sessionId: string
@@ -18,6 +20,7 @@ export function ChatHeader({ sessionId }: ChatHeaderProps) {
   const [isEditing, setIsEditing] = useState(false)
   const [editTitle, setEditTitle] = useState(session?.title ?? '')
   const [menuOpen, setMenuOpen] = useState(false)
+  const [exportSubmenuOpen, setExportSubmenuOpen] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -43,26 +46,10 @@ export function ChatHeader({ sessionId }: ChatHeaderProps) {
     setIsEditing(false)
   }
 
-  const handleExport = () => {
-    const content = messages
-      .map((m) => {
-        const role = m.role === 'user' ? 'User' : 'Assistant'
-        const text = m.segments
-          .filter((s) => s.type === 'text')
-          .map((s) => s.content)
-          .join('\n')
-        return `## ${role}\n\n${text}`
-      })
-      .join('\n\n---\n\n')
-
-    const blob = new Blob([`# ${session.title}\n\n${content}`], { type: 'text/markdown' })
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement('a')
-    a.href = url
-    a.download = `${session.title.replace(/[^a-zA-Z0-9가-힣]/g, '_')}.md`
-    a.click()
-    URL.revokeObjectURL(url)
+  const handleExport = (format: ExportFormat) => {
+    exportChat({ session, messages }, format)
     setMenuOpen(false)
+    setExportSubmenuOpen(false)
   }
 
   const handleDelete = () => {
@@ -130,13 +117,53 @@ export function ChatHeader({ sessionId }: ChatHeaderProps) {
 
           {menuOpen && (
             <div className="absolute right-0 top-full mt-1 w-48 bg-page border border-border rounded-lg shadow-lg py-1 z-50 animate-fade-in">
-              <button
-                onClick={handleExport}
-                className="w-full flex items-center gap-2 px-3 py-2 text-sm text-text-primary hover:bg-hover transition"
-              >
-                <Download size={14} className="text-text-secondary" />
-                마크다운 내보내기
-              </button>
+              <div className="relative">
+                <button
+                  onMouseEnter={() => setExportSubmenuOpen(true)}
+                  onMouseLeave={() => setExportSubmenuOpen(false)}
+                  className="w-full flex items-center justify-between gap-2 px-3 py-2 text-sm text-text-primary hover:bg-hover transition"
+                >
+                  <div className="flex items-center gap-2">
+                    <Download size={14} className="text-text-secondary" />
+                    내보내기
+                  </div>
+                  <ChevronRight size={14} className="text-text-tertiary" />
+                </button>
+
+                {exportSubmenuOpen && (
+                  <div
+                    onMouseEnter={() => setExportSubmenuOpen(true)}
+                    onMouseLeave={() => setExportSubmenuOpen(false)}
+                    className="absolute left-full top-0 ml-1 w-40 bg-page border border-border rounded-lg shadow-lg py-1 animate-fade-in"
+                  >
+                    <button
+                      onClick={() => handleExport('markdown')}
+                      className="w-full text-left px-3 py-2 text-sm text-text-primary hover:bg-hover transition"
+                    >
+                      마크다운 (.md)
+                    </button>
+                    <button
+                      onClick={() => handleExport('html')}
+                      className="w-full text-left px-3 py-2 text-sm text-text-primary hover:bg-hover transition"
+                    >
+                      HTML (.html)
+                    </button>
+                    <button
+                      onClick={() => handleExport('json')}
+                      className="w-full text-left px-3 py-2 text-sm text-text-primary hover:bg-hover transition"
+                    >
+                      JSON (.json)
+                    </button>
+                    <button
+                      onClick={() => handleExport('txt')}
+                      className="w-full text-left px-3 py-2 text-sm text-text-primary hover:bg-hover transition"
+                    >
+                      텍스트 (.txt)
+                    </button>
+                  </div>
+                )}
+              </div>
+
               <div className="border-t border-border my-1" />
               <button
                 onClick={handleDelete}

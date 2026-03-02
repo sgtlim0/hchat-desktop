@@ -1,13 +1,14 @@
 import { useState, useEffect } from 'react'
-import { Key, User, Sparkles, Palette, Puzzle, Plug, Monitor, Shield, Code, X } from 'lucide-react'
+import { Key, User, Sparkles, Palette, Puzzle, Plug, Monitor, Shield, Code, X, Radio } from 'lucide-react'
 import { useSettingsStore } from '@/entities/settings/settings.store'
+import { useChannelStore } from '@/entities/channel/channel.store'
 import { SettingsTabItem } from '@/shared/ui/SettingsTabItem'
 import { FormLabel } from '@/shared/ui/FormLabel'
 import { FormInput } from '@/shared/ui/FormInput'
 import { Button } from '@/shared/ui/Button'
 import { Toggle } from '@/shared/ui/Toggle'
 import { testConnection } from '@/shared/lib/bedrock-client'
-import { AWS_REGIONS, DEFAULT_AWS_REGION } from '@/shared/constants'
+import { AWS_REGIONS, DEFAULT_AWS_REGION, MODELS } from '@/shared/constants'
 
 const TABS = [
   { id: 'api-keys', label: 'API 설정', icon: Key },
@@ -16,6 +17,7 @@ const TABS = [
   { id: 'customization', label: '사용자 지정', icon: Palette },
   { id: 'extensions', label: '확장', icon: Puzzle },
   { id: 'mcp', label: 'MCP', icon: Plug },
+  { id: 'channels', label: '채널 연동', icon: Radio },
   { id: 'desktop', label: '데스크톱', icon: Monitor },
   { id: 'privacy', label: '개인정보', icon: Shield },
   { id: 'developer', label: '개발자', icon: Code },
@@ -24,13 +26,37 @@ const TABS = [
 type TestStatus = 'idle' | 'testing' | 'success' | 'error'
 
 export function SettingsScreen() {
-  const { settingsTab, setSettingsTab, setSettingsOpen, darkMode, toggleDarkMode, credentials, setCredentials } = useSettingsStore()
+  const {
+    settingsTab,
+    setSettingsTab,
+    setSettingsOpen,
+    darkMode,
+    toggleDarkMode,
+    credentials,
+    setCredentials,
+    selectedModel,
+    setSelectedModel,
+    openaiApiKey,
+    setOpenaiApiKey,
+    geminiApiKey,
+    setGeminiApiKey,
+    autoRouting,
+    setAutoRouting,
+  } = useSettingsStore()
+  const { slack, telegram, updateSlack, updateTelegram, testSlackConnection, connectTelegram, testStatus: channelTestStatus } = useChannelStore()
 
   const [accessKeyId, setAccessKeyId] = useState(credentials?.accessKeyId ?? '')
   const [secretAccessKey, setSecretAccessKey] = useState(credentials?.secretAccessKey ?? '')
   const [region, setRegion] = useState(credentials?.region ?? DEFAULT_AWS_REGION)
   const [testStatus, setTestStatus] = useState<TestStatus>('idle')
   const [testError, setTestError] = useState('')
+
+  const [openaiKey, setOpenaiKey] = useState(openaiApiKey ?? '')
+  const [geminiKey, setGeminiKey] = useState(geminiApiKey ?? '')
+  const [testStatusOpenai, setTestStatusOpenai] = useState<TestStatus>('idle')
+  const [testStatusGemini, setTestStatusGemini] = useState<TestStatus>('idle')
+  const [testErrorOpenai, setTestErrorOpenai] = useState('')
+  const [testErrorGemini, setTestErrorGemini] = useState('')
 
   // Sync local state when credentials change externally
   useEffect(() => {
@@ -40,6 +66,14 @@ export function SettingsScreen() {
       setRegion(credentials.region)
     }
   }, [credentials])
+
+  useEffect(() => {
+    setOpenaiKey(openaiApiKey ?? '')
+  }, [openaiApiKey])
+
+  useEffect(() => {
+    setGeminiKey(geminiApiKey ?? '')
+  }, [geminiApiKey])
 
   function handleSaveCredentials() {
     if (!accessKeyId.trim() || !secretAccessKey.trim()) return
@@ -80,6 +114,70 @@ export function SettingsScreen() {
     setTestError('')
   }
 
+  async function handleTestOpenai() {
+    const key = openaiKey.trim()
+    if (!key) return
+
+    setOpenaiApiKey(key)
+    setTestStatusOpenai('testing')
+    setTestErrorOpenai('')
+
+    try {
+      const response = await fetch('https://api.openai.com/v1/models', {
+        headers: {
+          'Authorization': `Bearer ${key}`,
+        },
+      })
+
+      if (response.ok) {
+        setTestStatusOpenai('success')
+      } else {
+        setTestStatusOpenai('error')
+        setTestErrorOpenai('API 키가 유효하지 않습니다')
+      }
+    } catch (error) {
+      setTestStatusOpenai('error')
+      setTestErrorOpenai('연결에 실패했습니다')
+    }
+  }
+
+  function handleClearOpenai() {
+    setOpenaiKey('')
+    setOpenaiApiKey(null)
+    setTestStatusOpenai('idle')
+    setTestErrorOpenai('')
+  }
+
+  async function handleTestGemini() {
+    const key = geminiKey.trim()
+    if (!key) return
+
+    setGeminiApiKey(key)
+    setTestStatusGemini('testing')
+    setTestErrorGemini('')
+
+    try {
+      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${key}`)
+
+      if (response.ok) {
+        setTestStatusGemini('success')
+      } else {
+        setTestStatusGemini('error')
+        setTestErrorGemini('API 키가 유효하지 않습니다')
+      }
+    } catch (error) {
+      setTestStatusGemini('error')
+      setTestErrorGemini('연결에 실패했습니다')
+    }
+  }
+
+  function handleClearGemini() {
+    setGeminiKey('')
+    setGeminiApiKey(null)
+    setTestStatusGemini('idle')
+    setTestErrorGemini('')
+  }
+
   const renderContent = () => {
     switch (settingsTab) {
       case 'api-keys':
@@ -88,12 +186,44 @@ export function SettingsScreen() {
             <div>
               <h2 className="text-2xl font-bold text-text-primary">API 설정</h2>
               <p className="text-text-secondary text-sm mt-1">
-                AWS Bedrock을 통해 AI 모델에 연결합니다.
+                AI 모델 제공업체에 연결합니다.
               </p>
             </div>
 
-            {/* AWS Credentials */}
+            {/* Model Settings */}
             <div className="space-y-4">
+              <h3 className="text-lg font-semibold text-text-primary">모델 설정</h3>
+
+              <div>
+                <FormLabel>기본 모델</FormLabel>
+                <div className="mt-1.5">
+                  <select
+                    value={selectedModel}
+                    onChange={(e) => setSelectedModel(e.target.value)}
+                    className="w-full px-3 py-2 rounded-lg border border-border bg-input text-text-primary text-sm outline-none focus:border-primary transition"
+                  >
+                    {MODELS.map((model) => (
+                      <option key={model.id} value={model.id}>
+                        {model.label} ({model.provider})
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-text-primary font-medium">자동 라우팅</p>
+                  <p className="text-xs text-text-secondary mt-0.5">
+                    프롬프트 내용에 따라 최적 모델을 자동 선택합니다
+                  </p>
+                </div>
+                <Toggle checked={autoRouting} onChange={setAutoRouting} />
+              </div>
+            </div>
+
+            {/* AWS Credentials */}
+            <div className="space-y-4 pt-6 border-t border-border">
               <h3 className="text-lg font-semibold text-text-primary">AWS 자격증명</h3>
 
               <div>
@@ -162,6 +292,90 @@ export function SettingsScreen() {
                 외부 서버로 전송되지 않으며, 로컬 Vite 프록시를 통해 AWS에 직접 연결합니다.
               </p>
             </div>
+
+            {/* OpenAI */}
+            <div className="space-y-4 pt-6 border-t border-border">
+              <h3 className="text-lg font-semibold text-text-primary">OpenAI</h3>
+
+              <div>
+                <FormLabel>API Key</FormLabel>
+                <div className="mt-1.5">
+                  <FormInput
+                    placeholder="sk-..."
+                    value={openaiKey}
+                    onChange={setOpenaiKey}
+                    type="password"
+                  />
+                </div>
+              </div>
+
+              <div className="flex items-center gap-3">
+                <Button
+                  variant="secondary"
+                  onClick={handleTestOpenai}
+                  disabled={!openaiKey.trim() || testStatusOpenai === 'testing'}
+                >
+                  {testStatusOpenai === 'testing' ? '테스트 중...' : '연결 테스트'}
+                </Button>
+                {openaiApiKey && (
+                  <Button variant="secondary" onClick={handleClearOpenai}>
+                    초기화
+                  </Button>
+                )}
+                {testStatusOpenai === 'success' && (
+                  <span className="text-xs text-success font-medium">✓ 연결 성공</span>
+                )}
+                {testStatusOpenai === 'error' && (
+                  <span className="text-xs text-danger font-medium">✗ {testErrorOpenai}</span>
+                )}
+              </div>
+
+              <p className="text-xs text-text-tertiary">
+                API 키는 브라우저에 저장되며 OpenAI API에 직접 연결합니다.
+              </p>
+            </div>
+
+            {/* Gemini */}
+            <div className="space-y-4 pt-6 border-t border-border">
+              <h3 className="text-lg font-semibold text-text-primary">Google Gemini</h3>
+
+              <div>
+                <FormLabel>API Key</FormLabel>
+                <div className="mt-1.5">
+                  <FormInput
+                    placeholder="AIza..."
+                    value={geminiKey}
+                    onChange={setGeminiKey}
+                    type="password"
+                  />
+                </div>
+              </div>
+
+              <div className="flex items-center gap-3">
+                <Button
+                  variant="secondary"
+                  onClick={handleTestGemini}
+                  disabled={!geminiKey.trim() || testStatusGemini === 'testing'}
+                >
+                  {testStatusGemini === 'testing' ? '테스트 중...' : '연결 테스트'}
+                </Button>
+                {geminiApiKey && (
+                  <Button variant="secondary" onClick={handleClearGemini}>
+                    초기화
+                  </Button>
+                )}
+                {testStatusGemini === 'success' && (
+                  <span className="text-xs text-success font-medium">✓ 연결 성공</span>
+                )}
+                {testStatusGemini === 'error' && (
+                  <span className="text-xs text-danger font-medium">✗ {testErrorGemini}</span>
+                )}
+              </div>
+
+              <p className="text-xs text-text-tertiary">
+                API 키는 브라우저에 저장되며 Google API에 직접 연결합니다.
+              </p>
+            </div>
           </div>
         )
 
@@ -182,6 +396,135 @@ export function SettingsScreen() {
                   </p>
                 </div>
                 <Toggle checked={darkMode} onChange={toggleDarkMode} />
+              </div>
+            </div>
+          </div>
+        )
+
+      case 'channels':
+        return (
+          <div className="space-y-8">
+            <div>
+              <h2 className="text-2xl font-bold text-text-primary">채널 연동</h2>
+              <p className="text-text-secondary text-sm mt-1">
+                외부 메시징 서비스와 연동하여 알림을 받을 수 있습니다.
+              </p>
+            </div>
+
+            {/* Slack Section */}
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold text-text-primary">Slack</h3>
+
+              <div>
+                <FormLabel>Webhook URL</FormLabel>
+                <div className="mt-1.5">
+                  <FormInput
+                    placeholder="https://hooks.slack.com/services/..."
+                    value={slack.webhookUrl}
+                    onChange={(val) => updateSlack({ webhookUrl: val })}
+                  />
+                </div>
+              </div>
+
+              <div>
+                <FormLabel>채널</FormLabel>
+                <div className="mt-1.5">
+                  <FormInput
+                    placeholder="#general"
+                    value={slack.channel}
+                    onChange={(val) => updateSlack({ channel: val })}
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-3">
+                <h4 className="text-sm font-medium text-text-primary">알림 규칙</h4>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-text-secondary">작업 완료 시</span>
+                  <Toggle checked={slack.notifyOnComplete} onChange={(v) => updateSlack({ notifyOnComplete: v })} />
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-text-secondary">에러 발생 시</span>
+                  <Toggle checked={slack.notifyOnError} onChange={(v) => updateSlack({ notifyOnError: v })} />
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-text-secondary">스케줄 실행 시</span>
+                  <Toggle checked={slack.notifyOnSchedule} onChange={(v) => updateSlack({ notifyOnSchedule: v })} />
+                </div>
+              </div>
+
+              <div className="flex items-center gap-3">
+                <Button
+                  variant="secondary"
+                  onClick={testSlackConnection}
+                  disabled={!slack.webhookUrl || channelTestStatus === 'testing'}
+                >
+                  {channelTestStatus === 'testing' ? '테스트 중...' : '연결 테스트'}
+                </Button>
+                <Button variant="primary" disabled={!slack.webhookUrl}>
+                  저장
+                </Button>
+                {channelTestStatus === 'success' && (
+                  <span className="text-xs text-success font-medium">연결 성공</span>
+                )}
+              </div>
+            </div>
+
+            {/* Telegram Section */}
+            <div className="space-y-4 pt-4 border-t border-border">
+              <h3 className="text-lg font-semibold text-text-primary">Telegram</h3>
+
+              <div>
+                <FormLabel>Bot Token</FormLabel>
+                <div className="mt-1.5">
+                  <FormInput
+                    placeholder="123456:ABC-DEF..."
+                    value={telegram.botToken}
+                    onChange={(val) => updateTelegram({ botToken: val })}
+                    type="password"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <FormLabel>Chat ID</FormLabel>
+                <div className="mt-1.5">
+                  <FormInput
+                    placeholder="-100..."
+                    value={telegram.chatId}
+                    onChange={(val) => updateTelegram({ chatId: val })}
+                  />
+                </div>
+              </div>
+
+              <div className="flex items-center gap-3">
+                <Button
+                  variant="primary"
+                  onClick={connectTelegram}
+                  disabled={!telegram.botToken || !telegram.chatId}
+                >
+                  {telegram.connected ? '재연결' : '연결'}
+                </Button>
+                {telegram.connected && (
+                  <span className="text-xs text-success font-medium">연결됨</span>
+                )}
+              </div>
+            </div>
+
+            {/* Message Preview */}
+            <div className="pt-4 border-t border-border">
+              <h3 className="text-sm font-semibold text-text-primary mb-3">메시지 미리보기</h3>
+              <div className="bg-page border border-border rounded-xl p-4">
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="w-6 h-6 rounded bg-primary/20 flex items-center justify-center">
+                    <span className="text-[10px] font-bold text-primary">H</span>
+                  </div>
+                  <span className="text-sm font-semibold text-text-primary">H Chat Bot</span>
+                  <span className="text-[11px] text-text-tertiary">오후 3:24</span>
+                </div>
+                <p className="text-sm text-text-secondary">
+                  [스케줄 완료] 일일 코드 리뷰 요약이 완료되었습니다. 3개 커밋 분석, 주요 이슈 없음.
+                </p>
               </div>
             </div>
           </div>

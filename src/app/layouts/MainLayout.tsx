@@ -10,6 +10,10 @@ import { AllChatsScreen } from '@/pages/all-chats/AllChatsScreen'
 import { ProjectsScreen } from '@/pages/projects/ProjectsScreen'
 import { ProjectDetailScreen } from '@/pages/projects/ProjectDetailScreen'
 import { QuickChatPage } from '@/pages/quick-chat/QuickChatPage'
+import { MemoryPanel } from '@/pages/memory/MemoryPanel'
+import { AgentSwarmBuilder } from '@/pages/swarm/AgentSwarmBuilder'
+import { ScheduleManager } from '@/pages/schedule/ScheduleManager'
+import { GroupChatPage } from '@/pages/group-chat/GroupChatPage'
 import { SearchModal } from '@/widgets/search/SearchModal'
 
 export function MainLayout() {
@@ -82,6 +86,22 @@ export function MainLayout() {
 
     if (view === 'quickChat') {
       return <QuickChatPage />
+    }
+
+    if (view === 'memory') {
+      return <MemoryPanel />
+    }
+
+    if (view === 'agentSwarm') {
+      return <AgentSwarmBuilder />
+    }
+
+    if (view === 'schedule') {
+      return <ScheduleManager />
+    }
+
+    if (view === 'groupChat') {
+      return <GroupChatPage />
     }
 
     if (currentSessionId && view === 'chat') {

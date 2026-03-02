@@ -4,9 +4,10 @@ import { Plus, Send, Square } from 'lucide-react'
 import { useSessionStore } from '@/entities/session/session.store'
 import { useSettingsStore } from '@/entities/settings/settings.store'
 import { ModelSelector } from './ModelSelector'
-import { streamChat } from '@/shared/lib/bedrock-client'
+import { createStream, getProviderConfig } from '@/shared/lib/providers/factory'
 import { putMessage } from '@/shared/lib/db'
 import type { Message } from '@/shared/types'
+import { MODELS } from '@/shared/constants'
 
 interface PromptInputProps {
   onSend?: (message: string) => void
@@ -28,14 +29,32 @@ export function PromptInput({
   const updateLastMessage = useSessionStore((s) => s.updateLastMessage)
   const setSessionStreaming = useSessionStore((s) => s.setSessionStreaming)
   const credentials = useSettingsStore((s) => s.credentials)
+  const openaiApiKey = useSettingsStore((s) => s.openaiApiKey)
+  const geminiApiKey = useSettingsStore((s) => s.geminiApiKey)
   const selectedModel = useSettingsStore((s) => s.selectedModel)
 
   const [isSending, setIsSending] = useState(false)
 
+  function hasRequiredCredentials(): boolean {
+    const model = MODELS.find((m) => m.id === selectedModel)
+    if (!model) return false
+
+    switch (model.provider) {
+      case 'bedrock':
+        return Boolean(credentials?.accessKeyId && credentials?.secretAccessKey)
+      case 'openai':
+        return Boolean(openaiApiKey)
+      case 'gemini':
+        return Boolean(geminiApiKey)
+      default:
+        return false
+    }
+  }
+
   async function handleSend() {
     if (!input.trim() || isSending) return
 
-    if (!credentials?.accessKeyId || !credentials?.secretAccessKey) {
+    if (!hasRequiredCredentials()) {
       const store = useSettingsStore.getState()
       store.setSettingsOpen(true)
       store.setSettingsTab('api-keys')
@@ -85,14 +104,20 @@ export function PromptInput({
       }))
       .filter((m) => m.content.length > 0)
 
+    // Get provider config
+    const config = getProviderConfig(selectedModel, {
+      credentials,
+      openaiApiKey,
+      geminiApiKey,
+    })
+
     // Stream response
     const abortController = new AbortController()
     abortRef.current = abortController
     let fullText = ''
 
     try {
-      const stream = streamChat({
-        credentials,
+      const stream = createStream(config, {
         modelId: selectedModel,
         messages: chatHistory,
         signal: abortController.signal,

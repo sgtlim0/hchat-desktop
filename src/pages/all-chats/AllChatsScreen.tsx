@@ -1,10 +1,10 @@
 import { useState, useMemo } from 'react'
-import { MessageSquare, Star, Search } from 'lucide-react'
+import { MessageSquare, Star, Search, Pin } from 'lucide-react'
 import { useSessionStore } from '@/entities/session/session.store'
 import { getRelativeTime, getDateGroup } from '@/shared/lib/time'
 import { getModelName } from '@/shared/lib/model-meta'
 
-type FilterType = 'all' | 'favorites' | 'projects'
+type FilterType = 'all' | 'favorites' | 'projects' | 'pinned'
 
 export function AllChatsScreen() {
   const { sessions, selectSession } = useSessionStore()
@@ -19,6 +19,8 @@ export function AllChatsScreen() {
       result = result.filter((s) => s.isFavorite)
     } else if (filter === 'projects') {
       result = result.filter((s) => s.projectId)
+    } else if (filter === 'pinned') {
+      result = result.filter((s) => s.pinned)
     }
 
     // Apply search
@@ -87,6 +89,16 @@ export function AllChatsScreen() {
           즐겨찾기
         </button>
         <button
+          onClick={() => setFilter('pinned')}
+          className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
+            filter === 'pinned'
+              ? 'bg-primary text-white'
+              : 'border border-border text-text-secondary hover:bg-hover'
+          }`}
+        >
+          고정됨
+        </button>
+        <button
           onClick={() => setFilter('projects')}
           className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
             filter === 'projects'
@@ -126,12 +138,29 @@ export function AllChatsScreen() {
                     >
                       <MessageSquare className="w-4 h-4 text-text-tertiary flex-shrink-0" />
                       <div className="flex-1 min-w-0">
-                        <div className="font-medium text-sm text-text-primary truncate">
-                          {session.title}
+                        <div className="flex items-center gap-2">
+                          <div className="font-medium text-sm text-text-primary truncate">
+                            {session.title}
+                          </div>
+                          {session.pinned && (
+                            <Pin className="w-3 h-3 text-primary fill-primary flex-shrink-0" />
+                          )}
                         </div>
                         {session.lastMessage && (
                           <div className="text-text-secondary text-xs truncate mt-0.5">
                             {session.lastMessage}
+                          </div>
+                        )}
+                        {session.tags.length > 0 && (
+                          <div className="flex items-center gap-1 mt-1 flex-wrap">
+                            {session.tags.map((tag) => (
+                              <span
+                                key={tag}
+                                className="text-[10px] px-1.5 py-0.5 rounded bg-primary/10 text-primary"
+                              >
+                                {tag}
+                              </span>
+                            ))}
                           </div>
                         )}
                       </div>

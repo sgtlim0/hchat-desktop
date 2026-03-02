@@ -29,6 +29,10 @@ interface SessionState {
   setSessionStreaming: (sessionId: string, isStreaming: boolean) => void
   setSearchOpen: (open: boolean) => void
   goHome: () => void
+  togglePin: (id: string) => void
+  addTag: (id: string, tag: string) => void
+  removeTag: (id: string, tag: string) => void
+  searchMessages: (query: string) => Array<{ sessionId: string; messageId: string; content: string; sessionTitle: string }>
 }
 
 export const useSessionStore = create<SessionState>((set, get) => ({
@@ -66,6 +70,8 @@ export const useSessionStore = create<SessionState>((set, get) => ({
       modelId: selectedModel,
       isFavorite: false,
       isStreaming: false,
+      pinned: false,
+      tags: [],
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     }
@@ -162,4 +168,64 @@ export const useSessionStore = create<SessionState>((set, get) => ({
   setSearchOpen: (open) => set({ searchOpen: open }),
 
   goHome: () => set({ currentSessionId: null, view: 'home' }),
+
+  togglePin: (id) => {
+    set((state) => ({
+      sessions: state.sessions.map((s) =>
+        s.id === id ? { ...s, pinned: !s.pinned } : s
+      ),
+    }))
+    const session = get().sessions.find((s) => s.id === id)
+    if (session) putSession(session).catch(console.error)
+  },
+
+  addTag: (id, tag) => {
+    set((state) => ({
+      sessions: state.sessions.map((s) =>
+        s.id === id && !s.tags.includes(tag) ? { ...s, tags: [...s.tags, tag] } : s
+      ),
+    }))
+    const session = get().sessions.find((s) => s.id === id)
+    if (session) putSession(session).catch(console.error)
+  },
+
+  removeTag: (id, tag) => {
+    set((state) => ({
+      sessions: state.sessions.map((s) =>
+        s.id === id ? { ...s, tags: s.tags.filter((t) => t !== tag) } : s
+      ),
+    }))
+    const session = get().sessions.find((s) => s.id === id)
+    if (session) putSession(session).catch(console.error)
+  },
+
+  searchMessages: (query) => {
+    const state = get()
+    const results: Array<{ sessionId: string; messageId: string; content: string; sessionTitle: string }> = []
+    const q = query.toLowerCase().trim()
+
+    if (!q) return results
+
+    Object.entries(state.messages).forEach(([sessionId, messages]) => {
+      const session = state.sessions.find((s) => s.id === sessionId)
+      if (!session) return
+
+      messages.forEach((msg) => {
+        msg.segments.forEach((segment) => {
+          if (segment.type === 'text' && segment.content) {
+            if (segment.content.toLowerCase().includes(q)) {
+              results.push({
+                sessionId,
+                messageId: msg.id,
+                content: segment.content,
+                sessionTitle: session.title,
+              })
+            }
+          }
+        })
+      })
+    })
+
+    return results
+  },
 }))

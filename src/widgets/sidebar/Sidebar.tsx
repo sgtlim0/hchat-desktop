@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { MessageSquare, Folder, Star, Search, Plus } from 'lucide-react'
+import { MessageSquare, Folder, Star, Search, Plus, Brain, Network, CalendarClock, Users } from 'lucide-react'
 import { useSessionStore } from '@/entities/session/session.store'
 import { SidebarItem } from '@/shared/ui/SidebarItem'
 import { Avatar } from '@/shared/ui/Avatar'
@@ -74,6 +74,35 @@ export function Sidebar() {
             <Folder size={14} />
             프로젝트
           </button>
+        </div>
+
+        {/* Tools section */}
+        <div>
+          <div className="flex items-center gap-2 px-2 py-1 text-xs font-semibold text-text-tertiary uppercase tracking-wide">
+            도구
+          </div>
+          <div className="mt-1 space-y-0.5">
+            <SidebarItem
+              icon={Users}
+              label="그룹 채팅"
+              onClick={() => setView('groupChat')}
+            />
+            <SidebarItem
+              icon={Brain}
+              label="메모리"
+              onClick={() => setView('memory')}
+            />
+            <SidebarItem
+              icon={Network}
+              label="에이전트 스웜"
+              onClick={() => setView('agentSwarm')}
+            />
+            <SidebarItem
+              icon={CalendarClock}
+              label="스케줄러"
+              onClick={() => setView('schedule')}
+            />
+          </div>
         </div>
 
         {/* Favorites section */}

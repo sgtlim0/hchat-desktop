@@ -1,19 +1,20 @@
 import { useState, useEffect, useRef, useMemo } from 'react'
-import { Search, Check, MessageSquare, FolderOpen } from 'lucide-react'
+import { Search, Check, MessageSquare, FolderOpen, FileText } from 'lucide-react'
 import { useSessionStore } from '@/entities/session/session.store'
 import { useProjectStore } from '@/entities/project/project.store'
 import { getRelativeTime } from '@/shared/lib/time'
 
 interface SearchResult {
   id: string
-  type: 'session' | 'project'
+  type: 'session' | 'project' | 'message'
   title: string
   subtitle?: string
   time: string
+  sessionId?: string
 }
 
 export function SearchModal() {
-  const { searchOpen, setSearchOpen, sessions, currentSessionId, selectSession } = useSessionStore()
+  const { searchOpen, setSearchOpen, sessions, currentSessionId, selectSession, searchMessages } = useSessionStore()
   const setView = useSessionStore((s) => s.setView)
   const { projects, selectProject } = useProjectStore()
   const [query, setQuery] = useState('')
@@ -45,11 +46,26 @@ export function SearchModal() {
         time: getRelativeTime(p.updatedAt),
       }))
 
-    return [...sessionResults, ...projectResults]
-  }, [sessions, projects, query])
+    const messageResults: SearchResult[] = q
+      ? searchMessages(q).slice(0, 5).map((m) => {
+          const snippet = m.content.substring(0, 100) + (m.content.length > 100 ? '...' : '')
+          return {
+            id: m.messageId,
+            type: 'message' as const,
+            title: m.sessionTitle,
+            subtitle: snippet,
+            time: '',
+            sessionId: m.sessionId,
+          }
+        })
+      : []
+
+    return [...sessionResults, ...projectResults, ...messageResults]
+  }, [sessions, projects, query, searchMessages])
 
   const sessionResults = results.filter((r) => r.type === 'session')
   const projectResults = results.filter((r) => r.type === 'project')
+  const messageResults = results.filter((r) => r.type === 'message')
 
   useEffect(() => {
     if (searchOpen && inputRef.current) {
@@ -71,9 +87,11 @@ export function SearchModal() {
   function handleSelect(result: SearchResult) {
     if (result.type === 'session') {
       selectSession(result.id)
-    } else {
+    } else if (result.type === 'project') {
       selectProject(result.id)
       setView('projectDetail')
+    } else if (result.type === 'message' && result.sessionId) {
+      selectSession(result.sessionId)
     }
     setSearchOpen(false)
   }
@@ -208,6 +226,43 @@ export function SearchModal() {
                           <span className="text-sm text-text-primary truncate">
                             {highlightMatch(result.title, query)}
                           </span>
+                        </div>
+                      </div>
+                    )
+                  })}
+                </div>
+              )}
+
+              {/* Message Results */}
+              {messageResults.length > 0 && (
+                <div>
+                  <div className="px-4 pt-3 pb-1">
+                    <span className="text-[11px] font-medium text-text-tertiary uppercase">
+                      메시지
+                    </span>
+                  </div>
+                  {messageResults.map((result) => {
+                    const idx = flatIndex++
+                    const isSelected = idx === selectedIndex
+
+                    return (
+                      <div
+                        key={result.id}
+                        onClick={() => handleSelect(result)}
+                        className={`flex items-center gap-3 px-4 py-2.5 cursor-pointer transition ${
+                          isSelected ? 'bg-hover' : 'hover:bg-hover/50'
+                        }`}
+                      >
+                        <FileText className="w-4 h-4 text-text-tertiary flex-shrink-0" />
+                        <div className="flex-1 min-w-0">
+                          <div className="text-sm text-text-primary truncate">
+                            {result.title}
+                          </div>
+                          {result.subtitle && (
+                            <div className="text-xs text-text-secondary truncate mt-0.5">
+                              {highlightMatch(result.subtitle, query)}
+                            </div>
+                          )}
                         </div>
                       </div>
                     )
