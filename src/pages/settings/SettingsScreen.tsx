@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Key, User, Sparkles, Palette, Puzzle, Plug, Monitor, Shield, Code, X, Radio, BarChart3, UserCircle, Trash2, Plus } from 'lucide-react'
+import { Key, User, Sparkles, Palette, Puzzle, Plug, Monitor, Shield, Code, X, Radio, BarChart3, UserCircle, Trash2, Plus, HardDrive } from 'lucide-react'
 import { useSettingsStore } from '@/entities/settings/settings.store'
 import { useChannelStore } from '@/entities/channel/channel.store'
 import { useUsageStore } from '@/entities/usage/usage.store'
@@ -16,6 +16,9 @@ import type { Persona } from '@/shared/types'
 import type { TFunction } from '@/shared/i18n'
 import { groupByDate, groupByWeek, getLast30Days } from '@/shared/lib/usage-chart'
 import { BarChart } from '@/shared/ui/BarChart'
+import { analyzeStorage, formatBytes, getStorageQuota, deleteOldSessions, clearAllData, type StorageInfo } from '@/shared/lib/storage-analyzer'
+import { useSessionStore } from '@/entities/session/session.store'
+import { RoiDashboard } from './RoiDashboard'
 
 const TABS = [
   { id: 'api-keys', labelKey: 'settings.tab.apiKeys' as const, icon: Key },
@@ -24,6 +27,7 @@ const TABS = [
   { id: 'profile', labelKey: 'settings.tab.profile' as const, icon: User },
   { id: 'features', labelKey: 'settings.tab.features' as const, icon: Sparkles },
   { id: 'customization', labelKey: 'settings.tab.customization' as const, icon: Palette },
+  { id: 'storage', labelKey: 'storage.title' as const, icon: HardDrive },
   { id: 'extensions', labelKey: 'settings.tab.extensions' as const, icon: Puzzle },
   { id: 'mcp', labelKey: 'settings.tab.mcp' as const, icon: Plug },
   { id: 'channels', labelKey: 'settings.tab.channels' as const, icon: Radio },
@@ -653,6 +657,12 @@ export function SettingsScreen() {
               )}
             </div>
 
+            {/* ROI Dashboard */}
+            <div className="mt-6 pt-6 border-t border-border">
+              <h3 className="text-lg font-semibold text-text-primary mb-4">{t('roi.title')}</h3>
+              <RoiDashboard />
+            </div>
+
             <div className="pt-4">
               <Button variant="secondary" onClick={() => clearAllUsage()}>
                 {t('usage.clearAll')}
@@ -772,6 +782,9 @@ export function SettingsScreen() {
         )
       }
 
+      case 'storage':
+        return <StorageTab />
+
       case 'privacy':
         return <PrivacyTab />
 
@@ -846,6 +859,154 @@ export function SettingsScreen() {
             </div>
           </div>
         </div>
+      </div>
+    )
+  }
+
+  function StorageTab() {
+    const [storageInfo, setStorageInfo] = useState<StorageInfo | null>(null)
+    const [quota, setQuota] = useState<{ usage: number; quota: number } | null>(null)
+    const [isAnalyzing, setIsAnalyzing] = useState(false)
+    const [selectedDays, setSelectedDays] = useState(30)
+    const hydrate = useSessionStore((s) => s.hydrate)
+
+    useEffect(() => {
+      loadStorageInfo()
+    }, [])
+
+    async function loadStorageInfo() {
+      setIsAnalyzing(true)
+      try {
+        const [info, quotaInfo] = await Promise.all([
+          analyzeStorage(),
+          getStorageQuota(),
+        ])
+        setStorageInfo(info)
+        setQuota(quotaInfo)
+      } catch (error) {
+        console.error('Failed to analyze storage:', error)
+      } finally {
+        setIsAnalyzing(false)
+      }
+    }
+
+    async function handleClearAll() {
+      if (!confirm(t('storage.clearConfirm'))) return
+
+      try {
+        await clearAllData()
+        await hydrate()
+        await loadStorageInfo()
+        alert(t('storage.cleared'))
+      } catch (error) {
+        console.error('Failed to clear data:', error)
+        alert(`Error: ${error}`)
+      }
+    }
+
+    async function handleDeleteOld() {
+      if (!storageInfo) return
+
+      const oldSessions = storageInfo.estimatedBySession.filter((s) => {
+        const cutoffDate = new Date()
+        cutoffDate.setDate(cutoffDate.getDate() - selectedDays)
+        return new Date(s.sessionId.split('-')[1]) < cutoffDate
+      })
+
+      if (!confirm(t('storage.deleteOldConfirm', { days: String(selectedDays), count: String(oldSessions.length) }))) return
+
+      try {
+        const deletedCount = await deleteOldSessions(selectedDays)
+        await hydrate()
+        await loadStorageInfo()
+        alert(t('storage.deleted', { count: String(deletedCount) }))
+      } catch (error) {
+        console.error('Failed to delete old sessions:', error)
+        alert(`Error: ${error}`)
+      }
+    }
+
+    const usagePercent = quota && quota.quota > 0 ? (quota.usage / quota.quota) * 100 : 0
+
+    return (
+      <div className="space-y-8">
+        <div>
+          <h2 className="text-2xl font-bold text-text-primary">{t('storage.title')}</h2>
+          <p className="text-text-secondary text-sm mt-1">{t('storage.description')}</p>
+        </div>
+
+        {isAnalyzing ? (
+          <div className="flex items-center justify-center h-32">
+            <p className="text-sm text-text-secondary">{t('storage.analyzing')}</p>
+          </div>
+        ) : storageInfo ? (
+          <>
+            {/* Storage overview */}
+            <div className="grid grid-cols-3 gap-4">
+              <div className="p-4 border border-border rounded-xl bg-surface">
+                <p className="text-sm text-text-secondary">{t('storage.totalUsed')}</p>
+                <p className="text-2xl font-bold text-text-primary mt-1">{formatBytes(storageInfo.totalSize)}</p>
+                {quota && quota.quota > 0 && (
+                  <p className="text-xs text-text-tertiary mt-1">
+                    {t('storage.quota')}: {formatBytes(quota.quota)}
+                  </p>
+                )}
+              </div>
+              <div className="p-4 border border-border rounded-xl bg-surface">
+                <p className="text-sm text-text-secondary">{t('storage.sessions')}</p>
+                <p className="text-2xl font-bold text-text-primary mt-1">{storageInfo.sessionsCount}</p>
+              </div>
+              <div className="p-4 border border-border rounded-xl bg-surface">
+                <p className="text-sm text-text-secondary">{t('storage.messages')}</p>
+                <p className="text-2xl font-bold text-text-primary mt-1">{storageInfo.messagesCount}</p>
+              </div>
+            </div>
+
+            {/* Progress bar */}
+            {quota && quota.quota > 0 && (
+              <div className="space-y-2">
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-text-secondary">{t('storage.totalUsed')}</span>
+                  <span className="text-text-primary font-medium">{usagePercent.toFixed(1)}%</span>
+                </div>
+                <div className="w-full h-2 bg-hover rounded-full overflow-hidden">
+                  <div
+                    className="h-full bg-primary transition-all"
+                    style={{ width: `${Math.min(usagePercent, 100)}%` }}
+                  />
+                </div>
+              </div>
+            )}
+
+            {/* Delete old sessions */}
+            <div className="space-y-4 pt-6 border-t border-border">
+              <h3 className="text-lg font-semibold text-text-primary">{t('storage.deleteOld')}</h3>
+              <div className="flex items-center gap-3">
+                <select
+                  value={selectedDays}
+                  onChange={(e) => setSelectedDays(Number(e.target.value))}
+                  className="px-3 py-2 rounded-lg border border-border bg-input text-text-primary text-sm outline-none focus:border-primary transition"
+                >
+                  <option value={30}>{t('storage.olderThan', { days: '30' })}</option>
+                  <option value={60}>{t('storage.olderThan', { days: '60' })}</option>
+                  <option value={90}>{t('storage.olderThan', { days: '90' })}</option>
+                </select>
+                <Button variant="secondary" onClick={handleDeleteOld}>
+                  {t('storage.deleteOld')}
+                </Button>
+              </div>
+            </div>
+
+            {/* Clear all data */}
+            <div className="space-y-4 pt-6 border-t border-border">
+              <h3 className="text-lg font-semibold text-text-primary">{t('storage.clearAll')}</h3>
+              <p className="text-sm text-text-secondary">{t('storage.clearConfirm')}</p>
+              <Button variant="secondary" onClick={handleClearAll}>
+                {t('storage.clearAll')}
+              </Button>
+            </div>
+          </>
+        ) : null}
       </div>
     )
   }

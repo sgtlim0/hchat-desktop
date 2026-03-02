@@ -19,6 +19,7 @@ export function MessageList({ sessionId }: MessageListProps) {
     [sessionId, forkSession],
   )
 
+  // Auto-scroll to bottom on new messages
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages.length, messages[messages.length - 1]?.segments])

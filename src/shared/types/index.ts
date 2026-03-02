@@ -51,6 +51,7 @@ export interface Session {
   title: string
   modelId: string
   projectId?: string
+  folderId?: string
   isFavorite: boolean
   isStreaming: boolean
   pinned: boolean
@@ -95,7 +96,7 @@ export interface Skill {
   icon: string
 }
 
-export type ViewState = 'home' | 'chat' | 'settings' | 'allChats' | 'projects' | 'projectDetail' | 'quickChat' | 'memory' | 'agentSwarm' | 'schedule' | 'groupChat' | 'promptLibrary' | 'debate'
+export type ViewState = 'home' | 'chat' | 'settings' | 'allChats' | 'projects' | 'projectDetail' | 'quickChat' | 'memory' | 'agentSwarm' | 'schedule' | 'groupChat' | 'promptLibrary' | 'debate' | 'aiTools'
 
 // Group Chat types
 
@@ -287,6 +288,15 @@ export interface PdfAttachment {
   text: string
 }
 
+// Spreadsheet attachment types
+
+export interface SpreadsheetAttachment {
+  fileName: string
+  sheetCount: number
+  totalRows: number
+  summary: string
+}
+
 // Persona types
 
 export interface Persona {
@@ -298,4 +308,19 @@ export interface Persona {
   isDefault: boolean
   createdAt: string
   updatedAt: string
+}
+
+// Folder types
+
+export interface Folder {
+  id: string
+  name: string
+  color: string  // hex color
+  createdAt: string
+}
+
+export interface Tag {
+  id: string
+  name: string
+  color: string  // hex color
 }

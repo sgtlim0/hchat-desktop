@@ -7,6 +7,7 @@ import { useTranslation } from '@/shared/i18n'
 import { getModelName } from '@/shared/lib/model-meta'
 import { exportChat } from '@/shared/lib/export-chat'
 import { createStream, getProviderConfig } from '@/shared/lib/providers/factory'
+import { TagSelector } from './TagSelector'
 import type { ExportFormat } from '@/shared/types'
 
 interface ChatHeaderProps {
@@ -119,118 +120,120 @@ export function ChatHeader({ sessionId }: ChatHeaderProps) {
   }
 
   return (
-    <div className="h-[52px] border-b border-border px-4 flex items-center justify-between flex-shrink-0">
-      <div className="flex items-center gap-2">
-        {isEditing ? (
-          <input
-            type="text"
-            value={editTitle}
-            onChange={(e) => setEditTitle(e.target.value)}
-            onBlur={handleSaveTitle}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter') handleSaveTitle()
-              if (e.key === 'Escape') setIsEditing(false)
-            }}
-            className="bg-transparent text-sm font-semibold text-text-primary outline-none border-b border-primary px-1"
-            autoFocus
-          />
-        ) : (
-          <button
-            onClick={() => {
-              setEditTitle(session.title)
-              setIsEditing(true)
-            }}
-            className="flex items-center gap-1.5 hover:bg-hover rounded-lg px-2 py-1 transition"
-          >
-            <span className="text-sm font-semibold text-text-primary">{session.title}</span>
-            <Pencil size={14} className="text-text-tertiary" />
-          </button>
-        )}
-      </div>
-
-      <div className="flex items-center gap-3">
-        <span className="text-xs bg-card border border-border rounded-md px-2 py-1 text-text-secondary">
-          {getModelName(session.modelId)}
-        </span>
-        {project && (
-          <span className="text-xs bg-primary/10 text-primary rounded-md px-2 py-1 font-medium">
-            {project.name}
-          </span>
-        )}
-        {/* Summarize button */}
-        <button
-          onClick={handleSummarize}
-          disabled={isSummarizing}
-          aria-label={isSummarizing ? t('chat.summarizing') : t('chat.summarize')}
-          title={session.summary || (isSummarizing ? t('chat.summarizing') : t('chat.summarize'))}
-          className="p-1.5 hover:bg-hover rounded-lg transition focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          <Sparkles
-            size={16}
-            className={`${isSummarizing ? 'animate-pulse text-primary' : 'text-text-tertiary'}`}
-          />
-        </button>
-        {/* Direct export button */}
-        <div className="relative">
-          <button
-            onClick={() => setExportMenuOpen((prev) => !prev)}
-            aria-label={t('chat.export')}
-            className="p-1.5 hover:bg-hover rounded-lg transition focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
-          >
-            <Download size={16} className="text-text-tertiary" />
-          </button>
-          {exportMenuOpen && (
-            <div
-              ref={exportMenuRef}
-              className="absolute right-0 top-full mt-1 w-40 bg-page border border-border rounded-lg shadow-lg py-1 z-50 animate-fade-in"
+    <div className="border-b border-border px-4 py-2 flex flex-col gap-2 flex-shrink-0">
+      {/* Title row */}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          {isEditing ? (
+            <input
+              type="text"
+              value={editTitle}
+              onChange={(e) => setEditTitle(e.target.value)}
+              onBlur={handleSaveTitle}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') handleSaveTitle()
+                if (e.key === 'Escape') setIsEditing(false)
+              }}
+              className="bg-transparent text-sm font-semibold text-text-primary outline-none border-b border-primary px-1"
+              autoFocus
+            />
+          ) : (
+            <button
+              onClick={() => {
+                setEditTitle(session.title)
+                setIsEditing(true)
+              }}
+              className="flex items-center gap-1.5 hover:bg-hover rounded-lg px-2 py-1 transition"
             >
-              <button
-                onClick={() => handleExport('markdown')}
-                className="w-full text-left px-3 py-2 text-sm text-text-primary hover:bg-hover transition"
-              >
-                {t('chat.exportMarkdown')}
-              </button>
-              <button
-                onClick={() => handleExport('html')}
-                className="w-full text-left px-3 py-2 text-sm text-text-primary hover:bg-hover transition"
-              >
-                {t('chat.exportHtml')}
-              </button>
-              <button
-                onClick={() => handleExport('json')}
-                className="w-full text-left px-3 py-2 text-sm text-text-primary hover:bg-hover transition"
-              >
-                {t('chat.exportJson')}
-              </button>
-              <button
-                onClick={() => handleExport('txt')}
-                className="w-full text-left px-3 py-2 text-sm text-text-primary hover:bg-hover transition"
-              >
-                {t('chat.exportTxt')}
-              </button>
-              <button
-                onClick={() => handleExport('pdf')}
-                className="w-full text-left px-3 py-2 text-sm text-text-primary hover:bg-hover transition"
-              >
-                {t('chat.exportPdf')}
-              </button>
-            </div>
+              <span className="text-sm font-semibold text-text-primary">{session.title}</span>
+              <Pencil size={14} className="text-text-tertiary" />
+            </button>
           )}
         </div>
 
-        <button
-          onClick={() => toggleFavorite(session.id)}
-          aria-label={session.isFavorite ? t('chat.unfavorite') : t('chat.favorite')}
-          className="p-1.5 hover:bg-hover rounded-lg transition focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
-        >
-          <Star
-            size={16}
-            className={session.isFavorite ? 'text-yellow-star fill-yellow-star' : 'text-text-tertiary'}
-          />
-        </button>
+        <div className="flex items-center gap-3">
+          <span className="text-xs bg-card border border-border rounded-md px-2 py-1 text-text-secondary">
+            {getModelName(session.modelId)}
+          </span>
+          {project && (
+            <span className="text-xs bg-primary/10 text-primary rounded-md px-2 py-1 font-medium">
+              {project.name}
+            </span>
+          )}
+          {/* Summarize button */}
+          <button
+            onClick={handleSummarize}
+            disabled={isSummarizing}
+            aria-label={isSummarizing ? t('chat.summarizing') : t('chat.summarize')}
+            title={session.summary || (isSummarizing ? t('chat.summarizing') : t('chat.summarize'))}
+            className="p-1.5 hover:bg-hover rounded-lg transition focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <Sparkles
+              size={16}
+              className={`${isSummarizing ? 'animate-pulse text-primary' : 'text-text-tertiary'}`}
+            />
+          </button>
+          {/* Direct export button */}
+          <div className="relative">
+            <button
+              onClick={() => setExportMenuOpen((prev) => !prev)}
+              aria-label={t('chat.export')}
+              className="p-1.5 hover:bg-hover rounded-lg transition focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
+            >
+              <Download size={16} className="text-text-tertiary" />
+            </button>
+            {exportMenuOpen && (
+              <div
+                ref={exportMenuRef}
+                className="absolute right-0 top-full mt-1 w-40 bg-page border border-border rounded-lg shadow-lg py-1 z-50 animate-fade-in"
+              >
+                <button
+                  onClick={() => handleExport('markdown')}
+                  className="w-full text-left px-3 py-2 text-sm text-text-primary hover:bg-hover transition"
+                >
+                  {t('chat.exportMarkdown')}
+                </button>
+                <button
+                  onClick={() => handleExport('html')}
+                  className="w-full text-left px-3 py-2 text-sm text-text-primary hover:bg-hover transition"
+                >
+                  {t('chat.exportHtml')}
+                </button>
+                <button
+                  onClick={() => handleExport('json')}
+                  className="w-full text-left px-3 py-2 text-sm text-text-primary hover:bg-hover transition"
+                >
+                  {t('chat.exportJson')}
+                </button>
+                <button
+                  onClick={() => handleExport('txt')}
+                  className="w-full text-left px-3 py-2 text-sm text-text-primary hover:bg-hover transition"
+                >
+                  {t('chat.exportTxt')}
+                </button>
+                <button
+                  onClick={() => handleExport('pdf')}
+                  className="w-full text-left px-3 py-2 text-sm text-text-primary hover:bg-hover transition"
+                >
+                  {t('chat.exportPdf')}
+                </button>
+              </div>
+            )}
+          </div>
 
-        {/* More Actions Menu */}
-        <div className="relative" ref={menuRef}>
+          <button
+            onClick={() => toggleFavorite(session.id)}
+            aria-label={session.isFavorite ? t('chat.unfavorite') : t('chat.favorite')}
+            className="p-1.5 hover:bg-hover rounded-lg transition focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
+          >
+            <Star
+              size={16}
+              className={session.isFavorite ? 'text-yellow-star fill-yellow-star' : 'text-text-tertiary'}
+            />
+          </button>
+
+          {/* More Actions Menu */}
+          <div className="relative" ref={menuRef}>
           <button
             onClick={() => setMenuOpen((prev) => !prev)}
             aria-label={t('chat.moreActions')}
@@ -305,8 +308,12 @@ export function ChatHeader({ sessionId }: ChatHeaderProps) {
               </button>
             </div>
           )}
+          </div>
         </div>
       </div>
+
+      {/* Tags row */}
+      <TagSelector sessionId={sessionId} />
     </div>
   )
 }

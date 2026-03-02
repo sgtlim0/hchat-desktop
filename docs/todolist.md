@@ -98,7 +98,7 @@
 - [x] guardrail + import-chat 유닛 테스트 추가
 - [x] UI 컴포넌트 테스트 (`shared/ui/` 11개) — 158 tests
 - [x] Playwright E2E 설정 + 핵심 플로우 테스트 — 24 tests
-- [ ] 커버리지 80%+ 달성
+- [x] 커버리지 80%+ 달성 — 83% stmts, 79% branches, 91% funcs, 82% lines
 
 ### 접근성 확장
 - [x] 색상 대비 WCAG AA 검증 — text-tertiary, warning, danger, primary(dark) 수정

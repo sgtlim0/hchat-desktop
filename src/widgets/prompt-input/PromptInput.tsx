@@ -10,7 +10,7 @@ import { ModelSelector } from './ModelSelector'
 import { createStream, getProviderConfig } from '@/shared/lib/providers/factory'
 import { routeModel } from '@/shared/lib/providers/router'
 import { putMessage } from '@/shared/lib/db'
-import type { Message, UsageEntry, PdfAttachment, ThinkingDepth } from '@/shared/types'
+import type { Message, UsageEntry, PdfAttachment, SpreadsheetAttachment, ThinkingDepth } from '@/shared/types'
 import { MODELS } from '@/shared/constants'
 import { useOnlineStatus } from '@/shared/hooks/useOnlineStatus'
 import { estimateTokens } from '@/shared/lib/token-estimator'
@@ -63,6 +63,8 @@ export function PromptInput({
   const [showPersonaMenu, setShowPersonaMenu] = useState(false)
   const [pdfAttachment, setPdfAttachment] = useState<PdfAttachment | null>(null)
   const [pdfLoading, setPdfLoading] = useState(false)
+  const [spreadsheetAttachment, setSpreadsheetAttachment] = useState<SpreadsheetAttachment | null>(null)
+  const [spreadsheetLoading, setSpreadsheetLoading] = useState(false)
   const [isListening, setIsListening] = useState(false)
   const [showGuardrailWarning, setShowGuardrailWarning] = useState(false)
   const [guardrailDetections, setGuardrailDetections] = useState<string[]>([])
@@ -86,26 +88,64 @@ export function PromptInput({
     )
   }, [isListening])
 
-  async function handlePdfUpload(e: React.ChangeEvent<HTMLInputElement>) {
+  async function handleFileUpload(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]
-    if (!file || !file.name.endsWith('.pdf')) return
+    if (!file) return
 
-    setPdfLoading(true)
-    try {
-      const { extractPdfText } = await import('@/shared/lib/pdf-extractor')
-      const result = await extractPdfText(file)
-      setPdfAttachment({
-        fileName: file.name,
-        pageCount: result.pageCount,
-        text: result.text,
-      })
-    } catch (error) {
-      const msg = error instanceof Error ? error.message : 'PDF extraction failed'
-      console.error('PDF extraction error:', msg)
-    } finally {
-      setPdfLoading(false)
-      if (fileInputRef.current) {
-        fileInputRef.current.value = ''
+    const ext = file.name.split('.').pop()?.toLowerCase()
+
+    // Handle PDF
+    if (ext === 'pdf') {
+      setPdfLoading(true)
+      try {
+        const { extractPdfText } = await import('@/shared/lib/pdf-extractor')
+        const result = await extractPdfText(file)
+        setPdfAttachment({
+          fileName: file.name,
+          pageCount: result.pageCount,
+          text: result.text,
+        })
+      } catch (error) {
+        const msg = error instanceof Error ? error.message : 'PDF extraction failed'
+        console.error('PDF extraction error:', msg)
+      } finally {
+        setPdfLoading(false)
+        if (fileInputRef.current) {
+          fileInputRef.current.value = ''
+        }
+      }
+      return
+    }
+
+    // Handle spreadsheets
+    if (ext === 'xlsx' || ext === 'xls' || ext === 'csv') {
+      // Check file size (max 10MB)
+      const MAX_SIZE = 10 * 1024 * 1024
+      if (file.size > MAX_SIZE) {
+        console.error('File too large')
+        return
+      }
+
+      setSpreadsheetLoading(true)
+      try {
+        const { parseSpreadsheet } = await import('@/shared/lib/spreadsheet-parser')
+        const result = await parseSpreadsheet(file)
+
+        const totalRows = result.sheets.reduce((sum, sheet) => sum + sheet.rowCount, 0)
+        setSpreadsheetAttachment({
+          fileName: file.name,
+          sheetCount: result.sheets.length,
+          totalRows,
+          summary: result.summary,
+        })
+      } catch (error) {
+        const msg = error instanceof Error ? error.message : 'Spreadsheet parsing failed'
+        console.error('Spreadsheet parsing error:', msg)
+      } finally {
+        setSpreadsheetLoading(false)
+        if (fileInputRef.current) {
+          fileInputRef.current.value = ''
+        }
       }
     }
   }
@@ -217,13 +257,19 @@ export function PromptInput({
     let fullText = ''
 
     try {
-      // Build system prompt with optional PDF context
+      // Build system prompt with optional PDF/Spreadsheet context
       let systemPrompt = activePersona?.systemPrompt
       if (pdfAttachment) {
         const pdfContext = `[PDF Document: ${pdfAttachment.fileName} (${pdfAttachment.pageCount} pages)]\n\n${pdfAttachment.text}`
         systemPrompt = systemPrompt
           ? `${systemPrompt}\n\n${pdfContext}`
           : pdfContext
+      }
+      if (spreadsheetAttachment) {
+        const spreadsheetContext = spreadsheetAttachment.summary
+        systemPrompt = systemPrompt
+          ? `${systemPrompt}\n\n${spreadsheetContext}`
+          : spreadsheetContext
       }
 
       const stream = createStream(config, {
@@ -455,13 +501,32 @@ export function PromptInput({
         <div className="text-xs text-text-tertiary">{t('pdf.extracting')}</div>
       )}
 
+      {/* Spreadsheet attachment chip */}
+      {spreadsheetAttachment && (
+        <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-primary/10 border border-primary/20 text-xs">
+          <FileText size={14} className="text-primary" />
+          <span className="text-primary font-medium truncate max-w-[200px]">{spreadsheetAttachment.fileName}</span>
+          <span className="text-text-tertiary">{t('spreadsheet.sheets', { count: String(spreadsheetAttachment.sheetCount) })}</span>
+          <span className="text-text-tertiary">{t('spreadsheet.rows', { count: String(spreadsheetAttachment.totalRows) })}</span>
+          <button
+            onClick={() => setSpreadsheetAttachment(null)}
+            className="p-0.5 hover:bg-primary/20 rounded transition"
+          >
+            <X size={12} className="text-primary" />
+          </button>
+        </div>
+      )}
+      {spreadsheetLoading && (
+        <div className="text-xs text-text-tertiary">{t('spreadsheet.parsing')}</div>
+      )}
+
       <div className="rounded-xl border border-border-input bg-input p-3 flex items-end gap-2">
       {/* Attachment button */}
       <input
         ref={fileInputRef}
         type="file"
-        accept=".pdf"
-        onChange={handlePdfUpload}
+        accept=".pdf,.xlsx,.xls,.csv"
+        onChange={handleFileUpload}
         className="hidden"
       />
       <button

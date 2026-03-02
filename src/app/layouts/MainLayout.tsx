@@ -8,6 +8,7 @@ import { usePersonaStore } from '@/entities/persona/persona.store'
 import { Sidebar } from '@/widgets/sidebar/Sidebar'
 import { HomeScreen } from '@/pages/home/HomeScreen'
 import { SearchModal } from '@/widgets/search/SearchModal'
+import { ToastContainer } from '@/shared/ui/ToastContainer'
 import { useTranslation } from '@/shared/i18n'
 import { useOnlineStatus } from '@/shared/hooks/useOnlineStatus'
 
@@ -24,10 +25,10 @@ const ScheduleManager = lazy(() => import('@/pages/schedule/ScheduleManager').th
 const GroupChatPage = lazy(() => import('@/pages/group-chat/GroupChatPage').then((m) => ({ default: m.GroupChatPage })))
 const PromptLibraryPage = lazy(() => import('@/pages/prompt-library/PromptLibraryPage').then((m) => ({ default: m.PromptLibraryPage })))
 const DebatePage = lazy(() => import('@/pages/debate/DebatePage').then((m) => ({ default: m.DebatePage })))
+const AiToolsPage = lazy(() => import('@/pages/ai-tools/AiToolsPage').then((m) => ({ default: m.AiToolsPage })))
 
 export function MainLayout() {
   const { t } = useTranslation()
-  const sidebarOpen = useSettingsStore((s) => s.sidebarOpen)
   const toggleSidebar = useSettingsStore((s) => s.toggleSidebar)
   const settingsOpen = useSettingsStore((s) => s.settingsOpen)
   const setSettingsOpen = useSettingsStore((s) => s.setSettingsOpen)
@@ -129,6 +130,10 @@ export function MainLayout() {
       return <DebatePage />
     }
 
+    if (view === 'aiTools') {
+      return <AiToolsPage />
+    }
+
     if (currentSessionId && view === 'chat') {
       return <ChatPage />
     }
@@ -144,8 +149,8 @@ export function MainLayout() {
       >
         {t('common.skipToContent')}
       </a>
-      {sidebarOpen && <Sidebar />}
-      <div className="flex-1 flex flex-col overflow-hidden">
+      <Sidebar />
+      <div className="flex-1 flex flex-col overflow-hidden min-w-0">
         {!isOnline && (
           <div className="bg-amber-500 text-white text-center text-sm py-1.5 px-4 flex-shrink-0">
             {t('offline.banner')}
@@ -162,6 +167,7 @@ export function MainLayout() {
         </main>
       </div>
       {searchOpen && <SearchModal />}
+      <ToastContainer />
     </>
   )
 }

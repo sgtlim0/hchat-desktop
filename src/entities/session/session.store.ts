@@ -35,6 +35,8 @@ interface SessionState {
   togglePin: (id: string) => void
   addTag: (id: string, tag: string) => void
   removeTag: (id: string, tag: string) => void
+  moveToFolder: (id: string, folderId: string | undefined) => void
+  updateSession: (id: string, updates: Partial<Session>) => void
   setPendingPrompt: (prompt: string | null) => void
   importSession: (session: Session, messages: Message[]) => Promise<void>
   forkSession: (sessionId: string, messageIndex: number) => void
@@ -299,5 +301,25 @@ export const useSessionStore = create<SessionState>((set, get) => ({
     })
 
     return results
+  },
+
+  moveToFolder: (id, folderId) => {
+    set((state) => ({
+      sessions: state.sessions.map((s) =>
+        s.id === id ? { ...s, folderId } : s
+      ),
+    }))
+    const session = get().sessions.find((s) => s.id === id)
+    if (session) putSession(session).catch(console.error)
+  },
+
+  updateSession: (id, updates) => {
+    set((state) => ({
+      sessions: state.sessions.map((s) =>
+        s.id === id ? { ...s, ...updates } : s
+      ),
+    }))
+    const session = get().sessions.find((s) => s.id === id)
+    if (session) putSession(session).catch(console.error)
   },
 }))

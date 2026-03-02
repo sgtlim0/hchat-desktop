@@ -25,6 +25,10 @@ vi.mock('lucide-react', () => ({
   Settings: () => <div>Settings</div>,
   BookOpen: () => <div>BookOpen</div>,
   Swords: () => <div>Swords</div>,
+  ChevronDown: () => <div>ChevronDown</div>,
+  ChevronRight: () => <div>ChevronRight</div>,
+  X: () => <div>X</div>,
+  Wand2: () => <div>Wand2</div>,
 }))
 
 // Mock SessionContextMenu
@@ -65,6 +69,21 @@ vi.mock('@/entities/settings/settings.store', () => ({
   useSettingsStore: vi.fn((selector) => {
     const state = {
       setSettingsOpen: mockSetSettingsOpen,
+      sidebarOpen: true,
+      toggleSidebar: vi.fn(),
+    }
+    return selector(state)
+  }),
+}))
+
+// Mock folder store
+vi.mock('@/entities/folder/folder.store', () => ({
+  useFolderStore: vi.fn((selector) => {
+    const state = {
+      folders: [],
+      selectedFolderId: null,
+      selectFolder: vi.fn(),
+      addFolder: vi.fn(),
     }
     return selector(state)
   }),

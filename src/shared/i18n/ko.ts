@@ -403,6 +403,12 @@ const ko = {
   'pdf.tooLarge': 'PDF 파일이 너무 큽니다',
   'pdf.extractFailed': 'PDF 텍스트 추출에 실패했습니다',
 
+  // spreadsheet
+  'spreadsheet.parsing': '파일 분석 중...',
+  'spreadsheet.sheets': '{count}개 시트',
+  'spreadsheet.rows': '{count}행',
+  'spreadsheet.tooLarge': '파일이 너무 큽니다 (최대 10MB)',
+
   // budget
   'budget.warning': '월간 예산의 {percent}%에 도달했습니다',
   'budget.exceeded': '월간 예산을 초과했습니다!',
@@ -412,6 +418,104 @@ const ko = {
   'chat.summarize': '요약',
   'chat.summarizing': '요약 생성 중...',
   'chat.summaryGenerated': '요약이 생성되었습니다',
+
+  // folders
+  'folder.title': '폴더',
+  'folder.all': '전체',
+  'folder.create': '폴더 만들기',
+  'folder.delete': '폴더 삭제',
+  'folder.rename': '이름 변경',
+  'folder.namePlaceholder': '폴더 이름',
+  'folder.moveToFolder': '폴더로 이동',
+  'folder.noFolder': '폴더 없음',
+
+  // tags
+  'tag.title': '태그',
+  'tag.add': '태그 추가',
+  'tag.manage': '태그 관리',
+  'tag.selectTags': '태그 선택',
+  'tag.noTags': '태그 없음',
+  'tag.create': '새 태그 만들기',
+  'tag.namePlaceholder': '태그 이름',
+
+  // storage
+  'storage.title': '저장소 관리',
+  'storage.totalUsed': '사용 중',
+  'storage.sessions': '대화 수',
+  'storage.messages': '메시지 수',
+  'storage.clearAll': '전체 삭제',
+  'storage.clearConfirm': '모든 대화와 설정이 삭제됩니다. 계속하시겠습니까?',
+  'storage.deleteOld': '오래된 대화 삭제',
+  'storage.olderThan': '{days}일 이전',
+  'storage.quota': '할당량',
+  'storage.description': '앱의 저장소 사용량을 확인하고 관리합니다.',
+  'storage.deleteOldConfirm': '{days}일 이전의 대화 {count}개를 삭제하시겠습니까?',
+  'storage.deleted': '{count}개 대화를 삭제했습니다',
+  'storage.cleared': '모든 데이터를 삭제했습니다',
+  'storage.analyzing': '분석 중...',
+
+  // toast
+  'toast.close': '닫기',
+
+  // sidebar
+  'sidebar.aiTools': 'AI 도구',
+
+  // AI Tools
+  'aiTools.title': 'AI 도구',
+  'aiTools.selectTool': '왼쪽에서 도구를 선택하세요',
+  'aiTools.input': '입력',
+  'aiTools.output': '결과',
+  'aiTools.inputPlaceholder': '텍스트를 입력하세요...',
+  'aiTools.outputPlaceholder': '결과가 여기에 표시됩니다',
+  'aiTools.processing': '처리 중...',
+  'aiTools.run': '실행',
+  'aiTools.summarize': '요약',
+  'aiTools.summarizeDesc': '텍스트를 핵심 포인트로 요약합니다',
+  'aiTools.translate': '번역',
+  'aiTools.translateDesc': '텍스트를 다른 언어로 번역합니다',
+  'aiTools.grammar': '문법 검사',
+  'aiTools.grammarDesc': '맞춤법과 문법 오류를 찾아 수정합니다',
+  'aiTools.rewrite': '다시 쓰기',
+  'aiTools.rewriteDesc': '가독성과 흐름을 개선합니다',
+  'aiTools.expand': '확장',
+  'aiTools.expandDesc': '텍스트에 더 많은 세부사항을 추가합니다',
+  'aiTools.simplify': '단순화',
+  'aiTools.simplifyDesc': '일반 독자를 위해 텍스트를 쉽게 만듭니다',
+  'aiTools.tone': '톤 변경',
+  'aiTools.toneDesc': '텍스트의 어조/스타일을 변경합니다',
+  'aiTools.bullets': '글머리 기호',
+  'aiTools.bulletsDesc': '텍스트를 정리된 목록으로 변환합니다',
+  'aiTools.headline': '제목 생성',
+  'aiTools.headlineDesc': '매력적인 제목을 5개 생성합니다',
+  'aiTools.email': '이메일 작성',
+  'aiTools.emailDesc': '메모를 전문적인 이메일로 변환합니다',
+  'aiTools.docHealth': '문서 건강 검사',
+  'aiTools.docHealthDesc': '맞춤법, 문법, 가독성, 일관성을 종합 분석합니다',
+  'aiTools.langKo': '한국어',
+  'aiTools.langEn': '영어',
+  'aiTools.langJa': '일본어',
+  'aiTools.langZh': '중국어',
+  'aiTools.langEs': '스페인어',
+  'aiTools.toneProfessional': '전문적',
+  'aiTools.toneCasual': '캐주얼',
+  'aiTools.toneFormal': '격식체',
+  'aiTools.toneFriendly': '친근한',
+
+  // ROI Dashboard
+  'roi.title': 'ROI 대시보드',
+  'roi.noData': '사용 데이터가 없습니다',
+  'roi.totalCost': '총 비용',
+  'roi.totalMessages': '총 메시지',
+  'roi.totalSessions': '총 세션',
+  'roi.avgCostPerSession': '세션당 평균 비용',
+  'roi.avgCostPerMessage': '메시지당 평균 비용',
+  'roi.avgTokensPerMessage': '메시지당 평균 토큰',
+  'roi.estimatedTimeSaved': '추정 절약 시간',
+  'roi.costPerHourSaved': '시간당 비용',
+  'roi.hours': '시간',
+  'roi.hour': '시간',
+  'roi.byProvider': '프로바이더별',
+  'roi.topModels': '상위 모델',
 } as const
 
 export default ko

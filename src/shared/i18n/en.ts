@@ -403,6 +403,12 @@ const en = {
   'pdf.tooLarge': 'PDF file is too large',
   'pdf.extractFailed': 'Failed to extract PDF text',
 
+  // spreadsheet
+  'spreadsheet.parsing': 'Analyzing file...',
+  'spreadsheet.sheets': '{count} sheets',
+  'spreadsheet.rows': '{count} rows',
+  'spreadsheet.tooLarge': 'File too large (max 10MB)',
+
   // budget
   'budget.warning': 'You have reached {percent}% of your monthly budget',
   'budget.exceeded': 'Monthly budget exceeded!',
@@ -412,6 +418,104 @@ const en = {
   'chat.summarize': 'Summarize',
   'chat.summarizing': 'Generating summary...',
   'chat.summaryGenerated': 'Summary generated',
+
+  // folders
+  'folder.title': 'Folders',
+  'folder.all': 'All',
+  'folder.create': 'Create folder',
+  'folder.delete': 'Delete folder',
+  'folder.rename': 'Rename',
+  'folder.namePlaceholder': 'Folder name',
+  'folder.moveToFolder': 'Move to folder',
+  'folder.noFolder': 'No folder',
+
+  // tags
+  'tag.title': 'Tags',
+  'tag.add': 'Add tag',
+  'tag.manage': 'Manage tags',
+  'tag.selectTags': 'Select tags',
+  'tag.noTags': 'No tags',
+  'tag.create': 'Create new tag',
+  'tag.namePlaceholder': 'Tag name',
+
+  // storage
+  'storage.title': 'Storage Management',
+  'storage.totalUsed': 'Used',
+  'storage.sessions': 'Sessions',
+  'storage.messages': 'Messages',
+  'storage.clearAll': 'Clear All Data',
+  'storage.clearConfirm': 'All conversations and settings will be deleted. Continue?',
+  'storage.deleteOld': 'Delete Old Sessions',
+  'storage.olderThan': 'Older than {days} days',
+  'storage.quota': 'Quota',
+  'storage.description': 'Monitor and manage app storage usage.',
+  'storage.deleteOldConfirm': 'Delete {count} sessions older than {days} days?',
+  'storage.deleted': 'Deleted {count} sessions',
+  'storage.cleared': 'All data cleared',
+  'storage.analyzing': 'Analyzing...',
+
+  // toast
+  'toast.close': 'Close',
+
+  // sidebar
+  'sidebar.aiTools': 'AI Tools',
+
+  // AI Tools
+  'aiTools.title': 'AI Tools',
+  'aiTools.selectTool': 'Select a tool from the left',
+  'aiTools.input': 'Input',
+  'aiTools.output': 'Output',
+  'aiTools.inputPlaceholder': 'Enter your text...',
+  'aiTools.outputPlaceholder': 'Results will appear here',
+  'aiTools.processing': 'Processing...',
+  'aiTools.run': 'Run',
+  'aiTools.summarize': 'Summarize',
+  'aiTools.summarizeDesc': 'Summarize text into key points',
+  'aiTools.translate': 'Translate',
+  'aiTools.translateDesc': 'Translate text to another language',
+  'aiTools.grammar': 'Grammar Check',
+  'aiTools.grammarDesc': 'Find and fix spelling and grammar errors',
+  'aiTools.rewrite': 'Rewrite',
+  'aiTools.rewriteDesc': 'Improve clarity and readability',
+  'aiTools.expand': 'Expand',
+  'aiTools.expandDesc': 'Add more detail and examples to text',
+  'aiTools.simplify': 'Simplify',
+  'aiTools.simplifyDesc': 'Make text easier to understand',
+  'aiTools.tone': 'Change Tone',
+  'aiTools.toneDesc': 'Change the tone/style of text',
+  'aiTools.bullets': 'Bullet Points',
+  'aiTools.bulletsDesc': 'Convert text to organized bullet list',
+  'aiTools.headline': 'Headlines',
+  'aiTools.headlineDesc': 'Generate 5 compelling headlines',
+  'aiTools.email': 'Write Email',
+  'aiTools.emailDesc': 'Convert notes into a professional email',
+  'aiTools.docHealth': 'Doc Health Check',
+  'aiTools.docHealthDesc': 'Comprehensive spelling, grammar, readability analysis',
+  'aiTools.langKo': 'Korean',
+  'aiTools.langEn': 'English',
+  'aiTools.langJa': 'Japanese',
+  'aiTools.langZh': 'Chinese',
+  'aiTools.langEs': 'Spanish',
+  'aiTools.toneProfessional': 'Professional',
+  'aiTools.toneCasual': 'Casual',
+  'aiTools.toneFormal': 'Formal',
+  'aiTools.toneFriendly': 'Friendly',
+
+  // ROI Dashboard
+  'roi.title': 'ROI Dashboard',
+  'roi.noData': 'No usage data available',
+  'roi.totalCost': 'Total Cost',
+  'roi.totalMessages': 'Total Messages',
+  'roi.totalSessions': 'Total Sessions',
+  'roi.avgCostPerSession': 'Avg Cost/Session',
+  'roi.avgCostPerMessage': 'Avg Cost/Message',
+  'roi.avgTokensPerMessage': 'Avg Tokens/Message',
+  'roi.estimatedTimeSaved': 'Est. Time Saved',
+  'roi.costPerHourSaved': 'Cost/Hour Saved',
+  'roi.hours': 'hours',
+  'roi.hour': 'hr',
+  'roi.byProvider': 'By Provider',
+  'roi.topModels': 'Top Models',
 } as const
 
 export default en
