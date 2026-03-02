@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from 'vitest'
+import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { useDebateStore } from '../debate.store'
 import type { DebateRound, GroupChatResponse } from '@/shared/types'
 
