@@ -1,8 +1,10 @@
 import { useState } from 'react'
 import { ArrowUp } from 'lucide-react'
 import { Avatar } from '@/shared/ui/Avatar'
+import { useTranslation } from '@/shared/i18n'
 
 export function QuickChatPage() {
+  const { t } = useTranslation()
   const [input, setInput] = useState('')
 
   const handleSubmit = () => {
@@ -27,7 +29,7 @@ export function QuickChatPage() {
         <div className="flex items-center gap-3 mb-4">
           <Avatar initials="H" size="sm" />
           <div>
-            <h1 className="text-lg font-bold text-text-primary">H Chat 퀵챗</h1>
+            <h1 className="text-lg font-bold text-text-primary">{t('quickChat.title')}</h1>
           </div>
         </div>
 
@@ -38,7 +40,7 @@ export function QuickChatPage() {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder="무엇이든 물어보세요..."
+            placeholder={t('quickChat.placeholder')}
             className="flex-1 bg-transparent text-text-primary text-sm outline-none placeholder:text-text-tertiary"
             autoFocus
           />
@@ -62,7 +64,7 @@ export function QuickChatPage() {
             <kbd className="px-1.5 py-0.5 bg-hover border border-border rounded text-[10px] font-medium">
               Enter
             </kbd>{' '}
-            로 전송 · 메인 윈도우에서 계속됩니다 ·{' '}
+            {t('quickChat.hint')}{' '}
             <kbd className="px-1.5 py-0.5 bg-hover border border-border rounded text-[10px] font-medium">
               Esc
             </kbd>{' '}

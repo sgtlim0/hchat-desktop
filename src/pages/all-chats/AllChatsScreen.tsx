@@ -3,10 +3,12 @@ import { MessageSquare, Star, Search, Pin } from 'lucide-react'
 import { useSessionStore } from '@/entities/session/session.store'
 import { getRelativeTime, getDateGroup } from '@/shared/lib/time'
 import { getModelName } from '@/shared/lib/model-meta'
+import { useTranslation } from '@/shared/i18n'
 
 type FilterType = 'all' | 'favorites' | 'projects' | 'pinned'
 
 export function AllChatsScreen() {
+  const { t } = useTranslation()
   const { sessions, selectSession } = useSessionStore()
   const [filter, setFilter] = useState<FilterType>('all')
   const [searchQuery, setSearchQuery] = useState('')
@@ -37,7 +39,7 @@ export function AllChatsScreen() {
     const groups: Record<string, typeof sessions> = {}
 
     filteredSessions.forEach((session) => {
-      const group = getDateGroup(session.updatedAt)
+      const group = getDateGroup(session.updatedAt, t)
       if (!groups[group]) {
         groups[group] = []
       }
@@ -45,22 +47,22 @@ export function AllChatsScreen() {
     })
 
     return groups
-  }, [filteredSessions])
+  }, [filteredSessions, t])
 
-  const groupOrder = ['오늘', '어제', '이번 주', '이번 달', '이전']
+  const groupOrder = [t('time.today'), t('time.yesterday'), t('time.thisWeek'), t('time.thisMonth'), t('time.earlier')]
 
   return (
     <div className="p-8 max-w-5xl mx-auto">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-text-primary">전체 채팅</h1>
+        <h1 className="text-2xl font-bold text-text-primary">{t('allChats.title')}</h1>
         <div className="relative w-[320px]">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-tertiary" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="세션 검색..."
+            placeholder={t('allChats.searchPlaceholder')}
             className="w-full bg-input border border-border-input rounded-lg pl-10 pr-4 py-2 text-sm text-text-primary placeholder:text-text-tertiary outline-none focus:border-primary transition"
           />
         </div>
@@ -76,7 +78,7 @@ export function AllChatsScreen() {
               : 'border border-border text-text-secondary hover:bg-hover'
           }`}
         >
-          전체
+          {t('allChats.all')}
         </button>
         <button
           onClick={() => setFilter('favorites')}
@@ -86,7 +88,7 @@ export function AllChatsScreen() {
               : 'border border-border text-text-secondary hover:bg-hover'
           }`}
         >
-          즐겨찾기
+          {t('allChats.favorites')}
         </button>
         <button
           onClick={() => setFilter('pinned')}
@@ -96,7 +98,7 @@ export function AllChatsScreen() {
               : 'border border-border text-text-secondary hover:bg-hover'
           }`}
         >
-          고정됨
+          {t('allChats.pinned')}
         </button>
         <button
           onClick={() => setFilter('projects')}
@@ -106,7 +108,7 @@ export function AllChatsScreen() {
               : 'border border-border text-text-secondary hover:bg-hover'
           }`}
         >
-          프로젝트별
+          {t('allChats.byProject')}
         </button>
       </div>
 
@@ -115,7 +117,7 @@ export function AllChatsScreen() {
         <div className="text-center py-20">
           <MessageSquare className="w-12 h-12 text-text-tertiary mx-auto mb-4" />
           <p className="text-text-secondary text-sm">
-            {searchQuery ? '검색 결과가 없습니다' : '세션이 없습니다'}
+            {searchQuery ? t('common.noResults') : t('allChats.noSessions')}
           </p>
         </div>
       ) : (
@@ -169,7 +171,7 @@ export function AllChatsScreen() {
                       )}
                       <div className="flex items-center gap-2 flex-shrink-0">
                         <span className="text-text-tertiary text-xs">
-                          {getRelativeTime(session.updatedAt)}
+                          {getRelativeTime(session.updatedAt, t)}
                         </span>
                         <span className="text-[11px] text-text-tertiary bg-hover px-2 py-0.5 rounded-full">
                           {getModelName(session.modelId).replace('Claude ', '').replace('4 ', '').replace('3.5 ', '')}

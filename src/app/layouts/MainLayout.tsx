@@ -15,8 +15,10 @@ import { AgentSwarmBuilder } from '@/pages/swarm/AgentSwarmBuilder'
 import { ScheduleManager } from '@/pages/schedule/ScheduleManager'
 import { GroupChatPage } from '@/pages/group-chat/GroupChatPage'
 import { SearchModal } from '@/widgets/search/SearchModal'
+import { useTranslation } from '@/shared/i18n'
 
 export function MainLayout() {
+  const { t } = useTranslation()
   const sidebarOpen = useSettingsStore((s) => s.sidebarOpen)
   const toggleSidebar = useSettingsStore((s) => s.toggleSidebar)
   const settingsOpen = useSettingsStore((s) => s.settingsOpen)
@@ -61,7 +63,7 @@ export function MainLayout() {
   if (!hydrated) {
     return (
       <div className="flex-1 flex items-center justify-center">
-        <div className="text-text-secondary text-sm">로딩 중...</div>
+        <div className="text-text-secondary text-sm">{t('common.loading')}</div>
       </div>
     )
   }

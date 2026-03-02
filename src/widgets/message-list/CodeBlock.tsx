@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism'
 import { Copy, Check } from 'lucide-react'
+import { useTranslation } from '@/shared/i18n'
 
 interface CodeBlockProps {
   language: string
@@ -9,6 +10,7 @@ interface CodeBlockProps {
 }
 
 export function CodeBlock({ language, children }: CodeBlockProps) {
+  const { t } = useTranslation()
   const [copied, setCopied] = useState(false)
 
   const handleCopy = async () => {
@@ -28,12 +30,12 @@ export function CodeBlock({ language, children }: CodeBlockProps) {
           {copied ? (
             <>
               <Check size={14} />
-              <span>복사됨</span>
+              <span>{t('common.copied')}</span>
             </>
           ) : (
             <>
               <Copy size={14} />
-              <span>복사</span>
+              <span>{t('common.copy')}</span>
             </>
           )}
         </button>

@@ -1,4 +1,6 @@
-export function getRelativeTime(dateStr: string): string {
+import type { TFunction } from '@/shared/i18n/types'
+
+export function getRelativeTime(dateStr: string, t?: TFunction): string {
   const date = new Date(dateStr)
   const now = new Date()
   const diffMs = now.getTime() - date.getTime()
@@ -6,6 +8,16 @@ export function getRelativeTime(dateStr: string): string {
   const diffMin = Math.floor(diffSec / 60)
   const diffHour = Math.floor(diffMin / 60)
   const diffDay = Math.floor(diffHour / 24)
+
+  if (t) {
+    if (diffSec < 60) return t('time.justNow')
+    if (diffMin < 60) return t('time.minutesAgo', { n: diffMin })
+    if (diffHour < 24) return t('time.hoursAgo', { n: diffHour })
+    if (diffDay < 7) return t('time.daysAgo', { n: diffDay })
+    if (diffDay < 30) return t('time.weeksAgo', { n: Math.floor(diffDay / 7) })
+    if (diffDay < 365) return t('time.monthsAgo', { n: Math.floor(diffDay / 30) })
+    return t('time.yearsAgo', { n: Math.floor(diffDay / 365) })
+  }
 
   if (diffSec < 60) return '방금 전'
   if (diffMin < 60) return `${diffMin}분 전`
@@ -16,8 +28,18 @@ export function getRelativeTime(dateStr: string): string {
   return `${Math.floor(diffDay / 365)}년 전`
 }
 
-export function getGreeting(): { title: string; subtitle: string } {
+export function getGreeting(t?: TFunction): { title: string; subtitle: string } {
   const hour = new Date().getHours()
+  if (t) {
+    if (hour >= 6 && hour < 12) {
+      return { title: t('greeting.morning'), subtitle: t('greeting.subtitle') }
+    }
+    if (hour >= 12 && hour < 18) {
+      return { title: t('greeting.afternoon'), subtitle: t('greeting.subtitle') }
+    }
+    return { title: t('greeting.evening'), subtitle: t('greeting.subtitle') }
+  }
+
   if (hour >= 6 && hour < 12) {
     return { title: '좋은 아침이에요 ☀️', subtitle: '무엇이든 물어보세요' }
   }
@@ -27,12 +49,20 @@ export function getGreeting(): { title: string; subtitle: string } {
   return { title: '좋은 저녁이에요 🌙', subtitle: '무엇이든 물어보세요' }
 }
 
-export function getDateGroup(dateStr: string): string {
+export function getDateGroup(dateStr: string, t?: TFunction): string {
   const date = new Date(dateStr)
   const now = new Date()
   const today = new Date(now.getFullYear(), now.getMonth(), now.getDate())
   const target = new Date(date.getFullYear(), date.getMonth(), date.getDate())
   const diffDay = Math.floor((today.getTime() - target.getTime()) / (1000 * 60 * 60 * 24))
+
+  if (t) {
+    if (diffDay === 0) return t('time.today')
+    if (diffDay === 1) return t('time.yesterday')
+    if (diffDay < 7) return t('time.thisWeek')
+    if (diffDay < 30) return t('time.thisMonth')
+    return t('time.earlier')
+  }
 
   if (diffDay === 0) return '오늘'
   if (diffDay === 1) return '어제'

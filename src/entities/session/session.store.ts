@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import type { Session, Message, ViewState } from '@/shared/types'
 import { useSettingsStore } from '@/entities/settings/settings.store'
+import { getTranslation } from '@/shared/i18n'
 import {
   putSession,
   deleteSessionFromDb,
@@ -63,10 +64,11 @@ export const useSessionStore = create<SessionState>((set, get) => ({
 
   createSession: (title) => {
     const id = `session-${Date.now()}`
-    const { selectedModel } = useSettingsStore.getState()
+    const { selectedModel, language } = useSettingsStore.getState()
+    const t = getTranslation(language)
     const newSession: Session = {
       id,
-      title: title ?? '새 채팅',
+      title: title ?? t('session.newChat'),
       modelId: selectedModel,
       isFavorite: false,
       isStreaming: false,

@@ -81,11 +81,11 @@ export const MAX_RECENT_SESSIONS = 30
 export const MESSAGE_MAX_WIDTH = 768
 
 export const QUICK_ACTIONS = [
-  { id: 'write', icon: 'pencil', label: '코드 작성' },
-  { id: 'summarize', icon: 'file-text', label: '문서 요약' },
-  { id: 'translate', icon: 'languages', label: '번역하기' },
-  { id: 'brainstorm', icon: 'lightbulb', label: '아이디어 브레인스토밍' },
-  { id: 'review', icon: 'search-code', label: '코드 리뷰' },
+  { id: 'write', icon: 'pencil', labelKey: 'quickAction.write' },
+  { id: 'summarize', icon: 'file-text', labelKey: 'quickAction.summarize' },
+  { id: 'translate', icon: 'languages', labelKey: 'quickAction.translate' },
+  { id: 'brainstorm', icon: 'lightbulb', labelKey: 'quickAction.brainstorm' },
+  { id: 'review', icon: 'search-code', labelKey: 'quickAction.review' },
 ] as const
 
 // Bedrock model ID mapping (cross-region inference profile)
@@ -125,17 +125,17 @@ export const AGENT_ROLE_LABELS: Record<string, string> = {
 export const SWARM_TEMPLATES = [
   {
     id: 'code-review',
-    name: '코드 리뷰 팀',
-    description: '코드 작성, 리뷰, 개선을 위한 팀',
+    nameKey: 'swarm.codeReviewTeam',
+    descriptionKey: 'swarm.codeReviewTeamDesc',
   },
   {
     id: 'research',
-    name: '리서치 팀',
-    description: '정보 수집 및 분석을 위한 팀',
+    nameKey: 'swarm.researchTeam',
+    descriptionKey: 'swarm.researchTeamDesc',
   },
   {
     id: 'full-stack',
-    name: '풀스택 팀',
-    description: '기획부터 구현까지 전체 워크플로우',
+    nameKey: 'swarm.fullStackTeam',
+    descriptionKey: 'swarm.fullStackTeamDesc',
   },
 ] as const

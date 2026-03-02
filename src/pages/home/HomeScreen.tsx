@@ -4,6 +4,8 @@ import { QuickActionChip } from '@/shared/ui/QuickActionChip'
 import { QUICK_ACTIONS } from '@/shared/constants'
 import { useSettingsStore } from '@/entities/settings/settings.store'
 import { Pencil, FileText, Languages, Lightbulb, SearchCode } from 'lucide-react'
+import { useTranslation } from '@/shared/i18n'
+import type { TranslationKey } from '@/shared/i18n'
 
 const iconMap = {
   pencil: Pencil,
@@ -14,6 +16,7 @@ const iconMap = {
 }
 
 export function HomeScreen() {
+  const { t } = useTranslation()
   const credentials = useSettingsStore((s) => s.credentials)
   const setSettingsOpen = useSettingsStore((s) => s.setSettingsOpen)
   const setSettingsTab = useSettingsStore((s) => s.setSettingsTab)
@@ -42,17 +45,17 @@ export function HomeScreen() {
             <Settings size={20} className="text-amber-600 dark:text-amber-400 flex-shrink-0" />
             <div className="flex-1">
               <p className="text-sm text-amber-800 dark:text-amber-200">
-                AWS 자격증명이 설정되지 않았습니다.
+                {t('home.credentialsMissing')}
               </p>
               <p className="text-xs text-amber-600 dark:text-amber-400 mt-0.5">
-                채팅을 시작하려면 먼저 AWS Bedrock 자격증명을 입력해주세요.
+                {t('home.credentialsHint')}
               </p>
             </div>
             <button
               onClick={handleOpenSettings}
               className="text-xs font-medium text-amber-700 dark:text-amber-300 hover:underline flex-shrink-0"
             >
-              설정하기
+              {t('home.configure')}
             </button>
           </div>
         )}
@@ -65,7 +68,7 @@ export function HomeScreen() {
             </div>
           </div>
           <h1 className="text-3xl font-semibold text-text-primary">
-            무엇을 도와드릴까요?
+            {t('home.heading')}
           </h1>
         </div>
 
@@ -73,7 +76,7 @@ export function HomeScreen() {
         <div>
           <PromptInput
             onSend={handleSend}
-            placeholder="메시지를 입력하세요..."
+            placeholder={t('home.placeholder')}
           />
         </div>
 
@@ -85,7 +88,7 @@ export function HomeScreen() {
               <QuickActionChip
                 key={action.id}
                 icon={Icon}
-                label={action.label}
+                label={t(action.labelKey as TranslationKey)}
                 onClick={() => handleQuickAction(action.id)}
               />
             )

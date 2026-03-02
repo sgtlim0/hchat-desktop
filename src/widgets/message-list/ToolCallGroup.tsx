@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { ChevronDown, ChevronUp } from 'lucide-react'
+import { useTranslation } from '@/shared/i18n'
 import { ToolCallBlock } from './ToolCallBlock'
 import type { ToolCall } from '@/shared/types'
 
@@ -8,6 +9,7 @@ interface ToolCallGroupProps {
 }
 
 export function ToolCallGroup({ toolCalls }: ToolCallGroupProps) {
+  const { t } = useTranslation()
   const hasRunning = toolCalls.some((tc) => tc.status === 'running')
   const [expanded, setExpanded] = useState(hasRunning)
 
@@ -18,7 +20,7 @@ export function ToolCallGroup({ toolCalls }: ToolCallGroupProps) {
         className="flex items-center gap-2 text-xs text-text-secondary hover:text-text-primary transition"
       >
         {expanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
-        <span>도구 {toolCalls.length}개 사용 — {hasRunning ? '실행 중' : '모두 완료'}</span>
+        <span>{t('tool.toolCount', { count: toolCalls.length, status: hasRunning ? t('tool.running') : t('tool.allDone') })}</span>
       </button>
       {expanded && (
         <div className="mt-2 space-y-1.5 ml-5 animate-fade-in">

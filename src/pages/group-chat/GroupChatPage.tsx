@@ -4,6 +4,7 @@ import TextareaAutosize from 'react-textarea-autosize'
 import { useSessionStore } from '@/entities/session/session.store'
 import { useSettingsStore } from '@/entities/settings/settings.store'
 import { useGroupChatStore } from '@/entities/group-chat/group-chat.store'
+import { useTranslation } from '@/shared/i18n'
 import { MODELS, PROVIDER_COLORS } from '@/shared/constants'
 import { createStream, getProviderConfig } from '@/shared/lib/providers/factory'
 import type { GroupChatMessage, GroupChatResponse, ProviderType } from '@/shared/types'
@@ -12,6 +13,7 @@ import { Button } from '@/shared/ui/Button'
 const PROVIDER_ORDER: ProviderType[] = ['bedrock', 'openai', 'gemini']
 
 export function GroupChatPage() {
+  const { t } = useTranslation()
   const setView = useSessionStore((s) => s.setView)
   const credentials = useSettingsStore((s) => s.credentials)
   const openaiApiKey = useSettingsStore((s) => s.openaiApiKey)
@@ -148,22 +150,22 @@ export function GroupChatPage() {
           >
             <ArrowLeft size={18} className="text-text-secondary" />
           </button>
-          <h1 className="text-sm font-semibold text-text-primary">그룹 채팅</h1>
+          <h1 className="text-sm font-semibold text-text-primary">{t('groupChat.title')}</h1>
           <span className="text-xs text-text-tertiary">
-            {selectedModels.length}개 모델 선택됨
+            {t('groupChat.modelsSelected', { count: selectedModels.length })}
           </span>
         </div>
         {messages.length > 0 && (
           <Button variant="secondary" size="sm" onClick={clearMessages}>
             <Trash2 size={14} />
-            초기화
+            {t('common.reset')}
           </Button>
         )}
       </div>
 
       {/* Model Selection */}
       <div className="px-4 py-3 border-b border-border bg-page/50">
-        <p className="text-xs text-text-tertiary mb-2">비교할 모델을 2-4개 선택하세요</p>
+        <p className="text-xs text-text-tertiary mb-2">{t('groupChat.selectModels')}</p>
         <div className="flex flex-wrap gap-2">
           {PROVIDER_ORDER.map((provider) => {
             const providerModels = MODELS.filter((m) => m.provider === provider)
@@ -197,7 +199,7 @@ export function GroupChatPage() {
       <div className="flex-1 overflow-y-auto px-4 py-4 space-y-6">
         {messages.length === 0 && (
           <div className="flex-1 flex items-center justify-center text-text-tertiary text-sm py-20">
-            모델을 선택하고 메시지를 보내면 병렬로 응답을 비교할 수 있습니다
+            {t('groupChat.emptyState')}
           </div>
         )}
 
@@ -252,7 +254,7 @@ export function GroupChatPage() {
                         <p className="text-xs text-danger">{resp.error}</p>
                       ) : (
                         <p className="text-sm text-text-primary whitespace-pre-wrap leading-relaxed">
-                          {resp.content || (resp.isStreaming ? '응답 대기 중...' : '')}
+                          {resp.content || (resp.isStreaming ? t('chat.waitingResponse') : '')}
                         </p>
                       )}
                     </div>
@@ -276,8 +278,8 @@ export function GroupChatPage() {
             onCompositionEnd={() => setIsComposing(false)}
             placeholder={
               selectedModels.length < 2
-                ? '먼저 2개 이상의 모델을 선택하세요'
-                : '모든 모델에 동시에 보낼 메시지를 입력하세요...'
+                ? t('groupChat.selectFirst')
+                : t('groupChat.placeholder')
             }
             disabled={selectedModels.length < 2}
             minRows={1}

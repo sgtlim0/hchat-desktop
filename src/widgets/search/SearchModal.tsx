@@ -3,6 +3,7 @@ import { Search, Check, MessageSquare, FolderOpen, FileText } from 'lucide-react
 import { useSessionStore } from '@/entities/session/session.store'
 import { useProjectStore } from '@/entities/project/project.store'
 import { getRelativeTime } from '@/shared/lib/time'
+import { useTranslation } from '@/shared/i18n'
 
 interface SearchResult {
   id: string
@@ -14,6 +15,7 @@ interface SearchResult {
 }
 
 export function SearchModal() {
+  const { t } = useTranslation()
   const { searchOpen, setSearchOpen, sessions, currentSessionId, selectSession, searchMessages } = useSessionStore()
   const setView = useSessionStore((s) => s.setView)
   const { projects, selectProject } = useProjectStore()
@@ -32,7 +34,7 @@ export function SearchModal() {
         type: 'session' as const,
         title: s.title,
         subtitle: s.lastMessage,
-        time: getRelativeTime(s.updatedAt),
+        time: getRelativeTime(s.updatedAt, t),
       }))
 
     const projectResults: SearchResult[] = projects
@@ -43,7 +45,7 @@ export function SearchModal() {
         type: 'project' as const,
         title: p.name,
         subtitle: p.description,
-        time: getRelativeTime(p.updatedAt),
+        time: getRelativeTime(p.updatedAt, t),
       }))
 
     const messageResults: SearchResult[] = q
@@ -61,7 +63,7 @@ export function SearchModal() {
       : []
 
     return [...sessionResults, ...projectResults, ...messageResults]
-  }, [sessions, projects, query, searchMessages])
+  }, [sessions, projects, query, searchMessages, t])
 
   const sessionResults = results.filter((r) => r.type === 'session')
   const projectResults = results.filter((r) => r.type === 'project')
@@ -149,7 +151,7 @@ export function SearchModal() {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder="대화, 프로젝트 검색..."
+            placeholder={t('search.placeholder')}
             className="flex-1 bg-transparent text-text-primary text-sm outline-none placeholder:text-text-tertiary"
           />
           <kbd className="px-2 py-0.5 bg-hover border border-border rounded text-[10px] font-medium text-text-tertiary flex-shrink-0">
@@ -161,7 +163,7 @@ export function SearchModal() {
         <div className="max-h-[400px] overflow-y-auto">
           {results.length === 0 ? (
             <div className="py-12 text-center text-text-secondary text-sm">
-              검색 결과가 없습니다
+              {t('common.noResults')}
             </div>
           ) : (
             <>
@@ -170,7 +172,7 @@ export function SearchModal() {
                 <div>
                   <div className="px-4 pt-3 pb-1">
                     <span className="text-[11px] font-medium text-text-tertiary uppercase">
-                      {query ? '대화' : '최근 대화'}
+                      {query ? t('search.conversations') : t('search.recentConversations')}
                     </span>
                   </div>
                   {sessionResults.map((result) => {
@@ -206,7 +208,7 @@ export function SearchModal() {
                 <div>
                   <div className="px-4 pt-3 pb-1">
                     <span className="text-[11px] font-medium text-text-tertiary uppercase">
-                      프로젝트
+                      {t('search.projects')}
                     </span>
                   </div>
                   {projectResults.map((result) => {
@@ -238,7 +240,7 @@ export function SearchModal() {
                 <div>
                   <div className="px-4 pt-3 pb-1">
                     <span className="text-[11px] font-medium text-text-tertiary uppercase">
-                      메시지
+                      {t('search.messages')}
                     </span>
                   </div>
                   {messageResults.map((result) => {
@@ -276,13 +278,13 @@ export function SearchModal() {
         {/* Keyboard Hints */}
         <div className="flex items-center gap-4 px-4 py-2 border-t border-border text-[11px] text-text-tertiary">
           <span>
-            <kbd className="font-mono">↑</kbd><kbd className="font-mono">↓</kbd> 탐색
+            <kbd className="font-mono">↑</kbd><kbd className="font-mono">↓</kbd> {t('search.navigate')}
           </span>
           <span>
-            <kbd className="font-mono">↵</kbd> 열기
+            <kbd className="font-mono">↵</kbd> {t('search.open')}
           </span>
           <span>
-            <kbd className="font-mono">esc</kbd> 닫기
+            <kbd className="font-mono">esc</kbd> {t('common.close')}
           </span>
         </div>
       </div>

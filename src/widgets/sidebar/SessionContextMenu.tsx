@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react'
 import { Pencil, Star, Trash2 } from 'lucide-react'
 import { useSessionStore } from '@/entities/session/session.store'
+import { useTranslation } from '@/shared/i18n'
 
 interface SessionContextMenuProps {
   sessionId: string
@@ -15,6 +16,7 @@ export function SessionContextMenu({
   y,
   onClose,
 }: SessionContextMenuProps) {
+  const { t } = useTranslation()
   const menuRef = useRef<HTMLDivElement>(null)
   const sessions = useSessionStore((s) => s.sessions)
   const toggleFavorite = useSessionStore((s) => s.toggleFavorite)
@@ -36,7 +38,7 @@ export function SessionContextMenu({
   }, [onClose])
 
   function handleRename() {
-    const newTitle = prompt('세션 이름 변경', session?.title ?? '')
+    const newTitle = prompt(t('sidebar.renamePrompt'), session?.title ?? '')
     if (newTitle && newTitle.trim()) {
       renameSession(sessionId, newTitle.trim())
     }
@@ -49,7 +51,7 @@ export function SessionContextMenu({
   }
 
   function handleDelete() {
-    if (confirm('이 대화를 삭제하시겠습니까?')) {
+    if (confirm(t('sidebar.deleteConfirm'))) {
       deleteSession(sessionId)
     }
     onClose()
@@ -66,7 +68,7 @@ export function SessionContextMenu({
         className="w-full px-3 py-2 text-sm text-left hover:bg-hover flex items-center gap-2"
       >
         <Pencil size={14} className="text-text-secondary" />
-        이름 변경
+        {t('sidebar.rename')}
       </button>
       <button
         onClick={handleToggleFavorite}
@@ -76,14 +78,14 @@ export function SessionContextMenu({
           size={14}
           className={isFavorite ? 'text-yellow-star fill-yellow-star' : 'text-text-secondary'}
         />
-        {isFavorite ? '즐겨찾기 제거' : '즐겨찾기 추가'}
+        {isFavorite ? t('sidebar.removeFavorite') : t('sidebar.addFavorite')}
       </button>
       <button
         onClick={handleDelete}
         className="w-full px-3 py-2 text-sm text-left hover:bg-hover flex items-center gap-2 text-danger"
       >
         <Trash2 size={14} />
-        삭제
+        {t('common.delete')}
       </button>
     </div>
   )

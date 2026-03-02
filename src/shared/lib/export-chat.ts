@@ -1,4 +1,6 @@
 import type { Session, Message, ExportFormat } from '../types'
+import { getTranslation } from '@/shared/i18n'
+import { useSettingsStore } from '@/entities/settings/settings.store'
 
 interface ExportData {
   session: Session
@@ -6,15 +8,19 @@ interface ExportData {
 }
 
 export function exportToMarkdown(data: ExportData): string {
+  const language = useSettingsStore.getState().language
+  const t = getTranslation(language)
+  const locale = language === 'ko' ? 'ko-KR' : 'en-US'
+
   const { session, messages } = data
   let content = `# ${session.title}\n\n`
 
   // Metadata
-  content += `**모델:** ${session.modelId}\n`
-  content += `**생성일:** ${new Date(session.createdAt).toLocaleString('ko-KR')}\n`
-  content += `**수정일:** ${new Date(session.updatedAt).toLocaleString('ko-KR')}\n`
+  content += `**${t('export.model')}:** ${session.modelId}\n`
+  content += `**${t('export.createdAt')}:** ${new Date(session.createdAt).toLocaleString(locale)}\n`
+  content += `**${t('export.updatedAt')}:** ${new Date(session.updatedAt).toLocaleString(locale)}\n`
   if (session.tags.length > 0) {
-    content += `**태그:** ${session.tags.join(', ')}\n`
+    content += `**${t('export.tags')}:** ${session.tags.join(', ')}\n`
   }
   content += '\n---\n\n'
 
@@ -41,7 +47,7 @@ export function exportToMarkdown(data: ExportData): string {
     })
 
     if (msg.attachments && msg.attachments.length > 0) {
-      content += '**첨부파일:**\n'
+      content += `**${t('export.attachments')}:**\n`
       msg.attachments.forEach((att) => {
         content += `- ![${att.name}](${att.url})\n`
       })
@@ -55,6 +61,9 @@ export function exportToMarkdown(data: ExportData): string {
 }
 
 export function exportToHtml(data: ExportData): string {
+  const language = useSettingsStore.getState().language
+  const t = getTranslation(language)
+  const locale = language === 'ko' ? 'ko-KR' : 'en-US'
   const { session, messages } = data
 
   const html = `<!DOCTYPE html>
@@ -163,10 +172,10 @@ export function exportToHtml(data: ExportData): string {
     <div class="header">
       <h1>${escapeHtml(session.title)}</h1>
       <div class="metadata">
-        <div><strong>모델:</strong> ${escapeHtml(session.modelId)}</div>
-        <div><strong>생성일:</strong> ${new Date(session.createdAt).toLocaleString('ko-KR')}</div>
-        <div><strong>수정일:</strong> ${new Date(session.updatedAt).toLocaleString('ko-KR')}</div>
-        ${session.tags.length > 0 ? `<div><strong>태그:</strong> ${session.tags.map(escapeHtml).join(', ')}</div>` : ''}
+        <div><strong>${t('export.model')}:</strong> ${escapeHtml(session.modelId)}</div>
+        <div><strong>${t('export.createdAt')}:</strong> ${new Date(session.createdAt).toLocaleString(locale)}</div>
+        <div><strong>${t('export.updatedAt')}:</strong> ${new Date(session.updatedAt).toLocaleString(locale)}</div>
+        ${session.tags.length > 0 ? `<div><strong>${t('export.tags')}:</strong> ${session.tags.map(escapeHtml).join(', ')}</div>` : ''}
       </div>
     </div>
 
@@ -215,15 +224,18 @@ export function exportToJson(data: ExportData): string {
 }
 
 export function exportToTxt(data: ExportData): string {
+  const language = useSettingsStore.getState().language
+  const t = getTranslation(language)
+  const locale = language === 'ko' ? 'ko-KR' : 'en-US'
   const { session, messages } = data
   let content = `${session.title}\n`
   content += `${'='.repeat(session.title.length)}\n\n`
 
-  content += `모델: ${session.modelId}\n`
-  content += `생성일: ${new Date(session.createdAt).toLocaleString('ko-KR')}\n`
-  content += `수정일: ${new Date(session.updatedAt).toLocaleString('ko-KR')}\n`
+  content += `${t('export.model')}: ${session.modelId}\n`
+  content += `${t('export.createdAt')}: ${new Date(session.createdAt).toLocaleString(locale)}\n`
+  content += `${t('export.updatedAt')}: ${new Date(session.updatedAt).toLocaleString(locale)}\n`
   if (session.tags.length > 0) {
-    content += `태그: ${session.tags.join(', ')}\n`
+    content += `${t('export.tags')}: ${session.tags.join(', ')}\n`
   }
   content += '\n' + '-'.repeat(80) + '\n\n'
 
@@ -248,7 +260,7 @@ export function exportToTxt(data: ExportData): string {
     })
 
     if (msg.attachments && msg.attachments.length > 0) {
-      content += '첨부파일:\n'
+      content += `${t('export.attachments')}:\n`
       msg.attachments.forEach((att) => {
         content += `  - ${att.name} (${att.url})\n`
       })

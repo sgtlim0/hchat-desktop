@@ -3,6 +3,7 @@ import TextareaAutosize from 'react-textarea-autosize'
 import { Plus, Send, Square } from 'lucide-react'
 import { useSessionStore } from '@/entities/session/session.store'
 import { useSettingsStore } from '@/entities/settings/settings.store'
+import { useTranslation } from '@/shared/i18n'
 import { ModelSelector } from './ModelSelector'
 import { createStream, getProviderConfig } from '@/shared/lib/providers/factory'
 import { putMessage } from '@/shared/lib/db'
@@ -16,8 +17,9 @@ interface PromptInputProps {
 
 export function PromptInput({
   onSend,
-  placeholder = '메시지를 입력하세요...',
+  placeholder,
 }: PromptInputProps) {
+  const { t } = useTranslation()
   const [input, setInput] = useState('')
   const [isComposing, setIsComposing] = useState(false)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
@@ -132,7 +134,7 @@ export function PromptInput({
             segments: [{ type: 'text', content: currentText }],
           }))
         } else if (event.type === 'error') {
-          fullText = `오류가 발생했습니다: ${event.error}`
+          fullText = t('chat.errorOccurred', { error: event.error ?? 'Unknown' })
           updateLastMessage(sessionId, assistantMessageId, (msg) => ({
             ...msg,
             segments: [{ type: 'text', content: fullText }],
@@ -144,7 +146,7 @@ export function PromptInput({
         // User cancelled - keep partial text
       } else {
         const errorMsg = error instanceof Error ? error.message : 'Unknown error'
-        fullText = fullText || `오류가 발생했습니다: ${errorMsg}`
+        fullText = fullText || t('chat.errorOccurred', { error: errorMsg })
         updateLastMessage(sessionId, assistantMessageId, (msg) => ({
           ...msg,
           segments: [{ type: 'text', content: fullText }],
@@ -193,7 +195,7 @@ export function PromptInput({
         onKeyDown={handleKeyDown}
         onCompositionStart={() => setIsComposing(true)}
         onCompositionEnd={() => setIsComposing(false)}
-        placeholder={placeholder}
+        placeholder={placeholder ?? t('chat.placeholder')}
         minRows={1}
         maxRows={8}
         className="flex-1 bg-transparent resize-none outline-none text-sm placeholder:text-text-tertiary"

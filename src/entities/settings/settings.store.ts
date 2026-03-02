@@ -1,8 +1,10 @@
 import { create } from 'zustand'
 import { DEFAULT_MODEL_ID, DEFAULT_AWS_REGION } from '@/shared/constants'
 import type { AwsCredentials } from '@/shared/types'
+import type { Language } from '@/shared/i18n/types'
 
 const SETTINGS_KEY = 'hchat:settings'
+const LANGUAGE_KEY = 'hchat:language'
 const CREDENTIALS_KEY = 'hchat:credentials'
 const OPENAI_KEY = 'hchat:openai-key'
 const GEMINI_KEY = 'hchat:gemini-key'
@@ -77,10 +79,24 @@ function saveGeminiKey(key: string | null): void {
   }
 }
 
+function loadLanguage(): Language {
+  try {
+    const raw = localStorage.getItem(LANGUAGE_KEY)
+    return raw === 'en' ? 'en' : 'ko'
+  } catch {
+    return 'ko'
+  }
+}
+
+function saveLanguage(lang: Language): void {
+  localStorage.setItem(LANGUAGE_KEY, lang)
+}
+
 const persisted = loadSettings()
 const savedCredentials = loadCredentials()
 const savedOpenaiKey = loadOpenaiKey()
 const savedGeminiKey = loadGeminiKey()
+const savedLanguage = loadLanguage()
 
 interface SettingsState {
   selectedModel: string
@@ -92,6 +108,7 @@ interface SettingsState {
   openaiApiKey: string | null
   geminiApiKey: string | null
   autoRouting: boolean
+  language: Language
 
   setSelectedModel: (modelId: string) => void
   toggleDarkMode: () => void
@@ -102,6 +119,7 @@ interface SettingsState {
   setOpenaiApiKey: (key: string | null) => void
   setGeminiApiKey: (key: string | null) => void
   setAutoRouting: (enabled: boolean) => void
+  setLanguage: (lang: Language) => void
   hasCredentials: () => boolean
 }
 
@@ -115,6 +133,7 @@ export const useSettingsStore = create<SettingsState>((set, get) => ({
   openaiApiKey: savedOpenaiKey,
   geminiApiKey: savedGeminiKey,
   autoRouting: persisted.autoRouting ?? false,
+  language: savedLanguage,
 
   setSelectedModel: (modelId) => {
     set({ selectedModel: modelId })
@@ -180,6 +199,11 @@ export const useSettingsStore = create<SettingsState>((set, get) => ({
       region: s.credentials?.region ?? DEFAULT_AWS_REGION,
       autoRouting: enabled,
     })
+  },
+
+  setLanguage: (lang) => {
+    set({ language: lang })
+    saveLanguage(lang)
   },
 
   hasCredentials: () => {

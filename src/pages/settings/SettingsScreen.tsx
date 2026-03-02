@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { Key, User, Sparkles, Palette, Puzzle, Plug, Monitor, Shield, Code, X, Radio } from 'lucide-react'
 import { useSettingsStore } from '@/entities/settings/settings.store'
 import { useChannelStore } from '@/entities/channel/channel.store'
+import { useTranslation } from '@/shared/i18n'
 import { SettingsTabItem } from '@/shared/ui/SettingsTabItem'
 import { FormLabel } from '@/shared/ui/FormLabel'
 import { FormInput } from '@/shared/ui/FormInput'
@@ -11,21 +12,22 @@ import { testConnection } from '@/shared/lib/bedrock-client'
 import { AWS_REGIONS, DEFAULT_AWS_REGION, MODELS } from '@/shared/constants'
 
 const TABS = [
-  { id: 'api-keys', label: 'API 설정', icon: Key },
-  { id: 'profile', label: '프로필', icon: User },
-  { id: 'features', label: '기능', icon: Sparkles },
-  { id: 'customization', label: '사용자 지정', icon: Palette },
-  { id: 'extensions', label: '확장', icon: Puzzle },
-  { id: 'mcp', label: 'MCP', icon: Plug },
-  { id: 'channels', label: '채널 연동', icon: Radio },
-  { id: 'desktop', label: '데스크톱', icon: Monitor },
-  { id: 'privacy', label: '개인정보', icon: Shield },
-  { id: 'developer', label: '개발자', icon: Code },
+  { id: 'api-keys', labelKey: 'settings.tab.apiKeys' as const, icon: Key },
+  { id: 'profile', labelKey: 'settings.tab.profile' as const, icon: User },
+  { id: 'features', labelKey: 'settings.tab.features' as const, icon: Sparkles },
+  { id: 'customization', labelKey: 'settings.tab.customization' as const, icon: Palette },
+  { id: 'extensions', labelKey: 'settings.tab.extensions' as const, icon: Puzzle },
+  { id: 'mcp', labelKey: 'settings.tab.mcp' as const, icon: Plug },
+  { id: 'channels', labelKey: 'settings.tab.channels' as const, icon: Radio },
+  { id: 'desktop', labelKey: 'settings.tab.desktop' as const, icon: Monitor },
+  { id: 'privacy', labelKey: 'settings.tab.privacy' as const, icon: Shield },
+  { id: 'developer', labelKey: 'settings.tab.developer' as const, icon: Code },
 ] as const
 
 type TestStatus = 'idle' | 'testing' | 'success' | 'error'
 
 export function SettingsScreen() {
+  const { t } = useTranslation()
   const {
     settingsTab,
     setSettingsTab,
@@ -42,6 +44,8 @@ export function SettingsScreen() {
     setGeminiApiKey,
     autoRouting,
     setAutoRouting,
+    language,
+    setLanguage,
   } = useSettingsStore()
   const { slack, telegram, updateSlack, updateTelegram, testSlackConnection, connectTelegram, testStatus: channelTestStatus } = useChannelStore()
 
@@ -101,7 +105,7 @@ export function SettingsScreen() {
       setTestStatus('success')
     } else {
       setTestStatus('error')
-      setTestError(result.error ?? '연결에 실패했습니다')
+      setTestError(result.error ?? t('settings.api.connectionFailed'))
     }
   }
 
@@ -133,11 +137,11 @@ export function SettingsScreen() {
         setTestStatusOpenai('success')
       } else {
         setTestStatusOpenai('error')
-        setTestErrorOpenai('API 키가 유효하지 않습니다')
+        setTestErrorOpenai(t('settings.api.invalidApiKey'))
       }
     } catch (error) {
       setTestStatusOpenai('error')
-      setTestErrorOpenai('연결에 실패했습니다')
+      setTestErrorOpenai(t('settings.api.connectionFailed'))
     }
   }
 
@@ -163,11 +167,11 @@ export function SettingsScreen() {
         setTestStatusGemini('success')
       } else {
         setTestStatusGemini('error')
-        setTestErrorGemini('API 키가 유효하지 않습니다')
+        setTestErrorGemini(t('settings.api.invalidApiKey'))
       }
     } catch (error) {
       setTestStatusGemini('error')
-      setTestErrorGemini('연결에 실패했습니다')
+      setTestErrorGemini(t('settings.api.connectionFailed'))
     }
   }
 
@@ -184,18 +188,18 @@ export function SettingsScreen() {
         return (
           <div className="space-y-8">
             <div>
-              <h2 className="text-2xl font-bold text-text-primary">API 설정</h2>
+              <h2 className="text-2xl font-bold text-text-primary">{t('settings.api.title')}</h2>
               <p className="text-text-secondary text-sm mt-1">
-                AI 모델 제공업체에 연결합니다.
+                {t('settings.api.description')}
               </p>
             </div>
 
             {/* Model Settings */}
             <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-text-primary">모델 설정</h3>
+              <h3 className="text-lg font-semibold text-text-primary">{t('settings.api.modelSettings')}</h3>
 
               <div>
-                <FormLabel>기본 모델</FormLabel>
+                <FormLabel>{t('settings.api.defaultModel')}</FormLabel>
                 <div className="mt-1.5">
                   <select
                     value={selectedModel}
@@ -213,9 +217,9 @@ export function SettingsScreen() {
 
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-text-primary font-medium">자동 라우팅</p>
+                  <p className="text-sm text-text-primary font-medium">{t('settings.api.autoRouting')}</p>
                   <p className="text-xs text-text-secondary mt-0.5">
-                    프롬프트 내용에 따라 최적 모델을 자동 선택합니다
+                    {t('settings.api.autoRoutingDesc')}
                   </p>
                 </div>
                 <Toggle checked={autoRouting} onChange={setAutoRouting} />
@@ -224,7 +228,7 @@ export function SettingsScreen() {
 
             {/* AWS Credentials */}
             <div className="space-y-4 pt-6 border-t border-border">
-              <h3 className="text-lg font-semibold text-text-primary">AWS 자격증명</h3>
+              <h3 className="text-lg font-semibold text-text-primary">{t('settings.api.awsCredentials')}</h3>
 
               <div>
                 <FormLabel>AWS Access Key ID</FormLabel>
@@ -241,7 +245,7 @@ export function SettingsScreen() {
                 <FormLabel>AWS Secret Access Key</FormLabel>
                 <div className="mt-1.5">
                   <FormInput
-                    placeholder="시크릿 키를 입력하세요"
+                    placeholder={t('settings.api.secretPlaceholder')}
                     value={secretAccessKey}
                     onChange={setSecretAccessKey}
                     type="password"
@@ -250,7 +254,7 @@ export function SettingsScreen() {
               </div>
 
               <div>
-                <FormLabel>리전</FormLabel>
+                <FormLabel>{t('settings.api.region')}</FormLabel>
                 <div className="mt-1.5">
                   <select
                     value={region}
@@ -272,15 +276,15 @@ export function SettingsScreen() {
                   onClick={handleTest}
                   disabled={!accessKeyId.trim() || !secretAccessKey.trim() || testStatus === 'testing'}
                 >
-                  {testStatus === 'testing' ? '테스트 중...' : '연결 테스트'}
+                  {testStatus === 'testing' ? t('settings.api.testing') : t('settings.api.testConnection')}
                 </Button>
                 {credentials && (
                   <Button variant="secondary" onClick={handleClearCredentials}>
-                    초기화
+                    {t('common.reset')}
                   </Button>
                 )}
                 {testStatus === 'success' && (
-                  <span className="text-xs text-success font-medium">✓ 연결 성공</span>
+                  <span className="text-xs text-success font-medium">{t('settings.api.connectionSuccess')}</span>
                 )}
                 {testStatus === 'error' && (
                   <span className="text-xs text-danger font-medium">✗ {testError}</span>
@@ -288,8 +292,7 @@ export function SettingsScreen() {
               </div>
 
               <p className="text-xs text-text-tertiary">
-                자격증명은 브라우저의 localStorage에 저장됩니다.
-                외부 서버로 전송되지 않으며, 로컬 Vite 프록시를 통해 AWS에 직접 연결합니다.
+                {t('settings.api.credentialsNote')}
               </p>
             </div>
 
@@ -315,15 +318,15 @@ export function SettingsScreen() {
                   onClick={handleTestOpenai}
                   disabled={!openaiKey.trim() || testStatusOpenai === 'testing'}
                 >
-                  {testStatusOpenai === 'testing' ? '테스트 중...' : '연결 테스트'}
+                  {testStatusOpenai === 'testing' ? t('settings.api.testing') : t('settings.api.testConnection')}
                 </Button>
                 {openaiApiKey && (
                   <Button variant="secondary" onClick={handleClearOpenai}>
-                    초기화
+                    {t('common.reset')}
                   </Button>
                 )}
                 {testStatusOpenai === 'success' && (
-                  <span className="text-xs text-success font-medium">✓ 연결 성공</span>
+                  <span className="text-xs text-success font-medium">{t('settings.api.connectionSuccess')}</span>
                 )}
                 {testStatusOpenai === 'error' && (
                   <span className="text-xs text-danger font-medium">✗ {testErrorOpenai}</span>
@@ -331,7 +334,7 @@ export function SettingsScreen() {
               </div>
 
               <p className="text-xs text-text-tertiary">
-                API 키는 브라우저에 저장되며 OpenAI API에 직접 연결합니다.
+                {t('settings.api.openaiNote')}
               </p>
             </div>
 
@@ -357,15 +360,15 @@ export function SettingsScreen() {
                   onClick={handleTestGemini}
                   disabled={!geminiKey.trim() || testStatusGemini === 'testing'}
                 >
-                  {testStatusGemini === 'testing' ? '테스트 중...' : '연결 테스트'}
+                  {testStatusGemini === 'testing' ? t('settings.api.testing') : t('settings.api.testConnection')}
                 </Button>
                 {geminiApiKey && (
                   <Button variant="secondary" onClick={handleClearGemini}>
-                    초기화
+                    {t('common.reset')}
                   </Button>
                 )}
                 {testStatusGemini === 'success' && (
-                  <span className="text-xs text-success font-medium">✓ 연결 성공</span>
+                  <span className="text-xs text-success font-medium">{t('settings.api.connectionSuccess')}</span>
                 )}
                 {testStatusGemini === 'error' && (
                   <span className="text-xs text-danger font-medium">✗ {testErrorGemini}</span>
@@ -373,7 +376,7 @@ export function SettingsScreen() {
               </div>
 
               <p className="text-xs text-text-tertiary">
-                API 키는 브라우저에 저장되며 Google API에 직접 연결합니다.
+                {t('settings.api.geminiNote')}
               </p>
             </div>
           </div>
@@ -383,19 +386,45 @@ export function SettingsScreen() {
         return (
           <div className="space-y-8">
             <div>
-              <h2 className="text-2xl font-bold text-text-primary">사용자 지정</h2>
-              <p className="text-text-secondary text-sm mt-1">앱 외관을 설정합니다.</p>
+              <h2 className="text-2xl font-bold text-text-primary">{t('settings.custom.title')}</h2>
+              <p className="text-text-secondary text-sm mt-1">{t('settings.custom.description')}</p>
             </div>
             <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-text-primary">테마</h3>
+              <h3 className="text-lg font-semibold text-text-primary">{t('settings.custom.theme')}</h3>
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-text-primary">다크 모드</p>
+                  <p className="text-sm text-text-primary">{t('settings.custom.darkMode')}</p>
                   <p className="text-xs text-text-secondary">
-                    {darkMode ? '다크 모드가 활성화되어 있습니다' : '라이트 모드가 활성화되어 있습니다'}
+                    {darkMode ? t('settings.custom.darkModeOn') : t('settings.custom.darkModeOff')}
                   </p>
                 </div>
                 <Toggle checked={darkMode} onChange={toggleDarkMode} />
+              </div>
+            </div>
+            <div className="space-y-4 pt-6 border-t border-border">
+              <h3 className="text-lg font-semibold text-text-primary">{t('settings.custom.language')}</h3>
+              <p className="text-xs text-text-secondary">{t('settings.custom.languageDesc')}</p>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setLanguage('ko')}
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
+                    language === 'ko'
+                      ? 'bg-primary text-white'
+                      : 'border border-border text-text-secondary hover:bg-hover'
+                  }`}
+                >
+                  한국어
+                </button>
+                <button
+                  onClick={() => setLanguage('en')}
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
+                    language === 'en'
+                      ? 'bg-primary text-white'
+                      : 'border border-border text-text-secondary hover:bg-hover'
+                  }`}
+                >
+                  English
+                </button>
               </div>
             </div>
           </div>
@@ -405,9 +434,9 @@ export function SettingsScreen() {
         return (
           <div className="space-y-8">
             <div>
-              <h2 className="text-2xl font-bold text-text-primary">채널 연동</h2>
+              <h2 className="text-2xl font-bold text-text-primary">{t('settings.channels.title')}</h2>
               <p className="text-text-secondary text-sm mt-1">
-                외부 메시징 서비스와 연동하여 알림을 받을 수 있습니다.
+                {t('settings.channels.description')}
               </p>
             </div>
 
@@ -427,7 +456,7 @@ export function SettingsScreen() {
               </div>
 
               <div>
-                <FormLabel>채널</FormLabel>
+                <FormLabel>{t('settings.channels.channel')}</FormLabel>
                 <div className="mt-1.5">
                   <FormInput
                     placeholder="#general"
@@ -438,17 +467,17 @@ export function SettingsScreen() {
               </div>
 
               <div className="space-y-3">
-                <h4 className="text-sm font-medium text-text-primary">알림 규칙</h4>
+                <h4 className="text-sm font-medium text-text-primary">{t('settings.channels.notifyRules')}</h4>
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-text-secondary">작업 완료 시</span>
+                  <span className="text-sm text-text-secondary">{t('settings.channels.onComplete')}</span>
                   <Toggle checked={slack.notifyOnComplete} onChange={(v) => updateSlack({ notifyOnComplete: v })} />
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-text-secondary">에러 발생 시</span>
+                  <span className="text-sm text-text-secondary">{t('settings.channels.onError')}</span>
                   <Toggle checked={slack.notifyOnError} onChange={(v) => updateSlack({ notifyOnError: v })} />
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-text-secondary">스케줄 실행 시</span>
+                  <span className="text-sm text-text-secondary">{t('settings.channels.onSchedule')}</span>
                   <Toggle checked={slack.notifyOnSchedule} onChange={(v) => updateSlack({ notifyOnSchedule: v })} />
                 </div>
               </div>
@@ -459,13 +488,13 @@ export function SettingsScreen() {
                   onClick={testSlackConnection}
                   disabled={!slack.webhookUrl || channelTestStatus === 'testing'}
                 >
-                  {channelTestStatus === 'testing' ? '테스트 중...' : '연결 테스트'}
+                  {channelTestStatus === 'testing' ? t('settings.api.testing') : t('settings.api.testConnection')}
                 </Button>
                 <Button variant="primary" disabled={!slack.webhookUrl}>
-                  저장
+                  {t('common.save')}
                 </Button>
                 {channelTestStatus === 'success' && (
-                  <span className="text-xs text-success font-medium">연결 성공</span>
+                  <span className="text-xs text-success font-medium">{t('settings.channels.connectionSuccess')}</span>
                 )}
               </div>
             </div>
@@ -503,17 +532,17 @@ export function SettingsScreen() {
                   onClick={connectTelegram}
                   disabled={!telegram.botToken || !telegram.chatId}
                 >
-                  {telegram.connected ? '재연결' : '연결'}
+                  {telegram.connected ? t('common.reconnect') : t('common.connect')}
                 </Button>
                 {telegram.connected && (
-                  <span className="text-xs text-success font-medium">연결됨</span>
+                  <span className="text-xs text-success font-medium">{t('common.connected')}</span>
                 )}
               </div>
             </div>
 
             {/* Message Preview */}
             <div className="pt-4 border-t border-border">
-              <h3 className="text-sm font-semibold text-text-primary mb-3">메시지 미리보기</h3>
+              <h3 className="text-sm font-semibold text-text-primary mb-3">{t('settings.channels.messagePreview')}</h3>
               <div className="bg-page border border-border rounded-xl p-4">
                 <div className="flex items-center gap-2 mb-2">
                   <div className="w-6 h-6 rounded bg-primary/20 flex items-center justify-center">
@@ -523,7 +552,7 @@ export function SettingsScreen() {
                   <span className="text-[11px] text-text-tertiary">오후 3:24</span>
                 </div>
                 <p className="text-sm text-text-secondary">
-                  [스케줄 완료] 일일 코드 리뷰 요약이 완료되었습니다. 3개 커밋 분석, 주요 이슈 없음.
+                  {t('settings.channels.sampleMessage')}
                 </p>
               </div>
             </div>
@@ -533,7 +562,7 @@ export function SettingsScreen() {
       default:
         return (
           <div className="flex items-center justify-center h-64 text-text-secondary text-sm">
-            {TABS.find((t) => t.id === settingsTab)?.label} 설정은 아직 준비 중입니다.
+            {t('settings.notReady', { tab: t(TABS.find((tab) => tab.id === settingsTab)?.labelKey ?? 'settings.tab.apiKeys') })}
           </div>
         )
     }
@@ -544,7 +573,7 @@ export function SettingsScreen() {
       {/* Settings Sidebar */}
       <div className="w-[264px] bg-sidebar border-r border-border flex flex-col flex-shrink-0">
         <div className="p-4 flex items-center justify-between">
-          <h2 className="text-lg font-bold text-text-primary">설정</h2>
+          <h2 className="text-lg font-bold text-text-primary">{t('settings.title')}</h2>
           <button
             onClick={() => setSettingsOpen(false)}
             className="p-1.5 hover:bg-hover rounded-lg transition"
@@ -557,7 +586,7 @@ export function SettingsScreen() {
             <SettingsTabItem
               key={tab.id}
               icon={tab.icon}
-              label={tab.label}
+              label={t(tab.labelKey)}
               active={settingsTab === tab.id}
               onClick={() => setSettingsTab(tab.id)}
             />

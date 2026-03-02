@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react'
 import { Star, Pencil, MoreHorizontal, Trash2, Download, ChevronRight } from 'lucide-react'
 import { useSessionStore } from '@/entities/session/session.store'
 import { useProjectStore } from '@/entities/project/project.store'
+import { useTranslation } from '@/shared/i18n'
 import { getModelName } from '@/shared/lib/model-meta'
 import { exportChat } from '@/shared/lib/export-chat'
 import type { ExportFormat } from '@/shared/types'
@@ -11,6 +12,7 @@ interface ChatHeaderProps {
 }
 
 export function ChatHeader({ sessionId }: ChatHeaderProps) {
+  const { t } = useTranslation()
   const sessions = useSessionStore((s) => s.sessions)
   const session = sessions.find((s) => s.id === sessionId)
   const { renameSession, toggleFavorite, deleteSession } = useSessionStore()
@@ -125,7 +127,7 @@ export function ChatHeader({ sessionId }: ChatHeaderProps) {
                 >
                   <div className="flex items-center gap-2">
                     <Download size={14} className="text-text-secondary" />
-                    내보내기
+                    {t('chat.export')}
                   </div>
                   <ChevronRight size={14} className="text-text-tertiary" />
                 </button>
@@ -140,25 +142,25 @@ export function ChatHeader({ sessionId }: ChatHeaderProps) {
                       onClick={() => handleExport('markdown')}
                       className="w-full text-left px-3 py-2 text-sm text-text-primary hover:bg-hover transition"
                     >
-                      마크다운 (.md)
+                      {t('chat.exportMarkdown')}
                     </button>
                     <button
                       onClick={() => handleExport('html')}
                       className="w-full text-left px-3 py-2 text-sm text-text-primary hover:bg-hover transition"
                     >
-                      HTML (.html)
+                      {t('chat.exportHtml')}
                     </button>
                     <button
                       onClick={() => handleExport('json')}
                       className="w-full text-left px-3 py-2 text-sm text-text-primary hover:bg-hover transition"
                     >
-                      JSON (.json)
+                      {t('chat.exportJson')}
                     </button>
                     <button
                       onClick={() => handleExport('txt')}
                       className="w-full text-left px-3 py-2 text-sm text-text-primary hover:bg-hover transition"
                     >
-                      텍스트 (.txt)
+                      {t('chat.exportTxt')}
                     </button>
                   </div>
                 )}
@@ -170,7 +172,7 @@ export function ChatHeader({ sessionId }: ChatHeaderProps) {
                 className="w-full flex items-center gap-2 px-3 py-2 text-sm text-danger hover:bg-hover transition"
               >
                 <Trash2 size={14} />
-                대화 삭제
+                {t('chat.deleteChat')}
               </button>
             </div>
           )}

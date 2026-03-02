@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { useSessionStore } from '@/entities/session/session.store'
+import { useTranslation } from '@/shared/i18n'
 import { MessageBubble } from './MessageBubble'
 
 interface MessageListProps {
@@ -7,6 +8,7 @@ interface MessageListProps {
 }
 
 export function MessageList({ sessionId }: MessageListProps) {
+  const { t } = useTranslation()
   const messages = useSessionStore((s) => s.messages[sessionId] ?? [])
   const session = useSessionStore((s) => s.sessions.find((ss) => ss.id === sessionId))
   const bottomRef = useRef<HTMLDivElement>(null)
@@ -18,7 +20,7 @@ export function MessageList({ sessionId }: MessageListProps) {
   if (messages.length === 0) {
     return (
       <div className="flex-1 flex items-center justify-center text-text-tertiary text-sm">
-        대화를 시작해 보세요
+        {t('chat.startConversation')}
       </div>
     )
   }

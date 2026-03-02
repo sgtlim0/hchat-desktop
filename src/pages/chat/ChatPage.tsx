@@ -1,15 +1,17 @@
 import { useSessionStore } from '@/entities/session/session.store'
+import { useTranslation } from '@/shared/i18n'
 import { ChatHeader } from './ChatHeader'
 import { MessageList } from '@/widgets/message-list/MessageList'
 import { PromptInput } from '@/widgets/prompt-input/PromptInput'
 
 export function ChatPage() {
+  const { t } = useTranslation()
   const currentSessionId = useSessionStore((s) => s.currentSessionId)
 
   if (!currentSessionId) {
     return (
       <div className="flex-1 flex items-center justify-center text-text-tertiary text-sm">
-        대화를 선택하거나 새 대화를 시작하세요
+        {t('chat.selectOrStart')}
       </div>
     )
   }

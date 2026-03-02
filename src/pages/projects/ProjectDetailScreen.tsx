@@ -5,8 +5,10 @@ import { useSessionStore } from '@/entities/session/session.store'
 import { Button } from '@/shared/ui/Button'
 import { getRelativeTime } from '@/shared/lib/time'
 import type { ProjectMemory } from '@/shared/types'
+import { useTranslation } from '@/shared/i18n'
 
 export function ProjectDetailScreen() {
+  const { t } = useTranslation()
   const { projects, selectedProjectId, updateProject, deleteProject, selectProject } = useProjectStore()
   const { sessions, setView, selectSession } = useSessionStore()
   const [showAddMemory, setShowAddMemory] = useState(false)
@@ -19,7 +21,7 @@ export function ProjectDetailScreen() {
   if (!project) {
     return (
       <div className="h-full flex items-center justify-center text-text-secondary">
-        프로젝트를 찾을 수 없습니다
+        {t('project.notFound')}
       </div>
     )
   }
@@ -61,7 +63,7 @@ export function ProjectDetailScreen() {
   }
 
   const handleDeleteProject = () => {
-    if (confirm('정말로 이 프로젝트를 삭제하시겠습니까?')) {
+    if (confirm(t('project.deleteConfirm'))) {
       deleteProject(project.id)
       setView('projects')
     }
@@ -79,7 +81,7 @@ export function ProjectDetailScreen() {
         className="flex items-center gap-2 text-text-secondary hover:text-text-primary mb-6 transition"
       >
         <ArrowLeft className="w-4 h-4" />
-        <span className="text-sm font-medium">프로젝트</span>
+        <span className="text-sm font-medium">{t('project.title')}</span>
       </button>
 
       {/* Header */}
@@ -92,14 +94,14 @@ export function ProjectDetailScreen() {
 
       {/* Project Instructions */}
       <section className="mb-8">
-        <h2 className="text-lg font-semibold text-text-primary mb-3">프로젝트 지침</h2>
+        <h2 className="text-lg font-semibold text-text-primary mb-3">{t('project.instructions')}</h2>
         {editingInstructions !== null ? (
           <div>
             <textarea
               value={editingInstructions}
               onChange={(e) => setEditingInstructions(e.target.value)}
               onBlur={handleSaveInstructions}
-              placeholder="프로젝트 지침을 입력하세요..."
+              placeholder={t('project.instructionsPlaceholder')}
               rows={6}
               className="w-full bg-input border border-border-input rounded-lg px-4 py-3 text-sm text-text-primary placeholder:text-text-tertiary outline-none focus:border-primary transition resize-none"
               autoFocus
@@ -111,7 +113,7 @@ export function ProjectDetailScreen() {
             className="bg-card border border-border rounded-lg px-4 py-3 text-sm text-text-primary cursor-text hover:bg-hover/50 transition min-h-[120px]"
           >
             {project.instructions || (
-              <span className="text-text-tertiary">클릭하여 프로젝트 지침을 추가하세요...</span>
+              <span className="text-text-tertiary">{t('project.instructionsEmpty')}</span>
             )}
           </div>
         )}
@@ -120,10 +122,10 @@ export function ProjectDetailScreen() {
       {/* Project Memory */}
       <section className="mb-8">
         <div className="flex items-center justify-between mb-3">
-          <h2 className="text-lg font-semibold text-text-primary">프로젝트 메모리</h2>
+          <h2 className="text-lg font-semibold text-text-primary">{t('project.memory')}</h2>
           <Button variant="secondary" size="sm" onClick={() => setShowAddMemory(true)}>
             <Plus className="w-4 h-4 mr-1" />
-            추가
+            {t('common.add')}
           </Button>
         </div>
 
@@ -147,17 +149,17 @@ export function ProjectDetailScreen() {
 
         {project.memories.length === 0 && !showAddMemory && (
           <div className="text-center py-8 text-text-secondary text-sm">
-            아직 메모리가 없습니다
+            {t('project.noMemory')}
           </div>
         )}
       </section>
 
       {/* Related Sessions */}
       <section className="mb-8">
-        <h2 className="text-lg font-semibold text-text-primary mb-3">관련 세션</h2>
+        <h2 className="text-lg font-semibold text-text-primary mb-3">{t('project.relatedSessions')}</h2>
         {relatedSessions.length === 0 ? (
           <div className="text-center py-8 text-text-secondary text-sm">
-            관련 세션이 없습니다
+            {t('project.noRelatedSessions')}
           </div>
         ) : (
           <div className="space-y-2">
@@ -174,7 +176,7 @@ export function ProjectDetailScreen() {
                   </div>
                 </div>
                 <div className="text-xs text-text-tertiary flex-shrink-0">
-                  {getRelativeTime(session.updatedAt)}
+                  {getRelativeTime(session.updatedAt, t)}
                 </div>
               </div>
             ))}
@@ -186,7 +188,7 @@ export function ProjectDetailScreen() {
       <div className="pt-8 border-t border-border">
         <Button variant="danger" onClick={handleDeleteProject}>
           <Trash2 className="w-4 h-4 mr-2" />
-          프로젝트 삭제
+          {t('project.deleteProject')}
         </Button>
       </div>
 
@@ -201,27 +203,27 @@ export function ProjectDetailScreen() {
           }}
         >
           <div className="bg-page rounded-xl w-[480px] shadow-2xl border border-border p-6">
-            <h2 className="text-xl font-bold text-text-primary mb-4">메모리 추가</h2>
+            <h2 className="text-xl font-bold text-text-primary mb-4">{t('project.addMemory')}</h2>
 
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-text-primary mb-2">키</label>
+                <label className="block text-sm font-medium text-text-primary mb-2">{t('project.memoryKey')}</label>
                 <input
                   type="text"
                   value={newMemoryKey}
                   onChange={(e) => setNewMemoryKey(e.target.value)}
-                  placeholder="예: API 엔드포인트"
+                  placeholder={t('project.memoryKeyPlaceholder')}
                   className="w-full bg-input border border-border-input rounded-lg px-4 py-2.5 text-sm text-text-primary placeholder:text-text-tertiary outline-none focus:border-primary transition"
                   autoFocus
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-text-primary mb-2">값</label>
+                <label className="block text-sm font-medium text-text-primary mb-2">{t('project.memoryValue')}</label>
                 <textarea
                   value={newMemoryValue}
                   onChange={(e) => setNewMemoryValue(e.target.value)}
-                  placeholder="예: https://api.example.com/v1"
+                  placeholder={t('project.memoryValuePlaceholder')}
                   rows={3}
                   className="w-full bg-input border border-border-input rounded-lg px-4 py-2.5 text-sm text-text-primary placeholder:text-text-tertiary outline-none focus:border-primary transition resize-none"
                 />
@@ -234,7 +236,7 @@ export function ProjectDetailScreen() {
                 onClick={handleAddMemory}
                 disabled={!newMemoryKey.trim() || !newMemoryValue.trim()}
               >
-                추가
+                {t('common.add')}
               </Button>
               <Button
                 variant="ghost"
@@ -244,7 +246,7 @@ export function ProjectDetailScreen() {
                   setNewMemoryValue('')
                 }}
               >
-                취소
+                {t('common.cancel')}
               </Button>
             </div>
           </div>

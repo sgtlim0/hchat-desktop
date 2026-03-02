@@ -6,8 +6,10 @@ import { Avatar } from '@/shared/ui/Avatar'
 import { Button } from '@/shared/ui/Button'
 import { SessionContextMenu } from './SessionContextMenu'
 import { MAX_RECENT_SESSIONS } from '@/shared/constants'
+import { useTranslation } from '@/shared/i18n'
 
 export function Sidebar() {
+  const { t } = useTranslation()
   const sessions = useSessionStore((s) => s.sessions)
   const currentSessionId = useSessionStore((s) => s.currentSessionId)
   const selectSession = useSessionStore((s) => s.selectSession)
@@ -44,7 +46,7 @@ export function Sidebar() {
           className="w-full flex items-center gap-2 px-3 py-2 rounded-lg border border-border-input hover:bg-hover transition text-[13px] text-text-secondary"
         >
           <Search size={16} />
-          <span>검색 (⌘K)</span>
+          <span>{t('sidebar.search')}</span>
         </button>
 
         <Button
@@ -54,7 +56,7 @@ export function Sidebar() {
           className="w-full gap-2"
         >
           <Plus size={16} />
-          새 채팅
+          {t('sidebar.newChat')}
         </Button>
 
         <div className="flex items-center gap-2 pt-2">
@@ -72,34 +74,34 @@ export function Sidebar() {
             className="flex items-center gap-2 px-2 py-1 text-xs font-semibold text-text-tertiary uppercase tracking-wide hover:text-text-secondary transition w-full"
           >
             <Folder size={14} />
-            프로젝트
+            {t('sidebar.projects')}
           </button>
         </div>
 
         {/* Tools section */}
         <div>
           <div className="flex items-center gap-2 px-2 py-1 text-xs font-semibold text-text-tertiary uppercase tracking-wide">
-            도구
+            {t('sidebar.tools')}
           </div>
           <div className="mt-1 space-y-0.5">
             <SidebarItem
               icon={Users}
-              label="그룹 채팅"
+              label={t('sidebar.groupChat')}
               onClick={() => setView('groupChat')}
             />
             <SidebarItem
               icon={Brain}
-              label="메모리"
+              label={t('sidebar.memory')}
               onClick={() => setView('memory')}
             />
             <SidebarItem
               icon={Network}
-              label="에이전트 스웜"
+              label={t('sidebar.agentSwarm')}
               onClick={() => setView('agentSwarm')}
             />
             <SidebarItem
               icon={CalendarClock}
-              label="스케줄러"
+              label={t('sidebar.scheduler')}
               onClick={() => setView('schedule')}
             />
           </div>
@@ -110,7 +112,7 @@ export function Sidebar() {
           <div>
             <div className="flex items-center gap-2 px-2 py-1 text-xs font-semibold text-text-tertiary uppercase tracking-wide">
               <Star size={14} />
-              즐겨찾기
+              {t('sidebar.favorites')}
             </div>
             <div className="mt-1 space-y-0.5">
               {favoriteSessions.map((session) => (
@@ -139,7 +141,7 @@ export function Sidebar() {
           <div>
             <div className="flex items-center gap-2 px-2 py-1 text-xs font-semibold text-text-tertiary uppercase tracking-wide">
               <MessageSquare size={14} />
-              최근 대화
+              {t('sidebar.recentChats')}
             </div>
             <div className="mt-1 space-y-0.5">
               {recentSessions.map((session) => (
@@ -168,7 +170,7 @@ export function Sidebar() {
       <div className="p-3 border-t border-border flex-shrink-0">
         <div className="flex items-center gap-2">
           <Avatar initials="DC" size="sm" />
-          <span className="text-sm text-text-primary">현대오토에버 사용자</span>
+          <span className="text-sm text-text-primary">{t('sidebar.user')}</span>
         </div>
       </div>
 
