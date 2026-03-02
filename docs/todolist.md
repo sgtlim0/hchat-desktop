@@ -15,7 +15,7 @@
 | IndexedDB 영속성 | ✅ 완료 |
 | i18n (한국어/영어) | ✅ 완료 |
 | PWA (설치/캐시) | ✅ 완료 |
-| 테스트 (Vitest) | ✅ 완료 — 231 tests, 16 suites |
+| 테스트 (Vitest) | ✅ 완료 — 667 tests, 41 suites |
 | 접근성 (a11y) | ✅ 완료 — focus-trap, skip-to-content, ARIA |
 | 사용량 추적 | ✅ 완료 — 토큰 추정, 비용 대시보드, 일별/주별 차트 |
 | 프롬프트 라이브러리 | ✅ 완료 — CRUD, 변수, 카테고리 |
@@ -112,7 +112,7 @@
 > 📋 상세: `docs/v2-implementation-plan.md` Phase 2
 
 - [x] 에이전트 모드 — XML tool call 파싱, 4개 도구, 다단계 실행 루프
-- [ ] 웹 검색 + RAG — DuckDuckGo 프록시, 검색 의도 감지, 컨텍스트 주입
+- [x] 웹 검색 + RAG — DuckDuckGo 프록시, 검색 의도 감지, 에이전트 도구 연동
 - [x] AI 도구 패널 — 글쓰기 11종 + 문법 검사 + 요약 + 문서 건강 검사
 
 ### Works AI 포팅 (중간 복잡도)
@@ -125,18 +125,18 @@
 - [x] 이미지 생성 UI — DALL-E 3 통합, Gemini Imagen 준비
 
 ### 백엔드 실행 연동
-- [ ] Memory — LLM 기반 자동 컨텍스트 추출
-- [ ] Schedule — 실제 cron 실행 (Modal scheduled function)
-- [ ] Swarm — 다중 에이전트 오케스트레이션 실행
-- [ ] Channel — Slack/Telegram 실제 웹훅 연동
+- [x] Memory — LLM 기반 자동 컨텍스트 추출 (Bedrock Haiku, /api/extract-memory)
+- [x] Schedule — /api/schedule/execute 비동기 프롬프트 실행
+- [x] Swarm — /api/swarm/execute 멀티에이전트 SSE 파이프라인
+- [x] Channel — /api/channels/notify Slack 웹훅 + Telegram Bot API
 
 ### OpenAI/Gemini 백엔드 프록시 (보안 강화)
-- [ ] Modal에 `/api/openai`, `/api/gemini` 엔드포인트 추가
-- [ ] API 키를 Modal Secrets에 저장
-- [ ] 클라이언트 직접 호출 → 서버 프록시로 전환
+- [x] Modal에 `/api/openai`, `/api/gemini` 엔드포인트 추가
+- [ ] API 키를 Modal Secrets에 저장 (배포 시 설정 필요)
+- [x] 클라이언트 직접 호출 → 서버 프록시로 전환 (VITE_API_BASE_URL 설정 시)
 
 ### 사용량 추적 고도화
-- [ ] 백엔드 SSE `usage` 이벤트에서 실제 토큰 수 수신 (현재 추정치)
+- [x] 백엔드 SSE `usage` 이벤트에서 실제 토큰 수 수신 (Bedrock metadata)
 
 ---
 
@@ -184,12 +184,10 @@
 |----------|------|-----------|--------|
 | P0 | 7/7 | 0 | 100% |
 | P1 | 27/27 | 0 | 100% |
-| P2 | 13/22 | 9 | 59% |
+| P2 | 21/22 | 1 | 95% |
 | P3 | 9/9 | 0 | 100% |
 | 문서/설계 | 5/5 | 0 | 100% |
-| **전체** | **61/70** | **9** | **87%** |
+| **전체** | **69/70** | **1** | **99%** |
 
-> **참고**: P0, P1, P3 완료. P2 남은 9개 항목은 모두 **백엔드 변경이 필요**한 항목:
-> - 웹 검색+RAG (DuckDuckGo 프록시), Memory LLM 추출, Schedule cron, Swarm 오케스트레이션, Channel 웹훅
-> - OpenAI/Gemini 백엔드 프록시 (3개), 사용량 SSE 실제 토큰
-> 프론트엔드 단독 구현 가능한 항목은 모두 완료됨.
+> **참고**: P0, P1, P3 완료. P2 남은 1개: API 키를 Modal Secrets에 저장 (배포 시 환경 설정).
+> 모든 기능 구현 완료. `modal deploy backend/app.py`로 백엔드 배포 필요.
