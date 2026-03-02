@@ -10,7 +10,7 @@
 
 | 항목 | 상태 | 비고 |
 |------|------|------|
-| **Works AI → H Chat 리브랜딩** | ✅ 완료 | 모든 문서, 파일명, UI 텍스트 일괄 변경 |
+| **리브랜딩 (H Chat)** | ✅ 완료 | 모든 문서, 파일명, UI 텍스트 일괄 변경 |
 | **Phase 1: 비서 마켓플레이스** | ✅ 완료 | HomeScreen 리팩토링, 8개 공식 비서 카드 그리드 |
 | **카테고리 필터** | ✅ 완료 | 전체/채팅/업무/번역/정리/보고/그림/글쓰기 8개 |
 | **공식/내비서 탭** | ✅ 완료 | 기존 페르소나 시스템 연결 |
@@ -22,21 +22,23 @@
 ```
 수정: src/pages/home/HomeScreen.tsx      (비서 마켓플레이스 UI)
 신규: src/shared/constants/assistants.ts (8개 비서 프리셋)
-수정: src/shared/i18n/ko.ts, en.ts       (i18n 키 56개 추가)
+신규: src/shared/ui/AssistantCard.tsx    (비서 카드 컴포넌트)
+수정: src/shared/i18n/ko.ts, en.ts       (i18n 키 28개 추가)
+수정: src/widgets/message-list/MessageBubble.tsx (커서 버그 수정)
 ```
 
 ### 비서 프리셋 (8개)
 
-| 비서명 | 모델 | 카테고리 | 용도 |
-|--------|------|----------|------|
-| 신중한 목적이 | GPT-4o | 채팅 | 심층 분석, 추론 |
-| 티커타카 장인 | GPT-4o-mini | 채팅 | 빠른 대화, 이미지 인식 |
-| 문서 파일 검토 | Claude Sonnet | 업무 | PDF 문서 분석 |
-| 문서 번역 | Claude Sonnet | 번역 | 다국어 번역 |
-| 파워포인트 기획 | GPT-4o | 보고 | PPT 구성 보조 |
-| 본문 번역 | Gemini Flash | 번역 | 빠른 텍스트 번역 |
-| 데이터 분석 | Claude Sonnet | 업무 | 데이터 분석 |
-| 이메일 작성 | GPT-4o | 글쓰기 | 비즈니스 이메일 |
+| ID | 비서명 | 모델 | 프로바이더 | 카테고리 |
+|----|--------|------|-----------|----------|
+| analyst | 신중한 분석가 | Claude Sonnet 4.6 | Bedrock | 분석 |
+| quickChat | 빠른 대화 | Gemini 2.0 Flash | Gemini | 대화 |
+| docReview | 문서 검토 | Claude Sonnet 4.6 | Bedrock | 업무 |
+| translator | 문서 번역 | GPT-4o | OpenAI | 번역 |
+| reportWriter | 보고서 작성 | Claude Sonnet 4.6 | Bedrock | 보고 |
+| codeReviewer | 코드 리뷰 | Claude Sonnet 4.6 | Bedrock | 업무 |
+| dataAnalyst | 데이터 분석 | GPT-4o | OpenAI | 분석 |
+| emailWriter | 이메일 작성 | GPT-4o-mini | OpenAI | 글쓰기 |
 
 ---
 

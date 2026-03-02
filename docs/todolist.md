@@ -191,3 +191,18 @@
 
 > **모든 TODO 항목 완료.** 배포: `modal deploy backend/app.py` + `vercel --prod`
 > Secret 설정: `modal secret create hchat-api-keys OPENAI_API_KEY=sk-... GEMINI_API_KEY=...`
+
+---
+
+## ✅ Phase 1 확장 — 비서 마켓플레이스 (2026-03-03)
+
+- [x] HomeScreen 비서 카드 그리드 리팩토링 (QuickAction 칩 → AssistantCard)
+- [x] 8개 공식 비서 프리셋 (`src/shared/constants/assistants.ts`)
+- [x] 8개 카테고리 필터 (전체/대화/업무/번역/분석/보고/그림/글쓰기)
+- [x] 공식/내 비서 탭 토글 (페르소나 시스템 연동)
+- [x] AssistantCard 컴포넌트 (`src/shared/ui/AssistantCard.tsx`)
+- [x] i18n 키 28개 추가 (ko/en)
+- [x] 스트리밍 커서 더블 깜박임 버그 수정
+- [x] debate.store.test.ts vi import 누락 수정
+- [x] 리브랜딩 완료 (H Chat 통일)
+- [x] Vercel 프로덕션 배포 완료

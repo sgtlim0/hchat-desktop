@@ -2,11 +2,18 @@
 
 AI 모델(Claude, GPT, Gemini)과 대화하는 Progressive Web App. 멀티 프로바이더, 실시간 스트리밍, 고급 AI 도구, 로컬 저장, PWA 지원.
 
-**상태**: 100% 완료 (70/70 TODO 항목) | **테스트**: 667 tests, 41 suites, 83% 커버리지 | **배포**: Vercel (Frontend) + Modal (Backend)
+**상태**: 100% 완료 (70/70 TODO 항목) + Phase 1 비서 마켓플레이스 | **테스트**: 667 tests, 41 suites, 83% 커버리지 | **배포**: Vercel (Frontend) + Modal (Backend)
 
 ---
 
 ## 주요 기능
+
+### 비서 마켓플레이스 (홈 화면)
+
+- **8개 공식 비서** — 신중한 분석가, 빠른 대화, 문서 검토, 문서 번역, 보고서 작성, 코드 리뷰, 데이터 분석, 이메일 작성
+- **카테고리 필터** — 전체/대화/업무/번역/분석/보고/그림/글쓰기 8개 카테고리
+- **내 비서 탭** — 커스텀 페르소나를 비서로 활용 (페르소나 시스템 연동)
+- **원클릭 세션** — 비서 카드 클릭 → 해당 모델 + 시스템 프롬프트로 즉시 대화 시작
 
 ### 핵심 채팅
 
@@ -196,8 +203,8 @@ hchat-pwa/
 │   ├── app/
 │   │   └── layouts/           # MainLayout — 뷰 라우팅, 키보드 단축키
 │   │
-│   ├── pages/                 # 12개 페이지 컴포넌트
-│   │   ├── home/              # 홈 (빠른 액션)
+│   ├── pages/                 # 15개 페이지 컴포넌트
+│   │   ├── home/              # 홈 (비서 마켓플레이스)
 │   │   ├── chat/              # 채팅
 │   │   ├── all-chats/         # 모든 대화
 │   │   ├── group-chat/        # 그룹 채팅
@@ -207,8 +214,11 @@ hchat-pwa/
 │   │   ├── memory/            # 메모리 시스템
 │   │   ├── swarm/             # 에이전트 Swarm
 │   │   ├── schedule/          # 스케줄 매니저
-│   │   ├── project-detail/    # 프로젝트 상세
-│   │   └── cross-model-debate/# 크로스 모델 토론
+│   │   ├── agent/             # AI 에이전트
+│   │   ├── ai-tools/          # AI 도구 패널
+│   │   ├── image-gen/         # 이미지 생성
+│   │   ├── prompt-library/    # 프롬프트 라이브러리
+│   │   └── debate/            # 크로스 모델 토론
 │   │
 │   ├── widgets/               # 복합 UI 위젯
 │   │   ├── message-list/      # 메시지 목록 (가상화, 마크다운)
@@ -219,21 +229,29 @@ hchat-pwa/
 │   │   ├── ai-tools/          # AI 도구 패널
 │   │   └── ...
 │   │
-│   ├── entities/              # Zustand 스토어 (8개)
-│   │   ├── session.store.ts       # 세션, 메시지, 스트리밍
-│   │   ├── settings.store.ts      # 모델, 언어, 테마
-│   │   ├── project.store.ts       # 프로젝트
-│   │   ├── group-chat.store.ts    # 그룹 채팅
-│   │   ├── channel.store.ts       # 채널 연동
-│   │   ├── memory.store.ts        # 메모리
-│   │   ├── swarm.store.ts         # Swarm
-│   │   └── schedule.store.ts      # 스케줄
+│   ├── entities/              # Zustand 스토어 (15개)
+│   │   ├── session/               # 세션, 메시지, 스트리밍, 뷰 상태
+│   │   ├── settings/              # 모델, 언어, 테마, 자격증명
+│   │   ├── project/               # 프로젝트
+│   │   ├── group-chat/            # 그룹 채팅
+│   │   ├── channel/               # 채널 연동 (Slack/Telegram)
+│   │   ├── memory/                # 메모리
+│   │   ├── swarm/                 # Swarm
+│   │   ├── schedule/              # 스케줄
+│   │   ├── usage/                 # 사용량 추적, 비용 계산
+│   │   ├── persona/               # 페르소나 (5 프리셋 + 커스텀)
+│   │   ├── prompt-library/        # 프롬프트 템플릿
+│   │   ├── debate/                # 크로스 모델 토론
+│   │   ├── folder/                # 대화 폴더
+│   │   ├── tag/                   # 대화 태그
+│   │   └── toast/                 # 토스트 알림
 │   │
 │   └── shared/
-│       ├── ui/                # 11개 재사용 UI 컴포넌트
+│       ├── ui/                # 12개 재사용 UI 컴포넌트
 │       │   ├── button.tsx
 │       │   ├── avatar.tsx
 │       │   ├── toggle.tsx
+│       │   ├── AssistantCard.tsx   # 비서 카드 컴포넌트
 │       │   └── ...
 │       │
 │       ├── lib/
@@ -242,12 +260,15 @@ hchat-pwa/
 │       │   │   ├── openai.ts
 │       │   │   ├── gemini.ts
 │       │   │   └── bedrock.ts
+│       │   ├── agent/             # 에이전트 시스템 (XML 파서, 도구)
 │       │   ├── db/                # Dexie 데이터베이스
 │       │   ├── utils/             # 유틸리티 함수
 │       │   ├── token-estimator.ts # 토큰 추정
 │       │   ├── export-chat.ts     # 내보내기 로직
 │       │   └── ...
 │       │
+│       ├── constants/           # 모델, 비서 프리셋
+│       │   └── assistants.ts    # 8개 공식 비서 데이터
 │       ├── i18n/                # 다국어 (한국어/영어)
 │       ├── types/               # TypeScript 인터페이스
 │       ├── constants.ts         # 모델 목록, 상수
@@ -406,6 +427,18 @@ Pencil MCP를 통한 28개 프레임 설계:
 | **P3** (최적화) | 9 | 9 | 100% |
 | **문서/설계** | 5 | 5 | 100% |
 | **전체** | **70** | **70** | **100%** |
+
+### Phase 1 확장 (비서 마켓플레이스)
+
+| 항목 | 상태 |
+|------|------|
+| HomeScreen 비서 카드 그리드 | ✅ 완료 |
+| 8개 공식 비서 프리셋 | ✅ 완료 |
+| 8개 카테고리 필터 | ✅ 완료 |
+| 공식/내 비서 탭 토글 | ✅ 완료 |
+| AssistantCard 컴포넌트 | ✅ 완료 |
+| i18n 키 28개 추가 (ko/en) | ✅ 완료 |
+| 스트리밍 커서 버그 수정 | ✅ 완료 |
 
 ---
 
