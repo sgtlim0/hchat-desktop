@@ -99,7 +99,7 @@ export function SettingsScreen() {
       region,
     }
 
-    const result = await testConnection(creds, 'claude-haiku-3.5')
+    const result = await testConnection(creds, 'claude-haiku-4.5')
 
     if (result.success) {
       setTestStatus('success')

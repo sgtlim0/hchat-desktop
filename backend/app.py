@@ -26,9 +26,8 @@ def api():
         allow_origins=[
             "http://localhost:5173",
             "http://localhost:4173",
-            "https://*.vercel.app",
-            "https://*.github.io",
         ],
+        allow_origin_regex=r"https://.*\.(vercel\.app|github\.io)",
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],
