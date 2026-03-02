@@ -340,3 +340,6 @@ type UsageCategory =
 | 구현 계획 | `docs/hchat-implementation-plan.md` | Phase별 구현 방안 |
 | TODO 리스트 | `docs/todolist.md` | 전체 작업 현황 |
 | 비서 프리셋 | `src/shared/constants/assistants.ts` | 8개 비서 데이터 |
+| Phase 2 계획 | `docs/phase2-implementation-plan.md` | 헤더 탭 + 문서 번역 상세 |
+| Phase 3 계획 | `docs/phase3-implementation-plan.md` | 문서 작성 마법사 + OCR 상세 |
+| Phase 4 계획 | `docs/phase4-implementation-plan.md` | 기능별 사용량 추적 상세 |

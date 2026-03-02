@@ -176,6 +176,9 @@
 | `docs/hchat-implementation-plan.md` | H Chat Phase 1~3 구현 상세 (코드 패턴, 파일 목록) |
 | `pwa.pen` | Pencil MCP 화면 설계 — 28+ 프레임 (v2 4개 + hchat 2개 + Phase 1) |
 | `docs/roadmap.md` | 향후 로드맵 (Phase 2~4: 번역, 문서작성, OCR) |
+| `docs/phase2-implementation-plan.md` | Phase 2 헤더 탭 + 문서 번역 상세 구현 계획 |
+| `docs/phase3-implementation-plan.md` | Phase 3 문서 작성 마법사 + OCR 상세 구현 계획 |
+| `docs/phase4-implementation-plan.md` | Phase 4 기능별 사용량 추적 상세 구현 계획 |
 
 ---
 
