@@ -1,6 +1,7 @@
 import { useState } from 'react'
-import { MessageSquare, Folder, Star, Search, Plus, Brain, Network, CalendarClock, Users } from 'lucide-react'
+import { MessageSquare, Folder, Star, Search, Plus, Brain, Network, CalendarClock, Users, Settings } from 'lucide-react'
 import { useSessionStore } from '@/entities/session/session.store'
+import { useSettingsStore } from '@/entities/settings/settings.store'
 import { SidebarItem } from '@/shared/ui/SidebarItem'
 import { Avatar } from '@/shared/ui/Avatar'
 import { Button } from '@/shared/ui/Button'
@@ -16,6 +17,7 @@ export function Sidebar() {
   const createSession = useSessionStore((s) => s.createSession)
   const setView = useSessionStore((s) => s.setView)
   const setSearchOpen = useSessionStore((s) => s.setSearchOpen)
+  const setSettingsOpen = useSettingsStore((s) => s.setSettingsOpen)
 
   const [contextMenu, setContextMenu] = useState<{
     sessionId: string
@@ -167,7 +169,12 @@ export function Sidebar() {
       </div>
 
       {/* Fixed bottom section */}
-      <div className="p-3 border-t border-border flex-shrink-0">
+      <div className="p-3 border-t border-border flex-shrink-0 space-y-2">
+        <SidebarItem
+          icon={Settings}
+          label={t('settings.title')}
+          onClick={() => setSettingsOpen(true)}
+        />
         <div className="flex items-center gap-2">
           <Avatar initials="DC" size="sm" />
           <span className="text-sm text-text-primary">{t('sidebar.user')}</span>
