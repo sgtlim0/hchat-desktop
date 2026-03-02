@@ -1,4 +1,5 @@
 import json
+import os
 
 from fastapi import APIRouter
 from fastapi.responses import StreamingResponse
@@ -8,7 +9,7 @@ router = APIRouter()
 
 
 class OpenAIChatRequest(BaseModel):
-    apiKey: str
+    apiKey: str | None = None
     modelId: str
     messages: list[dict]
     system: str | None = None
@@ -20,7 +21,12 @@ async def openai_chat(req: OpenAIChatRequest):
         try:
             from openai import OpenAI
 
-            client = OpenAI(api_key=req.apiKey)
+            api_key = req.apiKey or os.environ.get("OPENAI_API_KEY")
+            if not api_key:
+                yield f"data: {json.dumps({'type': 'error', 'error': 'OpenAI API key not configured'})}\n\n"
+                return
+
+            client = OpenAI(api_key=api_key)
 
             messages = []
             if req.system:

@@ -8,8 +8,11 @@ image = (
 
 app = modal.App("hchat-api", image=image)
 
+# Optional secrets — create with: modal secret create hchat-api-keys OPENAI_API_KEY=sk-... GEMINI_API_KEY=...
+hchat_secrets = modal.Secret.from_name("hchat-api-keys", required_kwargs=[], environment_name="main")
 
-@app.function(timeout=600)
+
+@app.function(timeout=600, secrets=[hchat_secrets])
 @modal.concurrent(max_inputs=100)
 @modal.asgi_app()
 def api():
