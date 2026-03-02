@@ -2,29 +2,29 @@ import type { ModelInfo } from './types'
 
 export const MODELS: ModelInfo[] = [
   {
-    id: 'claude-opus-4',
-    name: 'Claude 4 Opus',
+    id: 'claude-opus-4.6',
+    name: 'Claude Opus 4.6',
     provider: 'anthropic',
-    description: '가장 강력한 추론 모델',
+    description: '최고 성능 모델',
     maxTokens: 200000,
   },
   {
-    id: 'claude-sonnet-4',
-    name: 'Claude 4 Sonnet',
+    id: 'claude-sonnet-4.6',
+    name: 'Claude Sonnet 4.6',
     provider: 'anthropic',
-    description: '빠르고 균형 잡힌 모델',
+    description: '기본 권장 모델',
     maxTokens: 200000,
   },
   {
-    id: 'claude-haiku-3.5',
-    name: 'Claude 3.5 Haiku',
+    id: 'claude-haiku-4.5',
+    name: 'Claude Haiku 4.5',
     provider: 'anthropic',
-    description: '가장 빠른 경량 모델',
+    description: '빠른 응답 경량 모델',
     maxTokens: 200000,
   },
 ]
 
-export const DEFAULT_MODEL_ID = 'claude-sonnet-4'
+export const DEFAULT_MODEL_ID = 'claude-sonnet-4.6'
 
 export const SIDEBAR_WIDTH = 264
 export const MAX_RECENT_SESSIONS = 30
@@ -38,11 +38,11 @@ export const QUICK_ACTIONS = [
   { id: 'review', icon: 'search-code', label: '코드 리뷰' },
 ] as const
 
-// Bedrock model ID mapping (cross-region inference prefix)
+// Bedrock model ID mapping (cross-region inference profile)
 export const BEDROCK_MODEL_MAP: Record<string, string> = {
-  'claude-opus-4': 'us.anthropic.claude-opus-4-0-20250514',
-  'claude-sonnet-4': 'us.anthropic.claude-sonnet-4-20250514',
-  'claude-haiku-3.5': 'us.anthropic.claude-3-5-haiku-20241022',
+  'claude-opus-4.6': 'us.anthropic.claude-opus-4-6-v1',
+  'claude-sonnet-4.6': 'us.anthropic.claude-sonnet-4-6',
+  'claude-haiku-4.5': 'us.anthropic.claude-haiku-4-5-20251001-v1:0',
 }
 
 export const AWS_REGIONS = [
