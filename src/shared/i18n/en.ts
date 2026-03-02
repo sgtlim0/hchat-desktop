@@ -453,12 +453,19 @@ const en = {
   'storage.deleted': 'Deleted {count} sessions',
   'storage.cleared': 'All data cleared',
   'storage.analyzing': 'Analyzing...',
+  'storage.backup': 'Export Backup',
+  'storage.restore': 'Import Backup',
+  'storage.backupSuccess': 'Backup file downloaded',
+  'storage.restoreSuccess': 'Data restored',
+  'storage.restoreConfirm': 'Existing data will be overwritten. Continue?',
 
   // toast
   'toast.close': 'Close',
 
   // sidebar
   'sidebar.aiTools': 'AI Tools',
+  'sidebar.imageGen': 'Image Generation',
+  'sidebar.agent': 'AI Agent',
 
   // AI Tools
   'aiTools.title': 'AI Tools',
@@ -501,6 +508,21 @@ const en = {
   'aiTools.toneFormal': 'Formal',
   'aiTools.toneFriendly': 'Friendly',
 
+  // Image Generation
+  'imageGen.title': 'Image Generation',
+  'imageGen.prompt': 'Prompt',
+  'imageGen.promptPlaceholder': 'Describe the image you want to generate...',
+  'imageGen.generate': 'Generate',
+  'imageGen.generating': 'Generating...',
+  'imageGen.download': 'Download',
+  'imageGen.provider': 'Provider',
+  'imageGen.size': 'Size',
+  'imageGen.style': 'Style',
+  'imageGen.vivid': 'Vivid',
+  'imageGen.natural': 'Natural',
+  'imageGen.noApiKey': 'Please enter your OpenAI API key in Settings',
+  'imageGen.comingSoon': 'Coming soon',
+
   // ROI Dashboard
   'roi.title': 'ROI Dashboard',
   'roi.noData': 'No usage data available',
@@ -516,6 +538,15 @@ const en = {
   'roi.hour': 'hr',
   'roi.byProvider': 'By Provider',
   'roi.topModels': 'Top Models',
+
+  // Agent
+  'agent.title': 'AI Agent',
+  'agent.description': 'Give the agent a task and it will use tools to complete it automatically.',
+  'agent.promptPlaceholder': 'Give the agent a task...',
+  'agent.run': 'Run',
+  'agent.stop': 'Stop',
+  'agent.toolCall': 'Tool Call',
+  'agent.toolResult': 'Tool Result',
 } as const
 
 export default en

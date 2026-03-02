@@ -130,12 +130,86 @@ export async function deleteOldSessions(days: number): Promise<number> {
  * Clear all data from IndexedDB
  */
 export async function clearAllData(): Promise<void> {
-  await db.transaction('rw', [db.sessions, db.messages, db.projects, db.usages, db.prompts, db.personas], async () => {
+  await db.transaction('rw', [db.sessions, db.messages, db.projects, db.usages, db.prompts, db.personas, db.folders, db.tags], async () => {
     await db.sessions.clear()
     await db.messages.clear()
     await db.projects.clear()
     await db.usages.clear()
     await db.prompts.clear()
     await db.personas.clear()
+    await db.folders.clear()
+    await db.tags.clear()
   })
+}
+
+/**
+ * Export all data as JSON string
+ */
+export async function exportAllData(): Promise<string> {
+  const [sessions, messages, projects, usages, prompts, personas, folders, tags] = await Promise.all([
+    db.sessions.toArray(),
+    db.messages.toArray(),
+    db.projects.toArray(),
+    db.usages.toArray(),
+    db.prompts.toArray(),
+    db.personas.toArray(),
+    db.folders.toArray(),
+    db.tags.toArray(),
+  ])
+
+  const backup = {
+    version: 3,
+    timestamp: new Date().toISOString(),
+    data: {
+      sessions,
+      messages,
+      projects,
+      usages,
+      prompts,
+      personas,
+      folders,
+      tags,
+    },
+  }
+
+  return JSON.stringify(backup, null, 2)
+}
+
+/**
+ * Import data from JSON string
+ */
+export async function importAllData(jsonString: string): Promise<void> {
+  try {
+    const backup = JSON.parse(jsonString)
+
+    if (!backup.data) {
+      throw new Error('Invalid backup format')
+    }
+
+    const { sessions, messages, projects, usages, prompts, personas, folders, tags } = backup.data
+
+    await db.transaction('rw', [db.sessions, db.messages, db.projects, db.usages, db.prompts, db.personas, db.folders, db.tags], async () => {
+      // Clear existing data
+      await db.sessions.clear()
+      await db.messages.clear()
+      await db.projects.clear()
+      await db.usages.clear()
+      await db.prompts.clear()
+      await db.personas.clear()
+      await db.folders.clear()
+      await db.tags.clear()
+
+      // Import new data
+      if (sessions) await db.sessions.bulkAdd(sessions)
+      if (messages) await db.messages.bulkAdd(messages)
+      if (projects) await db.projects.bulkAdd(projects)
+      if (usages) await db.usages.bulkAdd(usages)
+      if (prompts) await db.prompts.bulkAdd(prompts)
+      if (personas) await db.personas.bulkAdd(personas)
+      if (folders) await db.folders.bulkAdd(folders)
+      if (tags) await db.tags.bulkAdd(tags)
+    })
+  } catch (error) {
+    throw new Error(`Failed to import backup: ${error instanceof Error ? error.message : 'Unknown error'}`)
+  }
 }

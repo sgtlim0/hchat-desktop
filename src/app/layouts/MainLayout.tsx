@@ -5,6 +5,8 @@ import { useProjectStore } from '@/entities/project/project.store'
 import { useUsageStore } from '@/entities/usage/usage.store'
 import { usePromptLibraryStore } from '@/entities/prompt-library/prompt-library.store'
 import { usePersonaStore } from '@/entities/persona/persona.store'
+import { useFolderStore } from '@/entities/folder/folder.store'
+import { useTagStore } from '@/entities/tag/tag.store'
 import { Sidebar } from '@/widgets/sidebar/Sidebar'
 import { HomeScreen } from '@/pages/home/HomeScreen'
 import { SearchModal } from '@/widgets/search/SearchModal'
@@ -26,6 +28,8 @@ const GroupChatPage = lazy(() => import('@/pages/group-chat/GroupChatPage').then
 const PromptLibraryPage = lazy(() => import('@/pages/prompt-library/PromptLibraryPage').then((m) => ({ default: m.PromptLibraryPage })))
 const DebatePage = lazy(() => import('@/pages/debate/DebatePage').then((m) => ({ default: m.DebatePage })))
 const AiToolsPage = lazy(() => import('@/pages/ai-tools/AiToolsPage').then((m) => ({ default: m.AiToolsPage })))
+const ImageGenPage = lazy(() => import('@/pages/image-gen/ImageGenPage').then((m) => ({ default: m.ImageGenPage })))
+const AgentPage = lazy(() => import('@/pages/agent/AgentPage').then((m) => ({ default: m.AgentPage })))
 
 export function MainLayout() {
   const { t } = useTranslation()
@@ -43,6 +47,8 @@ export function MainLayout() {
   const hydrateUsage = useUsageStore((s) => s.hydrate)
   const hydratePromptLibrary = usePromptLibraryStore((s) => s.hydrate)
   const hydratePersona = usePersonaStore((s) => s.hydrate)
+  const hydrateFolder = useFolderStore((s) => s.hydrate)
+  const hydrateTag = useTagStore((s) => s.hydrate)
   const isOnline = useOnlineStatus()
 
   // Hydrate from IndexedDB on mount
@@ -52,7 +58,9 @@ export function MainLayout() {
     hydrateUsage()
     hydratePromptLibrary()
     hydratePersona()
-  }, [hydrateSession, hydrateProject, hydrateUsage, hydratePromptLibrary, hydratePersona])
+    hydrateFolder()
+    hydrateTag()
+  }, [hydrateSession, hydrateProject, hydrateUsage, hydratePromptLibrary, hydratePersona, hydrateFolder, hydrateTag])
 
   // Keyboard shortcuts
   useEffect(() => {
@@ -132,6 +140,14 @@ export function MainLayout() {
 
     if (view === 'aiTools') {
       return <AiToolsPage />
+    }
+
+    if (view === 'imageGen') {
+      return <ImageGenPage />
+    }
+
+    if (view === 'agent') {
+      return <AgentPage />
     }
 
     if (currentSessionId && view === 'chat') {

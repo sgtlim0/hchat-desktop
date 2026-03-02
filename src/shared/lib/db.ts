@@ -1,5 +1,5 @@
 import Dexie, { type EntityTable } from 'dexie'
-import type { Message, Session, Project, UsageEntry, SavedPrompt, Persona } from '@/shared/types'
+import type { Message, Session, Project, UsageEntry, SavedPrompt, Persona, Folder, Tag } from '@/shared/types'
 
 const db = new Dexie('hchat-desktop') as Dexie & {
   sessions: EntityTable<Session, 'id'>
@@ -8,6 +8,8 @@ const db = new Dexie('hchat-desktop') as Dexie & {
   usages: EntityTable<UsageEntry, 'id'>
   prompts: EntityTable<SavedPrompt, 'id'>
   personas: EntityTable<Persona, 'id'>
+  folders: EntityTable<Folder, 'id'>
+  tags: EntityTable<Tag, 'id'>
 }
 
 db.version(1).stores({
@@ -23,6 +25,17 @@ db.version(2).stores({
   usages: 'id, sessionId, modelId, createdAt',
   prompts: 'id, category, isFavorite, updatedAt',
   personas: 'id, isDefault, updatedAt',
+})
+
+db.version(3).stores({
+  sessions: 'id, projectId, updatedAt, isFavorite',
+  messages: 'id, sessionId, createdAt',
+  projects: 'id, updatedAt',
+  usages: 'id, sessionId, modelId, createdAt',
+  prompts: 'id, category, isFavorite, updatedAt',
+  personas: 'id, isDefault, updatedAt',
+  folders: 'id',
+  tags: 'id',
 })
 
 // Session CRUD
@@ -130,6 +143,34 @@ export async function putPersona(persona: Persona): Promise<void> {
 
 export async function deletePersonaFromDb(id: string): Promise<void> {
   await db.personas.delete(id)
+}
+
+// Folder CRUD
+
+export async function getAllFolders(): Promise<Folder[]> {
+  return db.folders.toArray()
+}
+
+export async function putFolder(folder: Folder): Promise<void> {
+  await db.folders.put(folder)
+}
+
+export async function deleteFolderFromDb(id: string): Promise<void> {
+  await db.folders.delete(id)
+}
+
+// Tag CRUD
+
+export async function getAllTags(): Promise<Tag[]> {
+  return db.tags.toArray()
+}
+
+export async function putTag(tag: Tag): Promise<void> {
+  await db.tags.put(tag)
+}
+
+export async function deleteTagFromDb(id: string): Promise<void> {
+  await db.tags.delete(id)
 }
 
 export { db }

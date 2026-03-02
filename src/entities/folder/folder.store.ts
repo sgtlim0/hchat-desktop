@@ -1,57 +1,63 @@
 import { create } from 'zustand'
-import { persist } from 'zustand/middleware'
 import type { Folder } from '@/shared/types'
+import { getAllFolders, putFolder, deleteFolderFromDb } from '@/shared/lib/db'
 
 interface FolderState {
   folders: Folder[]
   selectedFolderId: string | null
 
   // Actions
-  addFolder: (name: string, color: string) => void
-  updateFolder: (id: string, updates: Partial<Omit<Folder, 'id' | 'createdAt'>>) => void
-  deleteFolder: (id: string) => void
+  hydrate: () => Promise<void>
+  addFolder: (name: string, color: string) => Promise<void>
+  updateFolder: (id: string, updates: Partial<Omit<Folder, 'id' | 'createdAt'>>) => Promise<void>
+  deleteFolder: (id: string) => Promise<void>
   selectFolder: (id: string | null) => void
 }
 
-export const useFolderStore = create<FolderState>()(
-  persist(
-    (set) => ({
-      folders: [],
-      selectedFolderId: null,
+export const useFolderStore = create<FolderState>((set, get) => ({
+  folders: [],
+  selectedFolderId: null,
 
-      addFolder: (name, color) => {
-        const newFolder: Folder = {
-          id: `folder-${Date.now()}`,
-          name,
-          color,
-          createdAt: new Date().toISOString(),
-        }
-        set((state) => ({
-          folders: [...state.folders, newFolder],
-        }))
-      },
+  hydrate: async () => {
+    const folders = await getAllFolders()
+    set({ folders })
+  },
 
-      updateFolder: (id, updates) => {
-        set((state) => ({
-          folders: state.folders.map((f) =>
-            f.id === id ? { ...f, ...updates } : f
-          ),
-        }))
-      },
-
-      deleteFolder: (id) => {
-        set((state) => ({
-          folders: state.folders.filter((f) => f.id !== id),
-          selectedFolderId: state.selectedFolderId === id ? null : state.selectedFolderId,
-        }))
-      },
-
-      selectFolder: (id) => {
-        set({ selectedFolderId: id })
-      },
-    }),
-    {
-      name: 'hchat-folders',
+  addFolder: async (name, color) => {
+    const newFolder: Folder = {
+      id: `folder-${Date.now()}`,
+      name,
+      color,
+      createdAt: new Date().toISOString(),
     }
-  )
-)
+    await putFolder(newFolder)
+    set((state) => ({
+      folders: [...state.folders, newFolder],
+    }))
+  },
+
+  updateFolder: async (id, updates) => {
+    const folder = get().folders.find((f) => f.id === id)
+    if (!folder) return
+
+    const updatedFolder = { ...folder, ...updates }
+    await putFolder(updatedFolder)
+    set((state) => ({
+      folders: state.folders.map((f) =>
+        f.id === id ? updatedFolder : f
+      ),
+    }))
+  },
+
+  deleteFolder: async (id) => {
+    await deleteFolderFromDb(id)
+    set((state) => ({
+      folders: state.folders.filter((f) => f.id !== id),
+      selectedFolderId: state.selectedFolderId === id ? null : state.selectedFolderId,
+    }))
+  },
+
+  selectFolder: (id) => {
+    set({ selectedFolderId: id })
+  },
+}))

@@ -453,12 +453,19 @@ const ko = {
   'storage.deleted': '{count}개 대화를 삭제했습니다',
   'storage.cleared': '모든 데이터를 삭제했습니다',
   'storage.analyzing': '분석 중...',
+  'storage.backup': '백업 내보내기',
+  'storage.restore': '백업 가져오기',
+  'storage.backupSuccess': '백업 파일을 다운로드했습니다',
+  'storage.restoreSuccess': '데이터를 복원했습니다',
+  'storage.restoreConfirm': '기존 데이터가 덮어씌워집니다. 계속하시겠습니까?',
 
   // toast
   'toast.close': '닫기',
 
   // sidebar
   'sidebar.aiTools': 'AI 도구',
+  'sidebar.imageGen': '이미지 생성',
+  'sidebar.agent': 'AI 에이전트',
 
   // AI Tools
   'aiTools.title': 'AI 도구',
@@ -501,6 +508,21 @@ const ko = {
   'aiTools.toneFormal': '격식체',
   'aiTools.toneFriendly': '친근한',
 
+  // Image Generation
+  'imageGen.title': '이미지 생성',
+  'imageGen.prompt': '프롬프트',
+  'imageGen.promptPlaceholder': '생성할 이미지를 설명하세요...',
+  'imageGen.generate': '생성',
+  'imageGen.generating': '생성 중...',
+  'imageGen.download': '다운로드',
+  'imageGen.provider': '프로바이더',
+  'imageGen.size': '크기',
+  'imageGen.style': '스타일',
+  'imageGen.vivid': '생생한',
+  'imageGen.natural': '자연스러운',
+  'imageGen.noApiKey': 'OpenAI API 키를 설정에서 입력하세요',
+  'imageGen.comingSoon': '곧 지원 예정',
+
   // ROI Dashboard
   'roi.title': 'ROI 대시보드',
   'roi.noData': '사용 데이터가 없습니다',
@@ -516,6 +538,15 @@ const ko = {
   'roi.hour': '시간',
   'roi.byProvider': '프로바이더별',
   'roi.topModels': '상위 모델',
+
+  // Agent
+  'agent.title': 'AI 에이전트',
+  'agent.description': '에이전트에게 작업을 지시하면 도구를 활용하여 자동으로 수행합니다.',
+  'agent.promptPlaceholder': '에이전트에게 작업을 지시하세요...',
+  'agent.run': '실행',
+  'agent.stop': '중지',
+  'agent.toolCall': '도구 호출',
+  'agent.toolResult': '도구 결과',
 } as const
 
 export default ko

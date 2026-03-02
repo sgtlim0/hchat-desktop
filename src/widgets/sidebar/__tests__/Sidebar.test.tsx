@@ -29,6 +29,8 @@ vi.mock('lucide-react', () => ({
   ChevronRight: () => <div>ChevronRight</div>,
   X: () => <div>X</div>,
   Wand2: () => <div>Wand2</div>,
+  Image: () => <div>Image</div>,
+  Bot: () => <div>Bot</div>,
 }))
 
 // Mock SessionContextMenu

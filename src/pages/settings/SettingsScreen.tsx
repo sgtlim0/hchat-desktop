@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Key, User, Sparkles, Palette, Puzzle, Plug, Monitor, Shield, Code, X, Radio, BarChart3, UserCircle, Trash2, Plus, HardDrive } from 'lucide-react'
 import { useSettingsStore } from '@/entities/settings/settings.store'
 import { useChannelStore } from '@/entities/channel/channel.store'
@@ -16,7 +16,7 @@ import type { Persona } from '@/shared/types'
 import type { TFunction } from '@/shared/i18n'
 import { groupByDate, groupByWeek, getLast30Days } from '@/shared/lib/usage-chart'
 import { BarChart } from '@/shared/ui/BarChart'
-import { analyzeStorage, formatBytes, getStorageQuota, deleteOldSessions, clearAllData, type StorageInfo } from '@/shared/lib/storage-analyzer'
+import { analyzeStorage, formatBytes, getStorageQuota, deleteOldSessions, clearAllData, exportAllData, importAllData, type StorageInfo } from '@/shared/lib/storage-analyzer'
 import { useSessionStore } from '@/entities/session/session.store'
 import { RoiDashboard } from './RoiDashboard'
 
@@ -869,6 +869,7 @@ export function SettingsScreen() {
     const [isAnalyzing, setIsAnalyzing] = useState(false)
     const [selectedDays, setSelectedDays] = useState(30)
     const hydrate = useSessionStore((s) => s.hydrate)
+    const fileInputRef = useRef<HTMLInputElement>(null)
 
     useEffect(() => {
       loadStorageInfo()
@@ -923,6 +924,60 @@ export function SettingsScreen() {
       } catch (error) {
         console.error('Failed to delete old sessions:', error)
         alert(`Error: ${error}`)
+      }
+    }
+
+    async function handleExportBackup() {
+      try {
+        const jsonString = await exportAllData()
+        const blob = new Blob([jsonString], { type: 'application/json' })
+        const url = URL.createObjectURL(blob)
+        const a = document.createElement('a')
+        a.href = url
+        a.download = `hchat-backup-${new Date().toISOString().slice(0, 10)}.json`
+        document.body.appendChild(a)
+        a.click()
+        document.body.removeChild(a)
+        URL.revokeObjectURL(url)
+        alert(t('storage.backupSuccess'))
+      } catch (error) {
+        console.error('Failed to export backup:', error)
+        alert(`Error: ${error}`)
+      }
+    }
+
+    function handleImportBackup() {
+      if (fileInputRef.current) {
+        fileInputRef.current.click()
+      }
+    }
+
+    async function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+      const file = e.target.files?.[0]
+      if (!file) return
+
+      if (!confirm(t('storage.restoreConfirm'))) {
+        if (fileInputRef.current) {
+          fileInputRef.current.value = ''
+        }
+        return
+      }
+
+      try {
+        const text = await file.text()
+        await importAllData(text)
+        await hydrate()
+        await loadStorageInfo()
+        alert(t('storage.restoreSuccess'))
+        if (fileInputRef.current) {
+          fileInputRef.current.value = ''
+        }
+      } catch (error) {
+        console.error('Failed to import backup:', error)
+        alert(`Error: ${error instanceof Error ? error.message : error}`)
+        if (fileInputRef.current) {
+          fileInputRef.current.value = ''
+        }
       }
     }
 
@@ -994,6 +1049,29 @@ export function SettingsScreen() {
                 <Button variant="secondary" onClick={handleDeleteOld}>
                   {t('storage.deleteOld')}
                 </Button>
+              </div>
+            </div>
+
+            {/* Backup and Restore */}
+            <div className="space-y-4 pt-6 border-t border-border">
+              <h3 className="text-lg font-semibold text-text-primary">{t('storage.backup')}</h3>
+              <p className="text-sm text-text-secondary">
+                Export all your data as a JSON backup file, or import from a previous backup.
+              </p>
+              <div className="flex items-center gap-3">
+                <Button variant="secondary" onClick={handleExportBackup}>
+                  {t('storage.backup')}
+                </Button>
+                <Button variant="secondary" onClick={handleImportBackup}>
+                  {t('storage.restore')}
+                </Button>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept=".json"
+                  className="hidden"
+                  onChange={handleFileChange}
+                />
               </div>
             </div>
 

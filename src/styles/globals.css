@@ -31,18 +31,22 @@
   --primary-hover: #3478FE;
   --primary-light: #7AABFF;
   --bg-page: #1A1A1A;
-  --bg-sidebar: #1E1E1E;
+  --bg-sidebar: #141414;
   --bg-card: #2A2A2A;
   --bg-input: #2A2A2A;
-  --bg-hover: #333333;
+  --bg-hover: #2D2D2D;
   --text-primary: #F0F0F0;
   --text-secondary: #9CA3AF;
   --text-tertiary: #9CA3AF;
   --text-white: #FFFFFF;
   --border: #374151;
   --border-input: #4B5563;
+  --success: #4ADE80;
   --danger: #F87171;
   --warning: #FBB040;
+  --amber: #FCD34D;
+  --yellow-star: #FACC15;
+  --shadow: rgba(0, 0, 0, 0.3);
 }
 
 * {
