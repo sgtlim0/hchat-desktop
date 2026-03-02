@@ -111,7 +111,7 @@
 ### v2-extension 포팅 (중간 복잡도)
 > 📋 상세: `docs/v2-implementation-plan.md` Phase 2
 
-- [ ] 에이전트 모드 — XML tool call 파싱, 5개 도구, 다단계 실행 루프
+- [x] 에이전트 모드 — XML tool call 파싱, 4개 도구, 다단계 실행 루프
 - [ ] 웹 검색 + RAG — DuckDuckGo 프록시, 검색 의도 감지, 컨텍스트 주입
 - [x] AI 도구 패널 — 글쓰기 11종 + 문법 검사 + 요약 + 문서 건강 검사
 
@@ -122,7 +122,7 @@
 - [x] 문서 건강 검사 — AI 도구 패널 내 통합 (맞춤법/문법/가독성/일관성 종합 분석)
 - [x] ROI 측정 대시보드 — 프로바이더별/모델별 비용, 생산성 지표, 설정 > 사용량 탭
 - [x] Excel/CSV 분석 — SheetJS 파싱, PromptInput 통합, AI 분석
-- [ ] 이미지 생성 UI — DALL-E / Gemini Imagen API 연동
+- [x] 이미지 생성 UI — DALL-E 3 통합, Gemini Imagen 준비
 
 ### 백엔드 실행 연동
 - [ ] Memory — LLM 기반 자동 컨텍스트 추출
@@ -155,10 +155,10 @@
 
 ### IndexedDB 확장
 - [ ] Memory, Schedule, Swarm, Channel 스토어 영속성 연결
-- [ ] 데이터 백업/복원 기능
+- [x] 데이터 백업/복원 기능 — JSON 내보내기/가져오기, 폴더/태그 IndexedDB 마이그레이션
 
 ### UI 폴리시
-- [ ] 다크 모드 세부 색상 조정
+- [x] 다크 모드 세부 색상 조정 — CSS 변수 개선 (success, amber, sidebar, shadow)
 - [x] 모바일 반응형 레이아웃 개선 — 사이드바 오버레이, 뒷배경, 자동 닫기
 - [x] 애니메이션/트랜지션 개선 — slide-in-left, fade-backdrop
 - [x] 토스트 알림 시스템 — Zustand store, 4종 타입, 자동 닫기
@@ -184,10 +184,10 @@
 |----------|------|-----------|--------|
 | P0 | 7/7 | 0 | 100% |
 | P1 | 27/27 | 0 | 100% |
-| P2 | 11/22 | 11 | 50% |
-| P3 | 6/9 | 3 | 67% |
+| P2 | 13/22 | 9 | 59% |
+| P3 | 8/9 | 1 | 89% |
 | 문서/설계 | 5/5 | 0 | 100% |
-| **전체** | **56/70** | **14** | **80%** |
+| **전체** | **60/70** | **10** | **86%** |
 
-> **참고**: P0, P1 완료. P2 남은 항목은 백엔드 연동(Memory/Schedule/Swarm/Channel, OpenAI/Gemini 프록시, 사용량 SSE)과 에이전트 모드/웹검색/이미지생성.
-> P3 남은 항목: 메시지 가상화, IndexedDB 확장, 다크모드 세부 조정.
+> **참고**: P0, P1 완료. P2 남은 항목은 백엔드 연동(Memory/Schedule/Swarm/Channel, OpenAI/Gemini 프록시, 사용량 SSE)과 웹검색+RAG.
+> P3 남은 항목: 메시지 가상화, Memory/Schedule/Swarm/Channel IndexedDB 영속성.
