@@ -97,6 +97,8 @@ const en = {
   'allChats.pinned': 'Pinned',
   'allChats.byProject': 'By Project',
   'allChats.noSessions': 'No sessions',
+  'allChats.exportAll': 'Export All',
+  'allChats.exported': 'Exported {count} conversations',
 
   // search
   'search.placeholder': 'Search conversations, projects...',
@@ -399,6 +401,16 @@ const en = {
   'pdf.attached': 'PDF attached',
   'pdf.tooLarge': 'PDF file is too large',
   'pdf.extractFailed': 'Failed to extract PDF text',
+
+  // budget
+  'budget.warning': 'You have reached {percent}% of your monthly budget',
+  'budget.exceeded': 'Monthly budget exceeded!',
+  'budget.current': 'Current {current} / {budget}',
+
+  // chat summary
+  'chat.summarize': 'Summarize',
+  'chat.summarizing': 'Generating summary...',
+  'chat.summaryGenerated': 'Summary generated',
 } as const
 
 export default en

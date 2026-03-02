@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, useCallback, type KeyboardEvent } from 'react'
 import TextareaAutosize from 'react-textarea-autosize'
-import { Plus, Send, Square, User, FileText, X, Mic, MicOff, Shield } from 'lucide-react'
+import { Plus, Send, Square, User, FileText, X, Mic, MicOff, Shield, AlertTriangle } from 'lucide-react'
 import { useSessionStore } from '@/entities/session/session.store'
 import { useSettingsStore } from '@/entities/settings/settings.store'
 import { useUsageStore, calculateCost } from '@/entities/usage/usage.store'
@@ -44,8 +44,11 @@ export function PromptInput({
   const geminiApiKey = useSettingsStore((s) => s.geminiApiKey)
   const selectedModel = useSettingsStore((s) => s.selectedModel)
   const autoRouting = useSettingsStore((s) => s.autoRouting)
+  const monthlyBudget = useSettingsStore((s) => s.monthlyBudget)
+  const budgetThreshold = useSettingsStore((s) => s.budgetThreshold)
 
   const addUsage = useUsageStore((s) => s.addUsage)
+  const getTotalCost = useUsageStore((s) => s.getTotalCost)
   const activePersona = usePersonaStore((s) => s.getActivePersona())
   const personas = usePersonaStore((s) => s.personas)
   const activePersonaId = usePersonaStore((s) => s.activePersonaId)
@@ -310,8 +313,48 @@ export function PromptInput({
     { value: 'deep', label: t('thinking.deep') },
   ]
 
+  const totalCost = getTotalCost()
+  const budgetUsagePercent = (totalCost / monthlyBudget) * 100
+  const isApproachingBudget = budgetUsagePercent >= budgetThreshold * 100
+  const isBudgetExceeded = totalCost >= monthlyBudget
+
   return (
     <div className="space-y-2">
+      {/* Budget warning */}
+      {isApproachingBudget && (
+        <div className={`flex items-start gap-2 p-3 rounded-lg border text-sm ${
+          isBudgetExceeded
+            ? 'bg-red-500/10 border-red-500/30'
+            : 'bg-yellow-500/10 border-yellow-500/30'
+        }`}>
+          <AlertTriangle size={16} className={`mt-0.5 flex-shrink-0 ${
+            isBudgetExceeded ? 'text-red-600' : 'text-yellow-600'
+          }`} />
+          <div className="flex-1">
+            <p className={`font-medium ${
+              isBudgetExceeded
+                ? 'text-red-700 dark:text-red-400'
+                : 'text-yellow-700 dark:text-yellow-400'
+            }`}>
+              {isBudgetExceeded
+                ? t('budget.exceeded')
+                : t('budget.warning', { percent: Math.round(budgetUsagePercent).toString() })
+              }
+            </p>
+            <p className={`text-xs mt-0.5 ${
+              isBudgetExceeded
+                ? 'text-red-600 dark:text-red-500'
+                : 'text-yellow-600 dark:text-yellow-500'
+            }`}>
+              {t('budget.current', {
+                current: `$${totalCost.toFixed(2)}`,
+                budget: `$${monthlyBudget.toFixed(2)}`
+              })}
+            </p>
+          </div>
+        </div>
+      )}
+
       {/* Guardrail warning */}
       {showGuardrailWarning && (
         <div className="flex items-start gap-2 p-3 rounded-lg bg-yellow-500/10 border border-yellow-500/30 text-sm">

@@ -15,7 +15,7 @@
 | IndexedDB 영속성 | ✅ 완료 |
 | i18n (한국어/영어) | ✅ 완료 |
 | PWA (설치/캐시) | ✅ 완료 |
-| 테스트 (Vitest) | ✅ 완료 — 179 tests, 14 suites |
+| 테스트 (Vitest) | ✅ 완료 — 231 tests, 16 suites |
 | 접근성 (a11y) | ✅ 완료 — focus-trap, skip-to-content, ARIA |
 | 사용량 추적 | ✅ 완료 — 토큰 추정, 비용 대시보드, 일별/주별 차트 |
 | 프롬프트 라이브러리 | ✅ 완료 — CRUD, 변수, 카테고리 |
@@ -78,30 +78,31 @@
 ### v2-extension 포팅 (즉시 구현)
 > 📋 상세: `docs/v2-implementation-plan.md` Phase 1
 
-- [ ] TTS (음성 출력) — Web Speech API, MessageBubble에 읽기 버튼
-- [ ] STT (음성 입력) — Web Speech Recognition, PromptInput에 마이크 버튼
-- [ ] AI 대화 요약 — LLM 1회 호출, 세션 카드에 요약 표시
-- [ ] 대화 포크 (Fork) — 특정 메시지에서 분기하여 새 대화 시작
-- [ ] ChatGPT/Claude 가져오기 확장 — 형식 자동 감지 + 변환
+- [x] TTS (음성 출력) — Web Speech API, MessageBubble에 읽기 버튼
+- [x] STT (음성 입력) — Web Speech Recognition, PromptInput에 마이크 버튼
+- [x] AI 대화 요약 — LLM 1회 호출, ChatHeader에서 요약 생성
+- [x] 대화 포크 (Fork) — 특정 메시지에서 분기하여 새 대화 시작
+- [x] ChatGPT/Claude 가져오기 확장 — 형식 자동 감지 + 변환
 
 ### Works AI 포팅 (즉시 구현)
 > 📋 상세: `docs/wrks-implementation-plan.md` Phase 1
 
-- [ ] Thinking Depth 모드 — fast/balanced/deep 3단 토글
-- [ ] 사용량 예산 경고 — 월간 예산 설정, 70% 임계치 알림
+- [x] Thinking Depth 모드 — fast/balanced/deep 3단 토글
+- [x] 사용량 예산 경고 — 월간 예산 설정, 70% 임계치 알림
 
 ### 내보내기 확장
-- [ ] AllChatsScreen에 일괄 내보내기 기능
+- [x] AllChatsScreen에 일괄 내보내기 기능
 - [ ] PDF 내보내기 (jspdf 라이브러리)
 
 ### 테스트 확장
+- [x] guardrail + import-chat 유닛 테스트 추가
 - [ ] UI 컴포넌트 테스트 (`shared/ui/` 11개)
 - [ ] Playwright E2E 설정 + 핵심 플로우 테스트
 - [ ] 커버리지 80%+ 달성
 
 ### 접근성 확장
 - [ ] 색상 대비 WCAG AA 검증
-- [ ] `eslint-plugin-jsx-a11y` 추가
+- [x] `eslint-plugin-jsx-a11y` 추가
 
 ---
 
@@ -117,7 +118,7 @@
 ### Works AI 포팅 (중간 복잡도)
 > 📋 상세: `docs/wrks-implementation-plan.md` Phase 2~3
 
-- [ ] AI 가드레일 — 민감 데이터 Regex 감지, 전송 전 경고/마스킹
+- [x] AI 가드레일 — 민감 데이터 Regex 감지, 전송 전 경고/마스킹 (P1에서 완료)
 - [ ] 문서 건강 검사 — 맞춤법/문법/형식 일관성 AI 분석
 - [ ] ROI 측정 대시보드 — 사용량 대비 생산성 지표
 - [ ] Excel/CSV 분석 — SheetJS 파싱, AI 분석, SVG 차트
@@ -182,11 +183,11 @@
 | 우선순위 | 완료 | 남은 항목 | 진행률 |
 |----------|------|-----------|--------|
 | P0 | 7/7 | 0 | 100% |
-| P1 | 12/26 | 14 | 46% |
-| P2 | 6/22 | 16 | 27% |
+| P1 | 22/27 | 5 | 81% |
+| P2 | 7/22 | 15 | 32% |
 | P3 | 0/9 | 9 | 0% |
 | 문서/설계 | 5/5 | 0 | 100% |
-| **전체** | **30/69** | **39** | **43%** |
+| **전체** | **41/70** | **29** | **59%** |
 
 > **참고**: v2-extension 및 Works AI 기능 추가로 전체 항목 수 증가 (42 → 69).
 > 기존 구현 완료 항목은 그대로 유지되며, 신규 기능이 TODO에 반영됨.

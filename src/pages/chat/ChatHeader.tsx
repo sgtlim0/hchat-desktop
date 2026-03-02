@@ -1,10 +1,12 @@
 import { useState, useRef, useEffect } from 'react'
-import { Star, Pencil, MoreHorizontal, Trash2, Download, ChevronRight } from 'lucide-react'
+import { Star, Pencil, MoreHorizontal, Trash2, Download, ChevronRight, Sparkles } from 'lucide-react'
 import { useSessionStore } from '@/entities/session/session.store'
 import { useProjectStore } from '@/entities/project/project.store'
+import { useSettingsStore } from '@/entities/settings/settings.store'
 import { useTranslation } from '@/shared/i18n'
 import { getModelName } from '@/shared/lib/model-meta'
 import { exportChat } from '@/shared/lib/export-chat'
+import { createStream, getProviderConfig } from '@/shared/lib/providers/factory'
 import type { ExportFormat } from '@/shared/types'
 
 interface ChatHeaderProps {
@@ -15,15 +17,20 @@ export function ChatHeader({ sessionId }: ChatHeaderProps) {
   const { t } = useTranslation()
   const sessions = useSessionStore((s) => s.sessions)
   const session = sessions.find((s) => s.id === sessionId)
-  const { renameSession, toggleFavorite, deleteSession } = useSessionStore()
+  const { renameSession, toggleFavorite, deleteSession, setSummary } = useSessionStore()
   const messages = useSessionStore((s) => s.messages[sessionId] ?? [])
   const projects = useProjectStore((s) => s.projects)
+  const credentials = useSettingsStore((s) => s.credentials)
+  const openaiApiKey = useSettingsStore((s) => s.openaiApiKey)
+  const geminiApiKey = useSettingsStore((s) => s.geminiApiKey)
+  const selectedModel = useSettingsStore((s) => s.selectedModel)
 
   const [isEditing, setIsEditing] = useState(false)
   const [editTitle, setEditTitle] = useState(session?.title ?? '')
   const [menuOpen, setMenuOpen] = useState(false)
   const [exportSubmenuOpen, setExportSubmenuOpen] = useState(false)
   const [exportMenuOpen, setExportMenuOpen] = useState(false)
+  const [isSummarizing, setIsSummarizing] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
   const exportMenuRef = useRef<HTMLDivElement>(null)
 
@@ -65,6 +72,52 @@ export function ChatHeader({ sessionId }: ChatHeaderProps) {
     setMenuOpen(false)
   }
 
+  const handleSummarize = async () => {
+    if (isSummarizing) return
+    setIsSummarizing(true)
+
+    try {
+      const textSegments = messages
+        .flatMap((m) => m.segments.filter((s) => s.type === 'text' && s.content))
+        .map((s) => s.content)
+        .join('\n\n')
+
+      if (!textSegments.trim()) {
+        setIsSummarizing(false)
+        return
+      }
+
+      const config = getProviderConfig(selectedModel, {
+        credentials,
+        openaiApiKey,
+        geminiApiKey,
+      })
+
+      const summaryPrompt = `Summarize this conversation in 1-2 concise sentences:\n\n${textSegments}`
+
+      const stream = createStream(config, {
+        modelId: selectedModel,
+        messages: [{ role: 'user', content: summaryPrompt }],
+        system: 'You are a summarization assistant. Provide only the summary, no additional text.',
+      })
+
+      let summaryText = ''
+      for await (const event of stream) {
+        if (event.type === 'text' && event.content) {
+          summaryText += event.content
+        }
+      }
+
+      if (summaryText.trim()) {
+        setSummary(sessionId, summaryText.trim())
+      }
+    } catch (error) {
+      console.error('Failed to generate summary:', error)
+    } finally {
+      setIsSummarizing(false)
+    }
+  }
+
   return (
     <div className="h-[52px] border-b border-border px-4 flex items-center justify-between flex-shrink-0">
       <div className="flex items-center gap-2">
@@ -104,6 +157,19 @@ export function ChatHeader({ sessionId }: ChatHeaderProps) {
             {project.name}
           </span>
         )}
+        {/* Summarize button */}
+        <button
+          onClick={handleSummarize}
+          disabled={isSummarizing}
+          aria-label={isSummarizing ? t('chat.summarizing') : t('chat.summarize')}
+          title={session.summary || (isSummarizing ? t('chat.summarizing') : t('chat.summarize'))}
+          className="p-1.5 hover:bg-hover rounded-lg transition focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          <Sparkles
+            size={16}
+            className={`${isSummarizing ? 'animate-pulse text-primary' : 'text-text-tertiary'}`}
+          />
+        </button>
         {/* Direct export button */}
         <div className="relative">
           <button

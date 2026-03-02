@@ -97,6 +97,8 @@ const ko = {
   'allChats.pinned': '고정됨',
   'allChats.byProject': '프로젝트별',
   'allChats.noSessions': '세션이 없습니다',
+  'allChats.exportAll': '전체 내보내기',
+  'allChats.exported': '{count}개 대화를 내보냈습니다',
 
   // search
   'search.placeholder': '대화, 프로젝트 검색...',
@@ -399,6 +401,16 @@ const ko = {
   'pdf.attached': 'PDF 첨부됨',
   'pdf.tooLarge': 'PDF 파일이 너무 큽니다',
   'pdf.extractFailed': 'PDF 텍스트 추출에 실패했습니다',
+
+  // budget
+  'budget.warning': '월간 예산의 {percent}%에 도달했습니다',
+  'budget.exceeded': '월간 예산을 초과했습니다!',
+  'budget.current': '현재 {current} / {budget}',
+
+  // chat summary
+  'chat.summarize': '요약',
+  'chat.summarizing': '요약 생성 중...',
+  'chat.summaryGenerated': '요약이 생성되었습니다',
 } as const
 
 export default ko

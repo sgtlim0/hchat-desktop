@@ -1,16 +1,17 @@
 import { useState, useMemo, useRef } from 'react'
-import { MessageSquare, Star, Search, Pin, Upload } from 'lucide-react'
+import { MessageSquare, Star, Search, Pin, Upload, Download } from 'lucide-react'
 import { useSessionStore } from '@/entities/session/session.store'
 import { getRelativeTime, getDateGroup } from '@/shared/lib/time'
 import { getModelName } from '@/shared/lib/model-meta'
 import { useTranslation } from '@/shared/i18n'
 import { importFromAnySource, readFileAsText } from '@/shared/lib/import-chat'
+import { downloadExport } from '@/shared/lib/export-chat'
 
 type FilterType = 'all' | 'favorites' | 'projects' | 'pinned'
 
 export function AllChatsScreen() {
   const { t } = useTranslation()
-  const { sessions, selectSession, importSession } = useSessionStore()
+  const { sessions, messages, selectSession, importSession } = useSessionStore()
   const [filter, setFilter] = useState<FilterType>('all')
   const [searchQuery, setSearchQuery] = useState('')
   const fileInputRef = useRef<HTMLInputElement>(null)
@@ -32,6 +33,31 @@ export function AllChatsScreen() {
         fileInputRef.current.value = ''
       }
     }
+  }
+
+  function handleBatchExport() {
+    if (filteredSessions.length === 0) {
+      alert(t('common.noResults'))
+      return
+    }
+
+    const messagesMap: Record<string, any[]> = {}
+    filteredSessions.forEach((session) => {
+      messagesMap[session.id] = messages[session.id] || []
+    })
+
+    const exportData = {
+      sessions: filteredSessions,
+      messages: messagesMap,
+    }
+
+    downloadExport(
+      JSON.stringify(exportData, null, 2),
+      'hchat-export-all.json',
+      'application/json'
+    )
+
+    alert(t('allChats.exported', { count: filteredSessions.length }))
   }
 
   const filteredSessions = useMemo(() => {
@@ -92,6 +118,13 @@ export function AllChatsScreen() {
             onChange={handleImport}
             className="hidden"
           />
+          <button
+            onClick={handleBatchExport}
+            className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-text-secondary border border-border rounded-lg hover:bg-hover transition"
+          >
+            <Download size={16} />
+            {t('allChats.exportAll')}
+          </button>
         <div className="relative w-[320px]">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-tertiary" />
           <input
