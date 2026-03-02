@@ -1,20 +1,23 @@
 import modal
 
-image = modal.Image.debian_slim(python_version="3.12").pip_install(
-    "boto3", "fastapi[standard]"
+image = (
+    modal.Image.debian_slim(python_version="3.12")
+    .pip_install("boto3", "fastapi[standard]")
+    .add_local_python_source("backend")
 )
 
 app = modal.App("hchat-api", image=image)
 
 
-@app.function(allow_concurrent_inputs=100, timeout=600)
+@app.function(timeout=600)
+@modal.concurrent(max_inputs=100)
 @modal.asgi_app()
 def api():
     from fastapi import FastAPI
     from fastapi.middleware.cors import CORSMiddleware
 
-    from routes.chat import router as chat_router
-    from routes.health import router as health_router
+    from backend.routes.chat import router as chat_router
+    from backend.routes.health import router as health_router
 
     web_app = FastAPI(title="H Chat API")
 

@@ -4,7 +4,7 @@ from fastapi import APIRouter
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
 
-from services.bedrock import (
+from backend.services.bedrock import (
     build_converse_params,
     create_client,
     validate_model,
