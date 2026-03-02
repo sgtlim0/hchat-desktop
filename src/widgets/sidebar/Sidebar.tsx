@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { MessageSquare, Folder, Star, Search, Plus, Brain, Network, CalendarClock, Users, Settings, BookOpen } from 'lucide-react'
+import { MessageSquare, Folder, Star, Search, Plus, Brain, Network, CalendarClock, Users, Settings, BookOpen, Swords } from 'lucide-react'
 import { useSessionStore } from '@/entities/session/session.store'
 import { useSettingsStore } from '@/entities/settings/settings.store'
 import { SidebarItem } from '@/shared/ui/SidebarItem'
@@ -110,6 +110,11 @@ export function Sidebar() {
               icon={BookOpen}
               label={t('sidebar.promptLibrary')}
               onClick={() => setView('promptLibrary')}
+            />
+            <SidebarItem
+              icon={Swords}
+              label={t('sidebar.debate')}
+              onClick={() => setView('debate')}
             />
           </div>
         </div>

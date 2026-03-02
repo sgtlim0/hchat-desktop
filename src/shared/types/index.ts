@@ -90,7 +90,7 @@ export interface Skill {
   icon: string
 }
 
-export type ViewState = 'home' | 'chat' | 'settings' | 'allChats' | 'projects' | 'projectDetail' | 'quickChat' | 'memory' | 'agentSwarm' | 'schedule' | 'groupChat' | 'promptLibrary'
+export type ViewState = 'home' | 'chat' | 'settings' | 'allChats' | 'projects' | 'projectDetail' | 'quickChat' | 'memory' | 'agentSwarm' | 'schedule' | 'groupChat' | 'promptLibrary' | 'debate'
 
 // Group Chat types
 
@@ -253,6 +253,33 @@ export interface SavedPrompt {
   usageCount: number
   createdAt: string
   updatedAt: string
+}
+
+// Debate types
+
+export type DebateStatus = 'setup' | 'debating' | 'summarizing' | 'done'
+
+export interface DebateRound {
+  roundNumber: number
+  responses: GroupChatResponse[]
+}
+
+export interface DebateSession {
+  id: string
+  topic: string
+  models: string[]
+  rounds: DebateRound[]
+  summary: string
+  status: DebateStatus
+  createdAt: string
+}
+
+// PDF attachment types
+
+export interface PdfAttachment {
+  fileName: string
+  pageCount: number
+  text: string
 }
 
 // Persona types

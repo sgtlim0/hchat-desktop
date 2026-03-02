@@ -13,6 +13,9 @@ import { Toggle } from '@/shared/ui/Toggle'
 import { testConnection } from '@/shared/lib/bedrock-client'
 import { AWS_REGIONS, DEFAULT_AWS_REGION, MODELS } from '@/shared/constants'
 import type { Persona } from '@/shared/types'
+import type { TFunction } from '@/shared/i18n'
+import { groupByDate, groupByWeek, getLast30Days } from '@/shared/lib/usage-chart'
+import { BarChart } from '@/shared/ui/BarChart'
 
 const TABS = [
   { id: 'api-keys', labelKey: 'settings.tab.apiKeys' as const, icon: Key },
@@ -586,6 +589,11 @@ export function SettingsScreen() {
           }
         }
 
+        // Chart data
+        const recentEntries = getLast30Days(usageEntries)
+        const dailyData = groupByDate(recentEntries)
+        const weeklyData = groupByWeek(recentEntries)
+
         return (
           <div className="space-y-8">
             <div>
@@ -599,6 +607,15 @@ export function SettingsScreen() {
               <p className="text-3xl font-bold text-text-primary mt-1">${usageTotalCost.toFixed(6)}</p>
               <p className="text-xs text-text-tertiary mt-1">{t('usage.totalRequests', { count: String(usageEntries.length) })}</p>
             </div>
+
+            {/* Usage chart */}
+            {recentEntries.length > 0 && (
+              <UsageChartSection
+                dailyData={dailyData}
+                weeklyData={weeklyData}
+                t={t}
+              />
+            )}
 
             {/* Model breakdown */}
             <div className="space-y-4">
@@ -796,6 +813,56 @@ export function SettingsScreen() {
         <div className="max-w-2xl">
           {renderContent()}
         </div>
+      </div>
+    </div>
+  )
+}
+
+// Extracted chart section to keep SettingsScreen manageable
+function UsageChartSection({
+  dailyData,
+  weeklyData,
+  t,
+}: {
+  dailyData: Array<{ date: string; cost: number; requests: number }>
+  weeklyData: Array<{ weekStart: string; cost: number; requests: number }>
+  t: TFunction
+}) {
+  const [chartMode, setChartMode] = useState<'daily' | 'weekly'>('daily')
+
+  const chartData = chartMode === 'daily'
+    ? dailyData.map((d) => ({ label: d.date.slice(5), value: d.cost }))
+    : weeklyData.map((d) => ({ label: d.weekStart.slice(5), value: d.cost }))
+
+  return (
+    <div className="space-y-3">
+      <div className="flex items-center justify-between">
+        <h3 className="text-lg font-semibold text-text-primary">{t('usage.chart.title')}</h3>
+        <div className="flex items-center gap-1 bg-hover rounded-lg p-0.5">
+          <button
+            onClick={() => setChartMode('daily')}
+            className={`px-3 py-1 rounded-md text-xs font-medium transition ${
+              chartMode === 'daily' ? 'bg-surface text-text-primary shadow-sm' : 'text-text-tertiary'
+            }`}
+          >
+            {t('usage.chart.daily')}
+          </button>
+          <button
+            onClick={() => setChartMode('weekly')}
+            className={`px-3 py-1 rounded-md text-xs font-medium transition ${
+              chartMode === 'weekly' ? 'bg-surface text-text-primary shadow-sm' : 'text-text-tertiary'
+            }`}
+          >
+            {t('usage.chart.weekly')}
+          </button>
+        </div>
+      </div>
+      <div className="p-4 border border-border rounded-xl bg-surface">
+        <BarChart
+          data={chartData}
+          height={200}
+          formatValue={(v) => `$${v.toFixed(4)}`}
+        />
       </div>
     </div>
   )

@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, type KeyboardEvent } from 'react'
 import TextareaAutosize from 'react-textarea-autosize'
-import { Plus, Send, Square, User } from 'lucide-react'
+import { Plus, Send, Square, User, FileText, X } from 'lucide-react'
 import { useSessionStore } from '@/entities/session/session.store'
 import { useSettingsStore } from '@/entities/settings/settings.store'
 import { useUsageStore, calculateCost } from '@/entities/usage/usage.store'
@@ -10,7 +10,7 @@ import { ModelSelector } from './ModelSelector'
 import { createStream, getProviderConfig } from '@/shared/lib/providers/factory'
 import { routeModel } from '@/shared/lib/providers/router'
 import { putMessage } from '@/shared/lib/db'
-import type { Message, UsageEntry } from '@/shared/types'
+import type { Message, UsageEntry, PdfAttachment } from '@/shared/types'
 import { MODELS } from '@/shared/constants'
 import { useOnlineStatus } from '@/shared/hooks/useOnlineStatus'
 import { estimateTokens } from '@/shared/lib/token-estimator'
@@ -52,6 +52,33 @@ export function PromptInput({
   const isOnline = useOnlineStatus()
   const [isSending, setIsSending] = useState(false)
   const [showPersonaMenu, setShowPersonaMenu] = useState(false)
+  const [pdfAttachment, setPdfAttachment] = useState<PdfAttachment | null>(null)
+  const [pdfLoading, setPdfLoading] = useState(false)
+  const fileInputRef = useRef<HTMLInputElement>(null)
+
+  async function handlePdfUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (!file || !file.name.endsWith('.pdf')) return
+
+    setPdfLoading(true)
+    try {
+      const { extractPdfText } = await import('@/shared/lib/pdf-extractor')
+      const result = await extractPdfText(file)
+      setPdfAttachment({
+        fileName: file.name,
+        pageCount: result.pageCount,
+        text: result.text,
+      })
+    } catch (error) {
+      const msg = error instanceof Error ? error.message : 'PDF extraction failed'
+      console.error('PDF extraction error:', msg)
+    } finally {
+      setPdfLoading(false)
+      if (fileInputRef.current) {
+        fileInputRef.current.value = ''
+      }
+    }
+  }
 
   // Consume pending prompt (from quick actions or quick chat)
   useEffect(() => {
@@ -149,11 +176,20 @@ export function PromptInput({
     let fullText = ''
 
     try {
+      // Build system prompt with optional PDF context
+      let systemPrompt = activePersona?.systemPrompt
+      if (pdfAttachment) {
+        const pdfContext = `[PDF Document: ${pdfAttachment.fileName} (${pdfAttachment.pageCount} pages)]\n\n${pdfAttachment.text}`
+        systemPrompt = systemPrompt
+          ? `${systemPrompt}\n\n${pdfContext}`
+          : pdfContext
+      }
+
       const stream = createStream(config, {
         modelId: effectiveModel,
         messages: chatHistory,
         signal: abortController.signal,
-        system: activePersona?.systemPrompt,
+        system: systemPrompt,
       })
 
       for await (const event of stream) {
@@ -270,9 +306,35 @@ export function PromptInput({
         )}
       </div>
 
+      {/* PDF attachment chip */}
+      {pdfAttachment && (
+        <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-primary/10 border border-primary/20 text-xs">
+          <FileText size={14} className="text-primary" />
+          <span className="text-primary font-medium truncate max-w-[200px]">{pdfAttachment.fileName}</span>
+          <span className="text-text-tertiary">{t('pdf.pages', { count: String(pdfAttachment.pageCount) })}</span>
+          <button
+            onClick={() => setPdfAttachment(null)}
+            className="p-0.5 hover:bg-primary/20 rounded transition"
+          >
+            <X size={12} className="text-primary" />
+          </button>
+        </div>
+      )}
+      {pdfLoading && (
+        <div className="text-xs text-text-tertiary">{t('pdf.extracting')}</div>
+      )}
+
       <div className="rounded-xl border border-border-input bg-input p-3 flex items-end gap-2">
       {/* Attachment button */}
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept=".pdf"
+        onChange={handlePdfUpload}
+        className="hidden"
+      />
       <button
+        onClick={() => fileInputRef.current?.click()}
         aria-label={t('chat.attach')}
         className="p-2 hover:bg-hover rounded-lg transition flex-shrink-0 focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
       >

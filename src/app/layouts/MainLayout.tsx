@@ -23,6 +23,7 @@ const AgentSwarmBuilder = lazy(() => import('@/pages/swarm/AgentSwarmBuilder').t
 const ScheduleManager = lazy(() => import('@/pages/schedule/ScheduleManager').then((m) => ({ default: m.ScheduleManager })))
 const GroupChatPage = lazy(() => import('@/pages/group-chat/GroupChatPage').then((m) => ({ default: m.GroupChatPage })))
 const PromptLibraryPage = lazy(() => import('@/pages/prompt-library/PromptLibraryPage').then((m) => ({ default: m.PromptLibraryPage })))
+const DebatePage = lazy(() => import('@/pages/debate/DebatePage').then((m) => ({ default: m.DebatePage })))
 
 export function MainLayout() {
   const { t } = useTranslation()
@@ -122,6 +123,10 @@ export function MainLayout() {
 
     if (view === 'promptLibrary') {
       return <PromptLibraryPage />
+    }
+
+    if (view === 'debate') {
+      return <DebatePage />
     }
 
     if (currentSessionId && view === 'chat') {

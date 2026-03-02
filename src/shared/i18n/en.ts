@@ -279,8 +279,9 @@ const en = {
   // session
   'session.newChat': 'New Chat',
 
-  // sidebar - prompt library
+  // sidebar - prompt library & debate
   'sidebar.promptLibrary': 'Prompt Library',
+  'sidebar.debate': 'Model Debate',
 
   // settings tabs
   'settings.tab.usage': 'Usage',
@@ -299,6 +300,10 @@ const en = {
   'usage.outputTokens': 'Output Tokens',
   'usage.cost': 'Cost',
   'usage.clearAll': 'Clear All',
+  'usage.chart.title': 'Cost Trend',
+  'usage.chart.daily': 'Daily',
+  'usage.chart.weekly': 'Weekly',
+  'usage.chart.last30': 'Last 30 Days',
 
   // prompt library
   'promptLib.title': 'Prompt Library',
@@ -330,6 +335,31 @@ const en = {
   'persona.namePlaceholder': 'Persona name',
   'persona.descPlaceholder': 'Short description',
   'persona.promptPlaceholder': 'System prompt content',
+
+  // debate
+  'debate.title': 'Cross-Model Debate',
+  'debate.setup': 'Debate Setup',
+  'debate.setupDesc': '2-3 models debate over 3 rounds and produce a final consensus summary.',
+  'debate.selectModels': 'Select models for debate (2-3)',
+  'debate.modelsSelected': '{count} models selected',
+  'debate.topicLabel': 'Debate Topic',
+  'debate.topicPlaceholder': 'Enter the topic to debate...',
+  'debate.start': 'Start Debate',
+  'debate.stop': 'Stop Debate',
+  'debate.round': 'Round {n}',
+  'debate.summarizing': 'Generating consensus summary...',
+  'debate.summary': 'Final Consensus Summary',
+  'debate.status.setup': 'Setup',
+  'debate.status.debating': 'Debating',
+  'debate.status.summarizing': 'Summarizing',
+  'debate.status.done': 'Done',
+
+  // pdf
+  'pdf.pages': '{count} pages',
+  'pdf.extracting': 'Extracting PDF text...',
+  'pdf.attached': 'PDF attached',
+  'pdf.tooLarge': 'PDF file is too large',
+  'pdf.extractFailed': 'Failed to extract PDF text',
 } as const
 
 export default en

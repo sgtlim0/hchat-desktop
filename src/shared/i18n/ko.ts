@@ -279,8 +279,9 @@ const ko = {
   // session
   'session.newChat': '새 채팅',
 
-  // sidebar - prompt library
+  // sidebar - prompt library & debate
   'sidebar.promptLibrary': '프롬프트 라이브러리',
+  'sidebar.debate': '모델 토론',
 
   // settings tabs
   'settings.tab.usage': '사용량',
@@ -299,6 +300,10 @@ const ko = {
   'usage.outputTokens': '출력 토큰',
   'usage.cost': '비용',
   'usage.clearAll': '전체 초기화',
+  'usage.chart.title': '비용 추이',
+  'usage.chart.daily': '일별',
+  'usage.chart.weekly': '주별',
+  'usage.chart.last30': '최근 30일',
 
   // prompt library
   'promptLib.title': '프롬프트 라이브러리',
@@ -330,6 +335,31 @@ const ko = {
   'persona.namePlaceholder': '페르소나 이름',
   'persona.descPlaceholder': '간단한 설명',
   'persona.promptPlaceholder': '시스템 프롬프트 내용',
+
+  // debate
+  'debate.title': '크로스 모델 토론',
+  'debate.setup': '토론 설정',
+  'debate.setupDesc': '2-3개 모델이 3라운드에 걸쳐 토론하고 최종 합의를 도출합니다.',
+  'debate.selectModels': '토론에 참여할 모델을 선택하세요 (2-3개)',
+  'debate.modelsSelected': '{count}개 모델 선택됨',
+  'debate.topicLabel': '토론 주제',
+  'debate.topicPlaceholder': '토론할 주제를 입력하세요...',
+  'debate.start': '토론 시작',
+  'debate.stop': '토론 중지',
+  'debate.round': '라운드 {n}',
+  'debate.summarizing': '합의 요약 생성 중...',
+  'debate.summary': '최종 합의 요약',
+  'debate.status.setup': '설정 중',
+  'debate.status.debating': '토론 중',
+  'debate.status.summarizing': '요약 중',
+  'debate.status.done': '완료',
+
+  // pdf
+  'pdf.pages': '{count}페이지',
+  'pdf.extracting': 'PDF 텍스트 추출 중...',
+  'pdf.attached': 'PDF 첨부됨',
+  'pdf.tooLarge': 'PDF 파일이 너무 큽니다',
+  'pdf.extractFailed': 'PDF 텍스트 추출에 실패했습니다',
 } as const
 
 export default ko
