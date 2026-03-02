@@ -1,14 +1,17 @@
-import { memo, useMemo } from 'react'
+import { memo, useMemo, useState, useCallback } from 'react'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import type { Components } from 'react-markdown'
 import type { Message } from '@/shared/types'
 import { CodeBlock } from './CodeBlock'
 import { ToolCallGroup } from './ToolCallGroup'
+import * as tts from '@/shared/lib/tts'
 
 interface MessageBubbleProps {
   message: Message
   isStreaming?: boolean
+  messageIndex?: number
+  onFork?: (messageIndex: number) => void
 }
 
 function AssistantAvatar() {
@@ -42,7 +45,35 @@ const markdownComponents: Components = {
   },
 }
 
-export const MessageBubble = memo(function MessageBubble({ message, isStreaming = false }: MessageBubbleProps) {
+export const MessageBubble = memo(function MessageBubble({ message, isStreaming = false, messageIndex, onFork }: MessageBubbleProps) {
+  const [isSpeaking, setIsSpeaking] = useState(false)
+
+  const handleTts = useCallback(() => {
+    if (isSpeaking) {
+      tts.stop()
+      setIsSpeaking(false)
+      return
+    }
+    const text = message.segments
+      .filter((s) => s.type === 'text')
+      .map((s) => s.content)
+      .join('\n')
+    if (!text) return
+    tts.speak(text)
+    setIsSpeaking(true)
+    // Poll for completion
+    const interval = setInterval(() => {
+      if (!tts.isSpeaking()) {
+        setIsSpeaking(false)
+        clearInterval(interval)
+      }
+    }, 500)
+  }, [message.segments, isSpeaking])
+
+  const handleFork = useCallback(() => {
+    if (messageIndex !== undefined && onFork) onFork(messageIndex)
+  }, [messageIndex, onFork])
+
   if (message.role === 'user') {
     const textContent = message.segments
       .filter((s) => s.type === 'text')
@@ -88,6 +119,28 @@ export const MessageBubble = memo(function MessageBubble({ message, isStreaming 
         )}
         {!hasContent && isStreaming && (
           <span className="inline-block w-2 h-4 bg-primary animate-cursor-blink" />
+        )}
+        {!isStreaming && hasContent && (
+          <div className="flex gap-2 mt-2">
+            {tts.isSupported() && (
+              <button
+                onClick={handleTts}
+                className="text-xs text-text-secondary hover:text-primary transition-colors px-2 py-1 rounded hover:bg-card"
+                aria-label={isSpeaking ? 'Stop reading' : 'Read aloud'}
+              >
+                {isSpeaking ? '⏹ Stop' : '🔊 Read'}
+              </button>
+            )}
+            {onFork && messageIndex !== undefined && (
+              <button
+                onClick={handleFork}
+                className="text-xs text-text-secondary hover:text-primary transition-colors px-2 py-1 rounded hover:bg-card"
+                aria-label="Fork from here"
+              >
+                🔀 Fork
+              </button>
+            )}
+          </div>
         )}
       </div>
     </div>

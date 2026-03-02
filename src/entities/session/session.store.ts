@@ -37,6 +37,8 @@ interface SessionState {
   removeTag: (id: string, tag: string) => void
   setPendingPrompt: (prompt: string | null) => void
   importSession: (session: Session, messages: Message[]) => Promise<void>
+  forkSession: (sessionId: string, messageIndex: number) => void
+  setSummary: (sessionId: string, summary: string) => void
   searchMessages: (query: string) => Array<{ sessionId: string; messageId: string; content: string; sessionTitle: string }>
 }
 
@@ -217,6 +219,56 @@ export const useSessionStore = create<SessionState>((set, get) => ({
     if (messages.length > 0) {
       await putMessages(messages)
     }
+  },
+
+  forkSession: (sessionId, messageIndex) => {
+    const state = get()
+    const original = state.sessions.find((s) => s.id === sessionId)
+    if (!original) return
+
+    const originalMessages = state.messages[sessionId] ?? []
+    const forkedMessages = originalMessages.slice(0, messageIndex + 1)
+
+    const newId = `session-${Date.now()}-fork`
+    const now = new Date().toISOString()
+
+    const newSession: Session = {
+      ...original,
+      id: newId,
+      title: `Fork: ${original.title}`,
+      parentId: sessionId,
+      forkPoint: messageIndex,
+      isFavorite: false,
+      pinned: false,
+      isStreaming: false,
+      createdAt: now,
+      updatedAt: now,
+    }
+
+    const newMessages: Message[] = forkedMessages.map((m, i) => ({
+      ...m,
+      id: `msg-${Date.now()}-fork-${i}`,
+      sessionId: newId,
+    }))
+
+    set((s) => ({
+      sessions: [newSession, ...s.sessions],
+      messages: { ...s.messages, [newId]: newMessages },
+      currentSessionId: newId,
+      view: 'chat' as ViewState,
+    }))
+    putSession(newSession).catch(console.error)
+    if (newMessages.length > 0) putMessages(newMessages).catch(console.error)
+  },
+
+  setSummary: (sessionId, summary) => {
+    set((state) => ({
+      sessions: state.sessions.map((s) =>
+        s.id === sessionId ? { ...s, summary } : s
+      ),
+    }))
+    const session = get().sessions.find((s) => s.id === sessionId)
+    if (session) putSession(session).catch(console.error)
   },
 
   searchMessages: (query) => {

@@ -772,6 +772,12 @@ export function SettingsScreen() {
         )
       }
 
+      case 'privacy':
+        return <PrivacyTab />
+
+      case 'features':
+        return <FeaturesTab />
+
       default:
         return (
           <div className="flex items-center justify-center h-64 text-text-secondary text-sm">
@@ -779,6 +785,69 @@ export function SettingsScreen() {
           </div>
         )
     }
+  }
+
+  function PrivacyTab() {
+    const guardrailEnabled = useSettingsStore((s) => s.guardrailEnabled)
+    const setGuardrailEnabled = useSettingsStore((s) => s.setGuardrailEnabled)
+
+    return (
+      <div className="space-y-6">
+        <div>
+          <h3 className="text-lg font-bold text-text-primary">{t('privacy.title')}</h3>
+          <p className="text-sm text-text-secondary mt-1">{t('privacy.description')}</p>
+        </div>
+        <div className="space-y-4">
+          <div className="flex items-center justify-between p-4 rounded-lg border border-border">
+            <div>
+              <div className="font-medium text-sm text-text-primary">{t('privacy.guardrail')}</div>
+              <div className="text-xs text-text-secondary mt-0.5">{t('privacy.guardrailDesc')}</div>
+            </div>
+            <Toggle checked={guardrailEnabled} onChange={setGuardrailEnabled} />
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  function FeaturesTab() {
+    const thinkingDepth = useSettingsStore((s) => s.thinkingDepth)
+    const setThinkingDepth = useSettingsStore((s) => s.setThinkingDepth)
+    const depthOptions = [
+      { value: 'fast' as const, label: t('thinking.fast'), desc: t('features.thinkingFastDesc') },
+      { value: 'balanced' as const, label: t('thinking.balanced'), desc: t('features.thinkingBalancedDesc') },
+      { value: 'deep' as const, label: t('thinking.deep'), desc: t('features.thinkingDeepDesc') },
+    ]
+
+    return (
+      <div className="space-y-6">
+        <div>
+          <h3 className="text-lg font-bold text-text-primary">{t('settings.tab.features')}</h3>
+          <p className="text-sm text-text-secondary mt-1">{t('features.description')}</p>
+        </div>
+        <div className="space-y-4">
+          <div className="p-4 rounded-lg border border-border">
+            <div className="font-medium text-sm text-text-primary mb-3">{t('features.thinkingDepth')}</div>
+            <div className="space-y-2">
+              {depthOptions.map((opt) => (
+                <button
+                  key={opt.value}
+                  onClick={() => setThinkingDepth(opt.value)}
+                  className={`w-full text-left p-3 rounded-lg border transition ${
+                    thinkingDepth === opt.value
+                      ? 'border-primary bg-primary/5'
+                      : 'border-border hover:bg-hover'
+                  }`}
+                >
+                  <div className="font-medium text-sm text-text-primary">{opt.label}</div>
+                  <div className="text-xs text-text-secondary mt-0.5">{opt.desc}</div>
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    )
   }
 
   return (

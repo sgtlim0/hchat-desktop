@@ -354,6 +354,45 @@ const ko = {
   'debate.status.summarizing': '요약 중',
   'debate.status.done': '완료',
 
+  // privacy
+  'privacy.title': '개인정보 보호',
+  'privacy.description': '민감한 데이터 보호 설정을 관리합니다.',
+  'privacy.guardrail': 'AI 가드레일',
+  'privacy.guardrailDesc': '메시지 전송 전 이메일, 전화번호, 신용카드 등 민감한 정보를 감지합니다.',
+
+  // features
+  'features.description': 'AI 기능 설정을 관리합니다.',
+  'features.thinkingDepth': '사고 깊이',
+  'features.thinkingFastDesc': '빠른 응답, 간단한 질문에 적합',
+  'features.thinkingBalancedDesc': '균형 잡힌 속도와 깊이',
+  'features.thinkingDeepDesc': '깊이 있는 분석, 복잡한 문제에 적합',
+
+  // tts
+  'tts.read': '읽기',
+  'tts.stop': '중지',
+
+  // stt
+  'stt.start': '음성 입력',
+  'stt.stop': '음성 입력 중지',
+  'stt.listening': '듣는 중...',
+
+  // thinking depth
+  'thinking.fast': '빠름',
+  'thinking.balanced': '균형',
+  'thinking.deep': '깊이',
+
+  // guardrail
+  'guardrail.warning': '민감한 정보가 감지되었습니다',
+  'guardrail.detected': '감지된 항목',
+  'guardrail.sendAnyway': '그래도 전송',
+
+  // fork
+  'fork.button': '포크',
+  'fork.created': '대화가 포크되었습니다',
+
+  // import formats
+  'import.formatDetected': '{format} 형식이 감지되었습니다',
+
   // pdf
   'pdf.pages': '{count}페이지',
   'pdf.extracting': 'PDF 텍스트 추출 중...',

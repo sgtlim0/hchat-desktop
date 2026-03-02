@@ -354,6 +354,45 @@ const en = {
   'debate.status.summarizing': 'Summarizing',
   'debate.status.done': 'Done',
 
+  // privacy
+  'privacy.title': 'Privacy',
+  'privacy.description': 'Manage sensitive data protection settings.',
+  'privacy.guardrail': 'AI Guardrail',
+  'privacy.guardrailDesc': 'Detect sensitive information like emails, phone numbers, credit cards before sending messages.',
+
+  // features
+  'features.description': 'Manage AI feature settings.',
+  'features.thinkingDepth': 'Thinking Depth',
+  'features.thinkingFastDesc': 'Fast responses, suitable for simple questions',
+  'features.thinkingBalancedDesc': 'Balanced speed and depth',
+  'features.thinkingDeepDesc': 'Deep analysis, suitable for complex problems',
+
+  // tts
+  'tts.read': 'Read',
+  'tts.stop': 'Stop',
+
+  // stt
+  'stt.start': 'Voice input',
+  'stt.stop': 'Stop voice input',
+  'stt.listening': 'Listening...',
+
+  // thinking depth
+  'thinking.fast': 'Fast',
+  'thinking.balanced': 'Balanced',
+  'thinking.deep': 'Deep',
+
+  // guardrail
+  'guardrail.warning': 'Sensitive information detected',
+  'guardrail.detected': 'Detected',
+  'guardrail.sendAnyway': 'Send anyway',
+
+  // fork
+  'fork.button': 'Fork',
+  'fork.created': 'Conversation forked',
+
+  // import formats
+  'import.formatDetected': '{format} format detected',
+
   // pdf
   'pdf.pages': '{count} pages',
   'pdf.extracting': 'Extracting PDF text...',

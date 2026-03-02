@@ -44,6 +44,8 @@ export interface Message {
   createdAt: string  // ISO string
 }
 
+export type ThinkingDepth = 'fast' | 'balanced' | 'deep'
+
 export interface Session {
   id: string
   title: string
@@ -54,6 +56,9 @@ export interface Session {
   pinned: boolean
   tags: string[]
   lastMessage?: string
+  summary?: string
+  parentId?: string
+  forkPoint?: number
   createdAt: string
   updatedAt: string
 }

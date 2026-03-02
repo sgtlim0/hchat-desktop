@@ -20,10 +20,14 @@
 | 사용량 추적 | ✅ 완료 — 토큰 추정, 비용 대시보드, 일별/주별 차트 |
 | 프롬프트 라이브러리 | ✅ 완료 — CRUD, 변수, 카테고리 |
 | 페르소나 시스템 | ✅ 완료 — 5 프리셋, 커스텀, 시스템 프롬프트 |
+| 크로스 모델 토론 | ✅ 완료 — 3라운드 자동 토론, 합의 요약 |
+| PDF 채팅 | ✅ 완료 — pdfjs-dist, 시스템 프롬프트 주입 |
 | 성능 최적화 | ✅ 완료 — memo, manualChunks, lazy |
 | 오프라인 UI | ✅ 완료 — useOnlineStatus, 배너 |
 | 자동 모델 라우팅 | ✅ 완료 — 프롬프트 분석 기반 자동 선택 |
 | 내보내기 UI | ✅ 완료 — ChatHeader 직접 버튼 |
+| v2-extension 분석 | ✅ 완료 — 기능 분석, 화면 설계, 구현 계획 |
+| Works AI 분석 | ✅ 완료 — 기능 분석, 화면 설계, 구현 계획 |
 
 ---
 
@@ -60,9 +64,31 @@
 - [x] 사용량 차트 시각화 — SVG 바차트, 일별/주별 토글, 최근 30일
 - [x] PDF 채팅 — `pdfjs-dist` 텍스트 추출, 시스템 프롬프트 주입, 동적 import
 
+### 문서 & 설계
+- [x] v2-extension 25개 기능 분석 + 18개 이식 가능 기능 우선순위 분류
+- [x] v2 화면 설계 MD + pwa.pen 프레임 4개 (에이전트, AI 도구, TTS/STT, 폴더/태그)
+- [x] v2 구현 계획 (Phase 1~3, 14개 신규 + 19개 수정 파일)
+- [x] Works AI 릴리즈 노트 분석 + 12개 적용 가능 기능 설계
+- [x] Works AI 구현 계획 + pwa.pen 프레임 2개 (Thinking Depth/가드레일, 문서 검사/데이터 분석)
+
 ---
 
 ## 🟡 P1 — 남은 작업
+
+### v2-extension 포팅 (즉시 구현)
+> 📋 상세: `docs/v2-implementation-plan.md` Phase 1
+
+- [ ] TTS (음성 출력) — Web Speech API, MessageBubble에 읽기 버튼
+- [ ] STT (음성 입력) — Web Speech Recognition, PromptInput에 마이크 버튼
+- [ ] AI 대화 요약 — LLM 1회 호출, 세션 카드에 요약 표시
+- [ ] 대화 포크 (Fork) — 특정 메시지에서 분기하여 새 대화 시작
+- [ ] ChatGPT/Claude 가져오기 확장 — 형식 자동 감지 + 변환
+
+### Works AI 포팅 (즉시 구현)
+> 📋 상세: `docs/wrks-implementation-plan.md` Phase 1
+
+- [ ] Thinking Depth 모드 — fast/balanced/deep 3단 토글
+- [ ] 사용량 예산 경고 — 월간 예산 설정, 70% 임계치 알림
 
 ### 내보내기 확장
 - [ ] AllChatsScreen에 일괄 내보내기 기능
@@ -81,18 +107,21 @@
 
 ## 🟢 P2 — 중간 우선순위
 
-### ~~PDF 채팅~~ ✅
-- [x] PDF 업로드 → 텍스트 추출 (`pdfjs-dist`)
-- [x] 문서 컨텍스트 기반 대화
+### v2-extension 포팅 (중간 복잡도)
+> 📋 상세: `docs/v2-implementation-plan.md` Phase 2
 
-### 웹 검색 + RAG
-- [ ] DuckDuckGo/Brave Search 연동
-- [ ] 검색 결과 → 컨텍스트 주입
-- [ ] 출처 인용 표시
+- [ ] 에이전트 모드 — XML tool call 파싱, 5개 도구, 다단계 실행 루프
+- [ ] 웹 검색 + RAG — DuckDuckGo 프록시, 검색 의도 감지, 컨텍스트 주입
+- [ ] AI 도구 패널 — 글쓰기 11종 + 문법 검사 + 요약 + OCR
 
-### ~~크로스 모델 토론~~ ✅
-- [x] 2-3개 모델 간 자동 토론 (3라운드)
-- [x] 최종 합의 요약
+### Works AI 포팅 (중간 복잡도)
+> 📋 상세: `docs/wrks-implementation-plan.md` Phase 2~3
+
+- [ ] AI 가드레일 — 민감 데이터 Regex 감지, 전송 전 경고/마스킹
+- [ ] 문서 건강 검사 — 맞춤법/문법/형식 일관성 AI 분석
+- [ ] ROI 측정 대시보드 — 사용량 대비 생산성 지표
+- [ ] Excel/CSV 분석 — SheetJS 파싱, AI 분석, SVG 차트
+- [ ] 이미지 생성 UI — DALL-E / Gemini Imagen API 연동
 
 ### 백엔드 실행 연동
 - [ ] Memory — LLM 기반 자동 컨텍스트 추출
@@ -107,23 +136,17 @@
 
 ### 사용량 추적 고도화
 - [ ] 백엔드 SSE `usage` 이벤트에서 실제 토큰 수 수신 (현재 추정치)
-- [x] 일별/주별 차트 시각화 (SVG 바차트, BarChart 컴포넌트)
-- [ ] 예산 알림 설정
 
 ---
 
 ## 🔵 P3 — 낮은 우선순위
 
-### 대화 포크
-- [ ] 특정 메시지에서 분기하여 새 대화 시작
+### v2-extension 포팅 (대화 정리)
+> 📋 상세: `docs/v2-implementation-plan.md` Phase 3
 
-### OCR / 비전 UI
-- [ ] 이미지 업로드 전용 분석 모드
-- [ ] 스크린샷 붙여넣기 지원
-
-### TTS / STT
-- [ ] 음성 입력 (Web Speech API)
-- [ ] 음성 출력 (TTS)
+- [ ] 대화 폴더 — CRUD, 컬러 코딩, 사이드바 섹션
+- [ ] 대화 태그 — 태그 추가/제거, 필터링, 태그 클라우드
+- [ ] 스토리지 관리 — IndexedDB 분석 + 정리 UI
 
 ### 메시지 가상화
 - [ ] 100+ 메시지 목록에 `react-window` 적용
@@ -141,12 +164,29 @@
 
 ---
 
+## 설계 문서 인덱스
+
+| 문서 | 내용 |
+|------|------|
+| `docs/v2-feature-analysis.md` | v2-extension 25개 기능 분석, 이식 우선순위 |
+| `docs/v2-screen-design.md` | v2 신규 화면 와이어프레임 (에이전트, TTS/STT, 도구, 폴더/태그) |
+| `docs/v2-implementation-plan.md` | v2 Phase 1~3 구현 상세 (코드 패턴, 파일 목록, 위험 요소) |
+| `docs/wrks-feature-design.md` | Works AI 12개 기능 분석 + 5개 화면 설계 |
+| `docs/wrks-implementation-plan.md` | Works AI Phase 1~3 구현 상세 (코드 패턴, 파일 목록) |
+| `pwa.pen` | Pencil MCP 화면 설계 — 6개 신규 프레임 (v2 4개 + wrks 2개) |
+
+---
+
 ## 구현 진행률
 
 | 우선순위 | 완료 | 남은 항목 | 진행률 |
 |----------|------|-----------|--------|
 | P0 | 7/7 | 0 | 100% |
-| P1 | 12/17 | 5 | 71% |
-| P2 | 6/11 | 5 | 55% |
-| P3 | 0/7 | 7 | 0% |
-| **전체** | **25/42** | **17** | **60%** |
+| P1 | 12/26 | 14 | 46% |
+| P2 | 6/22 | 16 | 27% |
+| P3 | 0/9 | 9 | 0% |
+| 문서/설계 | 5/5 | 0 | 100% |
+| **전체** | **30/69** | **39** | **43%** |
+
+> **참고**: v2-extension 및 Works AI 기능 추가로 전체 항목 수 증가 (42 → 69).
+> 기존 구현 완료 항목은 그대로 유지되며, 신규 기능이 TODO에 반영됨.

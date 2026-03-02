@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 import { DEFAULT_MODEL_ID, DEFAULT_AWS_REGION } from '@/shared/constants'
-import type { AwsCredentials } from '@/shared/types'
+import type { AwsCredentials, ThinkingDepth } from '@/shared/types'
 import type { Language } from '@/shared/i18n/types'
 
 const SETTINGS_KEY = 'hchat:settings'
@@ -15,6 +15,10 @@ interface PersistedSettings {
   sidebarOpen: boolean
   region: string
   autoRouting: boolean
+  thinkingDepth: ThinkingDepth
+  monthlyBudget: number
+  budgetThreshold: number
+  guardrailEnabled: boolean
 }
 
 function loadSettings(): Partial<PersistedSettings> {
@@ -92,6 +96,30 @@ function saveLanguage(lang: Language): void {
   localStorage.setItem(LANGUAGE_KEY, lang)
 }
 
+function buildPersistedSettings(s: {
+  selectedModel: string
+  darkMode: boolean
+  sidebarOpen: boolean
+  credentials?: AwsCredentials | null
+  autoRouting: boolean
+  thinkingDepth?: ThinkingDepth
+  monthlyBudget?: number
+  budgetThreshold?: number
+  guardrailEnabled?: boolean
+}): PersistedSettings {
+  return {
+    selectedModel: s.selectedModel,
+    darkMode: s.darkMode,
+    sidebarOpen: s.sidebarOpen,
+    region: s.credentials?.region ?? DEFAULT_AWS_REGION,
+    autoRouting: s.autoRouting,
+    thinkingDepth: s.thinkingDepth ?? 'balanced',
+    monthlyBudget: s.monthlyBudget ?? 10,
+    budgetThreshold: s.budgetThreshold ?? 0.7,
+    guardrailEnabled: s.guardrailEnabled ?? true,
+  }
+}
+
 const persisted = loadSettings()
 const savedCredentials = loadCredentials()
 const savedOpenaiKey = loadOpenaiKey()
@@ -109,6 +137,10 @@ interface SettingsState {
   geminiApiKey: string | null
   autoRouting: boolean
   language: Language
+  thinkingDepth: ThinkingDepth
+  monthlyBudget: number
+  budgetThreshold: number
+  guardrailEnabled: boolean
 
   setSelectedModel: (modelId: string) => void
   toggleDarkMode: () => void
@@ -120,6 +152,10 @@ interface SettingsState {
   setGeminiApiKey: (key: string | null) => void
   setAutoRouting: (enabled: boolean) => void
   setLanguage: (lang: Language) => void
+  setThinkingDepth: (depth: ThinkingDepth) => void
+  setMonthlyBudget: (budget: number) => void
+  setBudgetThreshold: (threshold: number) => void
+  setGuardrailEnabled: (enabled: boolean) => void
   hasCredentials: () => boolean
 }
 
@@ -134,41 +170,24 @@ export const useSettingsStore = create<SettingsState>((set, get) => ({
   geminiApiKey: savedGeminiKey,
   autoRouting: persisted.autoRouting ?? false,
   language: savedLanguage,
+  thinkingDepth: (persisted.thinkingDepth as ThinkingDepth) ?? 'balanced',
+  monthlyBudget: persisted.monthlyBudget ?? 10,
+  budgetThreshold: persisted.budgetThreshold ?? 0.7,
+  guardrailEnabled: persisted.guardrailEnabled ?? true,
 
   setSelectedModel: (modelId) => {
     set({ selectedModel: modelId })
-    const s = get()
-    saveSettings({
-      selectedModel: modelId,
-      darkMode: s.darkMode,
-      sidebarOpen: s.sidebarOpen,
-      region: s.credentials?.region ?? DEFAULT_AWS_REGION,
-      autoRouting: s.autoRouting,
-    })
+    saveSettings(buildPersistedSettings(get()))
   },
 
   toggleDarkMode: () => {
     set((state) => ({ darkMode: !state.darkMode }))
-    const s = get()
-    saveSettings({
-      selectedModel: s.selectedModel,
-      darkMode: s.darkMode,
-      sidebarOpen: s.sidebarOpen,
-      region: s.credentials?.region ?? DEFAULT_AWS_REGION,
-      autoRouting: s.autoRouting,
-    })
+    saveSettings(buildPersistedSettings(get()))
   },
 
   toggleSidebar: () => {
     set((state) => ({ sidebarOpen: !state.sidebarOpen }))
-    const s = get()
-    saveSettings({
-      selectedModel: s.selectedModel,
-      darkMode: s.darkMode,
-      sidebarOpen: s.sidebarOpen,
-      region: s.credentials?.region ?? DEFAULT_AWS_REGION,
-      autoRouting: s.autoRouting,
-    })
+    saveSettings(buildPersistedSettings(get()))
   },
 
   setSettingsOpen: (open) => set({ settingsOpen: open }),
@@ -191,19 +210,32 @@ export const useSettingsStore = create<SettingsState>((set, get) => ({
 
   setAutoRouting: (enabled) => {
     set({ autoRouting: enabled })
-    const s = get()
-    saveSettings({
-      selectedModel: s.selectedModel,
-      darkMode: s.darkMode,
-      sidebarOpen: s.sidebarOpen,
-      region: s.credentials?.region ?? DEFAULT_AWS_REGION,
-      autoRouting: enabled,
-    })
+    saveSettings(buildPersistedSettings(get()))
   },
 
   setLanguage: (lang) => {
     set({ language: lang })
     saveLanguage(lang)
+  },
+
+  setThinkingDepth: (depth) => {
+    set({ thinkingDepth: depth })
+    saveSettings(buildPersistedSettings(get()))
+  },
+
+  setMonthlyBudget: (budget) => {
+    set({ monthlyBudget: budget })
+    saveSettings(buildPersistedSettings(get()))
+  },
+
+  setBudgetThreshold: (threshold) => {
+    set({ budgetThreshold: threshold })
+    saveSettings(buildPersistedSettings(get()))
+  },
+
+  setGuardrailEnabled: (enabled) => {
+    set({ guardrailEnabled: enabled })
+    saveSettings(buildPersistedSettings(get()))
   },
 
   hasCredentials: () => {

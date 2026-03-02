@@ -4,7 +4,7 @@ import { useSessionStore } from '@/entities/session/session.store'
 import { getRelativeTime, getDateGroup } from '@/shared/lib/time'
 import { getModelName } from '@/shared/lib/model-meta'
 import { useTranslation } from '@/shared/i18n'
-import { parseImportJson, readFileAsText } from '@/shared/lib/import-chat'
+import { importFromAnySource, readFileAsText } from '@/shared/lib/import-chat'
 
 type FilterType = 'all' | 'favorites' | 'projects' | 'pinned'
 
@@ -21,7 +21,7 @@ export function AllChatsScreen() {
 
     try {
       const text = await readFileAsText(file)
-      const { session, messages } = parseImportJson(text)
+      const { session, messages } = importFromAnySource(text)
       await importSession(session, messages)
     } catch (error) {
       const msg = error instanceof Error ? error.message : 'Unknown error'

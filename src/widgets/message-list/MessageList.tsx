@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useCallback } from 'react'
 import { useSessionStore } from '@/entities/session/session.store'
 import { useTranslation } from '@/shared/i18n'
 import { MessageBubble } from './MessageBubble'
@@ -11,7 +11,13 @@ export function MessageList({ sessionId }: MessageListProps) {
   const { t } = useTranslation()
   const messages = useSessionStore((s) => s.messages[sessionId] ?? [])
   const session = useSessionStore((s) => s.sessions.find((ss) => ss.id === sessionId))
+  const forkSession = useSessionStore((s) => s.forkSession)
   const bottomRef = useRef<HTMLDivElement>(null)
+
+  const handleFork = useCallback(
+    (messageIndex: number) => forkSession(sessionId, messageIndex),
+    [sessionId, forkSession],
+  )
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
@@ -38,6 +44,8 @@ export function MessageList({ sessionId }: MessageListProps) {
               key={message.id}
               message={message}
               isStreaming={isStreaming}
+              messageIndex={index}
+              onFork={handleFork}
             />
           )
         })}

@@ -1,6 +1,6 @@
-import { useState, useRef, useEffect, type KeyboardEvent } from 'react'
+import { useState, useRef, useEffect, useCallback, type KeyboardEvent } from 'react'
 import TextareaAutosize from 'react-textarea-autosize'
-import { Plus, Send, Square, User, FileText, X } from 'lucide-react'
+import { Plus, Send, Square, User, FileText, X, Mic, MicOff, Shield } from 'lucide-react'
 import { useSessionStore } from '@/entities/session/session.store'
 import { useSettingsStore } from '@/entities/settings/settings.store'
 import { useUsageStore, calculateCost } from '@/entities/usage/usage.store'
@@ -10,10 +10,12 @@ import { ModelSelector } from './ModelSelector'
 import { createStream, getProviderConfig } from '@/shared/lib/providers/factory'
 import { routeModel } from '@/shared/lib/providers/router'
 import { putMessage } from '@/shared/lib/db'
-import type { Message, UsageEntry, PdfAttachment } from '@/shared/types'
+import type { Message, UsageEntry, PdfAttachment, ThinkingDepth } from '@/shared/types'
 import { MODELS } from '@/shared/constants'
 import { useOnlineStatus } from '@/shared/hooks/useOnlineStatus'
 import { estimateTokens } from '@/shared/lib/token-estimator'
+import * as stt from '@/shared/lib/stt'
+import { detectSensitiveData, getDetectionLabel } from '@/shared/lib/guardrail'
 
 interface PromptInputProps {
   onSend?: (message: string) => void
@@ -49,12 +51,37 @@ export function PromptInput({
   const activePersonaId = usePersonaStore((s) => s.activePersonaId)
   const setActivePersona = usePersonaStore((s) => s.setActivePersona)
 
+  const thinkingDepth = useSettingsStore((s) => s.thinkingDepth)
+  const setThinkingDepth = useSettingsStore((s) => s.setThinkingDepth)
+  const guardrailEnabled = useSettingsStore((s) => s.guardrailEnabled)
+
   const isOnline = useOnlineStatus()
   const [isSending, setIsSending] = useState(false)
   const [showPersonaMenu, setShowPersonaMenu] = useState(false)
   const [pdfAttachment, setPdfAttachment] = useState<PdfAttachment | null>(null)
   const [pdfLoading, setPdfLoading] = useState(false)
+  const [isListening, setIsListening] = useState(false)
+  const [showGuardrailWarning, setShowGuardrailWarning] = useState(false)
+  const [guardrailDetections, setGuardrailDetections] = useState<string[]>([])
   const fileInputRef = useRef<HTMLInputElement>(null)
+
+  const handleSttToggle = useCallback(() => {
+    if (isListening) {
+      stt.stopListening()
+      setIsListening(false)
+      return
+    }
+    if (!stt.isSupported()) return
+    setIsListening(true)
+    stt.startListening(
+      (text, isFinal) => {
+        if (isFinal) {
+          setInput((prev) => (prev ? prev + ' ' + text : text))
+        }
+      },
+      () => setIsListening(false),
+    )
+  }, [isListening])
 
   async function handlePdfUpload(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]
@@ -105,7 +132,7 @@ export function PromptInput({
     }
   }
 
-  async function handleSend() {
+  async function handleSend(bypassGuardrail = false) {
     if (!input.trim() || isSending || !isOnline) return
 
     if (!hasRequiredCredentials()) {
@@ -115,8 +142,19 @@ export function PromptInput({
       return
     }
 
+    // Guardrail check
+    if (guardrailEnabled && !bypassGuardrail) {
+      const detections = detectSensitiveData(input.trim())
+      if (detections.length > 0) {
+        setGuardrailDetections(detections.map((d) => getDetectionLabel(d.type)))
+        setShowGuardrailWarning(true)
+        return
+      }
+    }
+
     const messageText = input.trim()
     setInput('')
+    setShowGuardrailWarning(false)
     setIsSending(true)
 
     // Auto-route model if enabled
@@ -266,9 +304,42 @@ export function PromptInput({
     setIsSending(false)
   }
 
+  const depthOptions: { value: ThinkingDepth; label: string }[] = [
+    { value: 'fast', label: t('thinking.fast') },
+    { value: 'balanced', label: t('thinking.balanced') },
+    { value: 'deep', label: t('thinking.deep') },
+  ]
+
   return (
     <div className="space-y-2">
-      {/* Persona chip */}
+      {/* Guardrail warning */}
+      {showGuardrailWarning && (
+        <div className="flex items-start gap-2 p-3 rounded-lg bg-yellow-500/10 border border-yellow-500/30 text-sm">
+          <Shield size={16} className="text-yellow-600 mt-0.5 flex-shrink-0" />
+          <div className="flex-1">
+            <p className="font-medium text-yellow-700 dark:text-yellow-400">{t('guardrail.warning')}</p>
+            <p className="text-yellow-600 dark:text-yellow-500 text-xs mt-0.5">
+              {t('guardrail.detected')}: {guardrailDetections.join(', ')}
+            </p>
+            <div className="flex gap-2 mt-2">
+              <button
+                onClick={() => { setShowGuardrailWarning(false) }}
+                className="px-3 py-1 text-xs rounded bg-hover text-text-secondary hover:bg-border transition"
+              >
+                {t('common.cancel')}
+              </button>
+              <button
+                onClick={() => handleSend(true)}
+                className="px-3 py-1 text-xs rounded bg-yellow-500 text-white hover:bg-yellow-600 transition"
+              >
+                {t('guardrail.sendAnyway')}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Persona chip + Thinking Depth */}
       <div className="relative flex items-center gap-2">
         <button
           onClick={() => setShowPersonaMenu(!showPersonaMenu)}
@@ -304,6 +375,23 @@ export function PromptInput({
             ))}
           </div>
         )}
+
+        {/* Thinking Depth toggle */}
+        <div className="flex items-center bg-hover rounded-full p-0.5">
+          {depthOptions.map((opt) => (
+            <button
+              key={opt.value}
+              onClick={() => setThinkingDepth(opt.value)}
+              className={`px-2.5 py-0.5 rounded-full text-[11px] font-medium transition ${
+                thinkingDepth === opt.value
+                  ? 'bg-primary text-white'
+                  : 'text-text-tertiary hover:text-text-secondary'
+              }`}
+            >
+              {opt.label}
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* PDF attachment chip */}
@@ -341,6 +429,21 @@ export function PromptInput({
         <Plus size={20} className="text-text-secondary" />
       </button>
 
+      {/* STT mic button */}
+      {stt.isSupported() && (
+        <button
+          onClick={handleSttToggle}
+          aria-label={isListening ? t('stt.stop') : t('stt.start')}
+          className={`p-2 rounded-lg transition flex-shrink-0 focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 ${
+            isListening
+              ? 'bg-red-500/10 text-red-500 hover:bg-red-500/20'
+              : 'hover:bg-hover text-text-secondary'
+          }`}
+        >
+          {isListening ? <MicOff size={20} /> : <Mic size={20} />}
+        </button>
+      )}
+
       {/* Textarea */}
       <TextareaAutosize
         ref={textareaRef}
@@ -368,7 +471,7 @@ export function PromptInput({
           </button>
         ) : (
           <button
-            onClick={handleSend}
+            onClick={() => handleSend()}
             disabled={!input.trim() || !isOnline}
             aria-label={t('chat.send')}
             className={`p-2 rounded-lg transition focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 ${
