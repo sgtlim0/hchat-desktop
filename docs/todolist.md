@@ -132,7 +132,7 @@
 
 ### OpenAI/Gemini 백엔드 프록시 (보안 강화)
 - [x] Modal에 `/api/openai`, `/api/gemini` 엔드포인트 추가
-- [ ] API 키를 Modal Secrets에 저장 (배포 시 설정 필요)
+- [x] API 키를 Modal Secrets에 저장 — hchat-api-keys Secret, 서버 환경변수 우선순위
 - [x] 클라이언트 직접 호출 → 서버 프록시로 전환 (VITE_API_BASE_URL 설정 시)
 
 ### 사용량 추적 고도화
@@ -184,10 +184,10 @@
 |----------|------|-----------|--------|
 | P0 | 7/7 | 0 | 100% |
 | P1 | 27/27 | 0 | 100% |
-| P2 | 21/22 | 1 | 95% |
+| P2 | 22/22 | 0 | 100% |
 | P3 | 9/9 | 0 | 100% |
 | 문서/설계 | 5/5 | 0 | 100% |
-| **전체** | **69/70** | **1** | **99%** |
+| **전체** | **70/70** | **0** | **100%** |
 
-> **참고**: P0, P1, P3 완료. P2 남은 1개: API 키를 Modal Secrets에 저장 (배포 시 환경 설정).
-> 모든 기능 구현 완료. `modal deploy backend/app.py`로 백엔드 배포 필요.
+> **모든 TODO 항목 완료.** 배포: `modal deploy backend/app.py` + `vercel --prod`
+> Secret 설정: `modal secret create hchat-api-keys OPENAI_API_KEY=sk-... GEMINI_API_KEY=...`
