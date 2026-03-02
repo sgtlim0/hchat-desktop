@@ -4,19 +4,20 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-H Chat Desktop — AI 모델(Claude, GPT, Gemini)과 대화하는 Progressive Web App. React 19, TypeScript 5.9, Vite 7, Zustand 5, Tailwind CSS 3 기반. Phase 3 완료 — 멀티 프로바이더, 그룹 채팅, 내보내기, IndexedDB 영속성, i18n 지원.
+H Chat Desktop — Advanced AI chat Progressive Web App supporting multi-provider models (Claude, GPT, Gemini). React 19, TypeScript 5.9, Vite 7, Zustand 5, Tailwind CSS 3. **100% complete** (70/70 TODO items) with 667 tests (41 suites). Features: agent mode, web search, debate, image gen, PDF/Excel analysis, TTS/STT, prompt library, persona system, usage tracking, ROI dashboard, folders/tags, memory, schedule, swarm, channels, guardrail, auto-routing, offline support.
 
 ## Commands
 
 ```bash
-npm install          # Install dependencies
-npm run dev          # Vite dev server (localhost:5173)
-npm run build        # TypeScript check + Vite production build
-npm run lint         # ESLint
-npm run preview      # Preview production build locally
-npm test             # Vitest unit/integration tests
-npm run test:ui      # Vitest interactive UI
-npm run test:coverage # Coverage report (target: 80%+)
+npm install               # Install dependencies
+npm run dev               # Vite dev server (localhost:5173)
+npm run build             # TypeScript check + Vite production build
+npm run lint              # ESLint
+npm run preview           # Preview production build locally
+npm test                  # Vitest unit/integration tests (667 tests, 41 suites)
+npm run test:ui           # Vitest interactive UI
+npm run test:coverage     # Coverage report (83% stmts, 79% branches, 91% funcs, 82% lines)
+npx playwright test       # E2E tests (24 tests)
 ```
 
 ## Architecture
@@ -26,18 +27,21 @@ Uses **Feature-Sliced Design (FSD)** with `@/` path alias mapping to `src/`:
 ```
 src/
 ├── app/layouts/         # MainLayout — view routing dispatch, keyboard shortcuts, hydration
-├── pages/               # 12 screens: home, chat, all-chats, projects, settings, quick-chat,
-│                        #   group-chat, memory, swarm, schedule, project-detail
+├── pages/               # 17+ screens: home, chat, all-chats, projects, settings, quick-chat,
+│                        #   group-chat, memory, swarm, schedule, project-detail, prompt-library,
+│                        #   debate, ai-tools, image-gen, agent
 ├── widgets/             # Complex feature components (message-list, prompt-input, sidebar, search)
-├── entities/            # 8 Zustand stores: session, settings, project, group-chat,
-│                        #   channel, memory, swarm, schedule
+├── entities/            # 15 Zustand stores: session, settings, project, group-chat, channel, memory,
+│                        #   swarm, schedule, usage, persona, prompt-template (prompt-library), debate,
+│                        #   folder, tag, toast
 ├── shared/
 │   ├── ui/              # 11 reusable components (Button, Avatar, Toggle, etc.)
-│   ├── lib/             # Utilities, Bedrock client, provider factory, Dexie DB
+│   ├── lib/             # Utilities, Bedrock client, provider factory, Dexie DB, token-estimator
 │   ├── lib/providers/   # Multi-provider: OpenAI, Gemini, factory, router
+│   ├── lib/agent/       # Agent system: XML tool parser, 4 tools (search, memory, schedule, file)
 │   ├── i18n/            # Custom i18n system (ko/en)
-│   ├── types/           # TypeScript interfaces (Message, Session, Project, etc.)
-│   ├── constants.ts     # Models list, BEDROCK_MODEL_MAP, default model
+│   ├── types/           # TypeScript interfaces (Message, Session, Project, Memory, Agent, etc.)
+│   ├── constants.ts     # Models list, BEDROCK_MODEL_MAP, default model, AI tool definitions
 │   └── styles/          # globals.css with CSS variables for light/dark theme
 ```
 
@@ -45,27 +49,36 @@ src/
 
 No React Router. Navigation is state-driven via Zustand:
 - `SessionStore.view` (`ViewState` type) determines which page renders
+- `ViewState` = `'home' | 'chat' | 'settings' | 'allChats' | 'projects' | 'projectDetail' | 'quickChat' | 'memory' | 'agentSwarm' | 'schedule' | 'groupChat' | 'promptLibrary' | 'debate' | 'aiTools' | 'imageGen' | 'agent'`
 - `MainLayout.renderContent()` dispatches based on `view` value
 - Navigation through store actions: `selectSession()`, `goHome()`, `setView()`
 
 ### State Management (Zustand)
 
-8 stores in `src/entities/`, all persisted via IndexedDB (Dexie):
-- **SessionStore** — sessions, messages (keyed by sessionId), currentSessionId, view state, streaming
-- **SettingsStore** — selectedModel, darkMode, sidebarOpen, credentials, language, systemPrompt
+15 stores in `src/entities/`, all persisted via IndexedDB (Dexie):
+- **SessionStore** — sessions, messages (keyed by sessionId), currentSessionId, view state, streaming, folders/tags
+- **SettingsStore** — selectedModel, darkMode, sidebarOpen, credentials, language, systemPrompt, monthlyBudget, thinkingDepth
 - **ProjectStore** — projects, selectedProjectId
 - **GroupChatStore** — multi-model parallel chat
-- **ChannelStore** — Slack/Telegram channel config (mock)
-- **MemoryStore** — context memory management (mock)
-- **SwarmStore** — agent orchestration (mock)
-- **ScheduleStore** — scheduled tasks (mock)
+- **ChannelStore** — Slack/Telegram channel config + webhook notifications
+- **MemoryStore** — context memory management + auto-extraction
+- **SwarmStore** — agent orchestration + SSE execution
+- **ScheduleStore** — scheduled tasks + async execution
+- **UsageStore** — token usage tracking, cost calculation, ROI metrics
+- **PersonaStore** — persona presets (assistant, tutor, coder, analyst, creative) + custom CRUD
+- **PromptTemplateStore** (prompt-library) — template CRUD, `{{variable}}` rendering, categories
+- **DebateStore** — cross-model debate sessions, 3-round auto-debate, consensus summary
+- **FolderStore** — folder CRUD, color coding, sidebar filtering
+- **TagStore** — tag CRUD, color tags, multi-select
+- **ToastStore** — toast notifications (success, error, warning, info)
 
 ### Multi-Provider System
 
 Factory pattern in `shared/lib/providers/`:
 - `factory.ts` — model ID → provider routing
-- Bedrock: via Modal backend API (`VITE_API_BASE_URL`)
-- OpenAI/Gemini: direct browser API calls
+- **Bedrock**: via Modal backend API (`POST /api/chat` SSE)
+- **OpenAI/Gemini**: via Modal backend proxy (`POST /api/openai/chat`, `POST /api/gemini/chat` SSE) when `VITE_API_BASE_URL` is set, OR direct browser API calls (fallback)
+- Auto-routing: `model-router.ts` analyzes prompt intent and recommends optimal model
 
 ### Message Model
 
@@ -94,29 +107,86 @@ modal deploy backend/app.py    # Production deploy
 ```
 
 - **Production**: https://sgtlim0--hchat-api-api.modal.run
-- **Endpoints**: `POST /api/chat` (SSE), `POST /api/chat/test`, `GET /api/health`
-- SSE format: `data: {"type":"text|done|error", ...}\n\n`
+- **Endpoints**:
+  - `POST /api/chat` — Bedrock SSE streaming (Claude models)
+  - `POST /api/chat/test` — Bedrock API connection test
+  - `GET /api/health` — Health check
+  - `POST /api/search` — DuckDuckGo web search proxy
+  - `POST /api/extract-memory` — LLM-based context extraction (Bedrock Haiku)
+  - `POST /api/schedule/execute` — Async scheduled prompt execution
+  - `POST /api/swarm/execute` — Multi-agent SSE pipeline
+  - `POST /api/channels/notify` — Slack webhook + Telegram Bot API
+  - `POST /api/openai/chat` — OpenAI SSE proxy (API key in Modal Secrets)
+  - `POST /api/gemini/chat` — Gemini SSE proxy (API key in Modal Secrets)
+- **Dependencies**: boto3, fastapi[standard], duckduckgo-search, httpx, openai, google-genai
+- **SSE format**: `data: {"type":"text|done|error|usage", ...}\n\n`
+- **Secrets** (optional): `modal secret create hchat-api-keys OPENAI_API_KEY=sk-... GEMINI_API_KEY=...`
 
 ## Deployment
 
 - **Frontend**: Vercel (`vercel --prod`) — https://hchat-desktop.vercel.app
 - **Backend**: Modal (`modal deploy backend/app.py`)
 - **Env vars**: `VITE_API_BASE_URL` (empty=Vite proxy, Modal URL=production)
+- **Secrets setup** (optional, for OpenAI/Gemini proxy):
+  ```bash
+  modal secret create hchat-api-keys \
+    OPENAI_API_KEY=sk-proj-... \
+    GEMINI_API_KEY=AIza...
+  ```
+  Then uncomment `secrets=[modal.Secret.from_name("hchat-api-keys")]` in `backend/app.py`
 
 ## Feature Status
 
-### ✅ Functional
+**All features fully functional (100% complete):**
+
+### Core Chat
 - Multi-provider chat (Bedrock, OpenAI, Gemini) with SSE streaming
 - Group chat (multi-model parallel comparison)
-- Export (Markdown, HTML, JSON, TXT)
-- Full-text search across sessions/messages
-- IndexedDB persistence (sessions, messages, settings)
+- Quick chat (one-shot prompt without session)
+- Agent mode (XML tool calls: search, memory, schedule, file)
+- Auto-routing (prompt intent analysis → model recommendation)
+- Message fork (branch conversation from any message)
+
+### AI Features
+- Web search (DuckDuckGo proxy, RAG integration)
+- AI tools panel (11 writing tools + grammar check + summarize + doc health)
+- Debate mode (2-3 models, 3-round auto-debate, consensus summary)
+- Prompt library (CRUD, `{{variable}}` templates, categories)
+- Persona system (5 presets + custom CRUD, system prompt injection)
+- TTS (Web Speech API, read-aloud button)
+- STT (Web Speech Recognition, microphone input)
+- AI summarization (LLM-based chat summary)
+- Thinking depth (fast/balanced/deep modes)
+- AI guardrail (sensitive data detection, warning/masking)
+
+### Data & Analysis
+- PDF chat (pdfjs-dist text extraction, system prompt injection)
+- Excel/CSV analysis (SheetJS parsing, AI analysis)
+- Image generation (DALL-E 3 integration)
+- Usage tracking (token estimation, cost calculation, real-time tracking)
+- ROI dashboard (provider/model cost breakdown, productivity metrics)
+
+### Organization & Data
+- Export (Markdown, HTML, JSON, TXT, PDF)
+- Import (JSON, ChatGPT/Claude format auto-detection)
+- Folders (CRUD, color coding, sidebar filtering)
+- Tags (CRUD, color tags, multi-select)
+- Storage management (IndexedDB analysis, cleanup)
+- Full-text search (sessions/messages)
+- Memory (CRUD + LLM auto-extraction)
+- Schedule (CRUD + async execution)
+- Swarm (multi-agent orchestration + SSE execution)
+- Channels (Slack/Telegram config + webhook notifications)
+
+### UX & Quality
+- IndexedDB persistence (all 15 stores, backup/restore)
 - i18n (Korean/English)
 - PWA (installable, service worker caching)
-- Dark mode
-
-### ⚠️ UI Only (Mock Backend)
-- Memory panel (CRUD works, no LLM auto-extraction)
-- Schedule manager (CRUD works, no cron execution)
-- Agent swarm builder (CRUD works, no agent execution)
-- Channel connections (config UI, no real webhooks)
+- Dark mode (CSS variables, comprehensive theming)
+- Offline support (network status detection, banner, button disable)
+- Message virtualization (react-window for 50+ messages)
+- Budget warning (monthly budget, 70% threshold alert)
+- Toast notifications (success, error, warning, info)
+- Accessibility (focus-trap, skip-to-content, ARIA, WCAG AA contrast)
+- Mobile responsive (sidebar overlay, auto-close)
+- Keyboard shortcuts (Cmd/Ctrl+K, Cmd/Ctrl+B, Cmd/Ctrl+,)
