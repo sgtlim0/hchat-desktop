@@ -1,6 +1,16 @@
-import { describe, it, expect, beforeEach } from 'vitest'
+import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { useSwarmStore } from '../swarm.store'
 import type { AgentRole } from '@/shared/types'
+
+vi.mock('@/shared/lib/db', () => ({
+  getAllSwarmAgents: vi.fn().mockResolvedValue([]),
+  getAllSwarmConnections: vi.fn().mockResolvedValue([]),
+  putSwarmAgent: vi.fn().mockResolvedValue(undefined),
+  deleteSwarmAgentFromDb: vi.fn().mockResolvedValue(undefined),
+  putSwarmConnection: vi.fn().mockResolvedValue(undefined),
+  deleteSwarmConnectionFromDb: vi.fn().mockResolvedValue(undefined),
+  bulkPutSwarmAgents: vi.fn().mockResolvedValue(undefined),
+}))
 
 describe('useSwarmStore', () => {
   beforeEach(() => {
@@ -51,42 +61,42 @@ describe('useSwarmStore', () => {
   })
 
   describe('addAgent', () => {
-    it('adds a new agent', () => {
+    it('adds a new agent', async () => {
       const initialLength = useSwarmStore.getState().agents.length
 
-      useSwarmStore.getState().addAgent('reviewer', 300, 400)
+      await useSwarmStore.getState().addAgent('reviewer', 300, 400)
 
       expect(useSwarmStore.getState().agents).toHaveLength(initialLength + 1)
     })
 
-    it('generates unique ID with timestamp', () => {
-      useSwarmStore.getState().addAgent('reviewer', 100, 200)
+    it('generates unique ID with timestamp', async () => {
+      await useSwarmStore.getState().addAgent('reviewer', 100, 200)
 
       const agent = useSwarmStore.getState().agents[useSwarmStore.getState().agents.length - 1]
       expect(agent.id).toMatch(/^agent-\d+$/)
     })
 
-    it('sets role correctly', () => {
+    it('sets role correctly', async () => {
       const roles: AgentRole[] = ['planner', 'researcher', 'coder', 'reviewer', 'synthesizer']
 
-      roles.forEach((role) => {
-        useSwarmStore.getState().addAgent(role, 100, 200)
+      for (const role of roles) {
+        await useSwarmStore.getState().addAgent(role, 100, 200)
         const agents = useSwarmStore.getState().agents
         const added = agents[agents.length - 1]
         expect(added.role).toBe(role)
-      })
+      }
     })
 
-    it('capitalizes label from role', () => {
-      useSwarmStore.getState().addAgent('researcher', 100, 200)
+    it('capitalizes label from role', async () => {
+      await useSwarmStore.getState().addAgent('researcher', 100, 200)
 
       const agents = useSwarmStore.getState().agents
       const agent = agents[agents.length - 1]
       expect(agent.label).toBe('Researcher')
     })
 
-    it('sets position correctly', () => {
-      useSwarmStore.getState().addAgent('coder', 150, 250)
+    it('sets position correctly', async () => {
+      await useSwarmStore.getState().addAgent('coder', 150, 250)
 
       const agents = useSwarmStore.getState().agents
       const agent = agents[agents.length - 1]
@@ -94,8 +104,8 @@ describe('useSwarmStore', () => {
       expect(agent.y).toBe(250)
     })
 
-    it('initializes status as idle', () => {
-      useSwarmStore.getState().addAgent('reviewer', 100, 200)
+    it('initializes status as idle', async () => {
+      await useSwarmStore.getState().addAgent('reviewer', 100, 200)
 
       const agents = useSwarmStore.getState().agents
       const agent = agents[agents.length - 1]
@@ -104,46 +114,46 @@ describe('useSwarmStore', () => {
   })
 
   describe('removeAgent', () => {
-    it('removes agent from list', () => {
+    it('removes agent from list', async () => {
       const initialLength = useSwarmStore.getState().agents.length
       const agentId = useSwarmStore.getState().agents[0].id
 
-      useSwarmStore.getState().removeAgent(agentId)
+      await useSwarmStore.getState().removeAgent(agentId)
 
       expect(useSwarmStore.getState().agents).toHaveLength(initialLength - 1)
       expect(useSwarmStore.getState().agents.find((a) => a.id === agentId)).toBeUndefined()
     })
 
-    it('removes connections from removed agent', () => {
+    it('removes connections from removed agent', async () => {
       // agent-1 has two outgoing connections
-      useSwarmStore.getState().removeAgent('agent-1')
+      await useSwarmStore.getState().removeAgent('agent-1')
 
       const connections = useSwarmStore.getState().connections
       expect(connections.find((c) => c.from === 'agent-1')).toBeUndefined()
     })
 
-    it('removes connections to removed agent', () => {
+    it('removes connections to removed agent', async () => {
       // agent-2 has one incoming connection from agent-1
-      useSwarmStore.getState().removeAgent('agent-2')
+      await useSwarmStore.getState().removeAgent('agent-2')
 
       const connections = useSwarmStore.getState().connections
       expect(connections.find((c) => c.to === 'agent-2')).toBeUndefined()
     })
 
-    it('does not affect other agents', () => {
+    it('does not affect other agents', async () => {
       const agentToKeep = useSwarmStore.getState().agents[1]
 
-      useSwarmStore.getState().removeAgent('agent-1')
+      await useSwarmStore.getState().removeAgent('agent-1')
 
       const remaining = useSwarmStore.getState().agents.find((a) => a.id === agentToKeep.id)
       expect(remaining).toBeDefined()
     })
 
-    it('does not affect unrelated connections', () => {
+    it('does not affect unrelated connections', async () => {
       // Add a new connection not involving agent-1
-      useSwarmStore.getState().addConnection('agent-2', 'agent-3')
+      await useSwarmStore.getState().addConnection('agent-2', 'agent-3')
 
-      useSwarmStore.getState().removeAgent('agent-1')
+      await useSwarmStore.getState().removeAgent('agent-1')
 
       const connections = useSwarmStore.getState().connections
       expect(connections.find((c) => c.from === 'agent-2' && c.to === 'agent-3')).toBeDefined()
@@ -151,48 +161,48 @@ describe('useSwarmStore', () => {
   })
 
   describe('updateAgentStatus', () => {
-    it('updates agent status to idle', () => {
-      useSwarmStore.getState().updateAgentStatus('agent-2', 'idle')
+    it('updates agent status to idle', async () => {
+      await useSwarmStore.getState().updateAgentStatus('agent-2', 'idle')
 
       const agent = useSwarmStore.getState().agents.find((a) => a.id === 'agent-2')
       expect(agent?.status).toBe('idle')
     })
 
-    it('updates agent status to running', () => {
-      useSwarmStore.getState().updateAgentStatus('agent-1', 'running')
+    it('updates agent status to running', async () => {
+      await useSwarmStore.getState().updateAgentStatus('agent-1', 'running')
 
       const agent = useSwarmStore.getState().agents.find((a) => a.id === 'agent-1')
       expect(agent?.status).toBe('running')
     })
 
-    it('updates agent status to done', () => {
-      useSwarmStore.getState().updateAgentStatus('agent-2', 'done')
+    it('updates agent status to done', async () => {
+      await useSwarmStore.getState().updateAgentStatus('agent-2', 'done')
 
       const agent = useSwarmStore.getState().agents.find((a) => a.id === 'agent-2')
       expect(agent?.status).toBe('done')
     })
 
-    it('updates agent status to error', () => {
-      useSwarmStore.getState().updateAgentStatus('agent-2', 'error')
+    it('updates agent status to error', async () => {
+      await useSwarmStore.getState().updateAgentStatus('agent-2', 'error')
 
       const agent = useSwarmStore.getState().agents.find((a) => a.id === 'agent-2')
       expect(agent?.status).toBe('error')
     })
 
-    it('does not affect other agents', () => {
+    it('does not affect other agents', async () => {
       const otherAgent = useSwarmStore.getState().agents.find((a) => a.id === 'agent-3')
       const originalStatus = otherAgent!.status
 
-      useSwarmStore.getState().updateAgentStatus('agent-2', 'done')
+      await useSwarmStore.getState().updateAgentStatus('agent-2', 'done')
 
       const unchanged = useSwarmStore.getState().agents.find((a) => a.id === 'agent-3')
       expect(unchanged?.status).toBe(originalStatus)
     })
 
-    it('preserves other agent properties', () => {
+    it('preserves other agent properties', async () => {
       const original = useSwarmStore.getState().agents.find((a) => a.id === 'agent-2')!
 
-      useSwarmStore.getState().updateAgentStatus('agent-2', 'done')
+      await useSwarmStore.getState().updateAgentStatus('agent-2', 'done')
 
       const updated = useSwarmStore.getState().agents.find((a) => a.id === 'agent-2')!
       expect(updated.role).toBe(original.role)
@@ -203,24 +213,24 @@ describe('useSwarmStore', () => {
   })
 
   describe('addConnection', () => {
-    it('adds a new connection', () => {
+    it('adds a new connection', async () => {
       const initialLength = useSwarmStore.getState().connections.length
 
-      useSwarmStore.getState().addConnection('agent-2', 'agent-3')
+      await useSwarmStore.getState().addConnection('agent-2', 'agent-3')
 
       expect(useSwarmStore.getState().connections).toHaveLength(initialLength + 1)
     })
 
-    it('generates unique ID with timestamp', () => {
-      useSwarmStore.getState().addConnection('agent-2', 'agent-3')
+    it('generates unique ID with timestamp', async () => {
+      await useSwarmStore.getState().addConnection('agent-2', 'agent-3')
 
       const connections = useSwarmStore.getState().connections
       const connection = connections[connections.length - 1]
       expect(connection.id).toMatch(/^conn-\d+$/)
     })
 
-    it('sets from and to correctly', () => {
-      useSwarmStore.getState().addConnection('agent-2', 'agent-3')
+    it('sets from and to correctly', async () => {
+      await useSwarmStore.getState().addConnection('agent-2', 'agent-3')
 
       const connections = useSwarmStore.getState().connections
       const connection = connections[connections.length - 1]
@@ -228,18 +238,18 @@ describe('useSwarmStore', () => {
       expect(connection.to).toBe('agent-3')
     })
 
-    it('allows multiple connections from same agent', () => {
-      useSwarmStore.getState().addConnection('agent-1', 'agent-3')
-      useSwarmStore.getState().addConnection('agent-1', 'agent-2')
+    it('allows multiple connections from same agent', async () => {
+      await useSwarmStore.getState().addConnection('agent-1', 'agent-3')
+      await useSwarmStore.getState().addConnection('agent-1', 'agent-2')
 
       const connections = useSwarmStore.getState().connections
       const fromAgent1 = connections.filter((c) => c.from === 'agent-1')
       expect(fromAgent1.length).toBeGreaterThanOrEqual(2)
     })
 
-    it('allows multiple connections to same agent', () => {
-      useSwarmStore.getState().addConnection('agent-1', 'agent-3')
-      useSwarmStore.getState().addConnection('agent-2', 'agent-3')
+    it('allows multiple connections to same agent', async () => {
+      await useSwarmStore.getState().addConnection('agent-1', 'agent-3')
+      await useSwarmStore.getState().addConnection('agent-2', 'agent-3')
 
       const connections = useSwarmStore.getState().connections
       const toAgent3 = connections.filter((c) => c.to === 'agent-3')
@@ -248,20 +258,20 @@ describe('useSwarmStore', () => {
   })
 
   describe('removeConnection', () => {
-    it('removes connection from list', () => {
+    it('removes connection from list', async () => {
       const initialLength = useSwarmStore.getState().connections.length
       const connectionId = useSwarmStore.getState().connections[0].id
 
-      useSwarmStore.getState().removeConnection(connectionId)
+      await useSwarmStore.getState().removeConnection(connectionId)
 
       expect(useSwarmStore.getState().connections).toHaveLength(initialLength - 1)
       expect(useSwarmStore.getState().connections.find((c) => c.id === connectionId)).toBeUndefined()
     })
 
-    it('does not affect other connections', () => {
+    it('does not affect other connections', async () => {
       const connectionToKeep = useSwarmStore.getState().connections[1]
 
-      useSwarmStore.getState().removeConnection('conn-1')
+      await useSwarmStore.getState().removeConnection('conn-1')
 
       const remaining = useSwarmStore.getState().connections.find((c) => c.id === connectionToKeep.id)
       expect(remaining).toBeDefined()
@@ -306,8 +316,8 @@ describe('useSwarmStore', () => {
   })
 
   describe('resetSwarm', () => {
-    it('sets all agents to idle', () => {
-      useSwarmStore.getState().resetSwarm()
+    it('sets all agents to idle', async () => {
+      await useSwarmStore.getState().resetSwarm()
 
       const agents = useSwarmStore.getState().agents
       agents.forEach((agent) => {
@@ -315,24 +325,24 @@ describe('useSwarmStore', () => {
       })
     })
 
-    it('sets isRunning to false', () => {
+    it('sets isRunning to false', async () => {
       useSwarmStore.setState({ isRunning: true })
-      useSwarmStore.getState().resetSwarm()
+      await useSwarmStore.getState().resetSwarm()
       expect(useSwarmStore.getState().isRunning).toBe(false)
     })
 
-    it('preserves agent count', () => {
+    it('preserves agent count', async () => {
       const initialLength = useSwarmStore.getState().agents.length
 
-      useSwarmStore.getState().resetSwarm()
+      await useSwarmStore.getState().resetSwarm()
 
       expect(useSwarmStore.getState().agents).toHaveLength(initialLength)
     })
 
-    it('preserves other agent properties', () => {
+    it('preserves other agent properties', async () => {
       const original = useSwarmStore.getState().agents[0]
 
-      useSwarmStore.getState().resetSwarm()
+      await useSwarmStore.getState().resetSwarm()
 
       const reset = useSwarmStore.getState().agents[0]
       expect(reset.id).toBe(original.id)
@@ -342,10 +352,10 @@ describe('useSwarmStore', () => {
       expect(reset.y).toBe(original.y)
     })
 
-    it('does not affect connections', () => {
+    it('does not affect connections', async () => {
       const connections = useSwarmStore.getState().connections
 
-      useSwarmStore.getState().resetSwarm()
+      await useSwarmStore.getState().resetSwarm()
 
       expect(useSwarmStore.getState().connections).toEqual(connections)
     })

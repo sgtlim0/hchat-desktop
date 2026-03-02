@@ -1,5 +1,14 @@
 import { create } from 'zustand'
 import type { SwarmAgent, SwarmConnection, AgentRole, AgentStatus } from '@/shared/types'
+import {
+  getAllSwarmAgents,
+  getAllSwarmConnections,
+  putSwarmAgent,
+  deleteSwarmAgentFromDb,
+  putSwarmConnection,
+  deleteSwarmConnectionFromDb,
+  bulkPutSwarmAgents,
+} from '@/shared/lib/db'
 
 interface SwarmState {
   agents: SwarmAgent[]
@@ -7,42 +16,35 @@ interface SwarmState {
   selectedTemplate: string
   isRunning: boolean
 
+  hydrate: () => Promise<void>
   setTemplate: (templateId: string) => void
-  addAgent: (role: AgentRole, x: number, y: number) => void
-  removeAgent: (id: string) => void
-  updateAgentStatus: (id: string, status: AgentStatus) => void
-  addConnection: (from: string, to: string) => void
-  removeConnection: (id: string) => void
+  addAgent: (role: AgentRole, x: number, y: number) => Promise<void>
+  removeAgent: (id: string) => Promise<void>
+  updateAgentStatus: (id: string, status: AgentStatus) => Promise<void>
+  addConnection: (from: string, to: string) => Promise<void>
+  removeConnection: (id: string) => Promise<void>
   startSwarm: () => void
   stopSwarm: () => void
-  resetSwarm: () => void
+  resetSwarm: () => Promise<void>
 }
 
-const MOCK_AGENTS: SwarmAgent[] = [
-  { id: 'agent-1', role: 'planner', label: 'Planner', status: 'done', x: 300, y: 60 },
-  { id: 'agent-2', role: 'researcher', label: 'Researcher', status: 'running', x: 120, y: 200 },
-  { id: 'agent-3', role: 'coder', label: 'Coder', status: 'running', x: 480, y: 200 },
-  { id: 'agent-4', role: 'reviewer', label: 'Reviewer', status: 'idle', x: 300, y: 340 },
-  { id: 'agent-5', role: 'synthesizer', label: 'Synthesizer', status: 'idle', x: 300, y: 480 },
-]
-
-const MOCK_CONNECTIONS: SwarmConnection[] = [
-  { id: 'conn-1', from: 'agent-1', to: 'agent-2' },
-  { id: 'conn-2', from: 'agent-1', to: 'agent-3' },
-  { id: 'conn-3', from: 'agent-2', to: 'agent-4' },
-  { id: 'conn-4', from: 'agent-3', to: 'agent-4' },
-  { id: 'conn-5', from: 'agent-4', to: 'agent-5' },
-]
-
-export const useSwarmStore = create<SwarmState>((set) => ({
-  agents: MOCK_AGENTS,
-  connections: MOCK_CONNECTIONS,
+export const useSwarmStore = create<SwarmState>((set, get) => ({
+  agents: [],
+  connections: [],
   selectedTemplate: 'code-review',
-  isRunning: true,
+  isRunning: false,
+
+  hydrate: async () => {
+    const [agents, connections] = await Promise.all([
+      getAllSwarmAgents(),
+      getAllSwarmConnections(),
+    ])
+    set({ agents, connections })
+  },
 
   setTemplate: (templateId) => set({ selectedTemplate: templateId }),
 
-  addAgent: (role, x, y) => {
+  addAgent: async (role, x, y) => {
     const id = `agent-${Date.now()}`
     const newAgent: SwarmAgent = {
       id,
@@ -52,30 +54,46 @@ export const useSwarmStore = create<SwarmState>((set) => ({
       x,
       y,
     }
+    await putSwarmAgent(newAgent)
     set((state) => ({ agents: [...state.agents, newAgent] }))
   },
 
-  removeAgent: (id) => {
+  removeAgent: async (id) => {
+    const connectionsToRemove = get().connections.filter(
+      (c) => c.from === id || c.to === id
+    )
+    await deleteSwarmAgentFromDb(id)
+    await Promise.all(
+      connectionsToRemove.map((c) => deleteSwarmConnectionFromDb(c.id))
+    )
     set((state) => ({
       agents: state.agents.filter((a) => a.id !== id),
       connections: state.connections.filter((c) => c.from !== id && c.to !== id),
     }))
   },
 
-  updateAgentStatus: (id, status) => {
+  updateAgentStatus: async (id, status) => {
+    const agent = get().agents.find((a) => a.id === id)
+    if (!agent) return
+
+    const updatedAgent = { ...agent, status }
+    await putSwarmAgent(updatedAgent)
     set((state) => ({
-      agents: state.agents.map((a) => (a.id === id ? { ...a, status } : a)),
+      agents: state.agents.map((a) => (a.id === id ? updatedAgent : a)),
     }))
   },
 
-  addConnection: (from, to) => {
+  addConnection: async (from, to) => {
     const id = `conn-${Date.now()}`
+    const newConnection: SwarmConnection = { id, from, to }
+    await putSwarmConnection(newConnection)
     set((state) => ({
-      connections: [...state.connections, { id, from, to }],
+      connections: [...state.connections, newConnection],
     }))
   },
 
-  removeConnection: (id) => {
+  removeConnection: async (id) => {
+    await deleteSwarmConnectionFromDb(id)
     set((state) => ({
       connections: state.connections.filter((c) => c.id !== id),
     }))
@@ -84,10 +102,9 @@ export const useSwarmStore = create<SwarmState>((set) => ({
   startSwarm: () => set({ isRunning: true }),
   stopSwarm: () => set({ isRunning: false }),
 
-  resetSwarm: () => {
-    set((state) => ({
-      agents: state.agents.map((a) => ({ ...a, status: 'idle' as const })),
-      isRunning: false,
-    }))
+  resetSwarm: async () => {
+    const resetAgents = get().agents.map((a) => ({ ...a, status: 'idle' as const }))
+    await bulkPutSwarmAgents(resetAgents)
+    set({ agents: resetAgents, isRunning: false })
   },
 }))

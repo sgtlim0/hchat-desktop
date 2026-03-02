@@ -1,5 +1,11 @@
-import { describe, it, expect, beforeEach } from 'vitest'
+import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { useMemoryStore } from '../memory.store'
+
+vi.mock('@/shared/lib/db', () => ({
+  getAllMemories: vi.fn().mockResolvedValue([]),
+  putMemory: vi.fn().mockResolvedValue(undefined),
+  deleteMemoryFromDb: vi.fn().mockResolvedValue(undefined),
+}))
 
 describe('useMemoryStore', () => {
   beforeEach(() => {
@@ -94,10 +100,10 @@ describe('useMemoryStore', () => {
   })
 
   describe('addEntry', () => {
-    it('adds a new entry', () => {
+    it('adds a new entry', async () => {
       const initialLength = useMemoryStore.getState().entries.length
 
-      useMemoryStore.getState().addEntry({
+      await useMemoryStore.getState().addEntry({
         key: 'New Key',
         value: 'New Value',
         scope: 'session',
@@ -108,8 +114,8 @@ describe('useMemoryStore', () => {
       expect(useMemoryStore.getState().entries).toHaveLength(initialLength + 1)
     })
 
-    it('generates unique ID', () => {
-      useMemoryStore.getState().addEntry({
+    it('generates unique ID', async () => {
+      await useMemoryStore.getState().addEntry({
         key: 'Entry 1',
         value: 'Value 1',
         scope: 'session',
@@ -120,8 +126,8 @@ describe('useMemoryStore', () => {
       expect(entry.id).toMatch(/^mem-\d+$/)
     })
 
-    it('sets createdAt and updatedAt', () => {
-      useMemoryStore.getState().addEntry({
+    it('sets createdAt and updatedAt', async () => {
+      await useMemoryStore.getState().addEntry({
         key: 'Test',
         value: 'Value',
         scope: 'session',
@@ -133,8 +139,8 @@ describe('useMemoryStore', () => {
       expect(entry.updatedAt).toBe(entry.createdAt)
     })
 
-    it('adds entry to beginning of list', () => {
-      useMemoryStore.getState().addEntry({
+    it('adds entry to beginning of list', async () => {
+      await useMemoryStore.getState().addEntry({
         key: 'New Entry',
         value: 'New Value',
         scope: 'session',
@@ -144,8 +150,8 @@ describe('useMemoryStore', () => {
       expect(useMemoryStore.getState().entries[0].key).toBe('New Entry')
     })
 
-    it('preserves optional fields', () => {
-      useMemoryStore.getState().addEntry({
+    it('preserves optional fields', async () => {
+      await useMemoryStore.getState().addEntry({
         key: 'Test',
         value: 'Value',
         scope: 'session',
@@ -160,28 +166,28 @@ describe('useMemoryStore', () => {
   })
 
   describe('updateEntry', () => {
-    it('updates entry key', () => {
+    it('updates entry key', async () => {
       const entryId = useMemoryStore.getState().entries[0].id
 
-      useMemoryStore.getState().updateEntry(entryId, { key: 'Updated Key' })
+      await useMemoryStore.getState().updateEntry(entryId, { key: 'Updated Key' })
 
       const updated = useMemoryStore.getState().entries.find((e) => e.id === entryId)
       expect(updated?.key).toBe('Updated Key')
     })
 
-    it('updates entry value', () => {
+    it('updates entry value', async () => {
       const entryId = useMemoryStore.getState().entries[0].id
 
-      useMemoryStore.getState().updateEntry(entryId, { value: 'Updated Value' })
+      await useMemoryStore.getState().updateEntry(entryId, { value: 'Updated Value' })
 
       const updated = useMemoryStore.getState().entries.find((e) => e.id === entryId)
       expect(updated?.value).toBe('Updated Value')
     })
 
-    it('updates both key and value', () => {
+    it('updates both key and value', async () => {
       const entryId = useMemoryStore.getState().entries[0].id
 
-      useMemoryStore.getState().updateEntry(entryId, {
+      await useMemoryStore.getState().updateEntry(entryId, {
         key: 'New Key',
         value: 'New Value',
       })
@@ -191,21 +197,21 @@ describe('useMemoryStore', () => {
       expect(updated?.value).toBe('New Value')
     })
 
-    it('updates updatedAt timestamp', () => {
+    it('updates updatedAt timestamp', async () => {
       const entryId = useMemoryStore.getState().entries[0].id
       const originalUpdatedAt = useMemoryStore.getState().entries[0].updatedAt
 
-      useMemoryStore.getState().updateEntry(entryId, { key: 'Updated' })
+      await useMemoryStore.getState().updateEntry(entryId, { key: 'Updated' })
 
       const updated = useMemoryStore.getState().entries.find((e) => e.id === entryId)
       expect(updated?.updatedAt).not.toBe(originalUpdatedAt)
     })
 
-    it('preserves other fields', () => {
+    it('preserves other fields', async () => {
       const entryId = useMemoryStore.getState().entries[0].id
       const original = useMemoryStore.getState().entries[0]
 
-      useMemoryStore.getState().updateEntry(entryId, { key: 'Updated' })
+      await useMemoryStore.getState().updateEntry(entryId, { key: 'Updated' })
 
       const updated = useMemoryStore.getState().entries.find((e) => e.id === entryId)
       expect(updated?.scope).toBe(original.scope)
@@ -214,11 +220,11 @@ describe('useMemoryStore', () => {
       expect(updated?.createdAt).toBe(original.createdAt)
     })
 
-    it('does not update other entries', () => {
+    it('does not update other entries', async () => {
       const entryId = useMemoryStore.getState().entries[0].id
       const otherEntry = useMemoryStore.getState().entries[1]
 
-      useMemoryStore.getState().updateEntry(entryId, { key: 'Updated' })
+      await useMemoryStore.getState().updateEntry(entryId, { key: 'Updated' })
 
       const unchanged = useMemoryStore.getState().entries.find((e) => e.id === otherEntry.id)
       expect(unchanged).toEqual(otherEntry)
@@ -226,21 +232,21 @@ describe('useMemoryStore', () => {
   })
 
   describe('deleteEntry', () => {
-    it('removes entry from list', () => {
+    it('removes entry from list', async () => {
       const initialLength = useMemoryStore.getState().entries.length
       const entryId = useMemoryStore.getState().entries[0].id
 
-      useMemoryStore.getState().deleteEntry(entryId)
+      await useMemoryStore.getState().deleteEntry(entryId)
 
       expect(useMemoryStore.getState().entries).toHaveLength(initialLength - 1)
       expect(useMemoryStore.getState().entries.find((e) => e.id === entryId)).toBeUndefined()
     })
 
-    it('does not affect other entries', () => {
+    it('does not affect other entries', async () => {
       const entryToDelete = useMemoryStore.getState().entries[0].id
       const entryToKeep = useMemoryStore.getState().entries[1]
 
-      useMemoryStore.getState().deleteEntry(entryToDelete)
+      await useMemoryStore.getState().deleteEntry(entryToDelete)
 
       const remaining = useMemoryStore.getState().entries.find((e) => e.id === entryToKeep.id)
       expect(remaining).toEqual(entryToKeep)

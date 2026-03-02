@@ -1,6 +1,11 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { useChannelStore } from '../channel.store'
 
+vi.mock('@/shared/lib/db', () => ({
+  getChannelConfig: vi.fn().mockResolvedValue(undefined),
+  putChannelConfig: vi.fn().mockResolvedValue(undefined),
+}))
+
 describe('useChannelStore', () => {
   beforeEach(() => {
     useChannelStore.setState({
@@ -53,18 +58,18 @@ describe('useChannelStore', () => {
   })
 
   describe('updateSlack', () => {
-    it('updates webhook URL', () => {
-      useChannelStore.getState().updateSlack({ webhookUrl: 'https://hooks.slack.com/test' })
+    it('updates webhook URL', async () => {
+      await useChannelStore.getState().updateSlack({ webhookUrl: 'https://hooks.slack.com/test' })
       expect(useChannelStore.getState().slack.webhookUrl).toBe('https://hooks.slack.com/test')
     })
 
-    it('updates channel', () => {
-      useChannelStore.getState().updateSlack({ channel: '#dev' })
+    it('updates channel', async () => {
+      await useChannelStore.getState().updateSlack({ channel: '#dev' })
       expect(useChannelStore.getState().slack.channel).toBe('#dev')
     })
 
-    it('updates notification flags', () => {
-      useChannelStore.getState().updateSlack({
+    it('updates notification flags', async () => {
+      await useChannelStore.getState().updateSlack({
         notifyOnComplete: false,
         notifyOnError: false,
         notifyOnSchedule: true,
@@ -76,8 +81,8 @@ describe('useChannelStore', () => {
       expect(slack.notifyOnSchedule).toBe(true)
     })
 
-    it('preserves other fields', () => {
-      useChannelStore.getState().updateSlack({ webhookUrl: 'https://hooks.slack.com/new' })
+    it('preserves other fields', async () => {
+      await useChannelStore.getState().updateSlack({ webhookUrl: 'https://hooks.slack.com/new' })
 
       const { slack } = useChannelStore.getState()
       expect(slack.channel).toBe('#general')
@@ -86,8 +91,8 @@ describe('useChannelStore', () => {
       expect(slack.notifyOnSchedule).toBe(false)
     })
 
-    it('allows partial updates', () => {
-      useChannelStore.getState().updateSlack({
+    it('allows partial updates', async () => {
+      await useChannelStore.getState().updateSlack({
         webhookUrl: 'https://hooks.slack.com/test',
         channel: '#dev',
       })
@@ -100,31 +105,31 @@ describe('useChannelStore', () => {
   })
 
   describe('updateTelegram', () => {
-    it('updates bot token', () => {
-      useChannelStore.getState().updateTelegram({ botToken: 'bot123:ABC' })
+    it('updates bot token', async () => {
+      await useChannelStore.getState().updateTelegram({ botToken: 'bot123:ABC' })
       expect(useChannelStore.getState().telegram.botToken).toBe('bot123:ABC')
     })
 
-    it('updates chat ID', () => {
-      useChannelStore.getState().updateTelegram({ chatId: '12345' })
+    it('updates chat ID', async () => {
+      await useChannelStore.getState().updateTelegram({ chatId: '12345' })
       expect(useChannelStore.getState().telegram.chatId).toBe('12345')
     })
 
-    it('updates connected status', () => {
-      useChannelStore.getState().updateTelegram({ connected: true })
+    it('updates connected status', async () => {
+      await useChannelStore.getState().updateTelegram({ connected: true })
       expect(useChannelStore.getState().telegram.connected).toBe(true)
     })
 
-    it('preserves other fields', () => {
-      useChannelStore.getState().updateTelegram({ botToken: 'bot123:ABC' })
+    it('preserves other fields', async () => {
+      await useChannelStore.getState().updateTelegram({ botToken: 'bot123:ABC' })
 
       const { telegram } = useChannelStore.getState()
       expect(telegram.chatId).toBe('')
       expect(telegram.connected).toBe(false)
     })
 
-    it('allows partial updates', () => {
-      useChannelStore.getState().updateTelegram({
+    it('allows partial updates', async () => {
+      await useChannelStore.getState().updateTelegram({
         botToken: 'bot123:ABC',
         chatId: '12345',
       })
@@ -194,7 +199,7 @@ describe('useChannelStore', () => {
     })
 
     it('preserves other telegram fields', async () => {
-      useChannelStore.getState().updateTelegram({
+      await useChannelStore.getState().updateTelegram({
         botToken: 'bot123:ABC',
         chatId: '12345',
       })

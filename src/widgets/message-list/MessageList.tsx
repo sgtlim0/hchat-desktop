@@ -1,7 +1,16 @@
-import { useEffect, useRef, useCallback } from 'react'
+import { useEffect, useRef, useCallback, lazy, Suspense } from 'react'
 import { useSessionStore } from '@/entities/session/session.store'
 import { useTranslation } from '@/shared/i18n'
 import { MessageBubble } from './MessageBubble'
+import type { Message, Session } from '@/shared/types'
+
+const LazyVirtualizedMessageList = lazy(() =>
+  import('./VirtualizedMessageList').then((mod) => ({
+    default: mod.VirtualizedMessageList,
+  })),
+)
+
+const VIRTUALIZATION_THRESHOLD = 50
 
 interface MessageListProps {
   sessionId: string
@@ -19,10 +28,13 @@ export function MessageList({ sessionId }: MessageListProps) {
     [sessionId, forkSession],
   )
 
-  // Auto-scroll to bottom on new messages
+  const shouldVirtualize = messages.length > VIRTUALIZATION_THRESHOLD
+
+  // Auto-scroll to bottom on new messages (non-virtualized mode only)
   useEffect(() => {
+    if (shouldVirtualize) return
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
-  }, [messages.length, messages[messages.length - 1]?.segments])
+  }, [messages.length, messages[messages.length - 1]?.segments, shouldVirtualize])
 
   if (messages.length === 0) {
     return (
@@ -32,6 +44,50 @@ export function MessageList({ sessionId }: MessageListProps) {
     )
   }
 
+  if (shouldVirtualize) {
+    return (
+      <Suspense
+        fallback={
+          <StandardMessageList
+            messages={messages}
+            session={session}
+            handleFork={handleFork}
+            bottomRef={bottomRef}
+          />
+        }
+      >
+        <LazyVirtualizedMessageList
+          messages={messages}
+          session={session}
+          onFork={handleFork}
+        />
+      </Suspense>
+    )
+  }
+
+  return (
+    <StandardMessageList
+      messages={messages}
+      session={session}
+      handleFork={handleFork}
+      bottomRef={bottomRef}
+    />
+  )
+}
+
+interface StandardMessageListProps {
+  messages: Message[]
+  session: Session | undefined
+  handleFork: (messageIndex: number) => void
+  bottomRef: React.RefObject<HTMLDivElement | null>
+}
+
+function StandardMessageList({
+  messages,
+  session,
+  handleFork,
+  bottomRef,
+}: StandardMessageListProps) {
   return (
     <div className="flex-1 overflow-y-auto">
       <div className="max-w-3xl mx-auto py-6 px-4 space-y-4">

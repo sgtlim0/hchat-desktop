@@ -130,7 +130,7 @@ export async function deleteOldSessions(days: number): Promise<number> {
  * Clear all data from IndexedDB
  */
 export async function clearAllData(): Promise<void> {
-  await db.transaction('rw', [db.sessions, db.messages, db.projects, db.usages, db.prompts, db.personas, db.folders, db.tags], async () => {
+  await db.transaction('rw', [db.sessions, db.messages, db.projects, db.usages, db.prompts, db.personas, db.folders, db.tags, db.memories, db.schedules, db.swarmAgents, db.swarmConnections, db.channelConfigs], async () => {
     await db.sessions.clear()
     await db.messages.clear()
     await db.projects.clear()
@@ -139,6 +139,11 @@ export async function clearAllData(): Promise<void> {
     await db.personas.clear()
     await db.folders.clear()
     await db.tags.clear()
+    await db.memories.clear()
+    await db.schedules.clear()
+    await db.swarmAgents.clear()
+    await db.swarmConnections.clear()
+    await db.channelConfigs.clear()
   })
 }
 
@@ -146,7 +151,7 @@ export async function clearAllData(): Promise<void> {
  * Export all data as JSON string
  */
 export async function exportAllData(): Promise<string> {
-  const [sessions, messages, projects, usages, prompts, personas, folders, tags] = await Promise.all([
+  const [sessions, messages, projects, usages, prompts, personas, folders, tags, memories, schedules, swarmAgents, swarmConnections, channelConfigs] = await Promise.all([
     db.sessions.toArray(),
     db.messages.toArray(),
     db.projects.toArray(),
@@ -155,10 +160,15 @@ export async function exportAllData(): Promise<string> {
     db.personas.toArray(),
     db.folders.toArray(),
     db.tags.toArray(),
+    db.memories.toArray(),
+    db.schedules.toArray(),
+    db.swarmAgents.toArray(),
+    db.swarmConnections.toArray(),
+    db.channelConfigs.toArray(),
   ])
 
   const backup = {
-    version: 3,
+    version: 4,
     timestamp: new Date().toISOString(),
     data: {
       sessions,
@@ -169,6 +179,11 @@ export async function exportAllData(): Promise<string> {
       personas,
       folders,
       tags,
+      memories,
+      schedules,
+      swarmAgents,
+      swarmConnections,
+      channelConfigs,
     },
   }
 
@@ -186,9 +201,9 @@ export async function importAllData(jsonString: string): Promise<void> {
       throw new Error('Invalid backup format')
     }
 
-    const { sessions, messages, projects, usages, prompts, personas, folders, tags } = backup.data
+    const { sessions, messages, projects, usages, prompts, personas, folders, tags, memories, schedules, swarmAgents, swarmConnections, channelConfigs } = backup.data
 
-    await db.transaction('rw', [db.sessions, db.messages, db.projects, db.usages, db.prompts, db.personas, db.folders, db.tags], async () => {
+    await db.transaction('rw', [db.sessions, db.messages, db.projects, db.usages, db.prompts, db.personas, db.folders, db.tags, db.memories, db.schedules, db.swarmAgents, db.swarmConnections, db.channelConfigs], async () => {
       // Clear existing data
       await db.sessions.clear()
       await db.messages.clear()
@@ -198,6 +213,11 @@ export async function importAllData(jsonString: string): Promise<void> {
       await db.personas.clear()
       await db.folders.clear()
       await db.tags.clear()
+      await db.memories.clear()
+      await db.schedules.clear()
+      await db.swarmAgents.clear()
+      await db.swarmConnections.clear()
+      await db.channelConfigs.clear()
 
       // Import new data
       if (sessions) await db.sessions.bulkAdd(sessions)
@@ -208,6 +228,11 @@ export async function importAllData(jsonString: string): Promise<void> {
       if (personas) await db.personas.bulkAdd(personas)
       if (folders) await db.folders.bulkAdd(folders)
       if (tags) await db.tags.bulkAdd(tags)
+      if (memories) await db.memories.bulkAdd(memories)
+      if (schedules) await db.schedules.bulkAdd(schedules)
+      if (swarmAgents) await db.swarmAgents.bulkAdd(swarmAgents)
+      if (swarmConnections) await db.swarmConnections.bulkAdd(swarmConnections)
+      if (channelConfigs) await db.channelConfigs.bulkAdd(channelConfigs)
     })
   } catch (error) {
     throw new Error(`Failed to import backup: ${error instanceof Error ? error.message : 'Unknown error'}`)

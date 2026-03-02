@@ -7,6 +7,10 @@ import { usePromptLibraryStore } from '@/entities/prompt-library/prompt-library.
 import { usePersonaStore } from '@/entities/persona/persona.store'
 import { useFolderStore } from '@/entities/folder/folder.store'
 import { useTagStore } from '@/entities/tag/tag.store'
+import { useMemoryStore } from '@/entities/memory/memory.store'
+import { useScheduleStore } from '@/entities/schedule/schedule.store'
+import { useSwarmStore } from '@/entities/swarm/swarm.store'
+import { useChannelStore } from '@/entities/channel/channel.store'
 import { Sidebar } from '@/widgets/sidebar/Sidebar'
 import { HomeScreen } from '@/pages/home/HomeScreen'
 import { SearchModal } from '@/widgets/search/SearchModal'
@@ -49,6 +53,10 @@ export function MainLayout() {
   const hydratePersona = usePersonaStore((s) => s.hydrate)
   const hydrateFolder = useFolderStore((s) => s.hydrate)
   const hydrateTag = useTagStore((s) => s.hydrate)
+  const hydrateMemory = useMemoryStore((s) => s.hydrate)
+  const hydrateSchedule = useScheduleStore((s) => s.hydrate)
+  const hydrateSwarm = useSwarmStore((s) => s.hydrate)
+  const hydrateChannel = useChannelStore((s) => s.hydrate)
   const isOnline = useOnlineStatus()
 
   // Hydrate from IndexedDB on mount
@@ -60,7 +68,11 @@ export function MainLayout() {
     hydratePersona()
     hydrateFolder()
     hydrateTag()
-  }, [hydrateSession, hydrateProject, hydrateUsage, hydratePromptLibrary, hydratePersona, hydrateFolder, hydrateTag])
+    hydrateMemory()
+    hydrateSchedule()
+    hydrateSwarm()
+    hydrateChannel()
+  }, [hydrateSession, hydrateProject, hydrateUsage, hydratePromptLibrary, hydratePersona, hydrateFolder, hydrateTag, hydrateMemory, hydrateSchedule, hydrateSwarm, hydrateChannel])
 
   // Keyboard shortcuts
   useEffect(() => {
