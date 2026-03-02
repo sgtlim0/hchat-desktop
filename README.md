@@ -84,9 +84,19 @@ modal deploy backend/app.py   # 프로덕션 배포
 
 ## 배포
 
-- **Frontend**: Vercel (`vercel --prod`)
-- **Backend**: Modal (`modal deploy backend/app.py`)
-- **환경변수**: `VITE_API_BASE_URL` — Modal API URL (프로덕션)
+| 대상 | 명령어 | URL |
+|------|--------|-----|
+| Frontend | `vercel --prod` | https://hchat-desktop.vercel.app |
+| Backend | `modal deploy backend/app.py` | https://sgtlim0--hchat-api-api.modal.run |
+
+### 환경변수
+
+| 변수 | 용도 | 설정 위치 |
+|------|------|-----------|
+| `VITE_API_BASE_URL` | Modal API 베이스 URL | `.env.production`, Vercel 환경변수 |
+
+- **개발**: `.env.development`에 빈값 → Vite 프록시(`bedrock-plugin.ts`) 사용
+- **프로덕션**: `.env.production`에 Modal URL → 프론트엔드가 Modal 백엔드로 직접 요청
 
 ## 키보드 단축키
 

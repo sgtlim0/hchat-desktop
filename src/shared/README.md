@@ -87,10 +87,16 @@ interface ChatProvider {
 
 ### Bedrock 클라이언트 (`lib/bedrock-client.ts`)
 
-AWS Bedrock API를 SSE 스트리밍으로 호출합니다. `VITE_API_BASE_URL` 환경변수로 로컬 프록시와 Modal 백엔드를 전환합니다.
+AWS Bedrock API를 SSE 스트리밍으로 호출합니다. `VITE_API_BASE_URL` 환경변수로 엔드포인트를 전환합니다.
 
-- `streamChat()` — SSE 스트리밍 AsyncGenerator
-- `testConnection()` — 자격증명 검증
+```
+API_BASE = import.meta.env.VITE_API_BASE_URL || ''
+- 빈값 (개발) → /api/chat (Vite 프록시)
+- Modal URL (프로덕션) → https://sgtlim0--hchat-api-api.modal.run/api/chat
+```
+
+- `streamChat()` — SSE 스트리밍 AsyncGenerator (`data: {"type":"text","content":"..."}\n\n`)
+- `testConnection()` — 자격증명 검증 (`{"success": true/false}`)
 
 ### IndexedDB (`lib/db.ts`)
 
