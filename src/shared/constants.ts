@@ -37,3 +37,20 @@ export const QUICK_ACTIONS = [
   { id: 'brainstorm', icon: 'lightbulb', label: '아이디어 브레인스토밍' },
   { id: 'review', icon: 'search-code', label: '코드 리뷰' },
 ] as const
+
+// Bedrock model ID mapping (cross-region inference prefix)
+export const BEDROCK_MODEL_MAP: Record<string, string> = {
+  'claude-opus-4': 'us.anthropic.claude-opus-4-0-20250514',
+  'claude-sonnet-4': 'us.anthropic.claude-sonnet-4-20250514',
+  'claude-haiku-3.5': 'us.anthropic.claude-3-5-haiku-20241022',
+}
+
+export const AWS_REGIONS = [
+  { id: 'us-east-1', name: 'US East (N. Virginia)' },
+  { id: 'us-west-2', name: 'US West (Oregon)' },
+  { id: 'eu-west-1', name: 'EU (Ireland)' },
+  { id: 'ap-northeast-1', name: 'Asia Pacific (Tokyo)' },
+  { id: 'ap-southeast-1', name: 'Asia Pacific (Singapore)' },
+] as const
+
+export const DEFAULT_AWS_REGION = 'us-east-1'

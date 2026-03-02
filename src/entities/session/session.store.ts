@@ -1,6 +1,12 @@
 import { create } from 'zustand'
 import type { Session, Message, ViewState } from '@/shared/types'
-import { mockSessions, mockMessages } from '@/shared/lib/mock-data'
+import { useSettingsStore } from '@/entities/settings/settings.store'
+import {
+  putSession,
+  deleteSessionFromDb,
+  putMessage,
+  hydrateFromDb,
+} from '@/shared/lib/db'
 
 interface SessionState {
   sessions: Session[]
@@ -8,8 +14,10 @@ interface SessionState {
   messages: Record<string, Message[]>
   view: ViewState
   searchOpen: boolean
+  hydrated: boolean
 
   // Actions
+  hydrate: () => Promise<void>
   setView: (view: ViewState) => void
   selectSession: (id: string) => void
   createSession: (title?: string) => void
@@ -17,16 +25,33 @@ interface SessionState {
   toggleFavorite: (id: string) => void
   renameSession: (id: string, title: string) => void
   addMessage: (sessionId: string, message: Message) => void
+  updateLastMessage: (sessionId: string, messageId: string, updater: (msg: Message) => Message) => void
+  setSessionStreaming: (sessionId: string, isStreaming: boolean) => void
   setSearchOpen: (open: boolean) => void
   goHome: () => void
 }
 
-export const useSessionStore = create<SessionState>((set) => ({
-  sessions: mockSessions,
+export const useSessionStore = create<SessionState>((set, get) => ({
+  sessions: [],
   currentSessionId: null,
-  messages: mockMessages,
+  messages: {},
   view: 'home',
   searchOpen: false,
+  hydrated: false,
+
+  hydrate: async () => {
+    try {
+      const { sessions, projects: _, messagesMap } = await hydrateFromDb()
+      set({
+        sessions,
+        messages: messagesMap,
+        hydrated: true,
+      })
+    } catch (error) {
+      console.error('Failed to hydrate sessions from IndexedDB:', error)
+      set({ hydrated: true })
+    }
+  },
 
   setView: (view) => set({ view }),
 
@@ -34,10 +59,11 @@ export const useSessionStore = create<SessionState>((set) => ({
 
   createSession: (title) => {
     const id = `session-${Date.now()}`
+    const { selectedModel } = useSettingsStore.getState()
     const newSession: Session = {
       id,
       title: title ?? '새 채팅',
-      modelId: 'claude-sonnet-4',
+      modelId: selectedModel,
       isFavorite: false,
       isStreaming: false,
       createdAt: new Date().toISOString(),
@@ -49,9 +75,10 @@ export const useSessionStore = create<SessionState>((set) => ({
       messages: { ...state.messages, [id]: [] },
       view: 'chat',
     }))
+    putSession(newSession).catch(console.error)
   },
 
-  deleteSession: (id) =>
+  deleteSession: (id) => {
     set((state) => {
       const { [id]: _, ...restMessages } = state.messages
       return {
@@ -60,29 +87,77 @@ export const useSessionStore = create<SessionState>((set) => ({
         currentSessionId: state.currentSessionId === id ? null : state.currentSessionId,
         view: state.currentSessionId === id ? 'home' : state.view,
       }
-    }),
+    })
+    deleteSessionFromDb(id).catch(console.error)
+  },
 
-  toggleFavorite: (id) =>
+  toggleFavorite: (id) => {
     set((state) => ({
       sessions: state.sessions.map((s) =>
         s.id === id ? { ...s, isFavorite: !s.isFavorite } : s
       ),
-    })),
+    }))
+    const session = get().sessions.find((s) => s.id === id)
+    if (session) putSession(session).catch(console.error)
+  },
 
-  renameSession: (id, title) =>
+  renameSession: (id, title) => {
     set((state) => ({
       sessions: state.sessions.map((s) =>
         s.id === id ? { ...s, title } : s
       ),
-    })),
+    }))
+    const session = get().sessions.find((s) => s.id === id)
+    if (session) putSession(session).catch(console.error)
+  },
 
-  addMessage: (sessionId, message) =>
+  addMessage: (sessionId, message) => {
+    set((state) => {
+      const sessionMessages = [...(state.messages[sessionId] ?? []), message]
+      const lastText = message.segments.find((s) => s.type === 'text')?.content
+      return {
+        messages: {
+          ...state.messages,
+          [sessionId]: sessionMessages,
+        },
+        sessions: state.sessions.map((s) =>
+          s.id === sessionId
+            ? { ...s, lastMessage: lastText ?? s.lastMessage, updatedAt: new Date().toISOString() }
+            : s
+        ),
+      }
+    })
+    putMessage(message).catch(console.error)
+    const session = get().sessions.find((s) => s.id === sessionId)
+    if (session) putSession(session).catch(console.error)
+  },
+
+  updateLastMessage: (sessionId, messageId, updater) => {
+    set((state) => {
+      const sessionMessages = state.messages[sessionId] ?? []
+      const idx = sessionMessages.findIndex((m) => m.id === messageId)
+      if (idx === -1) return state
+
+      const updated = updater(sessionMessages[idx])
+      const newMessages = [...sessionMessages]
+      newMessages[idx] = updated
+
+      return {
+        messages: {
+          ...state.messages,
+          [sessionId]: newMessages,
+        },
+      }
+    })
+  },
+
+  setSessionStreaming: (sessionId, isStreaming) => {
     set((state) => ({
-      messages: {
-        ...state.messages,
-        [sessionId]: [...(state.messages[sessionId] ?? []), message],
-      },
-    })),
+      sessions: state.sessions.map((s) =>
+        s.id === sessionId ? { ...s, isStreaming } : s
+      ),
+    }))
+  },
 
   setSearchOpen: (open) => set({ searchOpen: open }),
 

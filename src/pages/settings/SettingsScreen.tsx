@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Key, User, Sparkles, Palette, Puzzle, Plug, Monitor, Shield, Code, X } from 'lucide-react'
 import { useSettingsStore } from '@/entities/settings/settings.store'
 import { SettingsTabItem } from '@/shared/ui/SettingsTabItem'
@@ -6,9 +6,11 @@ import { FormLabel } from '@/shared/ui/FormLabel'
 import { FormInput } from '@/shared/ui/FormInput'
 import { Button } from '@/shared/ui/Button'
 import { Toggle } from '@/shared/ui/Toggle'
+import { testConnection } from '@/shared/lib/bedrock-client'
+import { AWS_REGIONS, DEFAULT_AWS_REGION } from '@/shared/constants'
 
 const TABS = [
-  { id: 'api-keys', label: 'API Keys', icon: Key },
+  { id: 'api-keys', label: 'API 설정', icon: Key },
   { id: 'profile', label: '프로필', icon: User },
   { id: 'features', label: '기능', icon: Sparkles },
   { id: 'customization', label: '사용자 지정', icon: Palette },
@@ -19,26 +21,63 @@ const TABS = [
   { id: 'developer', label: '개발자', icon: Code },
 ] as const
 
-export function SettingsScreen() {
-  const { settingsTab, setSettingsTab, setSettingsOpen, darkMode, toggleDarkMode } = useSettingsStore()
-  const [anthropicKey, setAnthropicKey] = useState('')
-  const [anthropicBaseUrl, setAnthropicBaseUrl] = useState('')
-  const [openaiKey, setOpenaiKey] = useState('')
-  const [openaiBaseUrl, setOpenaiBaseUrl] = useState('')
-  const [testStatus, setTestStatus] = useState<Record<string, 'idle' | 'testing' | 'success' | 'error'>>({
-    anthropic: 'idle',
-    openai: 'idle',
-  })
+type TestStatus = 'idle' | 'testing' | 'success' | 'error'
 
-  const handleTest = (provider: 'anthropic' | 'openai') => {
-    setTestStatus((prev) => ({ ...prev, [provider]: 'testing' }))
-    setTimeout(() => {
-      const key = provider === 'anthropic' ? anthropicKey : openaiKey
-      setTestStatus((prev) => ({
-        ...prev,
-        [provider]: key.length > 10 ? 'success' : 'error',
-      }))
-    }, 1500)
+export function SettingsScreen() {
+  const { settingsTab, setSettingsTab, setSettingsOpen, darkMode, toggleDarkMode, credentials, setCredentials } = useSettingsStore()
+
+  const [accessKeyId, setAccessKeyId] = useState(credentials?.accessKeyId ?? '')
+  const [secretAccessKey, setSecretAccessKey] = useState(credentials?.secretAccessKey ?? '')
+  const [region, setRegion] = useState(credentials?.region ?? DEFAULT_AWS_REGION)
+  const [testStatus, setTestStatus] = useState<TestStatus>('idle')
+  const [testError, setTestError] = useState('')
+
+  // Sync local state when credentials change externally
+  useEffect(() => {
+    if (credentials) {
+      setAccessKeyId(credentials.accessKeyId)
+      setSecretAccessKey(credentials.secretAccessKey)
+      setRegion(credentials.region)
+    }
+  }, [credentials])
+
+  function handleSaveCredentials() {
+    if (!accessKeyId.trim() || !secretAccessKey.trim()) return
+    setCredentials({
+      accessKeyId: accessKeyId.trim(),
+      secretAccessKey: secretAccessKey.trim(),
+      region,
+    })
+  }
+
+  async function handleTest() {
+    handleSaveCredentials()
+    setTestStatus('testing')
+    setTestError('')
+
+    const creds = {
+      accessKeyId: accessKeyId.trim(),
+      secretAccessKey: secretAccessKey.trim(),
+      region,
+    }
+
+    const result = await testConnection(creds, 'claude-haiku-3.5')
+
+    if (result.success) {
+      setTestStatus('success')
+    } else {
+      setTestStatus('error')
+      setTestError(result.error ?? '연결에 실패했습니다')
+    }
+  }
+
+  function handleClearCredentials() {
+    setAccessKeyId('')
+    setSecretAccessKey('')
+    setRegion(DEFAULT_AWS_REGION)
+    setCredentials(null)
+    setTestStatus('idle')
+    setTestError('')
   }
 
   const renderContent = () => {
@@ -47,90 +86,81 @@ export function SettingsScreen() {
         return (
           <div className="space-y-8">
             <div>
-              <h2 className="text-2xl font-bold text-text-primary">API Keys</h2>
+              <h2 className="text-2xl font-bold text-text-primary">API 설정</h2>
               <p className="text-text-secondary text-sm mt-1">
-                AI 모델 사용을 위한 API 키를 설정합니다.
+                AWS Bedrock을 통해 AI 모델에 연결합니다.
               </p>
             </div>
 
-            {/* Anthropic */}
+            {/* AWS Credentials */}
             <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-text-primary">Anthropic</h3>
-              <div>
-                <FormLabel>API Key</FormLabel>
-                <div className="mt-1.5">
-                  <FormInput
-                    placeholder="sk-ant-api03-..."
-                    value={anthropicKey}
-                    onChange={setAnthropicKey}
-                    type="password"
-                  />
-                </div>
-              </div>
-              <div>
-                <FormLabel>Base URL (선택사항)</FormLabel>
-                <div className="mt-1.5">
-                  <FormInput
-                    placeholder="https://api.anthropic.com"
-                    value={anthropicBaseUrl}
-                    onChange={setAnthropicBaseUrl}
-                  />
-                </div>
-              </div>
-              <div className="flex items-center gap-3">
-                <Button variant="secondary" onClick={() => handleTest('anthropic')}>
-                  연결 테스트
-                </Button>
-                {testStatus.anthropic === 'testing' && (
-                  <span className="text-xs text-text-secondary">테스트 중...</span>
-                )}
-                {testStatus.anthropic === 'success' && (
-                  <span className="text-xs text-success font-medium">✓ 연결됨</span>
-                )}
-                {testStatus.anthropic === 'error' && (
-                  <span className="text-xs text-danger font-medium">✗ 연결 실패</span>
-                )}
-              </div>
-            </div>
+              <h3 className="text-lg font-semibold text-text-primary">AWS 자격증명</h3>
 
-            {/* OpenAI */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-text-primary">OpenAI</h3>
               <div>
-                <FormLabel>API Key</FormLabel>
+                <FormLabel>AWS Access Key ID</FormLabel>
                 <div className="mt-1.5">
                   <FormInput
-                    placeholder="sk-proj-..."
-                    value={openaiKey}
-                    onChange={setOpenaiKey}
+                    placeholder="AKIA..."
+                    value={accessKeyId}
+                    onChange={setAccessKeyId}
+                  />
+                </div>
+              </div>
+
+              <div>
+                <FormLabel>AWS Secret Access Key</FormLabel>
+                <div className="mt-1.5">
+                  <FormInput
+                    placeholder="시크릿 키를 입력하세요"
+                    value={secretAccessKey}
+                    onChange={setSecretAccessKey}
                     type="password"
                   />
                 </div>
               </div>
+
               <div>
-                <FormLabel>Base URL (선택사항)</FormLabel>
+                <FormLabel>리전</FormLabel>
                 <div className="mt-1.5">
-                  <FormInput
-                    placeholder="https://api.openai.com/v1"
-                    value={openaiBaseUrl}
-                    onChange={setOpenaiBaseUrl}
-                  />
+                  <select
+                    value={region}
+                    onChange={(e) => setRegion(e.target.value)}
+                    className="w-full px-3 py-2 rounded-lg border border-border bg-input text-text-primary text-sm outline-none focus:border-primary transition"
+                  >
+                    {AWS_REGIONS.map((r) => (
+                      <option key={r.id} value={r.id}>
+                        {r.id} — {r.name}
+                      </option>
+                    ))}
+                  </select>
                 </div>
               </div>
+
               <div className="flex items-center gap-3">
-                <Button variant="secondary" onClick={() => handleTest('openai')}>
-                  연결 테스트
+                <Button
+                  variant="secondary"
+                  onClick={handleTest}
+                  disabled={!accessKeyId.trim() || !secretAccessKey.trim() || testStatus === 'testing'}
+                >
+                  {testStatus === 'testing' ? '테스트 중...' : '연결 테스트'}
                 </Button>
-                {testStatus.openai === 'testing' && (
-                  <span className="text-xs text-text-secondary">테스트 중...</span>
+                {credentials && (
+                  <Button variant="secondary" onClick={handleClearCredentials}>
+                    초기화
+                  </Button>
                 )}
-                {testStatus.openai === 'success' && (
-                  <span className="text-xs text-success font-medium">✓ 연결됨</span>
+                {testStatus === 'success' && (
+                  <span className="text-xs text-success font-medium">✓ 연결 성공</span>
                 )}
-                {testStatus.openai === 'error' && (
-                  <span className="text-xs text-danger font-medium">✗ 연결 실패</span>
+                {testStatus === 'error' && (
+                  <span className="text-xs text-danger font-medium">✗ {testError}</span>
                 )}
               </div>
+
+              <p className="text-xs text-text-tertiary">
+                자격증명은 브라우저의 localStorage에 저장됩니다.
+                외부 서버로 전송되지 않으며, 로컬 Vite 프록시를 통해 AWS에 직접 연결합니다.
+              </p>
             </div>
           </div>
         )

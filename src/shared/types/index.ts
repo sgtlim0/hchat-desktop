@@ -75,3 +75,27 @@ export interface Skill {
 }
 
 export type ViewState = 'home' | 'chat' | 'settings' | 'allChats' | 'projects' | 'projectDetail' | 'quickChat'
+
+// AWS Bedrock types
+
+export interface AwsCredentials {
+  accessKeyId: string
+  secretAccessKey: string
+  region: string
+}
+
+export interface ChatRequest {
+  credentials: AwsCredentials
+  modelId: string
+  messages: Array<{
+    role: MessageRole
+    content: string
+  }>
+  system?: string
+}
+
+export interface ChatStreamEvent {
+  type: 'text' | 'error' | 'done'
+  content?: string
+  error?: string
+}

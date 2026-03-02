@@ -2,6 +2,7 @@ import { useState, useMemo } from 'react'
 import { MessageSquare, Star, Search } from 'lucide-react'
 import { useSessionStore } from '@/entities/session/session.store'
 import { getRelativeTime, getDateGroup } from '@/shared/lib/time'
+import { getModelName } from '@/shared/lib/model-meta'
 
 type FilterType = 'all' | 'favorites' | 'projects'
 
@@ -137,8 +138,13 @@ export function AllChatsScreen() {
                       {session.isFavorite && (
                         <Star className="w-4 h-4 text-yellow-star fill-yellow-star flex-shrink-0" />
                       )}
-                      <div className="text-text-tertiary text-xs flex-shrink-0">
-                        {getRelativeTime(session.updatedAt)}
+                      <div className="flex items-center gap-2 flex-shrink-0">
+                        <span className="text-text-tertiary text-xs">
+                          {getRelativeTime(session.updatedAt)}
+                        </span>
+                        <span className="text-[11px] text-text-tertiary bg-hover px-2 py-0.5 rounded-full">
+                          {getModelName(session.modelId).replace('Claude ', '').replace('4 ', '').replace('3.5 ', '')}
+                        </span>
                       </div>
                     </div>
                   ))}

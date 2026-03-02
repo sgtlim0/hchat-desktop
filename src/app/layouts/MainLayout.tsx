@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { useSessionStore } from '@/entities/session/session.store'
 import { useSettingsStore } from '@/entities/settings/settings.store'
+import { useProjectStore } from '@/entities/project/project.store'
 import { Sidebar } from '@/widgets/sidebar/Sidebar'
 import { HomeScreen } from '@/pages/home/HomeScreen'
 import { ChatPage } from '@/pages/chat/ChatPage'
@@ -21,6 +22,15 @@ export function MainLayout() {
   const currentSessionId = useSessionStore((s) => s.currentSessionId)
   const searchOpen = useSessionStore((s) => s.searchOpen)
   const setSearchOpen = useSessionStore((s) => s.setSearchOpen)
+  const hydrated = useSessionStore((s) => s.hydrated)
+  const hydrateSession = useSessionStore((s) => s.hydrate)
+  const hydrateProject = useProjectStore((s) => s.hydrate)
+
+  // Hydrate from IndexedDB on mount
+  useEffect(() => {
+    hydrateSession()
+    hydrateProject()
+  }, [hydrateSession, hydrateProject])
 
   // Keyboard shortcuts
   useEffect(() => {
@@ -42,6 +52,15 @@ export function MainLayout() {
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
   }, [searchOpen, settingsOpen, setSearchOpen, toggleSidebar, setSettingsOpen])
+
+  // Show loading state while hydrating
+  if (!hydrated) {
+    return (
+      <div className="flex-1 flex items-center justify-center">
+        <div className="text-text-secondary text-sm">로딩 중...</div>
+      </div>
+    )
+  }
 
   // View dispatch
   function renderContent() {

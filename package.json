@@ -10,6 +10,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@aws-sdk/client-bedrock-runtime": "^3.1000.0",
+    "dexie": "^4.3.0",
     "lucide-react": "^0.575.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
@@ -17,6 +19,7 @@
     "react-syntax-highlighter": "^16.1.1",
     "react-textarea-autosize": "^8.5.9",
     "remark-gfm": "^4.0.1",
+    "vite-plugin-pwa": "^1.2.0",
     "zustand": "^5.0.11"
   },
   "devDependencies": {

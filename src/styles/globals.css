@@ -103,6 +103,15 @@ body {
   animation: slide-in-right 0.15s ease-out;
 }
 
+@keyframes cursor-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+.animate-cursor-blink {
+  animation: cursor-blink 1s step-end infinite;
+}
+
 /* Prose overrides for chat messages */
 .prose-chat {
   @apply text-sm leading-relaxed;

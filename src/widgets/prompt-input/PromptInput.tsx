@@ -2,7 +2,10 @@ import { useState, useRef, type KeyboardEvent } from 'react'
 import TextareaAutosize from 'react-textarea-autosize'
 import { Plus, Send, Square } from 'lucide-react'
 import { useSessionStore } from '@/entities/session/session.store'
+import { useSettingsStore } from '@/entities/settings/settings.store'
 import { ModelSelector } from './ModelSelector'
+import { streamChat } from '@/shared/lib/bedrock-client'
+import { putMessage } from '@/shared/lib/db'
 import type { Message } from '@/shared/types'
 
 interface PromptInputProps {
@@ -17,15 +20,27 @@ export function PromptInput({
   const [input, setInput] = useState('')
   const [isComposing, setIsComposing] = useState(false)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
+  const abortRef = useRef<AbortController | null>(null)
 
   const currentSessionId = useSessionStore((s) => s.currentSessionId)
   const createSession = useSessionStore((s) => s.createSession)
   const addMessage = useSessionStore((s) => s.addMessage)
+  const updateLastMessage = useSessionStore((s) => s.updateLastMessage)
+  const setSessionStreaming = useSessionStore((s) => s.setSessionStreaming)
+  const credentials = useSettingsStore((s) => s.credentials)
+  const selectedModel = useSettingsStore((s) => s.selectedModel)
 
   const [isSending, setIsSending] = useState(false)
 
-  function handleSend() {
+  async function handleSend() {
     if (!input.trim() || isSending) return
+
+    if (!credentials?.accessKeyId || !credentials?.secretAccessKey) {
+      const store = useSettingsStore.getState()
+      store.setSettingsOpen(true)
+      store.setSettingsTab('api-keys')
+      return
+    }
 
     const messageText = input.trim()
     setInput('')
@@ -35,7 +50,6 @@ export function PromptInput({
     let sessionId = currentSessionId
     if (!sessionId) {
       createSession(messageText.slice(0, 50))
-      // Get the newly created session ID from store
       sessionId = useSessionStore.getState().currentSessionId!
     }
 
@@ -49,23 +63,80 @@ export function PromptInput({
     }
     addMessage(sessionId, userMessage)
 
-    // Auto-add mock assistant response after delay
-    setTimeout(() => {
-      const assistantMessage: Message = {
-        id: `msg-${Date.now()}-assistant`,
-        sessionId,
-        role: 'assistant',
-        segments: [
-          {
-            type: 'text',
-            content: '안녕하세요! H Chat Desktop입니다. 무엇을 도와드릴까요?',
-          },
-        ],
-        createdAt: new Date().toISOString(),
+    // Create empty assistant message for streaming
+    const assistantMessageId = `msg-${Date.now()}-assistant`
+    const assistantMessage: Message = {
+      id: assistantMessageId,
+      sessionId,
+      role: 'assistant',
+      segments: [{ type: 'text', content: '' }],
+      createdAt: new Date().toISOString(),
+    }
+    addMessage(sessionId, assistantMessage)
+    setSessionStreaming(sessionId, true)
+
+    // Build message history for context
+    const allMessages = useSessionStore.getState().messages[sessionId] ?? []
+    const chatHistory = allMessages
+      .filter((m) => m.id !== assistantMessageId)
+      .map((m) => ({
+        role: m.role,
+        content: m.segments.find((s) => s.type === 'text')?.content ?? '',
+      }))
+      .filter((m) => m.content.length > 0)
+
+    // Stream response
+    const abortController = new AbortController()
+    abortRef.current = abortController
+    let fullText = ''
+
+    try {
+      const stream = streamChat({
+        credentials,
+        modelId: selectedModel,
+        messages: chatHistory,
+        signal: abortController.signal,
+      })
+
+      for await (const event of stream) {
+        if (event.type === 'text' && event.content) {
+          fullText += event.content
+          const currentText = fullText
+          updateLastMessage(sessionId, assistantMessageId, (msg) => ({
+            ...msg,
+            segments: [{ type: 'text', content: currentText }],
+          }))
+        } else if (event.type === 'error') {
+          fullText = `오류가 발생했습니다: ${event.error}`
+          updateLastMessage(sessionId, assistantMessageId, (msg) => ({
+            ...msg,
+            segments: [{ type: 'text', content: fullText }],
+          }))
+        }
       }
-      addMessage(sessionId, assistantMessage)
+    } catch (error) {
+      if (error instanceof DOMException && error.name === 'AbortError') {
+        // User cancelled - keep partial text
+      } else {
+        const errorMsg = error instanceof Error ? error.message : 'Unknown error'
+        fullText = fullText || `오류가 발생했습니다: ${errorMsg}`
+        updateLastMessage(sessionId, assistantMessageId, (msg) => ({
+          ...msg,
+          segments: [{ type: 'text', content: fullText }],
+        }))
+      }
+    } finally {
+      abortRef.current = null
       setIsSending(false)
-    }, 500)
+      setSessionStreaming(sessionId, false)
+
+      // Persist final assistant message to IndexedDB
+      const finalMessages = useSessionStore.getState().messages[sessionId] ?? []
+      const finalAssistant = finalMessages.find((m) => m.id === assistantMessageId)
+      if (finalAssistant) {
+        putMessage(finalAssistant).catch(console.error)
+      }
+    }
 
     onSend?.(messageText)
   }
@@ -78,6 +149,7 @@ export function PromptInput({
   }
 
   function handleStop() {
+    abortRef.current?.abort()
     setIsSending(false)
   }
 

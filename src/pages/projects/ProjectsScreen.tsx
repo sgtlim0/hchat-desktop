@@ -3,6 +3,7 @@ import { useSessionStore } from '@/entities/session/session.store'
 import { Button } from '@/shared/ui/Button'
 import { getRelativeTime } from '@/shared/lib/time'
 import { useState } from 'react'
+import { FolderOpen } from 'lucide-react'
 
 export function ProjectsScreen() {
   const { projects, selectProject, createProject } = useProjectStore()
@@ -37,16 +38,17 @@ export function ProjectsScreen() {
       </div>
 
       {/* Project Cards */}
-      <div className="space-y-3">
-        {projects.length === 0 ? (
-          <div className="text-center py-20">
-            <p className="text-text-secondary text-sm mb-4">아직 프로젝트가 없습니다</p>
-            <Button variant="primary" onClick={() => setShowCreateModal(true)}>
-              첫 프로젝트 만들기
-            </Button>
-          </div>
-        ) : (
-          projects.map((project) => {
+      {projects.length === 0 ? (
+        <div className="text-center py-20">
+          <FolderOpen className="w-12 h-12 text-text-tertiary mx-auto mb-4" />
+          <p className="text-text-secondary text-sm mb-4">아직 프로젝트가 없습니다</p>
+          <Button variant="primary" onClick={() => setShowCreateModal(true)}>
+            첫 프로젝트 만들기
+          </Button>
+        </div>
+      ) : (
+        <div className="grid grid-cols-2 gap-4">
+          {projects.map((project) => {
             const sessionCount = project.sessionIds.length
             const lastUpdated = getRelativeTime(project.updatedAt)
 
@@ -54,24 +56,29 @@ export function ProjectsScreen() {
               <div
                 key={project.id}
                 onClick={() => handleProjectClick(project.id)}
-                className="border border-border rounded-xl p-5 hover:bg-hover/50 cursor-pointer transition"
+                className="border border-border rounded-xl p-6 hover:border-primary/40 hover:shadow-sm cursor-pointer transition group"
               >
-                <div className="flex items-start justify-between mb-2">
-                  <h3 className="font-semibold text-text-primary">{project.name}</h3>
+                <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
+                  <FolderOpen className="w-5 h-5 text-primary" />
                 </div>
+                <h3 className="font-semibold text-text-primary mb-1 group-hover:text-primary transition">
+                  {project.name}
+                </h3>
                 {project.description && (
-                  <p className="text-text-secondary text-sm mb-3">{project.description}</p>
+                  <p className="text-text-secondary text-sm mb-4 line-clamp-2">
+                    {project.description}
+                  </p>
                 )}
-                <div className="flex items-center gap-3 text-xs text-text-tertiary">
-                  <span>{sessionCount}개의 세션</span>
+                <div className="flex items-center gap-2 text-xs text-text-tertiary">
+                  <span>{sessionCount}개 세션</span>
                   <span>·</span>
                   <span>{lastUpdated}</span>
                 </div>
               </div>
             )
-          })
-        )}
-      </div>
+          })}
+        </div>
+      )}
 
       {/* Create Project Modal */}
       {showCreateModal && (

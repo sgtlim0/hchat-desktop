@@ -1,17 +1,55 @@
-import { useState, useEffect, useRef } from 'react'
-import { Search, Check } from 'lucide-react'
+import { useState, useEffect, useRef, useMemo } from 'react'
+import { Search, Check, MessageSquare, FolderOpen } from 'lucide-react'
 import { useSessionStore } from '@/entities/session/session.store'
+import { useProjectStore } from '@/entities/project/project.store'
 import { getRelativeTime } from '@/shared/lib/time'
+
+interface SearchResult {
+  id: string
+  type: 'session' | 'project'
+  title: string
+  subtitle?: string
+  time: string
+}
 
 export function SearchModal() {
   const { searchOpen, setSearchOpen, sessions, currentSessionId, selectSession } = useSessionStore()
+  const setView = useSessionStore((s) => s.setView)
+  const { projects, selectProject } = useProjectStore()
   const [query, setQuery] = useState('')
   const [selectedIndex, setSelectedIndex] = useState(0)
   const inputRef = useRef<HTMLInputElement>(null)
 
-  const filteredSessions = sessions.filter((session) =>
-    session.title.toLowerCase().includes(query.toLowerCase())
-  )
+  const results = useMemo((): SearchResult[] => {
+    const q = query.toLowerCase().trim()
+
+    const sessionResults: SearchResult[] = sessions
+      .filter((s) => !q || s.title.toLowerCase().includes(q) || s.lastMessage?.toLowerCase().includes(q))
+      .slice(0, q ? 10 : 5)
+      .map((s) => ({
+        id: s.id,
+        type: 'session' as const,
+        title: s.title,
+        subtitle: s.lastMessage,
+        time: getRelativeTime(s.updatedAt),
+      }))
+
+    const projectResults: SearchResult[] = projects
+      .filter((p) => !q || p.name.toLowerCase().includes(q) || p.description.toLowerCase().includes(q))
+      .slice(0, q ? 5 : 3)
+      .map((p) => ({
+        id: p.id,
+        type: 'project' as const,
+        title: p.name,
+        subtitle: p.description,
+        time: getRelativeTime(p.updatedAt),
+      }))
+
+    return [...sessionResults, ...projectResults]
+  }, [sessions, projects, query])
+
+  const sessionResults = results.filter((r) => r.type === 'session')
+  const projectResults = results.filter((r) => r.type === 'project')
 
   useEffect(() => {
     if (searchOpen && inputRef.current) {
@@ -30,17 +68,26 @@ export function SearchModal() {
     }
   }, [searchOpen])
 
+  function handleSelect(result: SearchResult) {
+    if (result.type === 'session') {
+      selectSession(result.id)
+    } else {
+      selectProject(result.id)
+      setView('projectDetail')
+    }
+    setSearchOpen(false)
+  }
+
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'ArrowDown') {
       e.preventDefault()
-      setSelectedIndex((prev) => Math.min(prev + 1, filteredSessions.length - 1))
+      setSelectedIndex((prev) => Math.min(prev + 1, results.length - 1))
     } else if (e.key === 'ArrowUp') {
       e.preventDefault()
       setSelectedIndex((prev) => Math.max(prev - 1, 0))
-    } else if (e.key === 'Enter' && filteredSessions.length > 0) {
+    } else if (e.key === 'Enter' && results.length > 0) {
       e.preventDefault()
-      selectSession(filteredSessions[selectedIndex].id)
-      setSearchOpen(false)
+      handleSelect(results[selectedIndex])
     } else if (e.key === 'Escape') {
       e.preventDefault()
       setSearchOpen(false)
@@ -53,15 +100,12 @@ export function SearchModal() {
     }
   }
 
-  const highlightMatch = (text: string, query: string) => {
-    if (!query) return text
-
-    const parts = text.split(new RegExp(`(${query})`, 'gi'))
+  const highlightMatch = (text: string, q: string) => {
+    if (!q) return text
+    const parts = text.split(new RegExp(`(${q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi'))
     return parts.map((part, i) =>
-      part.toLowerCase() === query.toLowerCase() ? (
-        <span key={i} className="bg-yellow-200/30">
-          {part}
-        </span>
+      part.toLowerCase() === q.toLowerCase() ? (
+        <span key={i} className="bg-yellow-200/30">{part}</span>
       ) : (
         part
       )
@@ -70,73 +114,121 @@ export function SearchModal() {
 
   if (!searchOpen) return null
 
+  let flatIndex = 0
+
   return (
     <div
       className="fixed inset-0 z-50 bg-black/40 flex items-start justify-center pt-[120px]"
       onClick={handleBackdropClick}
     >
-      <div className="bg-page rounded-xl w-[640px] shadow-2xl border border-border">
+      <div className="bg-page rounded-xl w-[560px] shadow-2xl border border-border overflow-hidden">
         {/* Search Input */}
         <div className="flex items-center gap-3 px-4 py-3 border-b border-border">
-          <Search className="w-5 h-5 text-text-tertiary" />
+          <Search className="w-5 h-5 text-text-tertiary flex-shrink-0" />
           <input
             ref={inputRef}
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder="세션 검색..."
+            placeholder="대화, 프로젝트 검색..."
             className="flex-1 bg-transparent text-text-primary text-sm outline-none placeholder:text-text-tertiary"
           />
-          <div className="flex items-center gap-2 text-xs text-text-tertiary">
-            <kbd className="px-2 py-0.5 bg-hover border border-border rounded text-[10px] font-medium">
-              ESC
-            </kbd>
-          </div>
+          <kbd className="px-2 py-0.5 bg-hover border border-border rounded text-[10px] font-medium text-text-tertiary flex-shrink-0">
+            ESC
+          </kbd>
         </div>
 
         {/* Results */}
         <div className="max-h-[400px] overflow-y-auto">
-          {filteredSessions.length === 0 ? (
+          {results.length === 0 ? (
             <div className="py-12 text-center text-text-secondary text-sm">
               검색 결과가 없습니다
             </div>
           ) : (
-            filteredSessions.map((session, index) => {
-              const isActive = session.id === currentSessionId
-              const isSelected = index === selectedIndex
+            <>
+              {/* Session Results */}
+              {sessionResults.length > 0 && (
+                <div>
+                  <div className="px-4 pt-3 pb-1">
+                    <span className="text-[11px] font-medium text-text-tertiary uppercase">
+                      {query ? '대화' : '최근 대화'}
+                    </span>
+                  </div>
+                  {sessionResults.map((result) => {
+                    const idx = flatIndex++
+                    const isActive = result.id === currentSessionId
+                    const isSelected = idx === selectedIndex
 
-              return (
-                <div
-                  key={session.id}
-                  onClick={() => {
-                    selectSession(session.id)
-                    setSearchOpen(false)
-                  }}
-                  className={`flex items-center gap-3 px-4 py-3 cursor-pointer transition border-b border-border last:border-0 ${
-                    isSelected ? 'bg-hover' : 'hover:bg-hover/50'
-                  }`}
-                >
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2">
-                      <div className="font-medium text-sm text-text-primary truncate">
-                        {highlightMatch(session.title, query)}
+                    return (
+                      <div
+                        key={result.id}
+                        onClick={() => handleSelect(result)}
+                        className={`flex items-center gap-3 px-4 py-2.5 cursor-pointer transition ${
+                          isSelected ? 'bg-hover' : 'hover:bg-hover/50'
+                        }`}
+                      >
+                        <MessageSquare className="w-4 h-4 text-text-tertiary flex-shrink-0" />
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2">
+                            <span className="text-sm text-text-primary truncate">
+                              {highlightMatch(result.title, query)}
+                            </span>
+                            {isActive && <Check className="w-3.5 h-3.5 text-primary flex-shrink-0" />}
+                          </div>
+                        </div>
                       </div>
-                      {isActive && <Check className="w-4 h-4 text-primary flex-shrink-0" />}
-                    </div>
-                    {session.lastMessage && (
-                      <div className="text-xs text-text-secondary truncate mt-0.5">
-                        {highlightMatch(session.lastMessage, query)}
-                      </div>
-                    )}
-                  </div>
-                  <div className="text-xs text-text-tertiary flex-shrink-0">
-                    {getRelativeTime(session.updatedAt)}
-                  </div>
+                    )
+                  })}
                 </div>
-              )
-            })
+              )}
+
+              {/* Project Results */}
+              {projectResults.length > 0 && (
+                <div>
+                  <div className="px-4 pt-3 pb-1">
+                    <span className="text-[11px] font-medium text-text-tertiary uppercase">
+                      프로젝트
+                    </span>
+                  </div>
+                  {projectResults.map((result) => {
+                    const idx = flatIndex++
+                    const isSelected = idx === selectedIndex
+
+                    return (
+                      <div
+                        key={result.id}
+                        onClick={() => handleSelect(result)}
+                        className={`flex items-center gap-3 px-4 py-2.5 cursor-pointer transition ${
+                          isSelected ? 'bg-hover' : 'hover:bg-hover/50'
+                        }`}
+                      >
+                        <FolderOpen className="w-4 h-4 text-text-tertiary flex-shrink-0" />
+                        <div className="flex-1 min-w-0">
+                          <span className="text-sm text-text-primary truncate">
+                            {highlightMatch(result.title, query)}
+                          </span>
+                        </div>
+                      </div>
+                    )
+                  })}
+                </div>
+              )}
+            </>
           )}
+        </div>
+
+        {/* Keyboard Hints */}
+        <div className="flex items-center gap-4 px-4 py-2 border-t border-border text-[11px] text-text-tertiary">
+          <span>
+            <kbd className="font-mono">↑</kbd><kbd className="font-mono">↓</kbd> 탐색
+          </span>
+          <span>
+            <kbd className="font-mono">↵</kbd> 열기
+          </span>
+          <span>
+            <kbd className="font-mono">esc</kbd> 닫기
+          </span>
         </div>
       </div>
     </div>
