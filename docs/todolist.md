@@ -92,16 +92,16 @@
 
 ### 내보내기 확장
 - [x] AllChatsScreen에 일괄 내보내기 기능
-- [ ] PDF 내보내기 (jspdf 라이브러리)
+- [x] PDF 내보내기 (jspdf 라이브러리)
 
 ### 테스트 확장
 - [x] guardrail + import-chat 유닛 테스트 추가
-- [ ] UI 컴포넌트 테스트 (`shared/ui/` 11개)
-- [ ] Playwright E2E 설정 + 핵심 플로우 테스트
+- [x] UI 컴포넌트 테스트 (`shared/ui/` 11개) — 158 tests
+- [x] Playwright E2E 설정 + 핵심 플로우 테스트 — 24 tests
 - [ ] 커버리지 80%+ 달성
 
 ### 접근성 확장
-- [ ] 색상 대비 WCAG AA 검증
+- [x] 색상 대비 WCAG AA 검증 — text-tertiary, warning, danger, primary(dark) 수정
 - [x] `eslint-plugin-jsx-a11y` 추가
 
 ---
