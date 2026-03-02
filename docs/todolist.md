@@ -150,12 +150,12 @@
 - [x] 스토리지 관리 — IndexedDB 분석 + 설정 > Storage 탭 + 정리 기능
 
 ### 메시지 가상화
-- [ ] 100+ 메시지 목록에 `react-window` 적용
-- [ ] 스크롤 성능 최적화
+- [x] 100+ 메시지 목록에 `react-window` 적용 — v2, 50+ 메시지 시 자동 활성화
+- [x] 스크롤 성능 최적화 — 동적 import, 높이 추정 heuristic
 
 ### IndexedDB 확장
-- [ ] Memory, Schedule, Swarm, Channel 스토어 영속성 연결
-- [x] 데이터 백업/복원 기능 — JSON 내보내기/가져오기, 폴더/태그 IndexedDB 마이그레이션
+- [x] Memory, Schedule, Swarm, Channel 스토어 영속성 연결 — Dexie v4, hydrate() 패턴
+- [x] 데이터 백업/복원 기능 — 13개 전체 테이블 JSON 내보내기/가져오기 (v4)
 
 ### UI 폴리시
 - [x] 다크 모드 세부 색상 조정 — CSS 변수 개선 (success, amber, sidebar, shadow)
@@ -185,9 +185,11 @@
 | P0 | 7/7 | 0 | 100% |
 | P1 | 27/27 | 0 | 100% |
 | P2 | 13/22 | 9 | 59% |
-| P3 | 8/9 | 1 | 89% |
+| P3 | 9/9 | 0 | 100% |
 | 문서/설계 | 5/5 | 0 | 100% |
-| **전체** | **60/70** | **10** | **86%** |
+| **전체** | **61/70** | **9** | **87%** |
 
-> **참고**: P0, P1 완료. P2 남은 항목은 백엔드 연동(Memory/Schedule/Swarm/Channel, OpenAI/Gemini 프록시, 사용량 SSE)과 웹검색+RAG.
-> P3 남은 항목: 메시지 가상화, Memory/Schedule/Swarm/Channel IndexedDB 영속성.
+> **참고**: P0, P1, P3 완료. P2 남은 9개 항목은 모두 **백엔드 변경이 필요**한 항목:
+> - 웹 검색+RAG (DuckDuckGo 프록시), Memory LLM 추출, Schedule cron, Swarm 오케스트레이션, Channel 웹훅
+> - OpenAI/Gemini 백엔드 프록시 (3개), 사용량 SSE 실제 토큰
+> 프론트엔드 단독 구현 가능한 항목은 모두 완료됨.
