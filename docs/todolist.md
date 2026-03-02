@@ -1,6 +1,6 @@
 # H Chat PWA — TODO List
 
-> 마지막 업데이트: 2026-03-02
+> 마지막 업데이트: 2026-03-03
 
 ## 현재 상태 요약
 
@@ -174,7 +174,8 @@
 | `docs/v2-implementation-plan.md` | v2 Phase 1~3 구현 상세 (코드 패턴, 파일 목록, 위험 요소) |
 | `docs/hchat-feature-design.md` | H Chat 12개 기능 분석 + 5개 화면 설계 |
 | `docs/hchat-implementation-plan.md` | H Chat Phase 1~3 구현 상세 (코드 패턴, 파일 목록) |
-| `pwa.pen` | Pencil MCP 화면 설계 — 6개 신규 프레임 (v2 4개 + hchat 2개) |
+| `pwa.pen` | Pencil MCP 화면 설계 — 28+ 프레임 (v2 4개 + hchat 2개 + Phase 1) |
+| `docs/roadmap.md` | 향후 로드맵 (Phase 2~4: 번역, 문서작성, OCR) |
 
 ---
 

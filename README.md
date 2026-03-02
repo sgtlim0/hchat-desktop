@@ -322,7 +322,7 @@ interface Message {
 
 #### 4. IndexedDB 영속성
 
-Dexie v4로 8개 스토어 모두 자동 저장. 페이지 새로고침 후 자동 복구.
+Dexie v4로 15개 스토어 모두 자동 저장. 페이지 새로고침 후 자동 복구.
 
 ---
 
@@ -354,13 +354,16 @@ modal secret create hchat-api-keys \
 
 - **URL**: https://sgtlim0--hchat-api-api.modal.run
 - **엔드포인트**:
-  - `POST /api/chat` — SSE 스트리밍 채팅
+  - `POST /api/chat` — SSE 스트리밍 채팅 (Bedrock)
   - `POST /api/chat/test` — 연결 테스트
   - `GET /api/health` — 헬스 체크
+  - `POST /api/search` — 웹 검색 (DuckDuckGo 프록시)
   - `POST /api/extract-memory` — 메모리 추출
   - `POST /api/schedule/execute` — 스케줄 실행
   - `POST /api/swarm/execute` — Swarm 실행
   - `POST /api/channels/notify` — 채널 알림
+  - `POST /api/openai/chat` — OpenAI SSE 프록시
+  - `POST /api/gemini/chat` — Gemini SSE 프록시
 
 ### 환경 설정
 
@@ -412,8 +415,9 @@ Pencil MCP를 통한 28개 프레임 설계:
 |------|---------|------|
 | **v2 신규 기능** | 에이전트, AI 도구, TTS/STT, 폴더/태그 | ✅ 완료 |
 | **H Chat** | Thinking Depth, 가드레일, 문서 검사, 데이터 분석 | ✅ 완료 |
+| **Phase 1** | HomeScreen 비서 마켓플레이스 | ✅ 완료 |
 
-파일: `pwa.pen` (Pencil 형식)
+파일: `pwa.pen` (Pencil 형식, 28+ frames)
 
 ---
 
@@ -447,9 +451,11 @@ Pencil MCP를 통한 28개 프레임 설계:
 | 문서 | 내용 |
 |------|------|
 | `CLAUDE.md` | 아키텍처, 커맨드, 배포 가이드 |
-| `docs/todolist.md` | 상세 TODO 목록 |
+| `docs/todolist.md` | 상세 TODO 목록 (70/70 + Phase 1) |
+| `docs/roadmap.md` | 향후 로드맵 (Phase 2~4) |
 | `docs/v2-implementation-plan.md` | v2-extension 이식 계획 |
 | `docs/hchat-implementation-plan.md` | H Chat 이식 계획 |
+| `docs/hchat-screenshot-analysis.md` | H Chat UI 심층 분석 |
 | `docs/v2-screen-design.md` | v2 화면 설계 |
 | `docs/hchat-feature-design.md` | H Chat 기능 분석 |
 

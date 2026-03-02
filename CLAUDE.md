@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-H Chat Desktop — Advanced AI chat Progressive Web App supporting multi-provider models (Claude, GPT, Gemini). React 19, TypeScript 5.9, Vite 7, Zustand 5, Tailwind CSS 3. **100% complete** (70/70 TODO items) with 667 tests (41 suites). Features: agent mode, web search, debate, image gen, PDF/Excel analysis, TTS/STT, prompt library, persona system, usage tracking, ROI dashboard, folders/tags, memory, schedule, swarm, channels, guardrail, auto-routing, offline support.
+H Chat Desktop — Advanced AI chat Progressive Web App supporting multi-provider models (Claude, GPT, Gemini). React 19, TypeScript 5.9, Vite 7, Zustand 5, Tailwind CSS 3. **100% complete** (70/70 TODO items + Phase 1 비서 마켓플레이스) with 667 tests (41 suites). Features: assistant marketplace (8 presets), agent mode, web search, debate, image gen, PDF/Excel analysis, TTS/STT, prompt library, persona system, usage tracking, ROI dashboard, folders/tags, memory, schedule, swarm, channels, guardrail, auto-routing, offline support.
 
 ## Commands
 
@@ -27,21 +27,22 @@ Uses **Feature-Sliced Design (FSD)** with `@/` path alias mapping to `src/`:
 ```
 src/
 ├── app/layouts/         # MainLayout — view routing dispatch, keyboard shortcuts, hydration
-├── pages/               # 17+ screens: home, chat, all-chats, projects, settings, quick-chat,
-│                        #   group-chat, memory, swarm, schedule, project-detail, prompt-library,
+├── pages/               # 15 screens: home (marketplace), chat, all-chats, projects, settings,
+│                        #   quick-chat, group-chat, memory, swarm, schedule, prompt-library,
 │                        #   debate, ai-tools, image-gen, agent
 ├── widgets/             # Complex feature components (message-list, prompt-input, sidebar, search)
 ├── entities/            # 15 Zustand stores: session, settings, project, group-chat, channel, memory,
 │                        #   swarm, schedule, usage, persona, prompt-template (prompt-library), debate,
 │                        #   folder, tag, toast
 ├── shared/
-│   ├── ui/              # 11 reusable components (Button, Avatar, Toggle, etc.)
+│   ├── ui/              # 12 reusable components (Button, Avatar, Toggle, AssistantCard, etc.)
 │   ├── lib/             # Utilities, Bedrock client, provider factory, Dexie DB, token-estimator
 │   ├── lib/providers/   # Multi-provider: OpenAI, Gemini, factory, router
 │   ├── lib/agent/       # Agent system: XML tool parser, 4 tools (search, memory, schedule, file)
+│   ├── constants/       # assistants.ts (8 assistant presets, categories)
 │   ├── i18n/            # Custom i18n system (ko/en)
 │   ├── types/           # TypeScript interfaces (Message, Session, Project, Memory, Agent, etc.)
-│   ├── constants.ts     # Models list, BEDROCK_MODEL_MAP, default model, AI tool definitions
+│   ├── constants.ts     # Models list, BEDROCK_MODEL_MAP, PROVIDER_COLORS, default model
 │   └── styles/          # globals.css with CSS variables for light/dark theme
 ```
 
@@ -137,7 +138,13 @@ modal deploy backend/app.py    # Production deploy
 
 ## Feature Status
 
-**All features fully functional (100% complete):**
+**All features fully functional (100% complete + Phase 1 extension):**
+
+### Assistant Marketplace (Phase 1)
+- 8 official assistant presets (analyst, quickChat, docReview, translator, reportWriter, codeReviewer, dataAnalyst, emailWriter)
+- 8 category filters (all, chat, work, translate, analyze, report, image, writing)
+- Official / My Assistants tab toggle (persona system integration)
+- One-click session creation with model + system prompt
 
 ### Core Chat
 - Multi-provider chat (Bedrock, OpenAI, Gemini) with SSE streaming
