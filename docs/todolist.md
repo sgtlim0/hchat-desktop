@@ -27,7 +27,7 @@
 | 자동 모델 라우팅 | ✅ 완료 — 프롬프트 분석 기반 자동 선택 |
 | 내보내기 UI | ✅ 완료 — ChatHeader 직접 버튼 |
 | v2-extension 분석 | ✅ 완료 — 기능 분석, 화면 설계, 구현 계획 |
-| Works AI 분석 | ✅ 완료 — 기능 분석, 화면 설계, 구현 계획 |
+| H Chat 분석 | ✅ 완료 — 기능 분석, 화면 설계, 구현 계획 |
 
 ---
 
@@ -68,8 +68,8 @@
 - [x] v2-extension 25개 기능 분석 + 18개 이식 가능 기능 우선순위 분류
 - [x] v2 화면 설계 MD + pwa.pen 프레임 4개 (에이전트, AI 도구, TTS/STT, 폴더/태그)
 - [x] v2 구현 계획 (Phase 1~3, 14개 신규 + 19개 수정 파일)
-- [x] Works AI 릴리즈 노트 분석 + 12개 적용 가능 기능 설계
-- [x] Works AI 구현 계획 + pwa.pen 프레임 2개 (Thinking Depth/가드레일, 문서 검사/데이터 분석)
+- [x] H Chat 릴리즈 노트 분석 + 12개 적용 가능 기능 설계
+- [x] H Chat 구현 계획 + pwa.pen 프레임 2개 (Thinking Depth/가드레일, 문서 검사/데이터 분석)
 
 ---
 
@@ -84,8 +84,8 @@
 - [x] 대화 포크 (Fork) — 특정 메시지에서 분기하여 새 대화 시작
 - [x] ChatGPT/Claude 가져오기 확장 — 형식 자동 감지 + 변환
 
-### Works AI 포팅 (즉시 구현)
-> 📋 상세: `docs/wrks-implementation-plan.md` Phase 1
+### H Chat 포팅 (즉시 구현)
+> 📋 상세: `docs/hchat-implementation-plan.md` Phase 1
 
 - [x] Thinking Depth 모드 — fast/balanced/deep 3단 토글
 - [x] 사용량 예산 경고 — 월간 예산 설정, 70% 임계치 알림
@@ -115,8 +115,8 @@
 - [x] 웹 검색 + RAG — DuckDuckGo 프록시, 검색 의도 감지, 에이전트 도구 연동
 - [x] AI 도구 패널 — 글쓰기 11종 + 문법 검사 + 요약 + 문서 건강 검사
 
-### Works AI 포팅 (중간 복잡도)
-> 📋 상세: `docs/wrks-implementation-plan.md` Phase 2~3
+### H Chat 포팅 (중간 복잡도)
+> 📋 상세: `docs/hchat-implementation-plan.md` Phase 2~3
 
 - [x] AI 가드레일 — 민감 데이터 Regex 감지, 전송 전 경고/마스킹 (P1에서 완료)
 - [x] 문서 건강 검사 — AI 도구 패널 내 통합 (맞춤법/문법/가독성/일관성 종합 분석)
@@ -172,9 +172,9 @@
 | `docs/v2-feature-analysis.md` | v2-extension 25개 기능 분석, 이식 우선순위 |
 | `docs/v2-screen-design.md` | v2 신규 화면 와이어프레임 (에이전트, TTS/STT, 도구, 폴더/태그) |
 | `docs/v2-implementation-plan.md` | v2 Phase 1~3 구현 상세 (코드 패턴, 파일 목록, 위험 요소) |
-| `docs/wrks-feature-design.md` | Works AI 12개 기능 분석 + 5개 화면 설계 |
-| `docs/wrks-implementation-plan.md` | Works AI Phase 1~3 구현 상세 (코드 패턴, 파일 목록) |
-| `pwa.pen` | Pencil MCP 화면 설계 — 6개 신규 프레임 (v2 4개 + wrks 2개) |
+| `docs/hchat-feature-design.md` | H Chat 12개 기능 분석 + 5개 화면 설계 |
+| `docs/hchat-implementation-plan.md` | H Chat Phase 1~3 구현 상세 (코드 패턴, 파일 목록) |
+| `pwa.pen` | Pencil MCP 화면 설계 — 6개 신규 프레임 (v2 4개 + hchat 2개) |
 
 ---
 

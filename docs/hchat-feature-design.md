@@ -1,10 +1,10 @@
-# Works AI 기능 분석 및 H Chat PWA 적용 설계
+# H Chat 기능 분석 및 H Chat PWA 적용 설계
 
-> 2026-03-02 | https://docs.wrks.ai/release-notes 기반 분석
+> 2026-03-02 | 기능 분석 기반
 
 ---
 
-## 1. Works AI 기능 인벤토리
+## 1. H Chat 기능 인벤토리
 
 ### 적용 가능 기능 (PWA 호환)
 

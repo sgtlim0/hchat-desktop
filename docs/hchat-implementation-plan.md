@@ -1,6 +1,6 @@
-# Works AI 기능 도입 — 구현 계획
+# H Chat 기능 도입 — 구현 계획
 
-> 2026-03-02 | https://docs.wrks.ai/release-notes 기반
+> 2026-03-02 | 기능 분석 기반
 
 ---
 
@@ -174,8 +174,8 @@ const PATTERNS = {
 
 ## 6. v2-extension 포팅과의 의존성
 
-| wrks 기능 | v2-extension 선행 작업 | 비고 |
-|-----------|----------------------|------|
+| H Chat 기능 | v2-extension 선행 작업 | 비고 |
+|------------|----------------------|------|
 | Thinking Depth | 없음 | 독립 구현 |
 | 예산 경고 | 없음 (기존 usage 스토어 활용) | 독립 구현 |
 | AI 가드레일 | 없음 | 독립 구현 |
@@ -183,4 +183,4 @@ const PATTERNS = {
 | Excel/CSV 분석 | AI 도구 패널 (P2) | 도구 페이지 프레임 재사용 |
 | 이미지 생성 | 없음 | 별도 API 연동 필요 |
 
-**권장 구현 순서**: v2-extension P1 → wrks Phase 1 → v2 P2 → wrks Phase 2 → wrks Phase 3
+**권장 구현 순서**: v2-extension P1 → H Chat Phase 1 → v2 P2 → H Chat Phase 2 → H Chat Phase 3

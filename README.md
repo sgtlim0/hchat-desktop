@@ -260,7 +260,7 @@ hchat-pwa/
 ├── public/                     # 정적 리소스
 ├── docs/                       # 설계 문서
 │   ├── v2-implementation-plan.md
-│   ├── wrks-implementation-plan.md
+│   ├── hchat-implementation-plan.md
 │   └── ...
 │
 └── vite.config.ts            # Vite 설정
@@ -390,7 +390,7 @@ Pencil MCP를 통한 28개 프레임 설계:
 | 분류 | 프레임 | 상태 |
 |------|---------|------|
 | **v2 신규 기능** | 에이전트, AI 도구, TTS/STT, 폴더/태그 | ✅ 완료 |
-| **Works AI** | Thinking Depth, 가드레일, 문서 검사, 데이터 분석 | ✅ 완료 |
+| **H Chat** | Thinking Depth, 가드레일, 문서 검사, 데이터 분석 | ✅ 완료 |
 
 파일: `pwa.pen` (Pencil 형식)
 
@@ -416,9 +416,9 @@ Pencil MCP를 통한 28개 프레임 설계:
 | `CLAUDE.md` | 아키텍처, 커맨드, 배포 가이드 |
 | `docs/todolist.md` | 상세 TODO 목록 |
 | `docs/v2-implementation-plan.md` | v2-extension 이식 계획 |
-| `docs/wrks-implementation-plan.md` | Works AI 이식 계획 |
+| `docs/hchat-implementation-plan.md` | H Chat 이식 계획 |
 | `docs/v2-screen-design.md` | v2 화면 설계 |
-| `docs/wrks-feature-design.md` | Works AI 기능 분석 |
+| `docs/hchat-feature-design.md` | H Chat 기능 분석 |
 
 ---
 

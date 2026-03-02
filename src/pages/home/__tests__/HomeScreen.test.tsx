@@ -12,16 +12,34 @@ vi.mock('@/shared/i18n', () => ({
         'home.credentialsMissing': 'API credentials missing',
         'home.credentialsHint': 'Configure your credentials',
         'home.configure': 'Configure',
-        'quickAction.write': 'Write',
-        'quickAction.summarize': 'Summarize',
-        'quickAction.translate': 'Translate',
-        'quickAction.brainstorm': 'Brainstorm',
-        'quickAction.review': 'Review',
-        'quickAction.prompt.write': 'Help me write something',
-        'quickAction.prompt.summarize': 'Summarize this text',
-        'quickAction.prompt.translate': 'Translate this',
-        'quickAction.prompt.brainstorm': 'Let\'s brainstorm ideas',
-        'quickAction.prompt.review': 'Review this code',
+        'assistant.tab.official': 'Official',
+        'assistant.tab.custom': 'My Assistants',
+        'assistant.category.all': 'All',
+        'assistant.category.chat': 'Chat',
+        'assistant.category.work': 'Work',
+        'assistant.category.translate': 'Translate',
+        'assistant.category.analyze': 'Analyze',
+        'assistant.category.report': 'Report',
+        'assistant.category.image': 'Image',
+        'assistant.category.writing': 'Writing',
+        'assistant.preset.analyst.title': 'Careful Analyst',
+        'assistant.preset.analyst.desc': 'Analyzes complex topics',
+        'assistant.preset.quickChat.title': 'Quick Chat',
+        'assistant.preset.quickChat.desc': 'Fast conversations',
+        'assistant.preset.docReview.title': 'Doc Review',
+        'assistant.preset.docReview.desc': 'Reviews documents',
+        'assistant.preset.translator.title': 'Translator',
+        'assistant.preset.translator.desc': 'Translates documents',
+        'assistant.preset.reportWriter.title': 'Report Writer',
+        'assistant.preset.reportWriter.desc': 'Writes reports',
+        'assistant.preset.codeReviewer.title': 'Code Reviewer',
+        'assistant.preset.codeReviewer.desc': 'Reviews code',
+        'assistant.preset.dataAnalyst.title': 'Data Analyst',
+        'assistant.preset.dataAnalyst.desc': 'Analyzes data',
+        'assistant.preset.emailWriter.title': 'Email Writer',
+        'assistant.preset.emailWriter.desc': 'Writes emails',
+        'assistant.empty': 'No custom assistants yet',
+        'assistant.createHint': 'Create your own assistant',
       }
       return translations[key] || key
     },
@@ -30,20 +48,27 @@ vi.mock('@/shared/i18n', () => ({
 }))
 
 // Mock lucide-react icons
-vi.mock('lucide-react', () => ({
-  Settings: () => <div>Settings</div>,
-  Pencil: () => <div>Pencil</div>,
-  FileText: () => <div>FileText</div>,
-  Languages: () => <div>Languages</div>,
-  Lightbulb: () => <div>Lightbulb</div>,
-  SearchCode: () => <div>SearchCode</div>,
-}))
+vi.mock('lucide-react', () => {
+  const Icon = () => null
+  return {
+    Settings: Icon,
+    Search: Icon,
+    Zap: Icon,
+    FileSearch: Icon,
+    Languages: Icon,
+    FileText: Icon,
+    Code: Icon,
+    BarChart3: Icon,
+    Mail: Icon,
+    Bot: Icon,
+  }
+})
 
 // Mock PromptInput
 vi.mock('@/widgets/prompt-input/PromptInput', () => ({
-  PromptInput: ({ onSend, placeholder }: { onSend: (msg: string) => void; placeholder: string }) => (
+  PromptInput: ({ placeholder }: { onSend: (msg: string) => void; placeholder: string }) => (
     <div data-testid="prompt-input">
-      <input placeholder={placeholder} onChange={(e) => e.target.value && onSend(e.target.value)} />
+      <input placeholder={placeholder} />
     </div>
   ),
 }))
@@ -56,16 +81,25 @@ const mockCredentials = {
 }
 const mockSetSettingsOpen = vi.fn()
 const mockSetSettingsTab = vi.fn()
+const mockSetSelectedModel = vi.fn()
 
 vi.mock('@/entities/settings/settings.store', () => ({
-  useSettingsStore: vi.fn((selector) => {
-    const state = {
-      credentials: mockCredentials,
-      setSettingsOpen: mockSetSettingsOpen,
-      setSettingsTab: mockSetSettingsTab,
+  useSettingsStore: Object.assign(
+    vi.fn((selector) => {
+      const state = {
+        credentials: mockCredentials,
+        setSettingsOpen: mockSetSettingsOpen,
+        setSettingsTab: mockSetSettingsTab,
+        setSelectedModel: mockSetSelectedModel,
+      }
+      return selector(state)
+    }),
+    {
+      getState: vi.fn(() => ({
+        setSelectedModel: mockSetSelectedModel,
+      })),
     }
-    return selector(state)
-  }),
+  ),
 }))
 
 // Mock session store
@@ -90,6 +124,21 @@ vi.mock('@/entities/session/session.store', () => ({
   ),
 }))
 
+// Mock persona store
+vi.mock('@/entities/persona/persona.store', () => ({
+  usePersonaStore: Object.assign(
+    vi.fn((selector) => {
+      const state = { personas: [] }
+      return selector(state)
+    }),
+    {
+      getState: vi.fn(() => ({
+        setActivePersona: vi.fn(),
+      })),
+    }
+  ),
+}))
+
 describe('HomeScreen', () => {
   beforeEach(() => {
     vi.clearAllMocks()
@@ -108,19 +157,19 @@ describe('HomeScreen', () => {
     expect(screen.getByPlaceholderText('Ask me anything...')).toBeInTheDocument()
   })
 
-  it('renders quick action chips', () => {
+  it('renders assistant cards in official tab', () => {
     render(<HomeScreen />)
-    expect(screen.getByText('Write')).toBeInTheDocument()
-    expect(screen.getByText('Summarize')).toBeInTheDocument()
-    expect(screen.getByText('Translate')).toBeInTheDocument()
-    expect(screen.getByText('Brainstorm')).toBeInTheDocument()
-    expect(screen.getByText('Review')).toBeInTheDocument()
+    expect(screen.getByText('Careful Analyst')).toBeInTheDocument()
+    expect(screen.getByText('Quick Chat')).toBeInTheDocument()
+    expect(screen.getByText('Doc Review')).toBeInTheDocument()
+    expect(screen.getByText('Translator')).toBeInTheDocument()
+    expect(screen.getByText('Report Writer')).toBeInTheDocument()
+    expect(screen.getByText('Code Reviewer')).toBeInTheDocument()
+    expect(screen.getByText('Data Analyst')).toBeInTheDocument()
+    expect(screen.getByText('Email Writer')).toBeInTheDocument()
   })
 
   it('shows credentials missing banner when no credentials', () => {
-    mockCredentials.accessKeyId = ''
-    mockCredentials.secretAccessKey = ''
-
     render(<HomeScreen />)
     expect(screen.getByText('API credentials missing')).toBeInTheDocument()
     expect(screen.getByText('Configure your credentials')).toBeInTheDocument()
@@ -135,9 +184,6 @@ describe('HomeScreen', () => {
   })
 
   it('opens settings when configure button is clicked', () => {
-    mockCredentials.accessKeyId = ''
-    mockCredentials.secretAccessKey = ''
-
     render(<HomeScreen />)
     const configureButton = screen.getByText('Configure')
     fireEvent.click(configureButton)
@@ -146,35 +192,28 @@ describe('HomeScreen', () => {
     expect(mockSetSettingsOpen).toHaveBeenCalledWith(true)
   })
 
-  it('creates session with pending prompt when quick action is clicked', () => {
+  it('filters by category', () => {
     render(<HomeScreen />)
 
-    const writeButton = screen.getByText('Write')
-    fireEvent.click(writeButton)
+    fireEvent.click(screen.getByText('Translate'))
+    expect(screen.getByText('Translator')).toBeInTheDocument()
+    expect(screen.queryByText('Careful Analyst')).not.toBeInTheDocument()
+  })
 
-    expect(mockSetPendingPrompt).toHaveBeenCalledWith('Help me write something')
+  it('creates session when assistant card is clicked', () => {
+    render(<HomeScreen />)
+
+    fireEvent.click(screen.getByText('Careful Analyst'))
+    expect(mockSetSelectedModel).toHaveBeenCalledWith('claude-sonnet-4.6')
     expect(mockCreateSession).toHaveBeenCalled()
   })
 
-  it('handles different quick actions correctly', () => {
+  it('shows empty state for custom tab', () => {
     render(<HomeScreen />)
 
-    const summarizeButton = screen.getByText('Summarize')
-    fireEvent.click(summarizeButton)
-
-    expect(mockSetPendingPrompt).toHaveBeenCalledWith('Summarize this text')
-    expect(mockCreateSession).toHaveBeenCalled()
-  })
-
-  it('renders all quick action icons', () => {
-    render(<HomeScreen />)
-
-    // Icons are rendered but we just check the actions exist
-    expect(screen.getByText('Write')).toBeInTheDocument()
-    expect(screen.getByText('Summarize')).toBeInTheDocument()
-    expect(screen.getByText('Translate')).toBeInTheDocument()
-    expect(screen.getByText('Brainstorm')).toBeInTheDocument()
-    expect(screen.getByText('Review')).toBeInTheDocument()
+    fireEvent.click(screen.getByText('My Assistants'))
+    expect(screen.getByText('No custom assistants yet')).toBeInTheDocument()
+    expect(screen.getByText('Create your own assistant')).toBeInTheDocument()
   })
 
   it('renders H Chat icon', () => {
