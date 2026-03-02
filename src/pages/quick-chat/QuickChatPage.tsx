@@ -1,17 +1,21 @@
 import { useState } from 'react'
 import { ArrowUp } from 'lucide-react'
 import { Avatar } from '@/shared/ui/Avatar'
+import { useSessionStore } from '@/entities/session/session.store'
 import { useTranslation } from '@/shared/i18n'
 
 export function QuickChatPage() {
   const { t } = useTranslation()
   const [input, setInput] = useState('')
+  const createSession = useSessionStore((s) => s.createSession)
+  const setPendingPrompt = useSessionStore((s) => s.setPendingPrompt)
 
   const handleSubmit = () => {
     if (input.trim()) {
-      // TODO: Send message and switch to main window
-      console.log('Quick chat message:', input)
+      const message = input.trim()
       setInput('')
+      setPendingPrompt(message)
+      createSession(message.slice(0, 50))
     }
   }
 

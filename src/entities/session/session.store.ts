@@ -6,6 +6,7 @@ import {
   putSession,
   deleteSessionFromDb,
   putMessage,
+  putMessages,
   hydrateFromDb,
 } from '@/shared/lib/db'
 
@@ -16,6 +17,7 @@ interface SessionState {
   view: ViewState
   searchOpen: boolean
   hydrated: boolean
+  pendingPrompt: string | null
 
   // Actions
   hydrate: () => Promise<void>
@@ -33,6 +35,8 @@ interface SessionState {
   togglePin: (id: string) => void
   addTag: (id: string, tag: string) => void
   removeTag: (id: string, tag: string) => void
+  setPendingPrompt: (prompt: string | null) => void
+  importSession: (session: Session, messages: Message[]) => Promise<void>
   searchMessages: (query: string) => Array<{ sessionId: string; messageId: string; content: string; sessionTitle: string }>
 }
 
@@ -43,6 +47,7 @@ export const useSessionStore = create<SessionState>((set, get) => ({
   view: 'home',
   searchOpen: false,
   hydrated: false,
+  pendingPrompt: null,
 
   hydrate: async () => {
     try {
@@ -199,6 +204,19 @@ export const useSessionStore = create<SessionState>((set, get) => ({
     }))
     const session = get().sessions.find((s) => s.id === id)
     if (session) putSession(session).catch(console.error)
+  },
+
+  setPendingPrompt: (prompt) => set({ pendingPrompt: prompt }),
+
+  importSession: async (session, messages) => {
+    set((state) => ({
+      sessions: [session, ...state.sessions],
+      messages: { ...state.messages, [session.id]: messages },
+    }))
+    await putSession(session)
+    if (messages.length > 0) {
+      await putMessages(messages)
+    }
   },
 
   searchMessages: (query) => {

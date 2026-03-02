@@ -1,5 +1,7 @@
+import { memo, useMemo } from 'react'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
+import type { Components } from 'react-markdown'
 import type { Message } from '@/shared/types'
 import { CodeBlock } from './CodeBlock'
 import { ToolCallGroup } from './ToolCallGroup'
@@ -17,7 +19,30 @@ function AssistantAvatar() {
   )
 }
 
-export function MessageBubble({ message, isStreaming = false }: MessageBubbleProps) {
+const remarkPlugins = [remarkGfm]
+
+const markdownComponents: Components = {
+  code({ className, children, ...props }) {
+    const match = /language-(\w+)/.exec(className ?? '')
+    const isInline = !match
+
+    if (isInline) {
+      return (
+        <code className="bg-card px-1.5 py-0.5 rounded text-[13px] font-mono" {...props}>
+          {children}
+        </code>
+      )
+    }
+
+    return (
+      <CodeBlock language={match[1]}>
+        {String(children).replace(/\n$/, '')}
+      </CodeBlock>
+    )
+  },
+}
+
+export const MessageBubble = memo(function MessageBubble({ message, isStreaming = false }: MessageBubbleProps) {
   if (message.role === 'user') {
     const textContent = message.segments
       .filter((s) => s.type === 'text')
@@ -48,33 +73,11 @@ export function MessageBubble({ message, isStreaming = false }: MessageBubblePro
 
           if (segment.type === 'text' && segment.content) {
             return (
-              <div key={index} className="prose-chat text-text-primary text-sm leading-relaxed">
-                <ReactMarkdown
-                  remarkPlugins={[remarkGfm]}
-                  components={{
-                    code({ className, children, ...props }) {
-                      const match = /language-(\w+)/.exec(className ?? '')
-                      const isInline = !match
-
-                      if (isInline) {
-                        return (
-                          <code className="bg-card px-1.5 py-0.5 rounded text-[13px] font-mono" {...props}>
-                            {children}
-                          </code>
-                        )
-                      }
-
-                      return (
-                        <CodeBlock language={match[1]}>
-                          {String(children).replace(/\n$/, '')}
-                        </CodeBlock>
-                      )
-                    },
-                  }}
-                >
-                  {segment.content}
-                </ReactMarkdown>
-              </div>
+              <MarkdownSegment
+                key={index}
+                content={segment.content}
+                isStreaming={isStreaming}
+              />
             )
           }
 
@@ -89,4 +92,33 @@ export function MessageBubble({ message, isStreaming = false }: MessageBubblePro
       </div>
     </div>
   )
-}
+})
+
+const MarkdownSegment = memo(function MarkdownSegment({
+  content,
+  isStreaming,
+}: {
+  content: string
+  isStreaming: boolean
+}) {
+  const rendered = useMemo(() => {
+    if (isStreaming) return null
+    return (
+      <ReactMarkdown remarkPlugins={remarkPlugins} components={markdownComponents}>
+        {content}
+      </ReactMarkdown>
+    )
+  }, [content, isStreaming])
+
+  return (
+    <div className="prose-chat text-text-primary text-sm leading-relaxed">
+      {isStreaming ? (
+        <ReactMarkdown remarkPlugins={remarkPlugins} components={markdownComponents}>
+          {content}
+        </ReactMarkdown>
+      ) : (
+        rendered
+      )}
+    </div>
+  )
+})

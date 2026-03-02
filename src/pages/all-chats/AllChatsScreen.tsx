@@ -1,17 +1,38 @@
-import { useState, useMemo } from 'react'
-import { MessageSquare, Star, Search, Pin } from 'lucide-react'
+import { useState, useMemo, useRef } from 'react'
+import { MessageSquare, Star, Search, Pin, Upload } from 'lucide-react'
 import { useSessionStore } from '@/entities/session/session.store'
 import { getRelativeTime, getDateGroup } from '@/shared/lib/time'
 import { getModelName } from '@/shared/lib/model-meta'
 import { useTranslation } from '@/shared/i18n'
+import { parseImportJson, readFileAsText } from '@/shared/lib/import-chat'
 
 type FilterType = 'all' | 'favorites' | 'projects' | 'pinned'
 
 export function AllChatsScreen() {
   const { t } = useTranslation()
-  const { sessions, selectSession } = useSessionStore()
+  const { sessions, selectSession, importSession } = useSessionStore()
   const [filter, setFilter] = useState<FilterType>('all')
   const [searchQuery, setSearchQuery] = useState('')
+  const fileInputRef = useRef<HTMLInputElement>(null)
+
+  async function handleImport(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    try {
+      const text = await readFileAsText(file)
+      const { session, messages } = parseImportJson(text)
+      await importSession(session, messages)
+    } catch (error) {
+      const msg = error instanceof Error ? error.message : 'Unknown error'
+      alert(t('import.failed', { error: msg }))
+    } finally {
+      // Reset file input so same file can be re-imported
+      if (fileInputRef.current) {
+        fileInputRef.current.value = ''
+      }
+    }
+  }
 
   const filteredSessions = useMemo(() => {
     let result = sessions
@@ -56,6 +77,21 @@ export function AllChatsScreen() {
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold text-text-primary">{t('allChats.title')}</h1>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => fileInputRef.current?.click()}
+            className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-text-secondary border border-border rounded-lg hover:bg-hover transition"
+          >
+            <Upload size={16} />
+            {t('import.button')}
+          </button>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept=".json"
+            onChange={handleImport}
+            className="hidden"
+          />
         <div className="relative w-[320px]">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-tertiary" />
           <input
@@ -65,6 +101,7 @@ export function AllChatsScreen() {
             placeholder={t('allChats.searchPlaceholder')}
             className="w-full bg-input border border-border-input rounded-lg pl-10 pr-4 py-2 text-sm text-text-primary placeholder:text-text-tertiary outline-none focus:border-primary transition"
           />
+        </div>
         </div>
       </div>
 

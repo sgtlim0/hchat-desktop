@@ -2,6 +2,7 @@ import { Settings } from 'lucide-react'
 import { PromptInput } from '@/widgets/prompt-input/PromptInput'
 import { QuickActionChip } from '@/shared/ui/QuickActionChip'
 import { QUICK_ACTIONS } from '@/shared/constants'
+import { useSessionStore } from '@/entities/session/session.store'
 import { useSettingsStore } from '@/entities/settings/settings.store'
 import { Pencil, FileText, Languages, Lightbulb, SearchCode } from 'lucide-react'
 import { useTranslation } from '@/shared/i18n'
@@ -27,8 +28,12 @@ export function HomeScreen() {
     // Message handling is done in PromptInput
   }
 
-  function handleQuickAction(_actionId: string) {
-    // TODO: Handle quick action click
+  function handleQuickAction(actionId: string) {
+    const promptKey = `quickAction.prompt.${actionId}` as TranslationKey
+    const prompt = t(promptKey)
+    const { createSession, setPendingPrompt } = useSessionStore.getState()
+    setPendingPrompt(prompt)
+    createSession()
   }
 
   function handleOpenSettings() {

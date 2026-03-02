@@ -56,4 +56,15 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'vendor-react': ['react', 'react-dom'],
+          'vendor-markdown': ['react-markdown', 'remark-gfm'],
+          'vendor-ui': ['lucide-react', 'react-textarea-autosize'],
+        },
+      },
+    },
+  },
 })
