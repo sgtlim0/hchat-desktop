@@ -52,19 +52,19 @@ describe('useDebateStore', () => {
       expect(isRunning).toBe(true)
     })
 
-    it('generates unique session ID', async () => {
+    it('generates unique session ID', () => {
+      vi.spyOn(Date, 'now').mockReturnValueOnce(1000)
       useDebateStore.getState().startDebate('Topic 1', ['model-a'])
       const session1 = useDebateStore.getState().session
 
       resetStore()
 
-      // Wait 1ms to ensure Date.now() returns different value
-      await new Promise((resolve) => setTimeout(resolve, 1))
-
+      vi.spyOn(Date, 'now').mockReturnValueOnce(2000)
       useDebateStore.getState().startDebate('Topic 2', ['model-b'])
       const session2 = useDebateStore.getState().session
 
       expect(session1?.id).not.toBe(session2?.id)
+      vi.restoreAllMocks()
     })
 
     it('sets createdAt timestamp', () => {
