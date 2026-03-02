@@ -115,10 +115,7 @@ export const MessageBubble = memo(function MessageBubble({ message, isStreaming 
           return null
         })}
         {isStreaming && (
-          <span className="inline-block w-2 h-4 bg-primary animate-cursor-blink ml-0.5 align-middle" />
-        )}
-        {!hasContent && isStreaming && (
-          <span className="inline-block w-2 h-4 bg-primary animate-cursor-blink" />
+          <span className={`inline-block w-2 h-4 bg-primary animate-cursor-blink${hasContent ? ' ml-0.5 align-middle' : ''}`} />
         )}
         {!isStreaming && hasContent && (
           <div className="flex gap-2 mt-2">
