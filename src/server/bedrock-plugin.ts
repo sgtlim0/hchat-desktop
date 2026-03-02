@@ -2,6 +2,7 @@ import type { Plugin, Connect } from 'vite'
 import {
   BedrockRuntimeClient,
   ConverseStreamCommand,
+  ConverseCommand,
   type Message as BedrockMessage,
   type ContentBlock,
 } from '@aws-sdk/client-bedrock-runtime'
@@ -114,6 +115,152 @@ function setupMiddleware(middlewares: { use: (path: string, handler: Connect.Nex
 
       res.write(`data: ${JSON.stringify({ type: 'error', error: message })}\n\n`)
       res.end()
+    }
+  })
+
+  // POST /api/search — web search via DuckDuckGo HTML
+  middlewares.use('/api/search', async (req, res, next) => {
+    if (req.method !== 'POST') {
+      return next()
+    }
+
+    try {
+      const body = await parseRequestBody(req) as unknown as { query: string; maxResults?: number }
+      const query = body.query
+      const maxResults = body.maxResults ?? 5
+
+      // Use DuckDuckGo Lite HTML API
+      const params = new URLSearchParams({ q: query })
+      const ddgResponse = await fetch(`https://lite.duckduckgo.com/lite/?${params.toString()}`, {
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (compatible; HChat/1.0)',
+        },
+      })
+
+      const html = await ddgResponse.text()
+
+      // Parse results from DuckDuckGo Lite HTML
+      const results: Array<{ title: string; url: string; snippet: string }> = []
+      const linkRegex = /<a[^>]+class="result-link"[^>]*href="([^"]*)"[^>]*>(.*?)<\/a>/gi
+      const snippetRegex = /<td[^>]*class="result-snippet"[^>]*>(.*?)<\/td>/gi
+
+      const links: Array<{ url: string; title: string }> = []
+      let match
+      while ((match = linkRegex.exec(html)) !== null) {
+        links.push({
+          url: match[1].replace(/&amp;/g, '&'),
+          title: match[2].replace(/<[^>]*>/g, '').trim(),
+        })
+      }
+
+      const snippets: string[] = []
+      while ((match = snippetRegex.exec(html)) !== null) {
+        snippets.push(match[1].replace(/<[^>]*>/g, '').trim())
+      }
+
+      for (let i = 0; i < Math.min(links.length, maxResults); i++) {
+        results.push({
+          title: links[i].title,
+          url: links[i].url,
+          snippet: snippets[i] ?? '',
+        })
+      }
+
+      res.writeHead(200, { 'Content-Type': 'application/json' })
+      res.end(JSON.stringify({ results }))
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Search failed'
+      res.writeHead(200, { 'Content-Type': 'application/json' })
+      res.end(JSON.stringify({ results: [], error: message }))
+    }
+  })
+
+  // POST /api/extract-memory — extract memories from conversation via Bedrock
+  middlewares.use('/api/extract-memory', async (req, res, next) => {
+    if (req.method !== 'POST') {
+      return next()
+    }
+
+    try {
+      const body = await parseRequestBody(req) as unknown as {
+        messages: Array<{ role: string; content: string }>
+        credentials: ChatRequestBody['credentials']
+      }
+
+      const client = createClient(body.credentials)
+
+      const conversationText = body.messages
+        .filter((m) => m.content)
+        .map((m) => `${m.role}: ${m.content}`)
+        .join('\n')
+
+      const systemPrompt = `You are a memory extraction assistant. Analyze the conversation and extract key facts, user preferences, and important information.
+
+Return ONLY a valid JSON array of objects with this structure:
+[
+  { "key": "short descriptive label", "value": "the extracted fact or preference", "scope": "session" }
+]
+
+Rules:
+- Extract only concrete, useful facts (names, preferences, technical details, decisions)
+- Skip greetings, small talk, and generic statements
+- Use "session" scope for conversation-specific facts
+- Use "global" scope for user preferences that apply broadly
+- Return an empty array [] if no meaningful facts found
+- Return ONLY the JSON array, no markdown, no explanation`
+
+      const extractionModel = 'us.anthropic.claude-haiku-4-5-20251001-v1:0'
+
+      const command = new ConverseCommand({
+        modelId: extractionModel,
+        messages: [
+          {
+            role: 'user',
+            content: [{ text: `Extract key facts from this conversation:\n\n${conversationText}` }],
+          },
+        ],
+        system: [{ text: systemPrompt }],
+        inferenceConfig: { maxTokens: 2048 },
+      })
+
+      const response = await client.send(command)
+
+      let rawText = ''
+      const contentBlocks = response.output?.message?.content ?? []
+      for (const block of contentBlocks) {
+        if (block.text) {
+          rawText += block.text
+        }
+      }
+
+      rawText = rawText.trim()
+      if (rawText.startsWith('```')) {
+        const lines = rawText.split('\n')
+        rawText = lines.slice(1, lines[lines.length - 1]?.trim() === '```' ? -1 : undefined).join('\n')
+      }
+
+      const memories = JSON.parse(rawText)
+
+      if (!Array.isArray(memories)) {
+        res.writeHead(200, { 'Content-Type': 'application/json' })
+        res.end(JSON.stringify({ memories: [], error: 'LLM returned non-array response' }))
+        return
+      }
+
+      const validated = memories
+        .filter((m: Record<string, unknown>) => m && typeof m.key === 'string' && typeof m.value === 'string')
+        .map((m: Record<string, unknown>) => ({
+          key: String(m.key),
+          value: String(m.value),
+          scope: m.scope === 'global' ? 'global' : 'session',
+        }))
+
+      res.writeHead(200, { 'Content-Type': 'application/json' })
+      res.end(JSON.stringify({ memories: validated }))
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Memory extraction failed'
+      res.writeHead(200, { 'Content-Type': 'application/json' })
+      res.end(JSON.stringify({ memories: [], error: message }))
     }
   })
 

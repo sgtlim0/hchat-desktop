@@ -65,6 +65,17 @@ async def chat(req: ChatRequest):
                     data = json.dumps({"type": "text", "content": text})
                     yield f"data: {data}\n\n"
 
+                metadata = event.get("metadata")
+                if metadata:
+                    usage = metadata.get("usage")
+                    if usage:
+                        usage_data = json.dumps({
+                            "type": "usage",
+                            "inputTokens": usage.get("inputTokens", 0),
+                            "outputTokens": usage.get("outputTokens", 0),
+                        })
+                        yield f"data: {usage_data}\n\n"
+
                 if "messageStop" in event:
                     yield f"data: {json.dumps({'type': 'done'})}\n\n"
 

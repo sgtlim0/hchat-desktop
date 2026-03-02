@@ -50,3 +50,33 @@ def build_converse_params(
         params["inferenceConfig"] = {"maxTokens": max_tokens}
 
     return params
+
+
+def converse_sync(
+    client,
+    model_id: str,
+    messages: list[dict],
+    system: str | None = None,
+    max_tokens: int = 4096,
+) -> str:
+    """Non-streaming converse call. Returns the response text."""
+    params = build_converse_params(
+        model_id=model_id,
+        messages=messages,
+        system=system,
+        max_tokens=max_tokens,
+    )
+
+    response = client.converse(**params)
+
+    output = response.get("output", {})
+    message = output.get("message", {})
+    content_blocks = message.get("content", [])
+
+    parts: list[str] = []
+    for block in content_blocks:
+        text = block.get("text")
+        if text:
+            parts.append(text)
+
+    return "\n".join(parts)

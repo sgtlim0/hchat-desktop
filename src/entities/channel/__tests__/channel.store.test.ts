@@ -142,60 +142,75 @@ describe('useChannelStore', () => {
   })
 
   describe('testSlackConnection', () => {
-    it('sets status to testing initially', async () => {
-      const promise = useChannelStore.getState().testSlackConnection()
-      expect(useChannelStore.getState().testStatus).toBe('testing')
-      await promise
+    it('sets error when no webhook URL', async () => {
+      await useChannelStore.getState().testSlackConnection()
+      expect(useChannelStore.getState().testStatus).toBe('error')
+      expect(useChannelStore.getState().testError).toBe('Webhook URL is required')
     })
 
     it('clears error on new test', async () => {
       useChannelStore.setState({ testError: 'Previous error' })
-      const promise = useChannelStore.getState().testSlackConnection()
-      expect(useChannelStore.getState().testError).toBe('')
-      await promise
+      await useChannelStore.getState().testSlackConnection()
+      // error is replaced, not cleared to empty (validation error replaces it)
+      expect(useChannelStore.getState().testError).toBe('Webhook URL is required')
     })
 
-    it('sets status to success after delay', async () => {
-      vi.useFakeTimers()
-      const promise = useChannelStore.getState().testSlackConnection()
+    it('sets status to success on successful fetch', async () => {
+      await useChannelStore.getState().updateSlack({ webhookUrl: 'https://hooks.slack.com/test' })
 
-      expect(useChannelStore.getState().testStatus).toBe('testing')
+      const mockFetch = vi.fn().mockResolvedValue({
+        json: () => Promise.resolve({ success: true }),
+      })
+      vi.stubGlobal('fetch', mockFetch)
 
-      vi.advanceTimersByTime(1500)
-      await promise
+      await useChannelStore.getState().testSlackConnection()
 
       expect(useChannelStore.getState().testStatus).toBe('success')
-      vi.useRealTimers()
+      expect(mockFetch).toHaveBeenCalledOnce()
+      vi.unstubAllGlobals()
+    })
+
+    it('sets error on failed fetch', async () => {
+      await useChannelStore.getState().updateSlack({ webhookUrl: 'https://hooks.slack.com/test' })
+
+      vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new Error('Network error')))
+
+      await useChannelStore.getState().testSlackConnection()
+
+      expect(useChannelStore.getState().testStatus).toBe('error')
+      expect(useChannelStore.getState().testError).toBe('Network error')
+      vi.unstubAllGlobals()
     })
   })
 
   describe('connectTelegram', () => {
-    it('sets status to testing initially', async () => {
-      const promise = useChannelStore.getState().connectTelegram()
-      expect(useChannelStore.getState().testStatus).toBe('testing')
-      await promise
+    it('sets error when no bot token', async () => {
+      await useChannelStore.getState().connectTelegram()
+      expect(useChannelStore.getState().testStatus).toBe('error')
+      expect(useChannelStore.getState().testError).toBe('Bot token and chat ID are required')
     })
 
     it('clears error on new connection', async () => {
       useChannelStore.setState({ testError: 'Previous error' })
-      const promise = useChannelStore.getState().connectTelegram()
-      expect(useChannelStore.getState().testError).toBe('')
-      await promise
+      await useChannelStore.getState().connectTelegram()
+      expect(useChannelStore.getState().testError).toBe('Bot token and chat ID are required')
     })
 
     it('sets connected to true and status to success', async () => {
-      vi.useFakeTimers()
-      const promise = useChannelStore.getState().connectTelegram()
+      await useChannelStore.getState().updateTelegram({
+        botToken: 'bot123:ABC',
+        chatId: '12345',
+      })
 
-      expect(useChannelStore.getState().testStatus).toBe('testing')
-      expect(useChannelStore.getState().telegram.connected).toBe(false)
+      vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
+        json: () => Promise.resolve({ success: true }),
+      }))
 
-      vi.advanceTimersByTime(1500)
-      await promise
+      await useChannelStore.getState().connectTelegram()
 
       expect(useChannelStore.getState().testStatus).toBe('success')
       expect(useChannelStore.getState().telegram.connected).toBe(true)
-      vi.useRealTimers()
+      vi.unstubAllGlobals()
     })
 
     it('preserves other telegram fields', async () => {
@@ -204,12 +219,17 @@ describe('useChannelStore', () => {
         chatId: '12345',
       })
 
+      vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
+        json: () => Promise.resolve({ success: true }),
+      }))
+
       await useChannelStore.getState().connectTelegram()
 
       const { telegram } = useChannelStore.getState()
       expect(telegram.botToken).toBe('bot123:ABC')
       expect(telegram.chatId).toBe('12345')
       expect(telegram.connected).toBe(true)
+      vi.unstubAllGlobals()
     })
   })
 

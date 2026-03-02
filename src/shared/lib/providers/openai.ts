@@ -1,7 +1,33 @@
 import type { ChatStreamEvent } from '../../types'
 import type { ProviderStreamParams } from './types'
+import { parseProxySSE } from './proxy-sse'
+
+const API_BASE = import.meta.env.VITE_API_BASE_URL || ''
 
 export async function* streamOpenAI(
+  params: ProviderStreamParams
+): AsyncGenerator<ChatStreamEvent> {
+  if (API_BASE) {
+    yield* streamOpenAIViaProxy(params)
+    return
+  }
+  yield* streamOpenAIDirect(params)
+}
+
+async function* streamOpenAIViaProxy(
+  params: ProviderStreamParams
+): AsyncGenerator<ChatStreamEvent> {
+  const { modelId, messages, system, apiKey, signal } = params
+
+  yield* parseProxySSE(`${API_BASE}/api/openai/chat`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ apiKey, modelId, messages, system }),
+    signal,
+  })
+}
+
+async function* streamOpenAIDirect(
   params: ProviderStreamParams
 ): AsyncGenerator<ChatStreamEvent> {
   const { modelId, messages, system, apiKey, signal } = params
@@ -65,8 +91,8 @@ export async function* streamOpenAI(
           if (content) {
             yield { type: 'text', content }
           }
-        } catch (e) {
-          console.error('Failed to parse SSE data:', e)
+        } catch {
+          // Skip malformed JSON lines
         }
       }
     }

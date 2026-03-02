@@ -230,6 +230,8 @@ export interface ChatStreamEvent {
   content?: string
   error?: string
   usage?: { inputTokens: number; outputTokens: number }
+  inputTokens?: number
+  outputTokens?: number
 }
 
 // Usage Tracking types

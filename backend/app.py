@@ -2,7 +2,7 @@ import modal
 
 image = (
     modal.Image.debian_slim(python_version="3.12")
-    .pip_install("boto3", "fastapi[standard]")
+    .pip_install("boto3", "fastapi[standard]", "duckduckgo-search", "httpx", "openai", "google-genai")
     .add_local_python_source("backend")
 )
 
@@ -18,6 +18,13 @@ def api():
 
     from backend.routes.chat import router as chat_router
     from backend.routes.health import router as health_router
+    from backend.routes.search import router as search_router
+    from backend.routes.memory import router as memory_router
+    from backend.routes.schedule import router as schedule_router
+    from backend.routes.swarm import router as swarm_router
+    from backend.routes.channels import router as channels_router
+    from backend.routes.openai_proxy import router as openai_router
+    from backend.routes.gemini_proxy import router as gemini_router
 
     web_app = FastAPI(title="H Chat API")
 
@@ -35,5 +42,12 @@ def api():
 
     web_app.include_router(health_router, prefix="/api")
     web_app.include_router(chat_router, prefix="/api")
+    web_app.include_router(search_router, prefix="/api")
+    web_app.include_router(memory_router, prefix="/api")
+    web_app.include_router(schedule_router, prefix="/api")
+    web_app.include_router(swarm_router, prefix="/api")
+    web_app.include_router(channels_router, prefix="/api")
+    web_app.include_router(openai_router, prefix="/api")
+    web_app.include_router(gemini_router, prefix="/api")
 
     return web_app

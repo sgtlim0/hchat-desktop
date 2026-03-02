@@ -1,7 +1,33 @@
 import type { ChatStreamEvent } from '../../types'
 import type { ProviderStreamParams } from './types'
+import { parseProxySSE } from './proxy-sse'
+
+const API_BASE = import.meta.env.VITE_API_BASE_URL || ''
 
 export async function* streamGemini(
+  params: ProviderStreamParams
+): AsyncGenerator<ChatStreamEvent> {
+  if (API_BASE) {
+    yield* streamGeminiViaProxy(params)
+    return
+  }
+  yield* streamGeminiDirect(params)
+}
+
+async function* streamGeminiViaProxy(
+  params: ProviderStreamParams
+): AsyncGenerator<ChatStreamEvent> {
+  const { modelId, messages, system, apiKey, signal } = params
+
+  yield* parseProxySSE(`${API_BASE}/api/gemini/chat`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ apiKey, modelId, messages, system }),
+    signal,
+  })
+}
+
+async function* streamGeminiDirect(
   params: ProviderStreamParams
 ): AsyncGenerator<ChatStreamEvent> {
   const { modelId, messages, system, apiKey, signal } = params
@@ -67,8 +93,8 @@ export async function* streamGemini(
           if (content) {
             yield { type: 'text', content }
           }
-        } catch (e) {
-          console.error('Failed to parse SSE data:', e)
+        } catch {
+          // Skip malformed JSON lines
         }
       }
     }

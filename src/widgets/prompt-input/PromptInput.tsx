@@ -12,6 +12,7 @@ import { routeModel } from '@/shared/lib/providers/router'
 import { putMessage } from '@/shared/lib/db'
 import type { Message, UsageEntry, PdfAttachment, SpreadsheetAttachment, ThinkingDepth } from '@/shared/types'
 import { MODELS } from '@/shared/constants'
+import { useMemoryStore } from '@/entities/memory/memory.store'
 import { useOnlineStatus } from '@/shared/hooks/useOnlineStatus'
 import { estimateTokens } from '@/shared/lib/token-estimator'
 import * as stt from '@/shared/lib/stt'
@@ -57,6 +58,9 @@ export function PromptInput({
   const thinkingDepth = useSettingsStore((s) => s.thinkingDepth)
   const setThinkingDepth = useSettingsStore((s) => s.setThinkingDepth)
   const guardrailEnabled = useSettingsStore((s) => s.guardrailEnabled)
+
+  const autoExtract = useMemoryStore((s) => s.autoExtract)
+  const extractFromMessages = useMemoryStore((s) => s.extractFromMessages)
 
   const isOnline = useOnlineStatus()
   const [isSending, setIsSending] = useState(false)
@@ -255,6 +259,8 @@ export function PromptInput({
     const abortController = new AbortController()
     abortRef.current = abortController
     let fullText = ''
+    let actualInputTokens: number | null = null
+    let actualOutputTokens: number | null = null
 
     try {
       // Build system prompt with optional PDF/Spreadsheet context
@@ -287,6 +293,9 @@ export function PromptInput({
             ...msg,
             segments: [{ type: 'text', content: currentText }],
           }))
+        } else if (event.type === 'usage') {
+          actualInputTokens = event.inputTokens ?? null
+          actualOutputTokens = event.outputTokens ?? null
         } else if (event.type === 'error') {
           fullText = t('chat.errorOccurred', { error: event.error ?? 'Unknown' })
           updateLastMessage(sessionId, assistantMessageId, (msg) => ({
@@ -318,11 +327,11 @@ export function PromptInput({
         putMessage(finalAssistant).catch(console.error)
       }
 
-      // Record usage
+      // Record usage — prefer actual token counts from backend, fall back to estimates
       const model = MODELS.find((m) => m.id === effectiveModel)
       if (model && fullText) {
-        const inputTokens = estimateTokens(messageText)
-        const outputTokens = estimateTokens(fullText)
+        const inputTokens = actualInputTokens ?? estimateTokens(messageText)
+        const outputTokens = actualOutputTokens ?? estimateTokens(fullText)
         const cost = calculateCost(effectiveModel, inputTokens, outputTokens)
         const usageEntry: UsageEntry = {
           id: `usage-${Date.now()}`,
@@ -336,6 +345,16 @@ export function PromptInput({
         }
         addUsage(usageEntry)
       }
+    }
+
+    // Auto-extract memories from recent messages
+    if (autoExtract && credentials && fullText) {
+      const recentMessages = chatHistory.slice(-6).concat([
+        { role: 'assistant' as const, content: fullText },
+      ])
+      extractFromMessages(recentMessages, credentials).catch(() => {
+        // Silent failure — memory extraction is best-effort
+      })
     }
 
     onSend?.(messageText)
