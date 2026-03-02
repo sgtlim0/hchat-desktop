@@ -64,6 +64,7 @@ const en = {
   'chat.exportHtml': 'HTML (.html)',
   'chat.exportJson': 'JSON (.json)',
   'chat.exportTxt': 'Text (.txt)',
+  'chat.exportPdf': 'PDF (.pdf)',
   'chat.favorite': 'Add to favorites',
   'chat.unfavorite': 'Remove from favorites',
   'chat.moreActions': 'More actions',

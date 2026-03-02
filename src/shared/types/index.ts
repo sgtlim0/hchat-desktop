@@ -117,7 +117,7 @@ export interface GroupChatMessage {
 
 // Export types
 
-export type ExportFormat = 'markdown' | 'html' | 'json' | 'txt'
+export type ExportFormat = 'markdown' | 'html' | 'json' | 'txt' | 'pdf'
 
 // Memory types
 

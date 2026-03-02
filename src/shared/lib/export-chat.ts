@@ -272,6 +272,92 @@ export function exportToTxt(data: ExportData): string {
   return content
 }
 
+export async function exportToPdf(data: ExportData): Promise<void> {
+  const { jsPDF } = await import('jspdf')
+  const language = useSettingsStore.getState().language
+  const t = getTranslation(language)
+  const locale = language === 'ko' ? 'ko-KR' : 'en-US'
+  const { session, messages } = data
+
+  const doc = new jsPDF()
+  const pageWidth = doc.internal.pageSize.getWidth()
+  const margin = 15
+  const maxWidth = pageWidth - margin * 2
+  let yPosition = 20
+
+  // Helper function to add text with word wrapping and page break
+  const addText = (text: string, fontSize = 10, isBold = false) => {
+    doc.setFontSize(fontSize)
+    if (isBold) {
+      doc.setFont('helvetica', 'bold')
+    } else {
+      doc.setFont('helvetica', 'normal')
+    }
+
+    const lines = doc.splitTextToSize(text, maxWidth)
+    const lineHeight = fontSize * 0.5
+
+    lines.forEach((line: string) => {
+      // Check if we need a new page
+      if (yPosition + lineHeight > doc.internal.pageSize.getHeight() - margin) {
+        doc.addPage()
+        yPosition = 20
+      }
+      doc.text(line, margin, yPosition)
+      yPosition += lineHeight
+    })
+  }
+
+  // Header: Session title
+  addText(session.title, 16, true)
+  yPosition += 5
+
+  // Metadata
+  addText(`${t('export.model')}: ${session.modelId}`, 10, false)
+  addText(`${t('export.createdAt')}: ${new Date(session.createdAt).toLocaleString(locale)}`, 10, false)
+  addText(`${t('export.updatedAt')}: ${new Date(session.updatedAt).toLocaleString(locale)}`, 10, false)
+  if (session.tags.length > 0) {
+    addText(`${t('export.tags')}: ${session.tags.join(', ')}`, 10, false)
+  }
+  yPosition += 10
+
+  // Messages
+  messages.forEach((msg) => {
+    const role = msg.role === 'user' ? 'User' : 'Assistant'
+    addText(role, 12, true)
+    yPosition += 2
+
+    msg.segments.forEach((segment) => {
+      if (segment.type === 'text' && segment.content) {
+        addText(segment.content, 10, false)
+      } else if (segment.type === 'tool' && segment.toolCalls) {
+        segment.toolCalls.forEach((tool) => {
+          addText(`[Tool: ${tool.toolName}]`, 10, false)
+          if (tool.args) {
+            addText(`Args: ${JSON.stringify(tool.args)}`, 9, false)
+          }
+          if (tool.result) {
+            addText(`Result: ${tool.result}`, 9, false)
+          }
+        })
+      }
+    })
+
+    if (msg.attachments && msg.attachments.length > 0) {
+      addText(`${t('export.attachments')}:`, 10, true)
+      msg.attachments.forEach((att) => {
+        addText(`- ${att.name}`, 9, false)
+      })
+    }
+
+    yPosition += 8
+  })
+
+  // Download
+  const sanitizedTitle = session.title.replace(/[^a-zA-Z0-9가-힣]/g, '_')
+  doc.save(`${sanitizedTitle}.pdf`)
+}
+
 export function downloadExport(content: string, filename: string, mimeType: string): void {
   const blob = new Blob([content], { type: mimeType })
   const url = URL.createObjectURL(blob)
@@ -282,7 +368,13 @@ export function downloadExport(content: string, filename: string, mimeType: stri
   URL.revokeObjectURL(url)
 }
 
-export function exportChat(data: ExportData, format: ExportFormat): void {
+export async function exportChat(data: ExportData, format: ExportFormat): Promise<void> {
+  // Handle PDF separately since it doesn't use the standard download flow
+  if (format === 'pdf') {
+    await exportToPdf(data)
+    return
+  }
+
   const sanitizedTitle = data.session.title.replace(/[^a-zA-Z0-9가-힣]/g, '_')
   let content: string
   let filename: string

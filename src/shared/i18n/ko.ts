@@ -64,6 +64,7 @@ const ko = {
   'chat.exportHtml': 'HTML (.html)',
   'chat.exportJson': 'JSON (.json)',
   'chat.exportTxt': '텍스트 (.txt)',
+  'chat.exportPdf': 'PDF (.pdf)',
   'chat.favorite': '즐겨찾기 추가',
   'chat.unfavorite': '즐겨찾기 해제',
   'chat.moreActions': '더 보기',

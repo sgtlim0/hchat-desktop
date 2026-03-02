@@ -60,8 +60,8 @@ export function ChatHeader({ sessionId }: ChatHeaderProps) {
     setIsEditing(false)
   }
 
-  const handleExport = (format: ExportFormat) => {
-    exportChat({ session, messages }, format)
+  const handleExport = async (format: ExportFormat) => {
+    await exportChat({ session, messages }, format)
     setMenuOpen(false)
     setExportSubmenuOpen(false)
     setExportMenuOpen(false)
@@ -208,6 +208,12 @@ export function ChatHeader({ sessionId }: ChatHeaderProps) {
               >
                 {t('chat.exportTxt')}
               </button>
+              <button
+                onClick={() => handleExport('pdf')}
+                className="w-full text-left px-3 py-2 text-sm text-text-primary hover:bg-hover transition"
+              >
+                {t('chat.exportPdf')}
+              </button>
             </div>
           )}
         </div>
@@ -278,6 +284,12 @@ export function ChatHeader({ sessionId }: ChatHeaderProps) {
                       className="w-full text-left px-3 py-2 text-sm text-text-primary hover:bg-hover transition"
                     >
                       {t('chat.exportTxt')}
+                    </button>
+                    <button
+                      onClick={() => handleExport('pdf')}
+                      className="w-full text-left px-3 py-2 text-sm text-text-primary hover:bg-hover transition"
+                    >
+                      {t('chat.exportPdf')}
                     </button>
                   </div>
                 )}
