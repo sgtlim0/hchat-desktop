@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useMemo } from 'react'
+import { useState, useEffect, useRef, useMemo, useCallback } from 'react'
 import { Search, Check, MessageSquare, FolderOpen, FileText } from 'lucide-react'
 import { useSessionStore } from '@/entities/session/session.store'
 import { useProjectStore } from '@/entities/project/project.store'
@@ -22,6 +22,7 @@ export function SearchModal() {
   const [query, setQuery] = useState('')
   const [selectedIndex, setSelectedIndex] = useState(0)
   const inputRef = useRef<HTMLInputElement>(null)
+  const dialogRef = useRef<HTMLDivElement>(null)
 
   const results = useMemo((): SearchResult[] => {
     const q = query.toLowerCase().trim()
@@ -86,6 +87,30 @@ export function SearchModal() {
     }
   }, [searchOpen])
 
+  // Focus trap: cycle Tab/Shift+Tab within modal
+  const handleFocusTrap = useCallback((e: KeyboardEvent) => {
+    if (e.key !== 'Tab' || !dialogRef.current) return
+    const focusable = dialogRef.current.querySelectorAll<HTMLElement>(
+      'input, button, [tabindex]:not([tabindex="-1"])'
+    )
+    if (focusable.length === 0) return
+    const first = focusable[0]
+    const last = focusable[focusable.length - 1]
+    if (e.shiftKey && document.activeElement === first) {
+      e.preventDefault()
+      last.focus()
+    } else if (!e.shiftKey && document.activeElement === last) {
+      e.preventDefault()
+      first.focus()
+    }
+  }, [])
+
+  useEffect(() => {
+    if (!searchOpen) return
+    document.addEventListener('keydown', handleFocusTrap)
+    return () => document.removeEventListener('keydown', handleFocusTrap)
+  }, [searchOpen, handleFocusTrap])
+
   function handleSelect(result: SearchResult) {
     if (result.type === 'session') {
       selectSession(result.id)
@@ -144,7 +169,7 @@ export function SearchModal() {
       aria-modal="true"
       aria-label={t('search.placeholder')}
     >
-      <div className="bg-page rounded-xl w-[560px] shadow-2xl border border-border overflow-hidden">
+      <div ref={dialogRef} className="bg-page rounded-xl w-[560px] shadow-2xl border border-border overflow-hidden">
         {/* Search Input */}
         <div className="flex items-center gap-3 px-4 py-3 border-b border-border">
           <Search className="w-5 h-5 text-text-tertiary flex-shrink-0" />
@@ -163,7 +188,7 @@ export function SearchModal() {
         </div>
 
         {/* Results */}
-        <div className="max-h-[400px] overflow-y-auto">
+        <div className="max-h-[400px] overflow-y-auto" role="listbox" aria-label={t('search.conversations')}>
           {results.length === 0 ? (
             <div className="py-12 text-center text-text-secondary text-sm">
               {t('common.noResults')}

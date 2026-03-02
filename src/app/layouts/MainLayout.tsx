@@ -133,6 +133,12 @@ export function MainLayout() {
 
   return (
     <>
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-[100] focus:px-4 focus:py-2 focus:bg-primary focus:text-white focus:rounded-lg focus:text-sm focus:font-medium"
+      >
+        {t('common.skipToContent')}
+      </a>
       {sidebarOpen && <Sidebar />}
       <div className="flex-1 flex flex-col overflow-hidden">
         {!isOnline && (
@@ -140,7 +146,7 @@ export function MainLayout() {
             {t('offline.banner')}
           </div>
         )}
-        <main className="flex-1 overflow-hidden">
+        <main id="main-content" className="flex-1 overflow-hidden">
           <Suspense fallback={
             <div className="flex-1 flex items-center justify-center h-full">
               <div className="text-text-secondary text-sm">{t('common.loading')}</div>

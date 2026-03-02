@@ -23,19 +23,24 @@ export function ChatHeader({ sessionId }: ChatHeaderProps) {
   const [editTitle, setEditTitle] = useState(session?.title ?? '')
   const [menuOpen, setMenuOpen] = useState(false)
   const [exportSubmenuOpen, setExportSubmenuOpen] = useState(false)
+  const [exportMenuOpen, setExportMenuOpen] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
+  const exportMenuRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
       if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
         setMenuOpen(false)
       }
+      if (exportMenuRef.current && !exportMenuRef.current.contains(e.target as Node)) {
+        setExportMenuOpen(false)
+      }
     }
-    if (menuOpen) {
+    if (menuOpen || exportMenuOpen) {
       document.addEventListener('mousedown', handleClickOutside)
     }
     return () => document.removeEventListener('mousedown', handleClickOutside)
-  }, [menuOpen])
+  }, [menuOpen, exportMenuOpen])
 
   if (!session) return null
 
@@ -52,6 +57,7 @@ export function ChatHeader({ sessionId }: ChatHeaderProps) {
     exportChat({ session, messages }, format)
     setMenuOpen(false)
     setExportSubmenuOpen(false)
+    setExportMenuOpen(false)
   }
 
   const handleDelete = () => {
@@ -98,6 +104,48 @@ export function ChatHeader({ sessionId }: ChatHeaderProps) {
             {project.name}
           </span>
         )}
+        {/* Direct export button */}
+        <div className="relative">
+          <button
+            onClick={() => setExportMenuOpen((prev) => !prev)}
+            aria-label={t('chat.export')}
+            className="p-1.5 hover:bg-hover rounded-lg transition focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
+          >
+            <Download size={16} className="text-text-tertiary" />
+          </button>
+          {exportMenuOpen && (
+            <div
+              ref={exportMenuRef}
+              className="absolute right-0 top-full mt-1 w-40 bg-page border border-border rounded-lg shadow-lg py-1 z-50 animate-fade-in"
+            >
+              <button
+                onClick={() => handleExport('markdown')}
+                className="w-full text-left px-3 py-2 text-sm text-text-primary hover:bg-hover transition"
+              >
+                {t('chat.exportMarkdown')}
+              </button>
+              <button
+                onClick={() => handleExport('html')}
+                className="w-full text-left px-3 py-2 text-sm text-text-primary hover:bg-hover transition"
+              >
+                {t('chat.exportHtml')}
+              </button>
+              <button
+                onClick={() => handleExport('json')}
+                className="w-full text-left px-3 py-2 text-sm text-text-primary hover:bg-hover transition"
+              >
+                {t('chat.exportJson')}
+              </button>
+              <button
+                onClick={() => handleExport('txt')}
+                className="w-full text-left px-3 py-2 text-sm text-text-primary hover:bg-hover transition"
+              >
+                {t('chat.exportTxt')}
+              </button>
+            </div>
+          )}
+        </div>
+
         <button
           onClick={() => toggleFavorite(session.id)}
           aria-label={session.isFavorite ? t('chat.unfavorite') : t('chat.favorite')}

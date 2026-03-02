@@ -15,6 +15,7 @@ const en = {
   'common.copied': 'Copied',
   'common.copy': 'Copy',
   'common.back': 'Back',
+  'common.skipToContent': 'Skip to content',
   'common.connect': 'Connect',
   'common.reconnect': 'Reconnect',
   'common.connected': 'Connected',

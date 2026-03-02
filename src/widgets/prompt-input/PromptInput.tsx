@@ -8,6 +8,7 @@ import { usePersonaStore } from '@/entities/persona/persona.store'
 import { useTranslation } from '@/shared/i18n'
 import { ModelSelector } from './ModelSelector'
 import { createStream, getProviderConfig } from '@/shared/lib/providers/factory'
+import { routeModel } from '@/shared/lib/providers/router'
 import { putMessage } from '@/shared/lib/db'
 import type { Message, UsageEntry } from '@/shared/types'
 import { MODELS } from '@/shared/constants'
@@ -40,6 +41,7 @@ export function PromptInput({
   const openaiApiKey = useSettingsStore((s) => s.openaiApiKey)
   const geminiApiKey = useSettingsStore((s) => s.geminiApiKey)
   const selectedModel = useSettingsStore((s) => s.selectedModel)
+  const autoRouting = useSettingsStore((s) => s.autoRouting)
 
   const addUsage = useUsageStore((s) => s.addUsage)
   const activePersona = usePersonaStore((s) => s.getActivePersona())
@@ -90,6 +92,11 @@ export function PromptInput({
     setInput('')
     setIsSending(true)
 
+    // Auto-route model if enabled
+    const effectiveModel = autoRouting
+      ? routeModel(messageText, MODELS)
+      : selectedModel
+
     // Create session if on home page
     let sessionId = currentSessionId
     if (!sessionId) {
@@ -130,7 +137,7 @@ export function PromptInput({
       .filter((m) => m.content.length > 0)
 
     // Get provider config
-    const config = getProviderConfig(selectedModel, {
+    const config = getProviderConfig(effectiveModel, {
       credentials,
       openaiApiKey,
       geminiApiKey,
@@ -143,7 +150,7 @@ export function PromptInput({
 
     try {
       const stream = createStream(config, {
-        modelId: selectedModel,
+        modelId: effectiveModel,
         messages: chatHistory,
         signal: abortController.signal,
         system: activePersona?.systemPrompt,
@@ -189,15 +196,15 @@ export function PromptInput({
       }
 
       // Record usage
-      const model = MODELS.find((m) => m.id === selectedModel)
+      const model = MODELS.find((m) => m.id === effectiveModel)
       if (model && fullText) {
         const inputTokens = estimateTokens(messageText)
         const outputTokens = estimateTokens(fullText)
-        const cost = calculateCost(selectedModel, inputTokens, outputTokens)
+        const cost = calculateCost(effectiveModel, inputTokens, outputTokens)
         const usageEntry: UsageEntry = {
           id: `usage-${Date.now()}`,
           sessionId,
-          modelId: selectedModel,
+          modelId: effectiveModel,
           provider: model.provider,
           inputTokens,
           outputTokens,

@@ -15,6 +15,7 @@ const ko = {
   'common.copied': '복사됨',
   'common.copy': '복사',
   'common.back': '뒤로',
+  'common.skipToContent': '본문으로 건너뛰기',
   'common.connect': '연결',
   'common.reconnect': '재연결',
   'common.connected': '연결됨',
