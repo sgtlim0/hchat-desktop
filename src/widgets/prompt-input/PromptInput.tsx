@@ -1,14 +1,18 @@
-import { useState, useRef, type KeyboardEvent } from 'react'
+import { useState, useRef, useEffect, type KeyboardEvent } from 'react'
 import TextareaAutosize from 'react-textarea-autosize'
-import { Plus, Send, Square } from 'lucide-react'
+import { Plus, Send, Square, User } from 'lucide-react'
 import { useSessionStore } from '@/entities/session/session.store'
 import { useSettingsStore } from '@/entities/settings/settings.store'
+import { useUsageStore, calculateCost } from '@/entities/usage/usage.store'
+import { usePersonaStore } from '@/entities/persona/persona.store'
 import { useTranslation } from '@/shared/i18n'
 import { ModelSelector } from './ModelSelector'
 import { createStream, getProviderConfig } from '@/shared/lib/providers/factory'
 import { putMessage } from '@/shared/lib/db'
-import type { Message } from '@/shared/types'
+import type { Message, UsageEntry } from '@/shared/types'
 import { MODELS } from '@/shared/constants'
+import { useOnlineStatus } from '@/shared/hooks/useOnlineStatus'
+import { estimateTokens } from '@/shared/lib/token-estimator'
 
 interface PromptInputProps {
   onSend?: (message: string) => void
@@ -26,6 +30,8 @@ export function PromptInput({
   const abortRef = useRef<AbortController | null>(null)
 
   const currentSessionId = useSessionStore((s) => s.currentSessionId)
+  const pendingPrompt = useSessionStore((s) => s.pendingPrompt)
+  const setPendingPrompt = useSessionStore((s) => s.setPendingPrompt)
   const createSession = useSessionStore((s) => s.createSession)
   const addMessage = useSessionStore((s) => s.addMessage)
   const updateLastMessage = useSessionStore((s) => s.updateLastMessage)
@@ -35,7 +41,24 @@ export function PromptInput({
   const geminiApiKey = useSettingsStore((s) => s.geminiApiKey)
   const selectedModel = useSettingsStore((s) => s.selectedModel)
 
+  const addUsage = useUsageStore((s) => s.addUsage)
+  const activePersona = usePersonaStore((s) => s.getActivePersona())
+  const personas = usePersonaStore((s) => s.personas)
+  const activePersonaId = usePersonaStore((s) => s.activePersonaId)
+  const setActivePersona = usePersonaStore((s) => s.setActivePersona)
+
+  const isOnline = useOnlineStatus()
   const [isSending, setIsSending] = useState(false)
+  const [showPersonaMenu, setShowPersonaMenu] = useState(false)
+
+  // Consume pending prompt (from quick actions or quick chat)
+  useEffect(() => {
+    if (pendingPrompt) {
+      setInput(pendingPrompt)
+      setPendingPrompt(null)
+      textareaRef.current?.focus()
+    }
+  }, [pendingPrompt, setPendingPrompt])
 
   function hasRequiredCredentials(): boolean {
     const model = MODELS.find((m) => m.id === selectedModel)
@@ -54,7 +77,7 @@ export function PromptInput({
   }
 
   async function handleSend() {
-    if (!input.trim() || isSending) return
+    if (!input.trim() || isSending || !isOnline) return
 
     if (!hasRequiredCredentials()) {
       const store = useSettingsStore.getState()
@@ -123,6 +146,7 @@ export function PromptInput({
         modelId: selectedModel,
         messages: chatHistory,
         signal: abortController.signal,
+        system: activePersona?.systemPrompt,
       })
 
       for await (const event of stream) {
@@ -163,6 +187,25 @@ export function PromptInput({
       if (finalAssistant) {
         putMessage(finalAssistant).catch(console.error)
       }
+
+      // Record usage
+      const model = MODELS.find((m) => m.id === selectedModel)
+      if (model && fullText) {
+        const inputTokens = estimateTokens(messageText)
+        const outputTokens = estimateTokens(fullText)
+        const cost = calculateCost(selectedModel, inputTokens, outputTokens)
+        const usageEntry: UsageEntry = {
+          id: `usage-${Date.now()}`,
+          sessionId,
+          modelId: selectedModel,
+          provider: model.provider,
+          inputTokens,
+          outputTokens,
+          cost,
+          createdAt: new Date().toISOString(),
+        }
+        addUsage(usageEntry)
+      }
     }
 
     onSend?.(messageText)
@@ -181,7 +224,46 @@ export function PromptInput({
   }
 
   return (
-    <div className="rounded-xl border border-border-input bg-input p-3 flex items-end gap-2">
+    <div className="space-y-2">
+      {/* Persona chip */}
+      <div className="relative flex items-center gap-2">
+        <button
+          onClick={() => setShowPersonaMenu(!showPersonaMenu)}
+          className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium transition border ${
+            activePersona
+              ? 'border-primary/30 bg-primary/10 text-primary'
+              : 'border-border text-text-tertiary hover:bg-hover'
+          }`}
+        >
+          <User size={12} />
+          {activePersona ? activePersona.name : t('persona.select')}
+        </button>
+        {showPersonaMenu && (
+          <div className="absolute bottom-full left-0 mb-1 bg-surface border border-border rounded-lg shadow-lg py-1 z-50 min-w-[200px]">
+            <button
+              onClick={() => { setActivePersona(null); setShowPersonaMenu(false) }}
+              className={`w-full text-left px-3 py-1.5 text-sm hover:bg-hover transition ${
+                !activePersonaId ? 'text-primary font-medium' : 'text-text-secondary'
+              }`}
+            >
+              {t('persona.none')}
+            </button>
+            {personas.map((p) => (
+              <button
+                key={p.id}
+                onClick={() => { setActivePersona(p.id); setShowPersonaMenu(false) }}
+                className={`w-full text-left px-3 py-1.5 text-sm hover:bg-hover transition ${
+                  activePersonaId === p.id ? 'text-primary font-medium' : 'text-text-secondary'
+                }`}
+              >
+                {p.name}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+
+      <div className="rounded-xl border border-border-input bg-input p-3 flex items-end gap-2">
       {/* Attachment button */}
       <button
         aria-label={t('chat.attach')}
@@ -218,10 +300,10 @@ export function PromptInput({
         ) : (
           <button
             onClick={handleSend}
-            disabled={!input.trim()}
+            disabled={!input.trim() || !isOnline}
             aria-label={t('chat.send')}
             className={`p-2 rounded-lg transition focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 ${
-              input.trim()
+              input.trim() && isOnline
                 ? 'bg-primary hover:opacity-90 text-white'
                 : 'bg-hover text-text-tertiary cursor-not-allowed'
             }`}
@@ -230,6 +312,7 @@ export function PromptInput({
           </button>
         )}
       </div>
+    </div>
     </div>
   )
 }

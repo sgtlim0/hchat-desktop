@@ -260,8 +260,75 @@ const ko = {
   'greeting.evening': '좋은 저녁이에요 🌙',
   'greeting.subtitle': '무엇이든 물어보세요',
 
+  // quick action prompts
+  'quickAction.prompt.write': '코드를 작성해주세요. 어떤 코드가 필요한가요?',
+  'quickAction.prompt.summarize': '문서를 요약해주세요. 요약할 내용을 붙여넣어주세요.',
+  'quickAction.prompt.translate': '번역해주세요. 번역할 텍스트를 입력해주세요.',
+  'quickAction.prompt.brainstorm': '아이디어를 브레인스토밍해봅시다. 주제가 무엇인가요?',
+  'quickAction.prompt.review': '코드를 리뷰해주세요. 리뷰할 코드를 붙여넣어주세요.',
+
+  // import
+  'import.button': '가져오기',
+  'import.failed': '가져오기 실패: {error}',
+  'import.success': '대화를 가져왔습니다',
+
+  // offline
+  'offline.banner': '오프라인 상태입니다. 인터넷 연결을 확인해주세요.',
+
   // session
   'session.newChat': '새 채팅',
+
+  // sidebar - prompt library
+  'sidebar.promptLibrary': '프롬프트 라이브러리',
+
+  // settings tabs
+  'settings.tab.usage': '사용량',
+  'settings.tab.personas': '페르소나',
+
+  // usage
+  'usage.title': '사용량 추적',
+  'usage.description': '토큰 사용량과 예상 비용을 확인합니다.',
+  'usage.totalCost': '총 예상 비용',
+  'usage.totalRequests': '총 {count}회 요청',
+  'usage.byModel': '모델별 사용량',
+  'usage.noData': '사용량 데이터가 없습니다',
+  'usage.model': '모델',
+  'usage.requests': '요청',
+  'usage.inputTokens': '입력 토큰',
+  'usage.outputTokens': '출력 토큰',
+  'usage.cost': '비용',
+  'usage.clearAll': '전체 초기화',
+
+  // prompt library
+  'promptLib.title': '프롬프트 라이브러리',
+  'promptLib.new': '새 프롬프트',
+  'promptLib.searchPlaceholder': '프롬프트 검색...',
+  'promptLib.empty': '저장된 프롬프트가 없습니다',
+  'promptLib.emptyHint': '자주 쓰는 프롬프트를 저장하고 재사용하세요.',
+  'promptLib.titlePlaceholder': '프롬프트 제목',
+  'promptLib.contentPlaceholder': '프롬프트 내용 ({{variable}} 형태로 변수 사용 가능)',
+  'promptLib.tagsPlaceholder': '태그 (쉼표로 구분)',
+  'promptLib.use': '사용',
+  'promptLib.apply': '적용',
+  'promptLib.fillVariables': '변수 입력',
+  'promptLib.usedCount': '{count}회 사용',
+  'promptLib.category.general': '일반',
+  'promptLib.category.coding': '코딩',
+  'promptLib.category.writing': '글쓰기',
+  'promptLib.category.analysis': '분석',
+  'promptLib.category.translation': '번역',
+  'promptLib.category.custom': '커스텀',
+
+  // persona
+  'persona.title': '페르소나 관리',
+  'persona.description': 'AI 어시스턴트의 역할과 성격을 설정합니다.',
+  'persona.new': '새 페르소나',
+  'persona.select': '페르소나 선택',
+  'persona.none': '기본 (페르소나 없음)',
+  'persona.preset': '프리셋',
+  'persona.namePlaceholder': '페르소나 이름',
+  'persona.descPlaceholder': '간단한 설명',
+  'persona.promptPlaceholder': '시스템 프롬프트 내용',
 } as const
 
 export default ko

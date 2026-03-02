@@ -90,7 +90,7 @@ export interface Skill {
   icon: string
 }
 
-export type ViewState = 'home' | 'chat' | 'settings' | 'allChats' | 'projects' | 'projectDetail' | 'quickChat' | 'memory' | 'agentSwarm' | 'schedule' | 'groupChat'
+export type ViewState = 'home' | 'chat' | 'settings' | 'allChats' | 'projects' | 'projectDetail' | 'quickChat' | 'memory' | 'agentSwarm' | 'schedule' | 'groupChat' | 'promptLibrary'
 
 // Group Chat types
 
@@ -220,7 +220,50 @@ export interface ChatRequest {
 }
 
 export interface ChatStreamEvent {
-  type: 'text' | 'error' | 'done'
+  type: 'text' | 'error' | 'done' | 'usage'
   content?: string
   error?: string
+  usage?: { inputTokens: number; outputTokens: number }
+}
+
+// Usage Tracking types
+
+export interface UsageEntry {
+  id: string
+  sessionId: string
+  modelId: string
+  provider: ProviderType
+  inputTokens: number
+  outputTokens: number
+  cost: number
+  createdAt: string
+}
+
+// Prompt Library types
+
+export type PromptCategory = 'general' | 'coding' | 'writing' | 'analysis' | 'translation' | 'custom'
+
+export interface SavedPrompt {
+  id: string
+  title: string
+  content: string
+  category: PromptCategory
+  tags: string[]
+  isFavorite: boolean
+  usageCount: number
+  createdAt: string
+  updatedAt: string
+}
+
+// Persona types
+
+export interface Persona {
+  id: string
+  name: string
+  description: string
+  systemPrompt: string
+  icon: string
+  isDefault: boolean
+  createdAt: string
+  updatedAt: string
 }

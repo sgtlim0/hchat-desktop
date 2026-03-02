@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react'
-import { Key, User, Sparkles, Palette, Puzzle, Plug, Monitor, Shield, Code, X, Radio } from 'lucide-react'
+import { Key, User, Sparkles, Palette, Puzzle, Plug, Monitor, Shield, Code, X, Radio, BarChart3, UserCircle, Trash2, Plus } from 'lucide-react'
 import { useSettingsStore } from '@/entities/settings/settings.store'
 import { useChannelStore } from '@/entities/channel/channel.store'
+import { useUsageStore } from '@/entities/usage/usage.store'
+import { usePersonaStore } from '@/entities/persona/persona.store'
 import { useTranslation } from '@/shared/i18n'
 import { SettingsTabItem } from '@/shared/ui/SettingsTabItem'
 import { FormLabel } from '@/shared/ui/FormLabel'
@@ -10,9 +12,12 @@ import { Button } from '@/shared/ui/Button'
 import { Toggle } from '@/shared/ui/Toggle'
 import { testConnection } from '@/shared/lib/bedrock-client'
 import { AWS_REGIONS, DEFAULT_AWS_REGION, MODELS } from '@/shared/constants'
+import type { Persona } from '@/shared/types'
 
 const TABS = [
   { id: 'api-keys', labelKey: 'settings.tab.apiKeys' as const, icon: Key },
+  { id: 'usage', labelKey: 'settings.tab.usage' as const, icon: BarChart3 },
+  { id: 'personas', labelKey: 'settings.tab.personas' as const, icon: UserCircle },
   { id: 'profile', labelKey: 'settings.tab.profile' as const, icon: User },
   { id: 'features', labelKey: 'settings.tab.features' as const, icon: Sparkles },
   { id: 'customization', labelKey: 'settings.tab.customization' as const, icon: Palette },
@@ -48,6 +53,13 @@ export function SettingsScreen() {
     setLanguage,
   } = useSettingsStore()
   const { slack, telegram, updateSlack, updateTelegram, testSlackConnection, connectTelegram, testStatus: channelTestStatus } = useChannelStore()
+  const usageEntries = useUsageStore((s) => s.entries)
+  const usageTotalCost = useUsageStore((s) => s.getTotalCost())
+  const clearAllUsage = useUsageStore((s) => s.clearAll)
+  const { personas, addPersona, updatePersona: updatePersonaStore, deletePersona: deletePersonaAction } = usePersonaStore()
+
+  // Persona form state
+  const [personaForm, setPersonaForm] = useState<Partial<Persona> | null>(null)
 
   const [accessKeyId, setAccessKeyId] = useState(credentials?.accessKeyId ?? '')
   const [secretAccessKey, setSecretAccessKey] = useState(credentials?.secretAccessKey ?? '')
@@ -560,6 +572,188 @@ export function SettingsScreen() {
             </div>
           </div>
         )
+
+      case 'usage': {
+        // Aggregate by model
+        const modelAgg: Record<string, { inputTokens: number; outputTokens: number; cost: number; count: number }> = {}
+        for (const e of usageEntries) {
+          const agg = modelAgg[e.modelId] ?? { inputTokens: 0, outputTokens: 0, cost: 0, count: 0 }
+          modelAgg[e.modelId] = {
+            inputTokens: agg.inputTokens + e.inputTokens,
+            outputTokens: agg.outputTokens + e.outputTokens,
+            cost: agg.cost + e.cost,
+            count: agg.count + 1,
+          }
+        }
+
+        return (
+          <div className="space-y-8">
+            <div>
+              <h2 className="text-2xl font-bold text-text-primary">{t('usage.title')}</h2>
+              <p className="text-text-secondary text-sm mt-1">{t('usage.description')}</p>
+            </div>
+
+            {/* Total cost */}
+            <div className="p-4 border border-border rounded-xl bg-surface">
+              <p className="text-sm text-text-secondary">{t('usage.totalCost')}</p>
+              <p className="text-3xl font-bold text-text-primary mt-1">${usageTotalCost.toFixed(6)}</p>
+              <p className="text-xs text-text-tertiary mt-1">{t('usage.totalRequests', { count: String(usageEntries.length) })}</p>
+            </div>
+
+            {/* Model breakdown */}
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold text-text-primary">{t('usage.byModel')}</h3>
+              {Object.keys(modelAgg).length === 0 ? (
+                <p className="text-sm text-text-secondary">{t('usage.noData')}</p>
+              ) : (
+                <div className="border border-border rounded-xl overflow-hidden">
+                  <table className="w-full text-sm">
+                    <thead className="bg-hover">
+                      <tr>
+                        <th className="text-left px-4 py-2 text-text-secondary font-medium">{t('usage.model')}</th>
+                        <th className="text-right px-4 py-2 text-text-secondary font-medium">{t('usage.requests')}</th>
+                        <th className="text-right px-4 py-2 text-text-secondary font-medium">{t('usage.inputTokens')}</th>
+                        <th className="text-right px-4 py-2 text-text-secondary font-medium">{t('usage.outputTokens')}</th>
+                        <th className="text-right px-4 py-2 text-text-secondary font-medium">{t('usage.cost')}</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {Object.entries(modelAgg).map(([modelId, agg]) => {
+                        const model = MODELS.find((m) => m.id === modelId)
+                        return (
+                          <tr key={modelId} className="border-t border-border">
+                            <td className="px-4 py-2 text-text-primary">{model?.label ?? modelId}</td>
+                            <td className="px-4 py-2 text-right text-text-secondary">{agg.count}</td>
+                            <td className="px-4 py-2 text-right text-text-secondary">{agg.inputTokens.toLocaleString()}</td>
+                            <td className="px-4 py-2 text-right text-text-secondary">{agg.outputTokens.toLocaleString()}</td>
+                            <td className="px-4 py-2 text-right text-text-primary font-medium">${agg.cost.toFixed(6)}</td>
+                          </tr>
+                        )
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </div>
+
+            <div className="pt-4">
+              <Button variant="secondary" onClick={() => clearAllUsage()}>
+                {t('usage.clearAll')}
+              </Button>
+            </div>
+          </div>
+        )
+      }
+
+      case 'personas': {
+        function handleSavePersona() {
+          if (!personaForm?.name?.trim() || !personaForm?.systemPrompt?.trim()) return
+          const now = new Date().toISOString()
+
+          if (personaForm.id) {
+            updatePersonaStore(personaForm.id, {
+              name: personaForm.name.trim(),
+              description: personaForm.description?.trim() ?? '',
+              systemPrompt: personaForm.systemPrompt.trim(),
+              icon: personaForm.icon ?? 'bot',
+            })
+          } else {
+            addPersona({
+              id: `persona-${Date.now()}`,
+              name: personaForm.name.trim(),
+              description: personaForm.description?.trim() ?? '',
+              systemPrompt: personaForm.systemPrompt.trim(),
+              icon: personaForm.icon ?? 'bot',
+              isDefault: false,
+              createdAt: now,
+              updatedAt: now,
+            })
+          }
+          setPersonaForm(null)
+        }
+
+        return (
+          <div className="space-y-8">
+            <div>
+              <h2 className="text-2xl font-bold text-text-primary">{t('persona.title')}</h2>
+              <p className="text-text-secondary text-sm mt-1">{t('persona.description')}</p>
+            </div>
+
+            <Button variant="primary" onClick={() => setPersonaForm({})}>
+              <Plus size={16} />
+              {t('persona.new')}
+            </Button>
+
+            {/* Persona form */}
+            {personaForm && (
+              <div className="p-4 border border-border rounded-xl bg-surface space-y-3">
+                <h3 className="text-sm font-semibold text-text-primary">
+                  {personaForm.id ? t('common.edit') : t('persona.new')}
+                </h3>
+                <input
+                  value={personaForm.name ?? ''}
+                  onChange={(e) => setPersonaForm({ ...personaForm, name: e.target.value })}
+                  placeholder={t('persona.namePlaceholder')}
+                  className="w-full px-3 py-2 rounded-lg border border-border bg-input text-sm text-text-primary outline-none focus:border-primary"
+                />
+                <input
+                  value={personaForm.description ?? ''}
+                  onChange={(e) => setPersonaForm({ ...personaForm, description: e.target.value })}
+                  placeholder={t('persona.descPlaceholder')}
+                  className="w-full px-3 py-2 rounded-lg border border-border bg-input text-sm text-text-primary outline-none focus:border-primary"
+                />
+                <textarea
+                  value={personaForm.systemPrompt ?? ''}
+                  onChange={(e) => setPersonaForm({ ...personaForm, systemPrompt: e.target.value })}
+                  placeholder={t('persona.promptPlaceholder')}
+                  rows={4}
+                  className="w-full px-3 py-2 rounded-lg border border-border bg-input text-sm text-text-primary outline-none focus:border-primary resize-none"
+                />
+                <div className="flex justify-end gap-2">
+                  <Button variant="secondary" onClick={() => setPersonaForm(null)}>{t('common.cancel')}</Button>
+                  <Button variant="primary" onClick={handleSavePersona}>{t('common.save')}</Button>
+                </div>
+              </div>
+            )}
+
+            {/* Persona list */}
+            <div className="space-y-3">
+              {personas.map((p) => (
+                <div key={p.id} className="p-4 border border-border rounded-xl bg-surface flex items-start justify-between">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2">
+                      <h3 className="text-sm font-semibold text-text-primary">{p.name}</h3>
+                      {p.isDefault && (
+                        <span className="text-[10px] px-1.5 py-0.5 rounded bg-primary/10 text-primary">{t('persona.preset')}</span>
+                      )}
+                    </div>
+                    <p className="text-xs text-text-secondary mt-0.5">{p.description}</p>
+                    <p className="text-xs text-text-tertiary mt-1 line-clamp-2">{p.systemPrompt}</p>
+                  </div>
+                  <div className="flex items-center gap-1 flex-shrink-0 ml-3">
+                    <button
+                      onClick={() => setPersonaForm(p)}
+                      className="p-1.5 hover:bg-hover rounded-lg transition"
+                      title={t('common.edit')}
+                    >
+                      <Code size={14} className="text-text-tertiary" />
+                    </button>
+                    {!p.isDefault && (
+                      <button
+                        onClick={() => deletePersonaAction(p.id)}
+                        className="p-1.5 hover:bg-hover rounded-lg transition"
+                        title={t('common.delete')}
+                      >
+                        <Trash2 size={14} className="text-text-tertiary" />
+                      </button>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )
+      }
 
       default:
         return (

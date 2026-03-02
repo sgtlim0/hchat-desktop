@@ -260,8 +260,75 @@ const en = {
   'greeting.evening': 'Good evening 🌙',
   'greeting.subtitle': 'Ask me anything',
 
+  // quick action prompts
+  'quickAction.prompt.write': 'Please write some code. What code do you need?',
+  'quickAction.prompt.summarize': 'Please summarize a document. Paste the content to summarize.',
+  'quickAction.prompt.translate': 'Please translate. Enter the text to translate.',
+  'quickAction.prompt.brainstorm': "Let's brainstorm ideas. What's the topic?",
+  'quickAction.prompt.review': 'Please review the code. Paste the code to review.',
+
+  // import
+  'import.button': 'Import',
+  'import.failed': 'Import failed: {error}',
+  'import.success': 'Conversation imported',
+
+  // offline
+  'offline.banner': 'You are offline. Please check your internet connection.',
+
   // session
   'session.newChat': 'New Chat',
+
+  // sidebar - prompt library
+  'sidebar.promptLibrary': 'Prompt Library',
+
+  // settings tabs
+  'settings.tab.usage': 'Usage',
+  'settings.tab.personas': 'Personas',
+
+  // usage
+  'usage.title': 'Usage Tracking',
+  'usage.description': 'Monitor token usage and estimated costs.',
+  'usage.totalCost': 'Total Estimated Cost',
+  'usage.totalRequests': '{count} total requests',
+  'usage.byModel': 'Usage by Model',
+  'usage.noData': 'No usage data yet',
+  'usage.model': 'Model',
+  'usage.requests': 'Requests',
+  'usage.inputTokens': 'Input Tokens',
+  'usage.outputTokens': 'Output Tokens',
+  'usage.cost': 'Cost',
+  'usage.clearAll': 'Clear All',
+
+  // prompt library
+  'promptLib.title': 'Prompt Library',
+  'promptLib.new': 'New Prompt',
+  'promptLib.searchPlaceholder': 'Search prompts...',
+  'promptLib.empty': 'No saved prompts',
+  'promptLib.emptyHint': 'Save and reuse your frequently used prompts.',
+  'promptLib.titlePlaceholder': 'Prompt title',
+  'promptLib.contentPlaceholder': 'Prompt content (use {{variable}} for variables)',
+  'promptLib.tagsPlaceholder': 'Tags (comma separated)',
+  'promptLib.use': 'Use',
+  'promptLib.apply': 'Apply',
+  'promptLib.fillVariables': 'Fill Variables',
+  'promptLib.usedCount': 'Used {count} times',
+  'promptLib.category.general': 'General',
+  'promptLib.category.coding': 'Coding',
+  'promptLib.category.writing': 'Writing',
+  'promptLib.category.analysis': 'Analysis',
+  'promptLib.category.translation': 'Translation',
+  'promptLib.category.custom': 'Custom',
+
+  // persona
+  'persona.title': 'Persona Management',
+  'persona.description': 'Configure AI assistant roles and personalities.',
+  'persona.new': 'New Persona',
+  'persona.select': 'Select Persona',
+  'persona.none': 'Default (No Persona)',
+  'persona.preset': 'Preset',
+  'persona.namePlaceholder': 'Persona name',
+  'persona.descPlaceholder': 'Short description',
+  'persona.promptPlaceholder': 'System prompt content',
 } as const
 
 export default en

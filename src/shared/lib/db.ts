@@ -1,16 +1,28 @@
 import Dexie, { type EntityTable } from 'dexie'
-import type { Message, Session, Project } from '@/shared/types'
+import type { Message, Session, Project, UsageEntry, SavedPrompt, Persona } from '@/shared/types'
 
 const db = new Dexie('hchat-desktop') as Dexie & {
   sessions: EntityTable<Session, 'id'>
   messages: EntityTable<Message, 'id'>
   projects: EntityTable<Project, 'id'>
+  usages: EntityTable<UsageEntry, 'id'>
+  prompts: EntityTable<SavedPrompt, 'id'>
+  personas: EntityTable<Persona, 'id'>
 }
 
 db.version(1).stores({
   sessions: 'id, projectId, updatedAt, isFavorite',
   messages: 'id, sessionId, createdAt',
   projects: 'id, updatedAt',
+})
+
+db.version(2).stores({
+  sessions: 'id, projectId, updatedAt, isFavorite',
+  messages: 'id, sessionId, createdAt',
+  projects: 'id, updatedAt',
+  usages: 'id, sessionId, modelId, createdAt',
+  prompts: 'id, category, isFavorite, updatedAt',
+  personas: 'id, isDefault, updatedAt',
 })
 
 // Session CRUD
@@ -76,6 +88,48 @@ export async function hydrateFromDb() {
   }
 
   return { sessions, projects, messagesMap }
+}
+
+// Usage CRUD
+
+export async function putUsage(usage: UsageEntry): Promise<void> {
+  await db.usages.put(usage)
+}
+
+export async function getAllUsages(): Promise<UsageEntry[]> {
+  return db.usages.orderBy('createdAt').reverse().toArray()
+}
+
+export async function clearAllUsages(): Promise<void> {
+  await db.usages.clear()
+}
+
+// Prompt CRUD
+
+export async function getAllPrompts(): Promise<SavedPrompt[]> {
+  return db.prompts.orderBy('updatedAt').reverse().toArray()
+}
+
+export async function putPrompt(prompt: SavedPrompt): Promise<void> {
+  await db.prompts.put(prompt)
+}
+
+export async function deletePromptFromDb(id: string): Promise<void> {
+  await db.prompts.delete(id)
+}
+
+// Persona CRUD
+
+export async function getAllPersonas(): Promise<Persona[]> {
+  return db.personas.orderBy('updatedAt').reverse().toArray()
+}
+
+export async function putPersona(persona: Persona): Promise<void> {
+  await db.personas.put(persona)
+}
+
+export async function deletePersonaFromDb(id: string): Promise<void> {
+  await db.personas.delete(id)
 }
 
 export { db }
