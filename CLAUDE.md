@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-H Chat Desktop — Advanced AI chat Progressive Web App supporting multi-provider models (Claude, GPT, Gemini). React 19, TypeScript 5.9, Vite 7, Zustand 5, Tailwind CSS 3. **100% complete** (70/70 TODO items + Phase 1 비서 마켓플레이스) with 667 tests (41 suites). Features: assistant marketplace (8 presets), agent mode, web search, debate, image gen, PDF/Excel analysis, TTS/STT, prompt library, persona system, usage tracking, ROI dashboard, folders/tags, memory, schedule, swarm, channels, guardrail, auto-routing, offline support.
+H Chat Desktop — Advanced AI chat Progressive Web App supporting multi-provider models (Claude, GPT, Gemini). React 19, TypeScript 5.9, Vite 7, Zustand 5, Tailwind CSS 3. **100% complete** (70/70 TODO items + Phase 1-4 complete) with 822 tests (49 suites). Features: assistant marketplace (8 presets), document translation, document writer wizard, OCR text extraction, header tool tabs, usage category tracking, agent mode, web search, debate, image gen, PDF/Excel analysis, TTS/STT, prompt library, persona system, usage tracking, ROI dashboard, folders/tags, memory, schedule, swarm, channels, guardrail, auto-routing, offline support.
 
 ## Commands
 
@@ -14,7 +14,7 @@ npm run dev               # Vite dev server (localhost:5173)
 npm run build             # TypeScript check + Vite production build
 npm run lint              # ESLint
 npm run preview           # Preview production build locally
-npm test                  # Vitest unit/integration tests (667 tests, 41 suites)
+npm test                  # Vitest unit/integration tests (822 tests, 49 suites)
 npm run test:ui           # Vitest interactive UI
 npm run test:coverage     # Coverage report (83% stmts, 79% branches, 91% funcs, 82% lines)
 npx playwright test       # E2E tests (24 tests)
@@ -27,13 +27,13 @@ Uses **Feature-Sliced Design (FSD)** with `@/` path alias mapping to `src/`:
 ```
 src/
 ├── app/layouts/         # MainLayout — view routing dispatch, keyboard shortcuts, hydration
-├── pages/               # 15 screens: home (marketplace), chat, all-chats, projects, settings,
+├── pages/               # 18 screens: home (marketplace), chat, all-chats, projects, settings,
 │                        #   quick-chat, group-chat, memory, swarm, schedule, prompt-library,
-│                        #   debate, ai-tools, image-gen, agent
+│                        #   debate, ai-tools, image-gen, agent, translate, doc-writer, ocr
 ├── widgets/             # Complex feature components (message-list, prompt-input, sidebar, search)
-├── entities/            # 15 Zustand stores: session, settings, project, group-chat, channel, memory,
+├── entities/            # 17 Zustand stores: session, settings, project, group-chat, channel, memory,
 │                        #   swarm, schedule, usage, persona, prompt-template (prompt-library), debate,
-│                        #   folder, tag, toast
+│                        #   folder, tag, toast, translate, doc-writer
 ├── shared/
 │   ├── ui/              # 12 reusable components (Button, Avatar, Toggle, AssistantCard, etc.)
 │   ├── lib/             # Utilities, Bedrock client, provider factory, Dexie DB, token-estimator
@@ -50,13 +50,13 @@ src/
 
 No React Router. Navigation is state-driven via Zustand:
 - `SessionStore.view` (`ViewState` type) determines which page renders
-- `ViewState` = `'home' | 'chat' | 'settings' | 'allChats' | 'projects' | 'projectDetail' | 'quickChat' | 'memory' | 'agentSwarm' | 'schedule' | 'groupChat' | 'promptLibrary' | 'debate' | 'aiTools' | 'imageGen' | 'agent'`
+- `ViewState` = `'home' | 'chat' | 'settings' | 'allChats' | 'projects' | 'projectDetail' | 'quickChat' | 'memory' | 'agentSwarm' | 'schedule' | 'groupChat' | 'promptLibrary' | 'debate' | 'aiTools' | 'imageGen' | 'agent' | 'translate' | 'docWriter' | 'ocr'`
 - `MainLayout.renderContent()` dispatches based on `view` value
 - Navigation through store actions: `selectSession()`, `goHome()`, `setView()`
 
 ### State Management (Zustand)
 
-15 stores in `src/entities/`, all persisted via IndexedDB (Dexie):
+17 stores in `src/entities/`, all persisted via IndexedDB (Dexie):
 - **SessionStore** — sessions, messages (keyed by sessionId), currentSessionId, view state, streaming, folders/tags
 - **SettingsStore** — selectedModel, darkMode, sidebarOpen, credentials, language, systemPrompt, monthlyBudget, thinkingDepth
 - **ProjectStore** — projects, selectedProjectId
@@ -65,13 +65,15 @@ No React Router. Navigation is state-driven via Zustand:
 - **MemoryStore** — context memory management + auto-extraction
 - **SwarmStore** — agent orchestration + SSE execution
 - **ScheduleStore** — scheduled tasks + async execution
-- **UsageStore** — token usage tracking, cost calculation, ROI metrics
+- **UsageStore** — token usage tracking, cost calculation, ROI metrics, category tracking (chat/translate/doc-write/ocr/image-gen/data-analysis)
 - **PersonaStore** — persona presets (assistant, tutor, coder, analyst, creative) + custom CRUD
 - **PromptTemplateStore** (prompt-library) — template CRUD, `{{variable}}` rendering, categories
 - **DebateStore** — cross-model debate sessions, 3-round auto-debate, consensus summary
 - **FolderStore** — folder CRUD, color coding, sidebar filtering
 - **TagStore** — tag CRUD, color tags, multi-select
 - **ToastStore** — toast notifications (success, error, warning, info)
+- **TranslateStore** — document translation workflow (LLM/browser engine, file upload, batch processing, progress tracking)
+- **DocWriterStore** — 5-step document wizard (project setup, context, AI outline, section content, export MD/TXT)
 
 ### Multi-Provider System
 
@@ -138,13 +140,24 @@ modal deploy backend/app.py    # Production deploy
 
 ## Feature Status
 
-**All features fully functional (100% complete + Phase 1 extension):**
+**All features fully functional (100% complete + Phase 1-4 complete):**
 
 ### Assistant Marketplace (Phase 1)
 - 8 official assistant presets (analyst, quickChat, docReview, translator, reportWriter, codeReviewer, dataAnalyst, emailWriter)
 - 8 category filters (all, chat, work, translate, analyze, report, image, writing)
 - Official / My Assistants tab toggle (persona system integration)
 - One-click session creation with model + system prompt
+
+### Document Tools (Phase 2-3)
+- Document translation workflow (file upload, LLM/browser engine, batch processing, progress tracking, download)
+- Document writer wizard (5-step: project setup, context, AI outline generation, section content, export MD/TXT)
+- OCR text extraction (tesseract.js, image upload, batch processing, download results)
+- Header tool tabs (quick navigation: chat/translate/doc-writer/ocr)
+
+### Usage Tracking Extension (Phase 4)
+- Category-based usage tracking (chat, translate, doc-write, ocr, image-gen, data-analysis)
+- Category filter in Settings > Usage tab
+- Per-category cost and token breakdown charts
 
 ### Core Chat
 - Multi-provider chat (Bedrock, OpenAI, Gemini) with SSE streaming

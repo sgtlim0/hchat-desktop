@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { MessageSquare, Folder, Star, Search, Plus, Brain, Network, CalendarClock, Users, Settings, BookOpen, Swords, ChevronDown, ChevronRight, X, Wand2, Image, Bot } from 'lucide-react'
+import { MessageSquare, Folder, Star, Search, Plus, Brain, Network, CalendarClock, Users, Settings, BookOpen, Swords, ChevronDown, ChevronRight, X, Wand2, Image, Bot, Languages, FileText, ScanLine } from 'lucide-react'
 import { useSessionStore } from '@/entities/session/session.store'
 import { useSettingsStore } from '@/entities/settings/settings.store'
 import { useFolderStore } from '@/entities/folder/folder.store'
@@ -298,6 +298,21 @@ export function Sidebar() {
               icon={Bot}
               label={t('sidebar.agent')}
               onClick={() => handleViewChange('agent')}
+            />
+            <SidebarItem
+              icon={Languages}
+              label={t('sidebar.translate')}
+              onClick={() => handleViewChange('translate')}
+            />
+            <SidebarItem
+              icon={FileText}
+              label={t('sidebar.docWriter')}
+              onClick={() => handleViewChange('docWriter')}
+            />
+            <SidebarItem
+              icon={ScanLine}
+              label={t('sidebar.ocr')}
+              onClick={() => handleViewChange('ocr')}
             />
           </div>
         </div>

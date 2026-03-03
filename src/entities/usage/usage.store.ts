@@ -1,7 +1,15 @@
 import { create } from 'zustand'
-import type { UsageEntry } from '@/shared/types'
+import type { UsageEntry, UsageCategory } from '@/shared/types'
 import { putUsage, getAllUsages, clearAllUsages } from '@/shared/lib/db'
 import { MODELS } from '@/shared/constants'
+
+export interface CategorySummary {
+  category: UsageCategory
+  totalEntries: number
+  totalInputTokens: number
+  totalOutputTokens: number
+  totalCost: number
+}
 
 interface UsageState {
   entries: UsageEntry[]
@@ -12,6 +20,9 @@ interface UsageState {
   getSessionUsage: (sessionId: string) => UsageEntry[]
   getModelUsage: (modelId: string) => UsageEntry[]
   getTotalCost: () => number
+  getCategoryUsage: (category: UsageCategory) => UsageEntry[]
+  getCategoryCost: (category: UsageCategory) => number
+  getCategorySummary: () => CategorySummary[]
   clearAll: () => Promise<void>
 }
 
@@ -44,6 +55,30 @@ export const useUsageStore = create<UsageState>((set, get) => ({
 
   getTotalCost: () => {
     return get().entries.reduce((sum, e) => sum + e.cost, 0)
+  },
+
+  getCategoryUsage: (category) => {
+    return get().entries.filter((e) => (e.category ?? 'chat') === category)
+  },
+
+  getCategoryCost: (category) => {
+    return get().entries
+      .filter((e) => (e.category ?? 'chat') === category)
+      .reduce((sum, e) => sum + e.cost, 0)
+  },
+
+  getCategorySummary: () => {
+    const categories: UsageCategory[] = ['chat', 'translate', 'doc-write', 'ocr', 'image-gen', 'data-analysis']
+    return categories.map((cat) => {
+      const entries = get().entries.filter((e) => (e.category ?? 'chat') === cat)
+      return {
+        category: cat,
+        totalEntries: entries.length,
+        totalInputTokens: entries.reduce((s, e) => s + e.inputTokens, 0),
+        totalOutputTokens: entries.reduce((s, e) => s + e.outputTokens, 0),
+        totalCost: entries.reduce((s, e) => s + e.cost, 0),
+      }
+    })
   },
 
   clearAll: async () => {

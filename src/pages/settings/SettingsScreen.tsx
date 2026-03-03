@@ -12,7 +12,7 @@ import { Button } from '@/shared/ui/Button'
 import { Toggle } from '@/shared/ui/Toggle'
 import { testConnection } from '@/shared/lib/bedrock-client'
 import { AWS_REGIONS, DEFAULT_AWS_REGION, MODELS } from '@/shared/constants'
-import type { Persona } from '@/shared/types'
+import type { Persona, UsageCategory } from '@/shared/types'
 import type { TFunction } from '@/shared/i18n'
 import { groupByDate, groupByWeek, getLast30Days } from '@/shared/lib/usage-chart'
 import { BarChart } from '@/shared/ui/BarChart'
@@ -61,12 +61,16 @@ export function SettingsScreen() {
   } = useSettingsStore()
   const { slack, telegram, updateSlack, updateTelegram, testSlackConnection, connectTelegram, testStatus: channelTestStatus } = useChannelStore()
   const usageEntries = useUsageStore((s) => s.entries)
-  const usageTotalCost = useUsageStore((s) => s.getTotalCost())
+
   const clearAllUsage = useUsageStore((s) => s.clearAll)
+  const getCategorySummary = useUsageStore((s) => s.getCategorySummary)
   const { personas, addPersona, updatePersona: updatePersonaStore, deletePersona: deletePersonaAction } = usePersonaStore()
 
   // Persona form state
   const [personaForm, setPersonaForm] = useState<Partial<Persona> | null>(null)
+
+  // Usage category filter
+  const [usageCategoryFilter, setUsageCategoryFilter] = useState<UsageCategory | 'all'>('all')
 
   const [accessKeyId, setAccessKeyId] = useState(credentials?.accessKeyId ?? '')
   const [secretAccessKey, setSecretAccessKey] = useState(credentials?.secretAccessKey ?? '')
@@ -581,9 +585,25 @@ export function SettingsScreen() {
         )
 
       case 'usage': {
+        // Category filter
+        const USAGE_CATEGORIES: { id: UsageCategory | 'all'; labelKey: string; color: string }[] = [
+          { id: 'all', labelKey: 'usage.category.all', color: '#6B7280' },
+          { id: 'chat', labelKey: 'usage.category.chat', color: '#3B82F6' },
+          { id: 'translate', labelKey: 'usage.category.translate', color: '#10B981' },
+          { id: 'doc-write', labelKey: 'usage.category.docWrite', color: '#F59E0B' },
+          { id: 'image-gen', labelKey: 'usage.category.imageGen', color: '#8B5CF6' },
+          { id: 'data-analysis', labelKey: 'usage.category.analysis', color: '#EF4444' },
+        ]
+
+        const filteredEntries = usageCategoryFilter === 'all'
+          ? usageEntries
+          : usageEntries.filter((e) => (e.category ?? 'chat') === usageCategoryFilter)
+
+        const filteredCost = filteredEntries.reduce((sum, e) => sum + e.cost, 0)
+
         // Aggregate by model
         const modelAgg: Record<string, { inputTokens: number; outputTokens: number; cost: number; count: number }> = {}
-        for (const e of usageEntries) {
+        for (const e of filteredEntries) {
           const agg = modelAgg[e.modelId] ?? { inputTokens: 0, outputTokens: 0, cost: 0, count: 0 }
           modelAgg[e.modelId] = {
             inputTokens: agg.inputTokens + e.inputTokens,
@@ -594,9 +614,17 @@ export function SettingsScreen() {
         }
 
         // Chart data
-        const recentEntries = getLast30Days(usageEntries)
+        const recentEntries = getLast30Days(filteredEntries)
         const dailyData = groupByDate(recentEntries)
         const weeklyData = groupByWeek(recentEntries)
+
+        // Category donut data
+        const categorySummary = getCategorySummary()
+        const categoryTotal = categorySummary.reduce((s, c) => s + c.totalCost, 0)
+        const CATEGORY_COLORS: Record<string, string> = {
+          chat: '#3B82F6', translate: '#10B981', 'doc-write': '#F59E0B',
+          ocr: '#06B6D4', 'image-gen': '#8B5CF6', 'data-analysis': '#EF4444',
+        }
 
         return (
           <div className="space-y-8">
@@ -605,12 +633,80 @@ export function SettingsScreen() {
               <p className="text-text-secondary text-sm mt-1">{t('usage.description')}</p>
             </div>
 
+            {/* Category filter pills */}
+            <div className="flex flex-wrap gap-2">
+              {USAGE_CATEGORIES.map((cat) => (
+                <button
+                  key={cat.id}
+                  onClick={() => setUsageCategoryFilter(cat.id)}
+                  className={`px-3 py-1.5 rounded-full text-xs font-medium transition border ${
+                    usageCategoryFilter === cat.id
+                      ? 'border-primary bg-primary/10 text-primary'
+                      : 'border-border bg-surface text-text-secondary hover:bg-hover'
+                  }`}
+                >
+                  <span className="inline-block w-2 h-2 rounded-full mr-1.5" style={{ backgroundColor: cat.color }} />
+                  {t(cat.labelKey as any)}
+                </button>
+              ))}
+            </div>
+
             {/* Total cost */}
             <div className="p-4 border border-border rounded-xl bg-surface">
               <p className="text-sm text-text-secondary">{t('usage.totalCost')}</p>
-              <p className="text-3xl font-bold text-text-primary mt-1">${usageTotalCost.toFixed(6)}</p>
-              <p className="text-xs text-text-tertiary mt-1">{t('usage.totalRequests', { count: String(usageEntries.length) })}</p>
+              <p className="text-3xl font-bold text-text-primary mt-1">${filteredCost.toFixed(6)}</p>
+              <p className="text-xs text-text-tertiary mt-1">{t('usage.totalRequests', { count: String(filteredEntries.length) })}</p>
             </div>
+
+            {/* Category donut chart */}
+            {categoryTotal > 0 && usageCategoryFilter === 'all' && (
+              <div className="p-4 border border-border rounded-xl bg-surface">
+                <h3 className="text-sm font-semibold text-text-primary mb-4">{t('usage.category.chart')}</h3>
+                <div className="flex items-center gap-8">
+                  <svg viewBox="0 0 100 100" width={140} height={140} className="flex-shrink-0">
+                    {(() => {
+                      let offset = 0
+                      const radius = 38
+                      const circumference = 2 * Math.PI * radius
+                      return categorySummary
+                        .filter((s) => s.totalCost > 0)
+                        .map((s) => {
+                          const pct = s.totalCost / categoryTotal
+                          const dashArray = `${pct * circumference} ${circumference}`
+                          const dashOffset = -offset * circumference
+                          offset += pct
+                          return (
+                            <circle
+                              key={s.category}
+                              cx="50" cy="50" r={radius}
+                              fill="none"
+                              stroke={CATEGORY_COLORS[s.category] ?? '#6B7280'}
+                              strokeWidth="14"
+                              strokeDasharray={dashArray}
+                              strokeDashoffset={dashOffset}
+                              transform="rotate(-90 50 50)"
+                            />
+                          )
+                        })
+                    })()}
+                  </svg>
+                  <div className="space-y-1.5">
+                    {categorySummary
+                      .filter((s) => s.totalCost > 0)
+                      .map((s) => (
+                        <div key={s.category} className="flex items-center gap-2 text-xs">
+                          <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: CATEGORY_COLORS[s.category] ?? '#6B7280' }} />
+                          <span className="text-text-secondary w-20">
+                            {t(`usage.category.${s.category === 'doc-write' ? 'docWrite' : s.category === 'image-gen' ? 'imageGen' : s.category === 'data-analysis' ? 'analysis' : s.category}` as any)}
+                          </span>
+                          <span className="text-text-primary font-medium">${s.totalCost.toFixed(4)}</span>
+                          <span className="text-text-tertiary">({(s.totalCost / categoryTotal * 100).toFixed(0)}%)</span>
+                        </div>
+                      ))}
+                  </div>
+                </div>
+              </div>
+            )}
 
             {/* Usage chart */}
             {recentEntries.length > 0 && (

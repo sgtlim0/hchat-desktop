@@ -12,6 +12,7 @@ import { useScheduleStore } from '@/entities/schedule/schedule.store'
 import { useSwarmStore } from '@/entities/swarm/swarm.store'
 import { useChannelStore } from '@/entities/channel/channel.store'
 import { Sidebar } from '@/widgets/sidebar/Sidebar'
+import { HeaderTabs } from '@/widgets/header-tabs/HeaderTabs'
 import { HomeScreen } from '@/pages/home/HomeScreen'
 import { SearchModal } from '@/widgets/search/SearchModal'
 import { ToastContainer } from '@/shared/ui/ToastContainer'
@@ -34,6 +35,9 @@ const DebatePage = lazy(() => import('@/pages/debate/DebatePage').then((m) => ({
 const AiToolsPage = lazy(() => import('@/pages/ai-tools/AiToolsPage').then((m) => ({ default: m.AiToolsPage })))
 const ImageGenPage = lazy(() => import('@/pages/image-gen/ImageGenPage').then((m) => ({ default: m.ImageGenPage })))
 const AgentPage = lazy(() => import('@/pages/agent/AgentPage').then((m) => ({ default: m.AgentPage })))
+const TranslatePage = lazy(() => import('@/pages/translate/TranslatePage').then((m) => ({ default: m.TranslatePage })))
+const DocWriterPage = lazy(() => import('@/pages/doc-writer/DocWriterPage').then((m) => ({ default: m.DocWriterPage })))
+const OcrPage = lazy(() => import('@/pages/ocr/OcrPage').then((m) => ({ default: m.OcrPage })))
 
 export function MainLayout() {
   const { t } = useTranslation()
@@ -162,6 +166,18 @@ export function MainLayout() {
       return <AgentPage />
     }
 
+    if (view === 'translate') {
+      return <TranslatePage />
+    }
+
+    if (view === 'docWriter') {
+      return <DocWriterPage />
+    }
+
+    if (view === 'ocr') {
+      return <OcrPage />
+    }
+
     if (currentSessionId && view === 'chat') {
       return <ChatPage />
     }
@@ -184,6 +200,7 @@ export function MainLayout() {
             {t('offline.banner')}
           </div>
         )}
+        <HeaderTabs />
         <main id="main-content" className="flex-1 overflow-hidden">
           <Suspense fallback={
             <div className="flex-1 flex items-center justify-center h-full">

@@ -210,3 +210,41 @@
 - [x] debate.store.test.ts vi import 누락 수정
 - [x] 리브랜딩 완료 (H Chat 통일)
 - [x] Vercel 프로덕션 배포 완료
+
+---
+
+## ✅ Phase 2 — 헤더 도구 탭 + 문서 번역 워크플로우
+
+- [x] 헤더 도구 탭 구현 (업무 비서/문서 번역/문서 작성/텍스트 추출)
+- [x] ViewState 확장 ('translate' | 'docWriter' | 'ocr')
+- [x] TranslatePage 구현 (파일 업로드, 엔진 선택, 배치 번역)
+- [x] TranslateStore Zustand 스토어 (진행률, LLM/브라우저 엔진)
+- [x] translate.ts 유틸리티 (텍스트 추출, 청크 분할, LLM 호출)
+- [x] i18n 키 추가 (문서 번역 관련)
+- [x] 테스트 추가 (TranslatePage, TranslateStore)
+
+---
+
+## ✅ Phase 3 — 문서 작성 마법사 + OCR
+
+- [x] DocWriterPage 5단계 스텝퍼 구현 (프로젝트/배경/목차/내용/다운로드)
+- [x] DocWriterStore Zustand 스토어 (프로젝트, 목차, 내용)
+- [x] 4가지 문서 종류 (보고서/기획서/제안서/매뉴얼)
+- [x] AI 목차 생성 + 섹션별 내용 작성
+- [x] OcrPage 구현 (이미지 업로드, tesseract.js, 배치 처리)
+- [x] ocr.ts 유틸리티 (tesseract.js 동적 import, CDN worker)
+- [x] i18n 키 추가 (문서 작성, OCR 관련)
+- [x] 테스트 추가 (DocWriterPage, OcrPage)
+
+---
+
+## ✅ Phase 4 — 기능별 사용량 추적 + 마무리
+
+- [x] UsageCategory 확장 (chat/translate/doc-write/ocr/image-gen/data-analysis)
+- [x] 기능별 사용량 분리 추적
+- [x] 설정 > 사용량 탭 카테고리 필터 UI
+- [x] 기능별 비용/토큰 차트
+- [x] i18n 키 검증 (누락 확인)
+- [x] Phase 2-4 테스트 추가
+- [x] CLAUDE.md/roadmap.md/todolist.md 업데이트
+- [x] 테스트 커버리지 80%+ 유지 (822 tests, 49 suites)

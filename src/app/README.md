@@ -25,15 +25,23 @@ SessionStore.view (ViewState) → renderContent() → 페이지 컴포넌트
 지원하는 뷰 상태:
 - `home` → HomeScreen
 - `chat` → ChatPage
-- `all-chats` → AllChatsScreen
+- `allChats` → AllChatsScreen
 - `projects` → ProjectsScreen
-- `project-detail` → ProjectDetailScreen
+- `projectDetail` → ProjectDetailScreen
 - `settings` → SettingsScreen
-- `quick-chat` → QuickChatPage
-- `group-chat` → GroupChatPage
+- `quickChat` → QuickChatPage
+- `groupChat` → GroupChatPage
 - `memory` → MemoryPanel
-- `swarm` → AgentSwarmBuilder
+- `agentSwarm` → AgentSwarmBuilder
 - `schedule` → ScheduleManager
+- `promptLibrary` → PromptLibraryPage
+- `debate` → DebatePage
+- `aiTools` → AiToolsPage
+- `imageGen` → ImageGenPage
+- `agent` → AgentPage
+- `translate` → TranslatePage
+- `docWriter` → DocWriterPage
+- `ocr` → OcrPage
 
 ### 2. 키보드 단축키
 
@@ -59,4 +67,5 @@ useEffect → SessionStore.hydrate() → IndexedDB 데이터 로드
 - **SettingsStore** — 사이드바/설정 상태, 다크 모드
 - **Sidebar** 위젯 — 좌측 네비게이션
 - **SearchModal** 위젯 — 검색 오버레이
+- **HeaderTabs** 위젯 — 도구 탭 바 (home/translate/docWriter/ocr)
 - 모든 **Pages** 컴포넌트
