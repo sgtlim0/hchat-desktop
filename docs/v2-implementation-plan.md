@@ -1,6 +1,7 @@
 # v2-extension 기능 포팅 — 구현 계획
 
-> 2026-03-02 | hchat-pwa P1~P3 신규 기능 구현 로드맵
+> ✅ **전체 완료** (2026-03-03) | hchat-pwa P1~P3 신규 기능 구현 로드맵
+> Phase 1 (TTS/STT/Fork/Summary/Import) ✅ | Phase 2 (Agent/Search/AI Tools) ✅ | Phase 3 (Folders/Tags/Storage) ✅
 
 ---
 

@@ -1,5 +1,6 @@
 # hchat-v2-extension 기능 분석 및 PWA 적용 우선순위
 
+> ✅ **이식 완료** (2026-03-03) — 18개 이식 가능 기능 모두 구현됨
 > 분석일: 2026-03-02
 > 원본: https://github.com/sgtlim0/hchat-v2-extension
 > 대상: hchat-pwa (React 19 + TypeScript + Vite 7 + Zustand 5)
