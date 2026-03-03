@@ -12,6 +12,7 @@ interface MessageBubbleProps {
   isStreaming?: boolean
   messageIndex?: number
   onFork?: (messageIndex: number) => void
+  onOpenInCanvas?: (language: string, content: string) => void
 }
 
 function AssistantAvatar() {
@@ -24,29 +25,47 @@ function AssistantAvatar() {
 
 const remarkPlugins = [remarkGfm]
 
-const markdownComponents: Components = {
-  code({ className, children, ...props }) {
-    const match = /language-(\w+)/.exec(className ?? '')
-    const isInline = !match
+function createMarkdownComponents(
+  onOpenInCanvas?: (language: string, content: string) => void,
+): Components {
+  return {
+    code({ className, children, ...props }) {
+      const match = /language-(\w+)/.exec(className ?? '')
+      const isInline = !match
 
-    if (isInline) {
+      if (isInline) {
+        return (
+          <code className="bg-card px-1.5 py-0.5 rounded text-[13px] font-mono" {...props}>
+            {children}
+          </code>
+        )
+      }
+
       return (
-        <code className="bg-card px-1.5 py-0.5 rounded text-[13px] font-mono" {...props}>
-          {children}
-        </code>
+        <CodeBlock language={match[1]} onOpenInCanvas={onOpenInCanvas}>
+          {String(children).replace(/\n$/, '')}
+        </CodeBlock>
       )
-    }
-
-    return (
-      <CodeBlock language={match[1]}>
-        {String(children).replace(/\n$/, '')}
-      </CodeBlock>
-    )
-  },
+    },
+  }
 }
 
-export const MessageBubble = memo(function MessageBubble({ message, isStreaming = false, messageIndex, onFork }: MessageBubbleProps) {
+// Static components for when there's no canvas callback (e.g., streaming, no callback)
+const defaultMarkdownComponents = createMarkdownComponents()
+
+export const MessageBubble = memo(function MessageBubble({
+  message,
+  isStreaming = false,
+  messageIndex,
+  onFork,
+  onOpenInCanvas,
+}: MessageBubbleProps) {
   const [isSpeaking, setIsSpeaking] = useState(false)
+
+  const markdownComponents = useMemo(
+    () => (onOpenInCanvas ? createMarkdownComponents(onOpenInCanvas) : defaultMarkdownComponents),
+    [onOpenInCanvas],
+  )
 
   const handleTts = useCallback(() => {
     if (isSpeaking) {
@@ -61,7 +80,6 @@ export const MessageBubble = memo(function MessageBubble({ message, isStreaming 
     if (!text) return
     tts.speak(text)
     setIsSpeaking(true)
-    // Poll for completion
     const interval = setInterval(() => {
       if (!tts.isSpeaking()) {
         setIsSpeaking(false)
@@ -108,6 +126,7 @@ export const MessageBubble = memo(function MessageBubble({ message, isStreaming 
                 key={index}
                 content={segment.content}
                 isStreaming={isStreaming}
+                components={markdownComponents}
               />
             )
           }
@@ -147,23 +166,25 @@ export const MessageBubble = memo(function MessageBubble({ message, isStreaming 
 const MarkdownSegment = memo(function MarkdownSegment({
   content,
   isStreaming,
+  components,
 }: {
   content: string
   isStreaming: boolean
+  components: Components
 }) {
   const rendered = useMemo(() => {
     if (isStreaming) return null
     return (
-      <ReactMarkdown remarkPlugins={remarkPlugins} components={markdownComponents}>
+      <ReactMarkdown remarkPlugins={remarkPlugins} components={components}>
         {content}
       </ReactMarkdown>
     )
-  }, [content, isStreaming])
+  }, [content, isStreaming, components])
 
   return (
     <div className="prose-chat text-text-primary text-sm leading-relaxed">
       {isStreaming ? (
-        <ReactMarkdown remarkPlugins={remarkPlugins} components={markdownComponents}>
+        <ReactMarkdown remarkPlugins={remarkPlugins} components={components}>
           {content}
         </ReactMarkdown>
       ) : (

@@ -96,7 +96,7 @@ export interface Skill {
   icon: string
 }
 
-export type ViewState = 'home' | 'chat' | 'settings' | 'allChats' | 'projects' | 'projectDetail' | 'quickChat' | 'memory' | 'agentSwarm' | 'schedule' | 'groupChat' | 'promptLibrary' | 'debate' | 'aiTools' | 'imageGen' | 'agent'
+export type ViewState = 'home' | 'chat' | 'settings' | 'allChats' | 'projects' | 'projectDetail' | 'quickChat' | 'memory' | 'agentSwarm' | 'schedule' | 'groupChat' | 'promptLibrary' | 'debate' | 'aiTools' | 'imageGen' | 'agent' | 'translate' | 'docWriter' | 'ocr'
 
 // Group Chat types
 
@@ -236,6 +236,14 @@ export interface ChatStreamEvent {
 
 // Usage Tracking types
 
+export type UsageCategory =
+  | 'chat'
+  | 'translate'
+  | 'doc-write'
+  | 'ocr'
+  | 'image-gen'
+  | 'data-analysis'
+
 export interface UsageEntry {
   id: string
   sessionId: string
@@ -245,6 +253,7 @@ export interface UsageEntry {
   outputTokens: number
   cost: number
   createdAt: string
+  category?: UsageCategory
 }
 
 // Prompt Library types
@@ -325,4 +334,27 @@ export interface Tag {
   id: string
   name: string
   color: string  // hex color
+}
+
+// Artifact types (Canvas/Artifacts feature)
+
+export type ArtifactType = 'code' | 'html' | 'svg' | 'mermaid'
+
+export interface ArtifactVersion {
+  id: string
+  content: string
+  createdAt: string
+}
+
+export interface Artifact {
+  id: string
+  sessionId: string
+  messageId: string
+  title: string
+  language: string
+  type: ArtifactType
+  versions: ArtifactVersion[]
+  currentVersionIndex: number
+  createdAt: string
+  updatedAt: string
 }

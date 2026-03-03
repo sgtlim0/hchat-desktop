@@ -1,7 +1,7 @@
 import Dexie, { type EntityTable } from 'dexie'
 import type {
   Message, Session, Project, UsageEntry, SavedPrompt, Persona, Folder, Tag,
-  MemoryEntry, Schedule, SwarmAgent, SwarmConnection, ChannelConfig,
+  MemoryEntry, Schedule, SwarmAgent, SwarmConnection, ChannelConfig, Artifact,
 } from '@/shared/types'
 
 const db = new Dexie('hchat-desktop') as Dexie & {
@@ -18,6 +18,7 @@ const db = new Dexie('hchat-desktop') as Dexie & {
   swarmAgents: EntityTable<SwarmAgent, 'id'>
   swarmConnections: EntityTable<SwarmConnection, 'id'>
   channelConfigs: EntityTable<ChannelConfig & { id: string }, 'id'>
+  artifacts: EntityTable<Artifact, 'id'>
 }
 
 db.version(1).stores({
@@ -62,6 +63,23 @@ db.version(4).stores({
   channelConfigs: 'id',
 })
 
+db.version(5).stores({
+  sessions: 'id, projectId, updatedAt, isFavorite',
+  messages: 'id, sessionId, createdAt',
+  projects: 'id, updatedAt',
+  usages: 'id, sessionId, modelId, createdAt',
+  prompts: 'id, category, isFavorite, updatedAt',
+  personas: 'id, isDefault, updatedAt',
+  folders: 'id',
+  tags: 'id',
+  memories: 'id, scope, updatedAt',
+  schedules: 'id, status, updatedAt',
+  swarmAgents: 'id, role',
+  swarmConnections: 'id, from, to',
+  channelConfigs: 'id',
+  artifacts: 'id, sessionId, messageId, updatedAt',
+})
+
 // Session CRUD
 
 export async function getAllSessions(): Promise<Session[]> {
@@ -77,9 +95,10 @@ export async function putSession(session: Session): Promise<void> {
 }
 
 export async function deleteSessionFromDb(id: string): Promise<void> {
-  await db.transaction('rw', [db.sessions, db.messages], async () => {
+  await db.transaction('rw', [db.sessions, db.messages, db.artifacts], async () => {
     await db.sessions.delete(id)
     await db.messages.where('sessionId').equals(id).delete()
+    await db.artifacts.where('sessionId').equals(id).delete()
   })
 }
 
@@ -270,6 +289,20 @@ export async function getChannelConfig(): Promise<(ChannelConfig & { id: string 
 
 export async function putChannelConfig(config: ChannelConfig): Promise<void> {
   await db.channelConfigs.put({ ...config, id: 'default' })
+}
+
+// Artifact CRUD
+
+export async function getArtifactsBySession(sessionId: string): Promise<Artifact[]> {
+  return db.artifacts.where('sessionId').equals(sessionId).sortBy('updatedAt')
+}
+
+export async function putArtifact(artifact: Artifact): Promise<void> {
+  await db.artifacts.put(artifact)
+}
+
+export async function deleteArtifactFromDb(id: string): Promise<void> {
+  await db.artifacts.delete(id)
 }
 
 export { db }

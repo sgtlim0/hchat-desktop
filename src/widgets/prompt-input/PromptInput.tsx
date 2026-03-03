@@ -13,6 +13,8 @@ import { putMessage } from '@/shared/lib/db'
 import type { Message, UsageEntry, PdfAttachment, SpreadsheetAttachment, ThinkingDepth } from '@/shared/types'
 import { MODELS } from '@/shared/constants'
 import { useMemoryStore } from '@/entities/memory/memory.store'
+import { useArtifactStore } from '@/entities/artifact/artifact.store'
+import { detectArtifacts } from '@/shared/lib/artifact-detector'
 import { useOnlineStatus } from '@/shared/hooks/useOnlineStatus'
 import { estimateTokens } from '@/shared/lib/token-estimator'
 import * as stt from '@/shared/lib/stt'
@@ -61,6 +63,8 @@ export function PromptInput({
 
   const autoExtract = useMemoryStore((s) => s.autoExtract)
   const extractFromMessages = useMemoryStore((s) => s.extractFromMessages)
+
+  const createArtifact = useArtifactStore((s) => s.createArtifact)
 
   const isOnline = useOnlineStatus()
   const [isSending, setIsSending] = useState(false)
@@ -327,6 +331,21 @@ export function PromptInput({
         putMessage(finalAssistant).catch(console.error)
       }
 
+      // Auto-detect artifacts from completed response
+      if (fullText) {
+        const detected = detectArtifacts(fullText)
+        for (const det of detected) {
+          createArtifact({
+            sessionId,
+            messageId: assistantMessageId,
+            title: det.title,
+            language: det.language,
+            type: det.type,
+            content: det.content,
+          })
+        }
+      }
+
       // Record usage — prefer actual token counts from backend, fall back to estimates
       const model = MODELS.find((m) => m.id === effectiveModel)
       if (model && fullText) {
@@ -342,6 +361,7 @@ export function PromptInput({
           outputTokens,
           cost,
           createdAt: new Date().toISOString(),
+          category: 'chat',
         }
         addUsage(usageEntry)
       }

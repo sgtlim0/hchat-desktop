@@ -1,6 +1,8 @@
 import { useEffect, useRef, useCallback, lazy, Suspense } from 'react'
 import { useSessionStore } from '@/entities/session/session.store'
+import { useArtifactStore } from '@/entities/artifact/artifact.store'
 import { useTranslation } from '@/shared/i18n'
+import { languageToArtifactType, inferArtifactTitle } from '@/shared/lib/artifact-detector'
 import { MessageBubble } from './MessageBubble'
 import type { Message, Session } from '@/shared/types'
 
@@ -21,11 +23,35 @@ export function MessageList({ sessionId }: MessageListProps) {
   const messages = useSessionStore((s) => s.messages[sessionId] ?? [])
   const session = useSessionStore((s) => s.sessions.find((ss) => ss.id === sessionId))
   const forkSession = useSessionStore((s) => s.forkSession)
+  const createArtifact = useArtifactStore((s) => s.createArtifact)
+  const openArtifact = useArtifactStore((s) => s.openArtifact)
   const bottomRef = useRef<HTMLDivElement>(null)
 
   const handleFork = useCallback(
     (messageIndex: number) => forkSession(sessionId, messageIndex),
     [sessionId, forkSession],
+  )
+
+  const handleOpenInCanvas = useCallback(
+    (language: string, content: string) => {
+      const type = languageToArtifactType(language)
+      const title = inferArtifactTitle(language, content)
+
+      // Find which message this code belongs to (use last assistant message as fallback)
+      const lastAssistant = messages.filter((m) => m.role === 'assistant').at(-1)
+      const messageId = lastAssistant?.id ?? `msg-unknown-${Date.now()}`
+
+      const artifact = createArtifact({
+        sessionId,
+        messageId,
+        title,
+        language,
+        type,
+        content,
+      })
+      openArtifact(artifact.id)
+    },
+    [sessionId, messages, createArtifact, openArtifact],
   )
 
   const shouldVirtualize = messages.length > VIRTUALIZATION_THRESHOLD
@@ -52,6 +78,7 @@ export function MessageList({ sessionId }: MessageListProps) {
             messages={messages}
             session={session}
             handleFork={handleFork}
+            handleOpenInCanvas={handleOpenInCanvas}
             bottomRef={bottomRef}
           />
         }
@@ -70,6 +97,7 @@ export function MessageList({ sessionId }: MessageListProps) {
       messages={messages}
       session={session}
       handleFork={handleFork}
+      handleOpenInCanvas={handleOpenInCanvas}
       bottomRef={bottomRef}
     />
   )
@@ -79,6 +107,7 @@ interface StandardMessageListProps {
   messages: Message[]
   session: Session | undefined
   handleFork: (messageIndex: number) => void
+  handleOpenInCanvas: (language: string, content: string) => void
   bottomRef: React.RefObject<HTMLDivElement | null>
 }
 
@@ -86,6 +115,7 @@ function StandardMessageList({
   messages,
   session,
   handleFork,
+  handleOpenInCanvas,
   bottomRef,
 }: StandardMessageListProps) {
   return (
@@ -103,6 +133,7 @@ function StandardMessageList({
               isStreaming={isStreaming}
               messageIndex={index}
               onFork={handleFork}
+              onOpenInCanvas={handleOpenInCanvas}
             />
           )
         })}
