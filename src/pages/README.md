@@ -75,6 +75,9 @@ pages/
 - 다크 모드 토글
 - 언어 설정 (한국어/영어)
 - 시스템 프롬프트 설정
+- 사용량 추적 (카테고리 필터, 도넛 차트, ROI 대시보드)
+- 스토리지 관리 (IndexedDB 분석, 백업/복원)
+- 월간 예산 설정 (70% 임계치 알림)
 
 ### ProjectsScreen / ProjectDetailScreen
 
