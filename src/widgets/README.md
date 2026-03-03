@@ -19,8 +19,17 @@ widgets/
 │   ├── PromptInput.tsx          # 메시지 입력 컴포넌트
 │   ├── ModelSelector.tsx        # 모델 선택 드롭다운
 │   └── PromptMenu.tsx           # 입력 메뉴 (첨부, 옵션)
-└── search/
-    └── SearchModal.tsx          # 전역 검색 모달
+├── search/
+│   └── SearchModal.tsx          # 전역 검색 모달
+├── header-tabs/
+│   └── HeaderTabs.tsx           # 도구 탭 바 (4탭 전환)
+└── artifact-panel/
+    ├── ArtifactPanel.tsx        # Canvas 사이드 패널 (헤더, 툴바, 콘텐츠)
+    ├── ArtifactPreview.tsx      # 타입별 프리뷰 디스패처
+    ├── ArtifactCodeView.tsx     # SyntaxHighlighter 코드 뷰
+    ├── ArtifactHtmlPreview.tsx  # sandboxed iframe (HTML/SVG)
+    ├── ArtifactMermaidPreview.tsx # Mermaid 다이어그램 렌더링
+    └── ResizeHandle.tsx         # 드래그 리사이즈 핸들
 ```
 
 ## 위젯별 상세
@@ -64,6 +73,27 @@ widgets/
 ### SearchModal
 
 `Cmd/Ctrl + K`로 열리는 전역 검색 오버레이. 세션 제목과 메시지 내용에서 검색합니다.
+
+### HeaderTabs
+
+상단 도구 탭 바. 업무 비서(home)/문서 번역(translate)/문서 작성(docWriter)/텍스트 추출(ocr) 4개 탭으로 빠른 전환. 도구 관련 뷰(home, translate, docWriter, ocr)에서만 표시됩니다.
+
+### ArtifactPanel (Canvas/Artifacts)
+
+채팅 오른쪽에 표시되는 코드/HTML/SVG/Mermaid 미리보기 사이드 패널 (Claude Artifacts 스타일).
+
+| 파일 | 설명 |
+|------|------|
+| `ArtifactPanel.tsx` | 메인 패널 — 아티팩트 선택기 드롭다운, 프리뷰/코드 토글, 버전 히스토리, 복사/다운로드/삭제 |
+| `ArtifactPreview.tsx` | 타입별 디스패처: html/svg → iframe, mermaid → 다이어그램, code → 코드뷰 |
+| `ArtifactCodeView.tsx` | react-syntax-highlighter + vscDarkPlus 코드 표시 |
+| `ArtifactHtmlPreview.tsx` | sandboxed iframe 렌더링 (XSS 방지) |
+| `ArtifactMermaidPreview.tsx` | mermaid lazy import, 다이어그램 렌더링 |
+| `ResizeHandle.tsx` | 마우스 드래그 리사이즈 (320-960px) |
+
+- ChatPage에서 `flex-row` split layout으로 조합
+- 모바일 (< 768px): `fixed inset-0 z-50` 오버레이 모드
+- 드래그 리사이즈, localStorage 패널 너비 영속
 
 ## 의존성 관계
 

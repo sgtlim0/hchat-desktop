@@ -1,6 +1,6 @@
 # src/entities/ — 엔티티 레이어
 
-FSD 아키텍처의 엔티티 레이어. Zustand 기반 상태 관리 스토어를 포함합니다. 모든 비즈니스 로직과 데이터 영속성이 이 레이어에서 처리됩니다.
+FSD 아키텍처의 엔티티 레이어. 18개 Zustand 기반 상태 관리 스토어를 포함합니다. 모든 비즈니스 로직과 데이터 영속성이 이 레이어에서 처리됩니다.
 
 ## 파일 구조
 
@@ -15,13 +15,33 @@ entities/
 ├── group-chat/
 │   └── group-chat.store.ts    # 멀티 모델 그룹 채팅
 ├── channel/
-│   └── channel.store.ts       # 채널 관리
+│   └── channel.store.ts       # Slack/Telegram 채널 연동
 ├── memory/
 │   └── memory.store.ts        # 메모리(컨텍스트) 관리
 ├── swarm/
 │   └── swarm.store.ts         # 에이전트 스웜 오케스트레이션
-└── schedule/
-    └── schedule.store.ts      # 스케줄 작업 관리
+├── schedule/
+│   └── schedule.store.ts      # 스케줄 작업 관리
+├── usage/
+│   └── usage.store.ts         # 사용량 추적 + 카테고리별 분석
+├── persona/
+│   └── persona.store.ts       # 페르소나 (5 프리셋 + 커스텀)
+├── prompt-library/
+│   └── prompt-library.store.ts # 프롬프트 템플릿 CRUD
+├── debate/
+│   └── debate.store.ts        # 크로스 모델 토론
+├── folder/
+│   └── folder.store.ts        # 대화 폴더 (컬러 코딩)
+├── tag/
+│   └── tag.store.ts           # 대화 태그 (컬러 태그)
+├── toast/
+│   └── toast.store.ts         # 토스트 알림
+├── translate/
+│   └── translate.store.ts     # 문서 번역 워크플로우
+├── doc-writer/
+│   └── doc-writer.store.ts    # 문서 작성 마법사 (5단계)
+└── artifact/
+    └── artifact.store.ts      # Canvas/Artifacts (버전 히스토리)
 ```
 
 ## 스토어별 상세
@@ -88,6 +108,41 @@ AI 대화에서 추출한 컨텍스트 메모리를 관리합니다. 메모리 C
 ### ScheduleStore (`schedule.store.ts`)
 
 반복 작업과 시간 기반 채팅 트리거를 관리합니다.
+
+### UsageStore (`usage.store.ts`)
+
+토큰 사용량 추적 및 비용 계산. 모델별/프로바이더별 통계, 카테고리별 분석(chat/translate/doc-write/ocr/image-gen/data-analysis).
+
+### TranslateStore (`translate.store.ts`)
+
+문서 번역 워크플로우 상태 관리. 엔진(LLM/브라우저), 소스/타겟 언어, 파일 목록, 진행률, 번역 결과.
+
+### DocWriterStore (`doc-writer.store.ts`)
+
+5단계 문서 작성 마법사. 프로젝트 설정, 컨텍스트, AI 목차 생성(JSON 파싱), 섹션별 AI 내용 스트리밍, MD/TXT 내보내기.
+
+### ArtifactStore (`artifact.store.ts`)
+
+Canvas/Artifacts 사이드 패널 상태 관리. 코드/HTML/SVG/Mermaid 아티팩트 CRUD, 버전 히스토리, 패널 열기/닫기, 리사이즈.
+
+| 상태 | 타입 | 설명 |
+|------|------|------|
+| `artifacts` | `Record<string, Artifact[]>` | sessionId별 아티팩트 목록 |
+| `activeArtifactId` | `string \| null` | 현재 활성 아티팩트 |
+| `panelOpen` | `boolean` | 패널 열림 여부 |
+| `panelWidth` | `number` | 패널 너비 (320-960px, localStorage 영속) |
+| `viewMode` | `'preview' \| 'code'` | 미리보기/코드 전환 |
+
+주요 액션:
+- `createArtifact(params)` — 아티팩트 생성 (초기 버전 포함)
+- `addVersion(artifactId, content)` — 새 버전 추가
+- `openArtifact(id)` / `closePanel()` — 패널 제어
+- `setCurrentVersion(id, index)` — 버전 전환
+- `hydrate(sessionId)` — IndexedDB에서 복원
+
+### PersonaStore, PromptTemplateStore, DebateStore, FolderStore, TagStore, ToastStore
+
+각각 페르소나 관리, 프롬프트 템플릿 CRUD, 크로스 모델 토론, 대화 폴더(컬러 코딩), 대화 태그(컬러), 토스트 알림.
 
 ## 데이터 영속성
 
