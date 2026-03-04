@@ -210,7 +210,7 @@ modal deploy backend/app.py    # Production deploy
 - Channels (Slack/Telegram config + webhook notifications)
 
 ### UX & Quality
-- IndexedDB persistence (all 15 stores, backup/restore)
+- IndexedDB persistence (all 18 stores, backup/restore)
 - i18n (Korean/English)
 - PWA (installable, service worker caching)
 - Dark mode (CSS variables, comprehensive theming)

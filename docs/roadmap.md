@@ -1,6 +1,6 @@
 # H Chat PWA — 로드맵
 
-> ✅ **Phase 1-5 전체 완료** | 최종 업데이트: 2026-03-03
+> ✅ **Phase 1-5 전체 완료** | Phase 6-7 기획 완료 | 최종 업데이트: 2026-03-04
 > 854 tests, 51 suites | 83% coverage | 18 pages, 18 stores
 
 ---
@@ -333,7 +333,132 @@ type UsageCategory =
 
 ---
 
-## 8. 참고 문서
+---
+
+## 8. Phase 6: 생산성 자동화 (예정)
+
+### 6-1. 프롬프트 체이닝 (1일)
+
+**목표**: 복잡한 작업을 단계별로 자동 실행
+
+```
+신규: src/widgets/prompt-chain/PromptChain.tsx
+수정: src/entities/prompt-library/prompt-library.store.ts (체이닝 확장)
+```
+
+- 순차 실행 체인 정의 (기존 프롬프트 라이브러리 확장)
+- 각 단계 결과 → 다음 단계 입력으로 자동 연결
+- 조건부 분기 (IF-THEN-ELSE)
+- 실행 진행률 + 중간 결과 수정 가능
+
+### 6-2. 지식베이스 (2일)
+
+**목표**: 재사용 가능한 컨텍스트 중앙 관리
+
+```
+신규: src/pages/knowledge/KnowledgeBasePage.tsx
+신규: src/entities/knowledge/knowledge.store.ts
+수정: src/shared/i18n/ko.ts, en.ts
+```
+
+- 문서 업로드 → 자동 청킹 → 임베딩 (브라우저 내)
+- 시맨틱 검색 (유사도 기반)
+- 태그/카테고리 분류, 버전 관리
+- 채팅 시 자동 컨텍스트 주입 옵션
+
+### 6-3. 워크플로우 빌더 (3일)
+
+**목표**: 노코드 AI 작업 자동화 파이프라인
+
+```
+신규: src/pages/workflow/WorkflowBuilderPage.tsx
+신규: src/entities/workflow/workflow.store.ts
+신규: src/widgets/workflow-canvas/WorkflowCanvas.tsx
+수정: src/shared/i18n/ko.ts, en.ts
+```
+
+- 블록 기반 비주얼 에디터 (드래그앤드롭)
+- 사전 정의 블록: 프롬프트, 번역, 요약, 추출, 조건분기
+- 트리거: 수동실행, 스케줄, 웹훅
+- 변수 시스템: `{{output.previous}}` 체이닝
+- 템플릿 갤러리
+
+### 6-4. 실시간 협업 채팅 (2일)
+
+**목표**: 팀원과 AI 세션 공동 작업
+
+```
+신규: src/pages/collab/CollabRoomPage.tsx
+신규: src/entities/collab/collab.store.ts
+수정: backend/app.py (WebRTC 시그널링)
+```
+
+- 룸 생성/참여 (링크 공유)
+- 실시간 메시지 동기화 (WebRTC)
+- 사용자별 커서/타이핑 표시
+- 권한 관리 (호스트/참여자)
+
+---
+
+## 9. Phase 7: 인텔리전스 확장 (예정)
+
+### 7-1. 컨텍스트 매니저 (1일)
+
+```
+신규: src/widgets/context-manager/ContextManager.tsx
+수정: src/entities/memory/memory.store.ts (확장)
+```
+
+- 컨텍스트 윈도우 시각화, 중요도 기반 자동 압축
+- 핀 고정 메시지, 컨텍스트 템플릿
+
+### 7-2. AI 인사이트 대시보드 (2일)
+
+```
+신규: src/pages/insights/InsightsDashboardPage.tsx
+신규: src/entities/insights/insights.store.ts
+```
+
+- 프롬프트 품질 점수, 최적 모델 추천
+- 비용 절감 기회 식별, 주간/월간 리포트
+
+### 7-3. 플러그인 시스템 (3일)
+
+```
+신규: src/core/plugin-system/
+신규: src/pages/plugins/PluginMarketplace.tsx
+```
+
+- 샌드박스 iframe + postMessage API
+- 공식 플러그인: Notion, Google Docs, Jira
+
+### 7-4. 테마 빌더 (1일)
+
+```
+신규: src/pages/theme/ThemeBuilderPage.tsx
+```
+
+- 실시간 CSS 변수 편집, 테마 내보내기/가져오기
+
+---
+
+## 10. Phase 6-7 우선순위 + 공수
+
+| Phase | 기능 | 공수 | 임팩트 | 복잡도 |
+|-------|------|------|--------|--------|
+| **Phase 6** | 프롬프트 체이닝 | 1일 | 높음 | 낮음 |
+| **Phase 6** | 지식베이스 | 2일 | 높음 | 중간 |
+| **Phase 6** | 워크플로우 빌더 | 3일 | 높음 | 높음 |
+| **Phase 6** | 실시간 협업 | 2일 | 중간 | 중간 |
+| **Phase 7** | 컨텍스트 매니저 | 1일 | 중간 | 낮음 |
+| **Phase 7** | AI 인사이트 | 2일 | 중간 | 중간 |
+| **Phase 7** | 플러그인 시스템 | 3일 | 중간 | 높음 |
+| **Phase 7** | 테마 빌더 | 1일 | 낮음 | 낮음 |
+| **합계** | | **15일** | | |
+
+---
+
+## 11. 참고 문서
 
 | 문서 | 경로 | 용도 |
 |------|------|------|
