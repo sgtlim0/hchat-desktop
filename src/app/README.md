@@ -22,7 +22,7 @@ React Router 없이 Zustand `view` 상태로 페이지를 전환합니다.
 SessionStore.view (ViewState) → renderContent() → 페이지 컴포넌트
 ```
 
-지원하는 뷰 상태:
+지원하는 뷰 상태 (31개):
 - `home` → HomeScreen
 - `chat` → ChatPage
 - `allChats` → AllChatsScreen
@@ -46,6 +46,14 @@ SessionStore.view (ViewState) → renderContent() → 페이지 컴포넌트
 - `knowledgeBase` → KnowledgeBasePage
 - `workflow` → WorkflowBuilderPage
 - `collab` → CollabRoomPage
+- `contextManager` → ContextManagerPage
+- `insights` → InsightsDashboardPage
+- `plugins` → PluginMarketplacePage
+- `themeBuilder` → ThemeBuilderPage
+- `batchQueue` → BatchQueuePage
+- `sessionInsights` → SessionInsightsPage
+- `cacheControl` → CacheControlPage
+- `auditLog` → AuditLogPage
 
 ### 2. 키보드 단축키
 
@@ -73,4 +81,5 @@ useEffect → SessionStore.hydrate() → IndexedDB 데이터 로드
 - **SearchModal** 위젯 — 검색 오버레이
 - **HeaderTabs** 위젯 — 도구 탭 바 (home/translate/docWriter/ocr)
 - **KnowledgeStore**, **WorkflowStore**, **CollabStore** — Phase 6 하이드레이션
-- 모든 **Pages** 컴포넌트 (22개)
+- **AuditStore**, **BatchStore**, **CacheStore**, **PluginStore**, **ThemeStore**, **ContextManagerStore**, **InsightsStore** — Phase 7-8 하이드레이션
+- 모든 **Pages** 컴포넌트 (30개)
