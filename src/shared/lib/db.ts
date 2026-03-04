@@ -2,6 +2,7 @@ import Dexie, { type EntityTable } from 'dexie'
 import type {
   Message, Session, Project, UsageEntry, SavedPrompt, Persona, Folder, Tag,
   MemoryEntry, Schedule, SwarmAgent, SwarmConnection, ChannelConfig, Artifact,
+  PinnedMessage, InsightReport, Plugin, CustomTheme, BatchJob, CacheEntry, AuditEntry,
 } from '@/shared/types'
 
 const db = new Dexie('hchat-desktop') as Dexie & {
@@ -19,6 +20,13 @@ const db = new Dexie('hchat-desktop') as Dexie & {
   swarmConnections: EntityTable<SwarmConnection, 'id'>
   channelConfigs: EntityTable<ChannelConfig & { id: string }, 'id'>
   artifacts: EntityTable<Artifact, 'id'>
+  pinnedMessages: EntityTable<PinnedMessage, 'id'>
+  insightReports: EntityTable<InsightReport, 'id'>
+  plugins: EntityTable<Plugin, 'id'>
+  customThemes: EntityTable<CustomTheme, 'id'>
+  batchJobs: EntityTable<BatchJob, 'id'>
+  cacheEntries: EntityTable<CacheEntry, 'id'>
+  auditEntries: EntityTable<AuditEntry, 'id'>
 }
 
 db.version(1).stores({
@@ -78,6 +86,30 @@ db.version(5).stores({
   swarmConnections: 'id, from, to',
   channelConfigs: 'id',
   artifacts: 'id, sessionId, messageId, updatedAt',
+})
+
+db.version(6).stores({
+  sessions: 'id, projectId, updatedAt, isFavorite',
+  messages: 'id, sessionId, createdAt',
+  projects: 'id, updatedAt',
+  usages: 'id, sessionId, modelId, createdAt',
+  prompts: 'id, category, isFavorite, updatedAt',
+  personas: 'id, isDefault, updatedAt',
+  folders: 'id',
+  tags: 'id',
+  memories: 'id, scope, updatedAt',
+  schedules: 'id, status, updatedAt',
+  swarmAgents: 'id, role',
+  swarmConnections: 'id, from, to',
+  channelConfigs: 'id',
+  artifacts: 'id, sessionId, messageId, updatedAt',
+  pinnedMessages: 'id, sessionId',
+  insightReports: 'id, type, createdAt',
+  plugins: 'id, status',
+  customThemes: 'id, isActive',
+  batchJobs: 'id, status, priority, createdAt',
+  cacheEntries: 'id, promptHash, createdAt, expiresAt',
+  auditEntries: 'id, action, createdAt',
 })
 
 // Session CRUD
@@ -303,6 +335,108 @@ export async function putArtifact(artifact: Artifact): Promise<void> {
 
 export async function deleteArtifactFromDb(id: string): Promise<void> {
   await db.artifacts.delete(id)
+}
+
+// Pinned Message CRUD
+
+export async function getPinnedMessagesBySession(sessionId: string): Promise<PinnedMessage[]> {
+  return db.pinnedMessages.where('sessionId').equals(sessionId).toArray()
+}
+
+export async function putPinnedMessage(pin: PinnedMessage): Promise<void> {
+  await db.pinnedMessages.put(pin)
+}
+
+export async function deletePinnedMessageFromDb(id: string): Promise<void> {
+  await db.pinnedMessages.delete(id)
+}
+
+// Insight Report CRUD
+
+export async function getAllInsightReports(): Promise<InsightReport[]> {
+  return db.insightReports.orderBy('createdAt').reverse().toArray()
+}
+
+export async function putInsightReport(report: InsightReport): Promise<void> {
+  await db.insightReports.put(report)
+}
+
+export async function deleteInsightReportFromDb(id: string): Promise<void> {
+  await db.insightReports.delete(id)
+}
+
+// Plugin CRUD
+
+export async function getAllPlugins(): Promise<Plugin[]> {
+  return db.plugins.toArray()
+}
+
+export async function putPlugin(plugin: Plugin): Promise<void> {
+  await db.plugins.put(plugin)
+}
+
+export async function deletePluginFromDb(id: string): Promise<void> {
+  await db.plugins.delete(id)
+}
+
+// Custom Theme CRUD
+
+export async function getAllCustomThemes(): Promise<CustomTheme[]> {
+  return db.customThemes.toArray()
+}
+
+export async function putCustomTheme(theme: CustomTheme): Promise<void> {
+  await db.customThemes.put(theme)
+}
+
+export async function deleteCustomThemeFromDb(id: string): Promise<void> {
+  await db.customThemes.delete(id)
+}
+
+// Batch Job CRUD
+
+export async function getAllBatchJobs(): Promise<BatchJob[]> {
+  return db.batchJobs.orderBy('createdAt').reverse().toArray()
+}
+
+export async function putBatchJob(job: BatchJob): Promise<void> {
+  await db.batchJobs.put(job)
+}
+
+export async function deleteBatchJobFromDb(id: string): Promise<void> {
+  await db.batchJobs.delete(id)
+}
+
+// Cache Entry CRUD
+
+export async function getAllCacheEntries(): Promise<CacheEntry[]> {
+  return db.cacheEntries.orderBy('createdAt').reverse().toArray()
+}
+
+export async function putCacheEntry(entry: CacheEntry): Promise<void> {
+  await db.cacheEntries.put(entry)
+}
+
+export async function deleteCacheEntryFromDb(id: string): Promise<void> {
+  await db.cacheEntries.delete(id)
+}
+
+export async function clearAllCacheEntries(): Promise<void> {
+  await db.cacheEntries.clear()
+}
+
+// Audit Entry CRUD
+
+export async function getAllAuditEntries(): Promise<AuditEntry[]> {
+  return db.auditEntries.orderBy('createdAt').reverse().toArray()
+}
+
+export async function putAuditEntry(entry: AuditEntry): Promise<void> {
+  await db.auditEntries.put(entry)
+}
+
+export async function clearAllAuditEntries(): Promise<void> {
+  await db.auditEntries.clear()
 }
 
 export { db }

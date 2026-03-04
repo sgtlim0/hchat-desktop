@@ -1,6 +1,6 @@
 # src/pages/ — 페이지 레이어
 
-FSD 아키텍처의 페이지 레이어. 22개 뷰 상태에 대응하는 화면 컴포넌트를 제공합니다. `MainLayout`의 `renderContent()`에서 `view` 값에 따라 렌더링됩니다.
+FSD 아키텍처의 페이지 레이어. 31개 뷰 상태에 대응하는 화면 컴포넌트를 제공합니다. `MainLayout`의 `renderContent()`에서 `view` 값에 따라 렌더링됩니다.
 
 ## 파일 구조
 
@@ -51,8 +51,23 @@ pages/
 │   └── KnowledgeBasePage.tsx    # 지식베이스
 ├── workflow/
 │   └── WorkflowBuilderPage.tsx  # 워크플로우 빌더
-└── collab/
-    └── CollabRoomPage.tsx       # 실시간 협업
+├── collab/
+│   └── CollabRoomPage.tsx       # 실시간 협업
+├── context-manager/
+│   └── ContextManagerPage.tsx     # 컨텍스트 매니저
+├── insights/
+│   ├── InsightsDashboardPage.tsx   # AI 인사이트 대시보드
+│   └── SessionInsightsPage.tsx    # 크로스 세션 인사이트
+├── plugins/
+│   └── PluginMarketplacePage.tsx   # 플러그인 마켓플레이스
+├── theme/
+│   └── ThemeBuilderPage.tsx       # 테마 빌더
+├── batch/
+│   └── BatchQueuePage.tsx         # 배치 프로세싱 큐
+├── cache/
+│   └── CacheControlPage.tsx       # 스마트 응답 캐싱
+└── audit/
+    └── AuditLogPage.tsx           # 감사 로그
 ```
 
 ## 페이지별 상세
@@ -158,6 +173,38 @@ DALL-E 3 기반 텍스트→이미지 생성. 프롬프트 입력, 이미지 미
 ### CollabRoomPage
 
 실시간 협업 채팅 룸. 룸 생성/참여(초대 코드 XXX-XXXX), 로컬 채팅 메시지, 사용자별 타이핑 표시, 호스트/참여자 권한 관리. `CollabStore`로 상태를 관리합니다.
+
+### ContextManagerPage
+
+컨텍스트 윈도우 시각화 및 관리. 토큰 사용량 프로그레스 바, 자동 압축 토글, 컨텍스트 템플릿 선택(코딩/글쓰기/분석/일반), 핀 메시지 관리. `ContextManagerStore`로 상태를 관리합니다.
+
+### InsightsDashboardPage
+
+AI 인사이트 대시보드. 3개 탭(프롬프트 품질/모델 추천/리포트). 품질 점수 막대 차트, 추천 모델 카드, 주간/월간 리포트 생성. `InsightsStore`로 상태를 관리합니다.
+
+### SessionInsightsPage
+
+크로스 세션 인사이트. 세션 클러스터 분석, 반복 패턴 감지, 최적화 제안(템플릿화/메모리/최적화). 분석 실행 버튼. `InsightsStore`를 공유합니다.
+
+### PluginMarketplacePage
+
+플러그인 마켓플레이스. 3개 탭(전체/설치됨/마켓플레이스), 검색, 플러그인 카드 그리드, 설치/제거/활성화 관리, 권한 표시. `PluginStore`로 상태를 관리합니다.
+
+### ThemeBuilderPage
+
+커스텀 테마 빌더. 테마 목록, 색상 편집기(5가지 CSS 변수), 실시간 미리보기, 테마 활성화/복제. `ThemeStore`로 상태를 관리합니다.
+
+### BatchQueuePage
+
+배치 프로세싱 큐. 작업 카드(우선순위/상태 배지, 진행률), 새 작업 모달, 일시정지/재개/취소, 항목별 상태. `BatchStore`로 상태를 관리합니다.
+
+### CacheControlPage
+
+스마트 응답 캐싱 설정. 통계 바(항목 수/절감 토큰/절감 비용), 활성화 토글, TTL 설정, 캐시 목록, 일괄 삭제. `CacheStore`로 상태를 관리합니다.
+
+### AuditLogPage
+
+엔터프라이즈 감사 로그. 액션/날짜/검색 필터, 색상 코딩된 액션 배지, CSV/JSON 내보내기, 일괄 삭제. `AuditStore`로 상태를 관리합니다.
 
 ## 규칙
 

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { MessageSquare, Folder, Star, Search, Plus, Brain, Network, CalendarClock, Users, Settings, BookOpen, Swords, ChevronDown, ChevronRight, X, Wand2, Image, Bot, Languages, FileText, ScanLine, Database, Link2, Workflow, UserCheck } from 'lucide-react'
+import { MessageSquare, Folder, Star, Search, Plus, Brain, Network, CalendarClock, Users, Settings, BookOpen, Swords, ChevronDown, ChevronRight, X, Wand2, Image, Bot, Languages, FileText, ScanLine, Database, Link2, Workflow, UserCheck, Layers, BarChart3, Puzzle, Palette, ListTodo, Sparkles, HardDrive, Shield } from 'lucide-react'
 import { useSessionStore } from '@/entities/session/session.store'
 import { useSettingsStore } from '@/entities/settings/settings.store'
 import { useFolderStore } from '@/entities/folder/folder.store'
@@ -333,6 +333,46 @@ export function Sidebar() {
               icon={UserCheck}
               label={t('sidebar.collab')}
               onClick={() => handleViewChange('collab')}
+            />
+            <SidebarItem
+              icon={Layers}
+              label={t('sidebar.contextManager')}
+              onClick={() => handleViewChange('contextManager')}
+            />
+            <SidebarItem
+              icon={BarChart3}
+              label={t('sidebar.insights')}
+              onClick={() => handleViewChange('insights')}
+            />
+            <SidebarItem
+              icon={Puzzle}
+              label={t('sidebar.plugins')}
+              onClick={() => handleViewChange('plugins')}
+            />
+            <SidebarItem
+              icon={Palette}
+              label={t('sidebar.themeBuilder')}
+              onClick={() => handleViewChange('themeBuilder')}
+            />
+            <SidebarItem
+              icon={ListTodo}
+              label={t('sidebar.batchQueue')}
+              onClick={() => handleViewChange('batchQueue')}
+            />
+            <SidebarItem
+              icon={Sparkles}
+              label={t('sidebar.sessionInsights')}
+              onClick={() => handleViewChange('sessionInsights')}
+            />
+            <SidebarItem
+              icon={HardDrive}
+              label={t('sidebar.cacheControl')}
+              onClick={() => handleViewChange('cacheControl')}
+            />
+            <SidebarItem
+              icon={Shield}
+              label={t('sidebar.auditLog')}
+              onClick={() => handleViewChange('auditLog')}
             />
           </div>
         </div>

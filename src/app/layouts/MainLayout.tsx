@@ -14,6 +14,13 @@ import { useChannelStore } from '@/entities/channel/channel.store'
 import { useKnowledgeStore } from '@/entities/knowledge/knowledge.store'
 import { useWorkflowStore } from '@/entities/workflow/workflow.store'
 import { useCollabStore } from '@/entities/collab/collab.store'
+import { useAuditStore } from '@/entities/audit/audit.store'
+import { useBatchStore } from '@/entities/batch/batch.store'
+import { useCacheStore } from '@/entities/cache/cache.store'
+import { usePluginStore } from '@/entities/plugins/plugin.store'
+import { useThemeStore } from '@/entities/theme/theme.store'
+import { useContextManagerStore } from '@/entities/context-manager/context-manager.store'
+import { useInsightsStore } from '@/entities/insights/insights.store'
 import { Sidebar } from '@/widgets/sidebar/Sidebar'
 import { HeaderTabs } from '@/widgets/header-tabs/HeaderTabs'
 import { HomeScreen } from '@/pages/home/HomeScreen'
@@ -45,6 +52,14 @@ const KnowledgeBasePage = lazy(() => import('@/pages/knowledge/KnowledgeBasePage
 const PromptChainPage = lazy(() => import('@/pages/prompt-chain/PromptChainPage').then((m) => ({ default: m.PromptChainPage })))
 const WorkflowBuilderPage = lazy(() => import('@/pages/workflow/WorkflowBuilderPage').then((m) => ({ default: m.WorkflowBuilderPage })))
 const CollabRoomPage = lazy(() => import('@/pages/collab/CollabRoomPage').then((m) => ({ default: m.CollabRoomPage })))
+const ContextManagerPage = lazy(() => import('@/pages/context-manager/ContextManagerPage').then((m) => ({ default: m.ContextManagerPage })))
+const InsightsDashboardPage = lazy(() => import('@/pages/insights/InsightsDashboardPage').then((m) => ({ default: m.InsightsDashboardPage })))
+const PluginMarketplacePage = lazy(() => import('@/pages/plugins/PluginMarketplacePage').then((m) => ({ default: m.PluginMarketplacePage })))
+const ThemeBuilderPage = lazy(() => import('@/pages/theme/ThemeBuilderPage').then((m) => ({ default: m.ThemeBuilderPage })))
+const BatchQueuePage = lazy(() => import('@/pages/batch/BatchQueuePage').then((m) => ({ default: m.BatchQueuePage })))
+const SessionInsightsPage = lazy(() => import('@/pages/insights/SessionInsightsPage').then((m) => ({ default: m.SessionInsightsPage })))
+const CacheControlPage = lazy(() => import('@/pages/cache/CacheControlPage').then((m) => ({ default: m.CacheControlPage })))
+const AuditLogPage = lazy(() => import('@/pages/audit/AuditLogPage').then((m) => ({ default: m.AuditLogPage })))
 
 export function MainLayout() {
   const { t } = useTranslation()
@@ -71,6 +86,13 @@ export function MainLayout() {
   const hydrateKnowledge = useKnowledgeStore((s) => s.hydrate)
   const hydrateWorkflow = useWorkflowStore((s) => s.hydrate)
   const hydrateCollab = useCollabStore((s) => s.hydrate)
+  const hydrateAudit = useAuditStore((s) => s.hydrate)
+  const hydrateBatch = useBatchStore((s) => s.hydrate)
+  const hydrateCache = useCacheStore((s) => s.hydrate)
+  const hydratePlugin = usePluginStore((s) => s.hydrate)
+  const hydrateTheme = useThemeStore((s) => s.hydrate)
+  const hydrateContextManager = useContextManagerStore((s) => s.hydrate)
+  const hydrateInsights = useInsightsStore((s) => s.hydrate)
   const isOnline = useOnlineStatus()
 
   // Hydrate from IndexedDB on mount
@@ -89,7 +111,14 @@ export function MainLayout() {
     hydrateKnowledge()
     hydrateWorkflow()
     hydrateCollab()
-  }, [hydrateSession, hydrateProject, hydrateUsage, hydratePromptLibrary, hydratePersona, hydrateFolder, hydrateTag, hydrateMemory, hydrateSchedule, hydrateSwarm, hydrateChannel, hydrateKnowledge, hydrateWorkflow, hydrateCollab])
+    hydrateAudit()
+    hydrateBatch()
+    hydrateCache()
+    hydratePlugin()
+    hydrateTheme()
+    hydrateContextManager()
+    hydrateInsights()
+  }, [hydrateSession, hydrateProject, hydrateUsage, hydratePromptLibrary, hydratePersona, hydrateFolder, hydrateTag, hydrateMemory, hydrateSchedule, hydrateSwarm, hydrateChannel, hydrateKnowledge, hydrateWorkflow, hydrateCollab, hydrateAudit, hydrateBatch, hydrateCache, hydratePlugin, hydrateTheme, hydrateContextManager, hydrateInsights])
 
   // Keyboard shortcuts
   useEffect(() => {
@@ -205,6 +234,38 @@ export function MainLayout() {
 
     if (view === 'collab') {
       return <CollabRoomPage />
+    }
+
+    if (view === 'contextManager') {
+      return <ContextManagerPage />
+    }
+
+    if (view === 'insights') {
+      return <InsightsDashboardPage />
+    }
+
+    if (view === 'plugins') {
+      return <PluginMarketplacePage />
+    }
+
+    if (view === 'themeBuilder') {
+      return <ThemeBuilderPage />
+    }
+
+    if (view === 'batchQueue') {
+      return <BatchQueuePage />
+    }
+
+    if (view === 'sessionInsights') {
+      return <SessionInsightsPage />
+    }
+
+    if (view === 'cacheControl') {
+      return <CacheControlPage />
+    }
+
+    if (view === 'auditLog') {
+      return <AuditLogPage />
     }
 
     if (currentSessionId && view === 'chat') {

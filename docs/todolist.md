@@ -1,7 +1,7 @@
 # H Chat PWA — TODO List
 
-> ✅ **전체 완료** (70/70 + Phase 1-6) | 마지막 업데이트: 2026-03-05
-> 863 tests, 52 suites | 빌드 성공
+> ✅ **전체 완료** (70/70 + Phase 1-8) | 마지막 업데이트: 2026-03-05
+> 871 tests, 53 suites | 빌드 성공
 
 ## 현재 상태 요약
 
@@ -296,72 +296,74 @@
 
 ---
 
-## 🔵 Phase 7 — 인텔리전스 확장 (예정)
+## ✅ Phase 7 — 인텔리전스 확장
 
 ### 7-1. 컨텍스트 매니저 (1일)
-- [ ] ContextManager 위젯 (기존 메모리 스토어 확장)
-- [ ] 컨텍스트 윈도우 시각화
-- [ ] 중요도 기반 자동 압축
-- [ ] 컨텍스트 템플릿 (코딩/글쓰기/분석)
-- [ ] 핀 고정 메시지
+- [x] context-manager.store.ts Zustand 스토어
+- [x] ContextManagerPage 신규 페이지
+- [x] 컨텍스트 윈도우 시각화 (토큰 사용량 프로그레스 바)
+- [x] 자동 압축 토글
+- [x] 컨텍스트 템플릿 (코딩/글쓰기/분석/일반)
+- [x] 핀 메시지 관리
 
 ### 7-2. AI 인사이트 대시보드 (2일)
-- [ ] InsightsDashboardPage 신규 페이지
-- [ ] insights.store.ts Zustand 스토어
-- [ ] 프롬프트 품질 점수 (명확성, 구체성)
-- [ ] 최적 모델 추천 (작업별 성능 분석)
-- [ ] 비용 절감 기회 식별
-- [ ] 주간/월간 리포트 자동 생성
+- [x] insights.store.ts Zustand 스토어
+- [x] InsightsDashboardPage 신규 페이지
+- [x] SessionInsightsPage 신규 페이지
+- [x] 프롬프트 품질 점수 (명확성, 구체성)
+- [x] 최적 모델 추천 (신뢰도, 예상 비용)
+- [x] 비용 절감 기회 식별
+- [x] 주간/월간 리포트 생성
 
 ### 7-3. 플러그인 시스템 (3일)
-- [ ] 플러그인 마켓플레이스 UI
-- [ ] 샌드박스 iframe + postMessage API
-- [ ] API 권한 관리
-- [ ] 공식 플러그인: Notion, Google Docs, Jira
-- [ ] 커스텀 플러그인 SDK
+- [x] plugin.store.ts Zustand 스토어
+- [x] PluginMarketplacePage 신규 페이지
+- [x] 플러그인 설치/제거/활성화/비활성화
+- [x] API 권한 관리
+- [x] 4개 기본 플러그인 (Code Formatter, Grammar Check, Image Analyzer, Data Visualizer)
+- [x] 검색 및 탭 필터 (전체/설치됨/마켓플레이스)
 
 ### 7-4. 테마 빌더 (1일)
-- [ ] ThemeBuilderPage 신규 페이지
-- [ ] 실시간 테마 편집기 (CSS 변수 동적 업데이트)
-- [ ] 색상/폰트/간격 커스터마이징
-- [ ] 테마 내보내기/가져오기
+- [x] theme.store.ts Zustand 스토어
+- [x] ThemeBuilderPage 신규 페이지
+- [x] 실시간 테마 편집기 (CSS 변수 동적 업데이트)
+- [x] 5가지 색상 커스터마이징 (기본/배경/서피스/텍스트/테두리)
+- [x] 테마 활성화/복제/삭제
+- [x] 실시간 미리보기
 
 ---
 
-## 🟣 Phase 8 — 엔터프라이즈 & 인텔리전스 (예정)
+## ✅ Phase 8 — 엔터프라이즈 & 인텔리전스
 
 ### 8-1. 배치 프로세싱 큐 (2일)
-- [ ] BatchQueuePage 신규 페이지
-- [ ] batch.store.ts Zustand 스토어
-- [ ] BatchMonitor 위젯 (실시간 진행률)
-- [ ] Modal Queue 기반 비동기 작업 큐
-- [ ] 3-tier 우선순위 (high/normal/low)
-- [ ] SSE 기반 진행률 스트리밍
-- [ ] 사용량 예산 연동 (초과 시 저우선순위 일시정지)
+- [x] batch.store.ts Zustand 스토어
+- [x] BatchQueuePage 신규 페이지
+- [x] 3-tier 우선순위 (high/normal/low)
+- [x] 진행률 추적 (프로그레스 바)
+- [x] 일시정지/재개/취소 제어
+- [x] 새 작업 모달 (제목/유형/우선순위/모델/입력)
 
 ### 8-2. 크로스 세션 인사이트 (2일)
-- [ ] SessionInsightsPage 신규 페이지
-- [ ] insights.store.ts Zustand 스토어
-- [ ] LLM 기반 패턴 감지 (반복 질문, 프롬프트 패턴)
-- [ ] 세션 유사도 클러스터링 (TF-IDF)
-- [ ] 자동 추천: 프롬프트 템플릿화, Memory 저장 제안
-- [ ] 주간/월간 사용 패턴 리포트
+- [x] SessionInsightsPage 신규 페이지 (insights.store.ts 공유)
+- [x] 세션 유사도 클러스터링
+- [x] 반복 패턴 감지 (빈도, 제안)
+- [x] 자동 추천: 템플릿화/메모리 저장/최적화
 
 ### 8-3. 스마트 응답 캐싱 (2일)
-- [ ] cache.store.ts Zustand 스토어
-- [ ] CacheControlPanel 위젯 (설정 > 캐시 탭)
-- [ ] 프롬프트 정규화 + SHA-256 해싱 (완전 일치 캐시)
-- [ ] Modal Volume 영속 캐시 (TTL 7일, LRU eviction)
-- [ ] PromptInput 캐시 힌트 UI
-- [ ] 비용 절감 효과 시각화 (UsageStore 연동)
+- [x] cache.store.ts Zustand 스토어
+- [x] CacheControlPage 신규 페이지
+- [x] 프롬프트 해시 기반 캐시
+- [x] TTL 설정 (1-90일)
+- [x] 히트 카운트 추적
+- [x] 비용/토큰 절감 시각화
 
 ### 8-4. 엔터프라이즈 감사 로그 (2일)
-- [ ] AuditLogPage 신규 페이지
-- [ ] audit.store.ts Zustand 스토어
-- [ ] Event sourcing (세션/메시지/파일/설정 변경 기록)
-- [ ] 날짜/액션/모델/비용 범위 필터링
-- [ ] CSV/JSON 감사 리포트 내보내기 (GDPR 준수)
-- [ ] 가드레일 트리거 이벤트 검색
+- [x] audit.store.ts Zustand 스토어 + 테스트 8개
+- [x] AuditLogPage 신규 페이지
+- [x] 10가지 액션 타입 기록 (세션/메시지/파일/설정/내보내기/가져오기/가드레일/모델/API)
+- [x] 날짜/액션/검색 필터링
+- [x] CSV/JSON 감사 리포트 내보내기
+- [x] 일괄 삭제 (확인 대화 상자)
 
 ---
 

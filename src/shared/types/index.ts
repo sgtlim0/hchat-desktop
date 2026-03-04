@@ -96,7 +96,7 @@ export interface Skill {
   icon: string
 }
 
-export type ViewState = 'home' | 'chat' | 'settings' | 'allChats' | 'projects' | 'projectDetail' | 'quickChat' | 'memory' | 'agentSwarm' | 'schedule' | 'groupChat' | 'promptLibrary' | 'debate' | 'aiTools' | 'imageGen' | 'agent' | 'translate' | 'docWriter' | 'ocr' | 'promptChain' | 'knowledgeBase' | 'workflow' | 'collab'
+export type ViewState = 'home' | 'chat' | 'settings' | 'allChats' | 'projects' | 'projectDetail' | 'quickChat' | 'memory' | 'agentSwarm' | 'schedule' | 'groupChat' | 'promptLibrary' | 'debate' | 'aiTools' | 'imageGen' | 'agent' | 'translate' | 'docWriter' | 'ocr' | 'promptChain' | 'knowledgeBase' | 'workflow' | 'collab' | 'contextManager' | 'insights' | 'plugins' | 'themeBuilder' | 'batchQueue' | 'sessionInsights' | 'cacheControl' | 'auditLog'
 
 // Group Chat types
 
@@ -479,5 +479,150 @@ export interface CollabRoom {
   participants: CollabParticipant[]
   inviteCode: string
   isActive: boolean
+  createdAt: string
+}
+
+// Context Manager types (Phase 7)
+
+export interface PinnedMessage {
+  id: string
+  sessionId: string
+  messageId: string
+  label: string
+  createdAt: string
+}
+
+export type ContextTemplate = 'coding' | 'writing' | 'analysis' | 'general'
+
+// AI Insights types (Phase 7-8)
+
+export interface PromptQualityScore {
+  id: string
+  sessionId: string
+  clarity: number      // 0-100
+  specificity: number  // 0-100
+  overall: number      // 0-100
+  suggestions: string[]
+  createdAt: string
+}
+
+export interface ModelRecommendation {
+  modelId: string
+  reason: string
+  estimatedCost: number
+  confidence: number   // 0-1
+}
+
+export interface InsightReport {
+  id: string
+  type: 'weekly' | 'monthly'
+  period: string
+  totalCost: number
+  totalTokens: number
+  topModels: Array<{ modelId: string; usage: number; cost: number }>
+  savingOpportunities: string[]
+  patternSummary: string
+  createdAt: string
+}
+
+// Session Insights types (Phase 8)
+
+export interface SessionCluster {
+  id: string
+  label: string
+  sessionIds: string[]
+  commonTopics: string[]
+  avgCost: number
+}
+
+export interface SessionPattern {
+  id: string
+  pattern: string
+  frequency: number
+  suggestion: string
+  type: 'template' | 'memory' | 'optimization'
+}
+
+// Plugin types (Phase 7)
+
+export type PluginStatus = 'installed' | 'available' | 'disabled'
+
+export interface Plugin {
+  id: string
+  name: string
+  description: string
+  icon: string
+  version: string
+  author: string
+  status: PluginStatus
+  permissions: string[]
+  config: Record<string, unknown>
+  installedAt?: string
+}
+
+// Theme Builder types (Phase 7)
+
+export interface CustomTheme {
+  id: string
+  name: string
+  variables: Record<string, string>
+  isActive: boolean
+  createdAt: string
+  updatedAt: string
+}
+
+// Batch Queue types (Phase 8)
+
+export type BatchPriority = 'high' | 'normal' | 'low'
+export type BatchJobStatus = 'queued' | 'running' | 'done' | 'error' | 'paused'
+
+export interface BatchJob {
+  id: string
+  title: string
+  type: 'translate' | 'summarize' | 'analyze' | 'custom'
+  priority: BatchPriority
+  status: BatchJobStatus
+  progress: number   // 0-100
+  items: BatchJobItem[]
+  modelId: string
+  createdAt: string
+  completedAt?: string
+}
+
+export interface BatchJobItem {
+  id: string
+  input: string
+  output?: string
+  status: 'pending' | 'processing' | 'done' | 'error'
+  error?: string
+}
+
+// Cache types (Phase 8)
+
+export interface CacheEntry {
+  id: string
+  promptHash: string
+  promptPreview: string
+  response: string
+  modelId: string
+  tokensSaved: number
+  costSaved: number
+  hitCount: number
+  createdAt: string
+  expiresAt: string
+}
+
+// Audit Log types (Phase 8)
+
+export type AuditAction = 'session_create' | 'session_delete' | 'message_send' | 'file_upload' | 'settings_change' | 'export' | 'import' | 'guardrail_trigger' | 'model_switch' | 'api_call'
+
+export interface AuditEntry {
+  id: string
+  action: AuditAction
+  details: string
+  modelId?: string
+  sessionId?: string
+  cost?: number
+  metadata?: Record<string, unknown>
   createdAt: string
 }

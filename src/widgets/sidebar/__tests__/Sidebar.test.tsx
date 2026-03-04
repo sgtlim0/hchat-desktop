@@ -38,6 +38,14 @@ vi.mock('lucide-react', () => ({
   Link2: () => <div>Link2</div>,
   Workflow: () => <div>Workflow</div>,
   UserCheck: () => <div>UserCheck</div>,
+  Layers: () => <div>Layers</div>,
+  BarChart3: () => <div>BarChart3</div>,
+  Puzzle: () => <div>Puzzle</div>,
+  Palette: () => <div>Palette</div>,
+  ListTodo: () => <div>ListTodo</div>,
+  Sparkles: () => <div>Sparkles</div>,
+  HardDrive: () => <div>HardDrive</div>,
+  Shield: () => <div>Shield</div>,
 }))
 
 // Mock SessionContextMenu
