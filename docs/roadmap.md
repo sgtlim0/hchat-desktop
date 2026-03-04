@@ -1,6 +1,6 @@
 # H Chat PWA — 로드맵
 
-> ✅ **Phase 1-5 전체 완료** | Phase 6-7 기획 완료 | 최종 업데이트: 2026-03-04
+> ✅ **Phase 1-5 전체 완료** | Phase 6-8 기획 완료 | 최종 업데이트: 2026-03-05
 > 854 tests, 51 suites | 83% coverage | 18 pages, 18 stores
 
 ---
@@ -442,7 +442,69 @@ type UsageCategory =
 
 ---
 
-## 10. Phase 6-7 우선순위 + 공수
+## 10. Phase 8: 엔터프라이즈 & 인텔리전스 (예정)
+
+### 8-1. 배치 프로세싱 큐 (2일)
+
+**목표**: 대량 문서 처리, 멀티모달 분석을 백그라운드 큐에서 병렬 실행
+
+```
+신규: src/pages/batch/BatchQueuePage.tsx
+신규: src/entities/batch/batch.store.ts
+신규: src/widgets/batch-monitor/BatchMonitor.tsx
+수정: backend/app.py (POST /api/batch/enqueue, GET /api/batch/status)
+```
+
+- Modal Queue 기반 비동기 작업 큐
+- 3-tier 우선순위 (high/normal/low), SSE 진행률
+- 사용량 예산 연동 (초과 시 저우선순위 일시정지)
+
+### 8-2. 크로스 세션 인사이트 (2일)
+
+**목표**: 전체 세션을 분석하여 반복 패턴, 최적화 기회 자동 제안
+
+```
+신규: src/pages/insights/SessionInsightsPage.tsx
+신규: src/entities/insights/insights.store.ts
+수정: backend/app.py (POST /api/insights/analyze)
+```
+
+- LLM 기반 패턴 감지 (Bedrock Haiku 비용 최적화)
+- 세션 유사도 클러스터링 (TF-IDF)
+- 자동 추천: 프롬프트 템플릿화, Memory 저장 제안
+
+### 8-3. 스마트 응답 캐싱 (2일)
+
+**목표**: 동일/유사 프롬프트 자동 감지 → 캐시 재사용, 비용 대폭 절감
+
+```
+신규: src/entities/cache/cache.store.ts
+신규: src/widgets/cache-control/CacheControlPanel.tsx
+수정: src/widgets/prompt-input/PromptInput.tsx (캐시 힌트)
+수정: backend/app.py (캐시 미들웨어, Modal Volume)
+```
+
+- 프롬프트 정규화 + SHA-256 해싱 (완전 일치 캐시)
+- Modal Volume 영속 캐시 (TTL 7일, LRU eviction)
+- 비용 절감 효과 UsageStore 연동 시각화
+
+### 8-4. 엔터프라이즈 감사 로그 (2일)
+
+**목표**: 전체 사용자 활동 로그 기록, 감사 리포트 생성 (GDPR 준수)
+
+```
+신규: src/pages/audit/AuditLogPage.tsx
+신규: src/entities/audit/audit.store.ts
+수정: backend/app.py (POST /api/audit/log, GET /api/audit/query)
+```
+
+- Event sourcing (세션/메시지/파일/설정 변경)
+- 날짜/액션/모델/비용 범위 필터링
+- CSV/JSON 감사 리포트 내보내기
+
+---
+
+## 11. Phase 6-8 우선순위 + 공수
 
 | Phase | 기능 | 공수 | 임팩트 | 복잡도 |
 |-------|------|------|--------|--------|
@@ -454,11 +516,15 @@ type UsageCategory =
 | **Phase 7** | AI 인사이트 | 2일 | 중간 | 중간 |
 | **Phase 7** | 플러그인 시스템 | 3일 | 중간 | 높음 |
 | **Phase 7** | 테마 빌더 | 1일 | 낮음 | 낮음 |
-| **합계** | | **15일** | | |
+| **Phase 8** | 배치 큐 | 2일 | 높음 | 중간 |
+| **Phase 8** | 크로스 세션 인사이트 | 2일 | 높음 | 중간 |
+| **Phase 8** | 스마트 캐싱 | 2일 | 높음 | 중간 |
+| **Phase 8** | 감사 로그 | 2일 | 중간 | 낮음 |
+| **합계** | | **23일** | | |
 
 ---
 
-## 11. 참고 문서
+## 12. 참고 문서
 
 | 문서 | 경로 | 용도 |
 |------|------|------|

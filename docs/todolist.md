@@ -317,3 +317,40 @@
 - [ ] 실시간 테마 편집기 (CSS 변수 동적 업데이트)
 - [ ] 색상/폰트/간격 커스터마이징
 - [ ] 테마 내보내기/가져오기
+
+---
+
+## 🟣 Phase 8 — 엔터프라이즈 & 인텔리전스 (예정)
+
+### 8-1. 배치 프로세싱 큐 (2일)
+- [ ] BatchQueuePage 신규 페이지
+- [ ] batch.store.ts Zustand 스토어
+- [ ] BatchMonitor 위젯 (실시간 진행률)
+- [ ] Modal Queue 기반 비동기 작업 큐
+- [ ] 3-tier 우선순위 (high/normal/low)
+- [ ] SSE 기반 진행률 스트리밍
+- [ ] 사용량 예산 연동 (초과 시 저우선순위 일시정지)
+
+### 8-2. 크로스 세션 인사이트 (2일)
+- [ ] SessionInsightsPage 신규 페이지
+- [ ] insights.store.ts Zustand 스토어
+- [ ] LLM 기반 패턴 감지 (반복 질문, 프롬프트 패턴)
+- [ ] 세션 유사도 클러스터링 (TF-IDF)
+- [ ] 자동 추천: 프롬프트 템플릿화, Memory 저장 제안
+- [ ] 주간/월간 사용 패턴 리포트
+
+### 8-3. 스마트 응답 캐싱 (2일)
+- [ ] cache.store.ts Zustand 스토어
+- [ ] CacheControlPanel 위젯 (설정 > 캐시 탭)
+- [ ] 프롬프트 정규화 + SHA-256 해싱 (완전 일치 캐시)
+- [ ] Modal Volume 영속 캐시 (TTL 7일, LRU eviction)
+- [ ] PromptInput 캐시 힌트 UI
+- [ ] 비용 절감 효과 시각화 (UsageStore 연동)
+
+### 8-4. 엔터프라이즈 감사 로그 (2일)
+- [ ] AuditLogPage 신규 페이지
+- [ ] audit.store.ts Zustand 스토어
+- [ ] Event sourcing (세션/메시지/파일/설정 변경 기록)
+- [ ] 날짜/액션/모델/비용 범위 필터링
+- [ ] CSV/JSON 감사 리포트 내보내기 (GDPR 준수)
+- [ ] 가드레일 트리거 이벤트 검색
