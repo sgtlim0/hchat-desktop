@@ -1,6 +1,6 @@
 # src/pages/ — 페이지 레이어
 
-FSD 아키텍처의 페이지 레이어. 18개 뷰 상태에 대응하는 화면 컴포넌트를 제공합니다. `MainLayout`의 `renderContent()`에서 `view` 값에 따라 렌더링됩니다.
+FSD 아키텍처의 페이지 레이어. 22개 뷰 상태에 대응하는 화면 컴포넌트를 제공합니다. `MainLayout`의 `renderContent()`에서 `view` 값에 따라 렌더링됩니다.
 
 ## 파일 구조
 
@@ -43,8 +43,16 @@ pages/
 │   └── TranslatePage.tsx        # 문서 번역
 ├── doc-writer/
 │   └── DocWriterPage.tsx        # 문서 작성 마법사
-└── ocr/
-    └── OcrPage.tsx              # OCR 텍스트 추출
+├── ocr/
+│   └── OcrPage.tsx              # OCR 텍스트 추출
+├── prompt-chain/
+│   └── PromptChainPage.tsx      # 프롬프트 체이닝
+├── knowledge/
+│   └── KnowledgeBasePage.tsx    # 지식베이스
+├── workflow/
+│   └── WorkflowBuilderPage.tsx  # 워크플로우 빌더
+└── collab/
+    └── CollabRoomPage.tsx       # 실시간 협업
 ```
 
 ## 페이지별 상세
@@ -134,6 +142,22 @@ DALL-E 3 기반 텍스트→이미지 생성. 프롬프트 입력, 이미지 미
 ### DebatePage
 
 2-3개 AI 모델 크로스 토론. 3라운드 자동 토론, 합의 요약 생성.
+
+### PromptChainPage
+
+프롬프트 체이닝 실행기. 순차 실행 체인 정의, 단계별 결과 자동 연결, 조건부 분기(IF-THEN-ELSE). 타임라인 시각화로 진행률 표시. `PromptChainStore`로 상태를 관리합니다.
+
+### KnowledgeBasePage
+
+문서 업로드 → 자동 청킹(~500자) → 키워드 검색 → 태그/카테고리 분류. 문서 상세 뷰에서 청크 목록을 확인합니다. `KnowledgeStore`로 상태를 관리합니다.
+
+### WorkflowBuilderPage
+
+노코드 블록 파이프라인 에디터. 6개 블록 타입(프롬프트/번역/요약/추출/조건분기/출력), 3개 트리거(수동/스케줄/웹훅), 템플릿 갤러리(일일보고서/문서리뷰/번역체인). `WorkflowStore`로 상태를 관리합니다.
+
+### CollabRoomPage
+
+실시간 협업 채팅 룸. 룸 생성/참여(초대 코드 XXX-XXXX), 로컬 채팅 메시지, 사용자별 타이핑 표시, 호스트/참여자 권한 관리. `CollabStore`로 상태를 관리합니다.
 
 ## 규칙
 

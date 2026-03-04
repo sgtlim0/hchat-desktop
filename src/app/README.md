@@ -42,6 +42,10 @@ SessionStore.view (ViewState) → renderContent() → 페이지 컴포넌트
 - `translate` → TranslatePage
 - `docWriter` → DocWriterPage
 - `ocr` → OcrPage
+- `promptChain` → PromptChainPage
+- `knowledgeBase` → KnowledgeBasePage
+- `workflow` → WorkflowBuilderPage
+- `collab` → CollabRoomPage
 
 ### 2. 키보드 단축키
 
@@ -68,4 +72,5 @@ useEffect → SessionStore.hydrate() → IndexedDB 데이터 로드
 - **Sidebar** 위젯 — 좌측 네비게이션
 - **SearchModal** 위젯 — 검색 오버레이
 - **HeaderTabs** 위젯 — 도구 탭 바 (home/translate/docWriter/ocr)
-- 모든 **Pages** 컴포넌트
+- **KnowledgeStore**, **WorkflowStore**, **CollabStore** — Phase 6 하이드레이션
+- 모든 **Pages** 컴포넌트 (22개)

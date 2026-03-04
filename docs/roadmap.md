@@ -1,7 +1,7 @@
 # H Chat PWA — 로드맵
 
-> ✅ **Phase 1-5 전체 완료** | Phase 6-8 기획 완료 | 최종 업데이트: 2026-03-05
-> 854 tests, 51 suites | 83% coverage | 18 pages, 18 stores
+> ✅ **Phase 1-6 전체 완료** | Phase 7-8 기획 완료 | 최종 업데이트: 2026-03-05
+> 863 tests, 52 suites | 83% coverage | 22 pages, 22 stores
 
 ---
 

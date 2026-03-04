@@ -727,8 +727,8 @@ describe('DocWriterStore', () => {
       const text = store.exportText()
 
       expect(text).toMatch(/^Level 1$/m)
-      expect(text).toMatch(/^  Level 2$/m)
-      expect(text).toMatch(/^    Level 3$/m)
+      expect(text).toMatch(/^ {2}Level 2$/m)
+      expect(text).toMatch(/^ {4}Level 3$/m)
     })
 
     it('should return empty string if no current project', () => {

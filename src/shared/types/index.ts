@@ -96,7 +96,7 @@ export interface Skill {
   icon: string
 }
 
-export type ViewState = 'home' | 'chat' | 'settings' | 'allChats' | 'projects' | 'projectDetail' | 'quickChat' | 'memory' | 'agentSwarm' | 'schedule' | 'groupChat' | 'promptLibrary' | 'debate' | 'aiTools' | 'imageGen' | 'agent' | 'translate' | 'docWriter' | 'ocr'
+export type ViewState = 'home' | 'chat' | 'settings' | 'allChats' | 'projects' | 'projectDetail' | 'quickChat' | 'memory' | 'agentSwarm' | 'schedule' | 'groupChat' | 'promptLibrary' | 'debate' | 'aiTools' | 'imageGen' | 'agent' | 'translate' | 'docWriter' | 'ocr' | 'promptChain' | 'knowledgeBase' | 'workflow' | 'collab'
 
 // Group Chat types
 
@@ -357,4 +357,127 @@ export interface Artifact {
   currentVersionIndex: number
   createdAt: string
   updatedAt: string
+}
+
+// Prompt Chain types (Phase 6)
+
+export type ChainStepType = 'prompt' | 'condition' | 'transform'
+export type ChainStatus = 'idle' | 'running' | 'paused' | 'done' | 'error'
+
+export interface ChainStep {
+  id: string
+  type: ChainStepType
+  label: string
+  promptId?: string         // reference to SavedPrompt
+  promptContent?: string    // inline prompt
+  modelId?: string
+  condition?: {             // for condition type
+    field: string
+    operator: 'contains' | 'notContains' | 'equals' | 'length_gt' | 'length_lt'
+    value: string
+    trueBranch: string      // step id
+    falseBranch: string     // step id
+  }
+  transform?: 'summarize' | 'extract_json' | 'translate' | 'custom'
+  customTransform?: string
+}
+
+export interface PromptChain {
+  id: string
+  name: string
+  description: string
+  steps: ChainStep[]
+  variables: Record<string, string>
+  status: ChainStatus
+  currentStepIndex: number
+  results: Record<string, string>  // stepId → output
+  createdAt: string
+  updatedAt: string
+}
+
+// Knowledge Base types (Phase 6)
+
+export interface KnowledgeDocument {
+  id: string
+  title: string
+  content: string
+  chunks: KnowledgeChunk[]
+  tags: string[]
+  category: string
+  fileType: string
+  fileSize: number
+  version: number
+  createdAt: string
+  updatedAt: string
+}
+
+export interface KnowledgeChunk {
+  id: string
+  documentId: string
+  content: string
+  index: number
+  embedding?: number[]
+}
+
+// Workflow Builder types (Phase 6)
+
+export type WorkflowBlockType = 'prompt' | 'translate' | 'summarize' | 'extract' | 'condition' | 'output'
+export type WorkflowTrigger = 'manual' | 'schedule' | 'webhook'
+export type WorkflowStatus = 'draft' | 'running' | 'paused' | 'done' | 'error'
+
+export interface WorkflowBlock {
+  id: string
+  type: WorkflowBlockType
+  label: string
+  config: Record<string, unknown>
+  x: number
+  y: number
+  nextBlockId?: string
+  conditionTrueId?: string
+  conditionFalseId?: string
+}
+
+export interface WorkflowConnection {
+  id: string
+  from: string
+  to: string
+  label?: string
+}
+
+export interface Workflow {
+  id: string
+  name: string
+  description: string
+  blocks: WorkflowBlock[]
+  connections: WorkflowConnection[]
+  trigger: WorkflowTrigger
+  cronExpression?: string
+  variables: Record<string, string>
+  status: WorkflowStatus
+  lastRunAt?: string
+  createdAt: string
+  updatedAt: string
+}
+
+// Collaboration types (Phase 6)
+
+export type CollabRole = 'host' | 'participant'
+
+export interface CollabParticipant {
+  id: string
+  name: string
+  role: CollabRole
+  isTyping: boolean
+  lastActiveAt: string
+}
+
+export interface CollabRoom {
+  id: string
+  name: string
+  sessionId: string
+  hostId: string
+  participants: CollabParticipant[]
+  inviteCode: string
+  isActive: boolean
+  createdAt: string
 }

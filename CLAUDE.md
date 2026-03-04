@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-H Chat Desktop — Advanced AI chat Progressive Web App supporting multi-provider models (Claude, GPT, Gemini). React 19, TypeScript 5.9, Vite 7, Zustand 5, Tailwind CSS 3. **100% complete** (70/70 TODO items + Phase 1-5 complete) with 854 tests (51 suites). Features: assistant marketplace (8 presets), document translation, document writer wizard, OCR text extraction, header tool tabs, usage category tracking, canvas/artifacts side panel, agent mode, web search, debate, image gen, PDF/Excel analysis, TTS/STT, prompt library, persona system, usage tracking, ROI dashboard, folders/tags, memory, schedule, swarm, channels, guardrail, auto-routing, offline support.
+H Chat Desktop — Advanced AI chat Progressive Web App supporting multi-provider models (Claude, GPT, Gemini). React 19, TypeScript 5.9, Vite 7, Zustand 5, Tailwind CSS 3. **100% complete** (70/70 TODO items + Phase 1-6 complete) with 863 tests (52 suites). Features: assistant marketplace (8 presets), document translation, document writer wizard, OCR text extraction, header tool tabs, usage category tracking, canvas/artifacts side panel, prompt chaining, knowledge base, workflow builder, realtime collaboration, agent mode, web search, debate, image gen, PDF/Excel analysis, TTS/STT, prompt library, persona system, usage tracking, ROI dashboard, folders/tags, memory, schedule, swarm, channels, guardrail, auto-routing, offline support.
 
 ## Commands
 
@@ -14,7 +14,7 @@ npm run dev               # Vite dev server (localhost:5173)
 npm run build             # TypeScript check + Vite production build
 npm run lint              # ESLint
 npm run preview           # Preview production build locally
-npm test                  # Vitest unit/integration tests (854 tests, 51 suites)
+npm test                  # Vitest unit/integration tests (863 tests, 52 suites)
 npm run test:ui           # Vitest interactive UI
 npm run test:coverage     # Coverage report (83% stmts, 79% branches, 91% funcs, 82% lines)
 npx playwright test       # E2E tests (24 tests)
@@ -27,14 +27,16 @@ Uses **Feature-Sliced Design (FSD)** with `@/` path alias mapping to `src/`:
 ```
 src/
 ├── app/layouts/         # MainLayout — view routing dispatch, keyboard shortcuts, hydration
-├── pages/               # 18 screens: home (marketplace), chat, all-chats, projects, settings,
+├── pages/               # 22 screens: home (marketplace), chat, all-chats, projects, settings,
 │                        #   quick-chat, group-chat, memory, swarm, schedule, prompt-library,
-│                        #   debate, ai-tools, image-gen, agent, translate, doc-writer, ocr
+│                        #   debate, ai-tools, image-gen, agent, translate, doc-writer, ocr,
+│                        #   prompt-chain, knowledge, workflow, collab
 ├── widgets/             # Complex feature components (message-list, prompt-input, sidebar, search,
 │                        #   header-tabs, artifact-panel)
-├── entities/            # 18 Zustand stores: session, settings, project, group-chat, channel, memory,
+├── entities/            # 22 Zustand stores: session, settings, project, group-chat, channel, memory,
 │                        #   swarm, schedule, usage, persona, prompt-template (prompt-library), debate,
-│                        #   folder, tag, toast, translate, doc-writer, artifact
+│                        #   folder, tag, toast, translate, doc-writer, artifact, prompt-chain,
+│                        #   knowledge, workflow, collab
 ├── shared/
 │   ├── ui/              # 12 reusable components (Button, Avatar, Toggle, AssistantCard, etc.)
 │   ├── lib/             # Utilities, Bedrock client, provider factory, Dexie DB, token-estimator
@@ -51,13 +53,13 @@ src/
 
 No React Router. Navigation is state-driven via Zustand:
 - `SessionStore.view` (`ViewState` type) determines which page renders
-- `ViewState` = `'home' | 'chat' | 'settings' | 'allChats' | 'projects' | 'projectDetail' | 'quickChat' | 'memory' | 'agentSwarm' | 'schedule' | 'groupChat' | 'promptLibrary' | 'debate' | 'aiTools' | 'imageGen' | 'agent' | 'translate' | 'docWriter' | 'ocr'`
+- `ViewState` = `'home' | 'chat' | 'settings' | 'allChats' | 'projects' | 'projectDetail' | 'quickChat' | 'memory' | 'agentSwarm' | 'schedule' | 'groupChat' | 'promptLibrary' | 'debate' | 'aiTools' | 'imageGen' | 'agent' | 'translate' | 'docWriter' | 'ocr' | 'promptChain' | 'knowledgeBase' | 'workflow' | 'collab'`
 - `MainLayout.renderContent()` dispatches based on `view` value
 - Navigation through store actions: `selectSession()`, `goHome()`, `setView()`
 
 ### State Management (Zustand)
 
-18 stores in `src/entities/`, all persisted via IndexedDB (Dexie v5):
+22 stores in `src/entities/`, all persisted via IndexedDB (Dexie v5):
 - **SessionStore** — sessions, messages (keyed by sessionId), currentSessionId, view state, streaming, folders/tags
 - **SettingsStore** — selectedModel, darkMode, sidebarOpen, credentials, language, systemPrompt, monthlyBudget, thinkingDepth
 - **ProjectStore** — projects, selectedProjectId
@@ -76,6 +78,10 @@ No React Router. Navigation is state-driven via Zustand:
 - **TranslateStore** — document translation workflow (LLM/browser engine, file upload, batch processing, progress tracking)
 - **DocWriterStore** — 5-step document wizard (project setup, context, AI outline, section content, export MD/TXT)
 - **ArtifactStore** — canvas/artifacts side panel (code/HTML/SVG/Mermaid CRUD, versions, panel state, resize)
+- **PromptChainStore** — prompt chaining (sequential execution, condition branching, step results)
+- **KnowledgeStore** — knowledge base (document upload, auto-chunking, keyword search, categories)
+- **WorkflowStore** — workflow builder (block pipeline, 6 block types, 3 triggers, templates)
+- **CollabStore** — realtime collaboration (room management, invite codes, chat messages, typing indicators)
 
 ### Multi-Provider System
 
@@ -142,7 +148,7 @@ modal deploy backend/app.py    # Production deploy
 
 ## Feature Status
 
-**All features fully functional (100% complete + Phase 1-5 complete):**
+**All features fully functional (100% complete + Phase 1-6 complete):**
 
 ### Assistant Marketplace (Phase 1)
 - 8 official assistant presets (analyst, quickChat, docReview, translator, reportWriter, codeReviewer, dataAnalyst, emailWriter)
@@ -169,6 +175,12 @@ modal deploy backend/app.py    # Production deploy
 - Mermaid diagram lazy import (~1.5MB on demand)
 - Version history navigation, drag resize (320-960px), mobile overlay
 - Artifact selector dropdown, download/copy
+
+### Productivity Automation (Phase 6)
+- Prompt chaining (sequential chain execution, step result auto-linking, IF-THEN-ELSE condition branching)
+- Knowledge base (document upload, auto-chunking ~500 chars, keyword search, tag/category management)
+- Workflow builder (no-code block pipeline editor, 6 block types, 3 triggers, template gallery)
+- Realtime collaboration (room create/join, invite code sharing, chat messages, host/participant roles)
 
 ### Core Chat
 - Multi-provider chat (Bedrock, OpenAI, Gemini) with SSE streaming
@@ -210,7 +222,7 @@ modal deploy backend/app.py    # Production deploy
 - Channels (Slack/Telegram config + webhook notifications)
 
 ### UX & Quality
-- IndexedDB persistence (all 18 stores, backup/restore)
+- IndexedDB persistence (all 22 stores, backup/restore)
 - i18n (Korean/English)
 - PWA (installable, service worker caching)
 - Dark mode (CSS variables, comprehensive theming)

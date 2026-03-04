@@ -11,6 +11,9 @@ import { useMemoryStore } from '@/entities/memory/memory.store'
 import { useScheduleStore } from '@/entities/schedule/schedule.store'
 import { useSwarmStore } from '@/entities/swarm/swarm.store'
 import { useChannelStore } from '@/entities/channel/channel.store'
+import { useKnowledgeStore } from '@/entities/knowledge/knowledge.store'
+import { useWorkflowStore } from '@/entities/workflow/workflow.store'
+import { useCollabStore } from '@/entities/collab/collab.store'
 import { Sidebar } from '@/widgets/sidebar/Sidebar'
 import { HeaderTabs } from '@/widgets/header-tabs/HeaderTabs'
 import { HomeScreen } from '@/pages/home/HomeScreen'
@@ -38,6 +41,10 @@ const AgentPage = lazy(() => import('@/pages/agent/AgentPage').then((m) => ({ de
 const TranslatePage = lazy(() => import('@/pages/translate/TranslatePage').then((m) => ({ default: m.TranslatePage })))
 const DocWriterPage = lazy(() => import('@/pages/doc-writer/DocWriterPage').then((m) => ({ default: m.DocWriterPage })))
 const OcrPage = lazy(() => import('@/pages/ocr/OcrPage').then((m) => ({ default: m.OcrPage })))
+const KnowledgeBasePage = lazy(() => import('@/pages/knowledge/KnowledgeBasePage').then((m) => ({ default: m.KnowledgeBasePage })))
+const PromptChainPage = lazy(() => import('@/pages/prompt-chain/PromptChainPage').then((m) => ({ default: m.PromptChainPage })))
+const WorkflowBuilderPage = lazy(() => import('@/pages/workflow/WorkflowBuilderPage').then((m) => ({ default: m.WorkflowBuilderPage })))
+const CollabRoomPage = lazy(() => import('@/pages/collab/CollabRoomPage').then((m) => ({ default: m.CollabRoomPage })))
 
 export function MainLayout() {
   const { t } = useTranslation()
@@ -61,6 +68,9 @@ export function MainLayout() {
   const hydrateSchedule = useScheduleStore((s) => s.hydrate)
   const hydrateSwarm = useSwarmStore((s) => s.hydrate)
   const hydrateChannel = useChannelStore((s) => s.hydrate)
+  const hydrateKnowledge = useKnowledgeStore((s) => s.hydrate)
+  const hydrateWorkflow = useWorkflowStore((s) => s.hydrate)
+  const hydrateCollab = useCollabStore((s) => s.hydrate)
   const isOnline = useOnlineStatus()
 
   // Hydrate from IndexedDB on mount
@@ -76,7 +86,10 @@ export function MainLayout() {
     hydrateSchedule()
     hydrateSwarm()
     hydrateChannel()
-  }, [hydrateSession, hydrateProject, hydrateUsage, hydratePromptLibrary, hydratePersona, hydrateFolder, hydrateTag, hydrateMemory, hydrateSchedule, hydrateSwarm, hydrateChannel])
+    hydrateKnowledge()
+    hydrateWorkflow()
+    hydrateCollab()
+  }, [hydrateSession, hydrateProject, hydrateUsage, hydratePromptLibrary, hydratePersona, hydrateFolder, hydrateTag, hydrateMemory, hydrateSchedule, hydrateSwarm, hydrateChannel, hydrateKnowledge, hydrateWorkflow, hydrateCollab])
 
   // Keyboard shortcuts
   useEffect(() => {
@@ -176,6 +189,22 @@ export function MainLayout() {
 
     if (view === 'ocr') {
       return <OcrPage />
+    }
+
+    if (view === 'knowledgeBase') {
+      return <KnowledgeBasePage />
+    }
+
+    if (view === 'workflow') {
+      return <WorkflowBuilderPage />
+    }
+
+    if (view === 'promptChain') {
+      return <PromptChainPage />
+    }
+
+    if (view === 'collab') {
+      return <CollabRoomPage />
     }
 
     if (currentSessionId && view === 'chat') {
