@@ -2,7 +2,7 @@
 
 AI 모델(Claude, GPT, Gemini)과 대화하는 Progressive Web App. 멀티 프로바이더, 실시간 스트리밍, 고급 AI 도구, 로컬 저장, PWA 지원.
 
-**상태**: 100% 완료 (70/70 + Phase 1-8) | **Phase 9 기획 완료** | **테스트**: 871 tests, 53 suites | **배포**: Vercel + Modal
+**상태**: 100% 완료 (70/70 + Phase 1-8) | **Phase 9-10 기획 완료** | **테스트**: 871 tests, 53 suites | **배포**: Vercel + Modal
 
 ---
 
@@ -252,7 +252,7 @@ hchat-pwa/
 │   ├── app/
 │   │   └── layouts/           # MainLayout — 뷰 라우팅, 키보드 단축키
 │   │
-│   ├── pages/                 # 30개 페이지 컴포넌트
+│   ├── pages/                 # 31개 페이지 컴포넌트 (30개 뷰)
 │   │   ├── home/              # 홈 (비서 마켓플레이스)
 │   │   ├── chat/              # 채팅
 │   │   ├── all-chats/         # 모든 대화
@@ -294,7 +294,7 @@ hchat-pwa/
 │   │   ├── ai-tools/          # AI 도구 패널
 │   │   └── ...
 │   │
-│   ├── entities/              # Zustand 스토어 (29개)
+│   ├── entities/              # Zustand 스토어 29개
 │   │   ├── session/               # 세션, 메시지, 스트리밍, 뷰 상태
 │   │   ├── settings/              # 모델, 언어, 테마, 자격증명
 │   │   ├── project/               # 프로젝트
@@ -638,7 +638,7 @@ Pencil MCP를 통한 28개 프레임 설계:
 | 문서 | 내용 |
 |------|------|
 | `CLAUDE.md` | 아키텍처, 커맨드, 배포 가이드 |
-| `docs/todolist.md` | 상세 TODO 목록 (70/70 + Phase 1-6) |
+| `docs/todolist.md` | 상세 TODO 목록 (70/70 + Phase 1-8) |
 | `docs/roadmap.md` | 향후 로드맵 |
 | `docs/v2-implementation-plan.md` | v2-extension 이식 계획 |
 | `docs/hchat-implementation-plan.md` | H Chat 이식 계획 |
@@ -648,7 +648,7 @@ Pencil MCP를 통한 28개 프레임 설계:
 
 ---
 
-## 향후 계획 (Phase 9)
+## 향후 계획
 
 ### Phase 9: 스마트 UX & 멀티모달 확장 (10일)
 
@@ -659,6 +659,16 @@ Pencil MCP를 통한 28개 프레임 설계:
 | **대화 분석 자동화** | AI 자동 태깅, 감정 분석, 스마트 제목 생성 | 1일 | 중간 |
 | **고급 프롬프트 에디터** | 풀스크린 에디터, 변수 자동완성, / 커맨드 | 2일 | 높음 |
 | **팀 워크스페이스** | 팀 생성, 공유 라이브러리/지식베이스, 권한 관리 | 3일 | 높음 |
+
+### Phase 10: AI 네이티브 & 모바일 퍼스트 (12일)
+
+| 기능 | 설명 | 공수 | 임팩트 |
+|------|------|------|--------|
+| **MCP 서버 통합** | Model Context Protocol, 외부 도구 동적 로드 | 2일 | 높음 |
+| **AI 에이전트 자율 실행** | ReAct 패턴, 도구 자동 선택, 실행 트리 시각화 | 3일 | 높음 |
+| **모바일 네이티브 UX** | 바텀 네비, 스와이프 제스처, PWA 공유 타겟 | 2일 | 높음 |
+| **실시간 데이터 커넥터** | Google Sheets, Notion, GitHub 연동 | 2일 | 중간 |
+| **AI 코드 인터프리터** | Pyodide 브라우저 Python, Jupyter 스타일 노트북 | 3일 | 높음 |
 
 ---
 
@@ -700,4 +710,4 @@ MIT
 
 - **프로젝트**: github.com:sgtlim0/hchat-desktop.git
 - **배포**: Vercel (Frontend) / Modal (Backend)
-- **상태**: 100% 기능 완성 (Phase 1-8), Phase 9 기획 완료
+- **상태**: 100% 기능 완성 (Phase 1-8), Phase 9-10 기획 완료

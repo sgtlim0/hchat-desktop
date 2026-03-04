@@ -41,7 +41,7 @@ src/
 │                        #   knowledge, workflow, collab, context-manager, insights, plugin, theme,
 │                        #   batch, cache, audit
 ├── shared/
-│   ├── ui/              # 12 reusable components (Button, Avatar, Toggle, AssistantCard, etc.)
+│   ├── ui/              # 13 reusable components (Button, Avatar, Toggle, AssistantCard, ToastContainer, etc.)
 │   ├── lib/             # Utilities, Bedrock client, provider factory, Dexie DB, token-estimator
 │   ├── lib/providers/   # Multi-provider: OpenAI, Gemini, factory, router
 │   ├── lib/agent/       # Agent system: XML tool parser, 4 tools (search, memory, schedule, file)
@@ -56,7 +56,7 @@ src/
 
 No React Router. Navigation is state-driven via Zustand:
 - `SessionStore.view` (`ViewState` type) determines which page renders
-- `ViewState` = `'home' | 'chat' | 'settings' | 'allChats' | 'projects' | 'projectDetail' | 'quickChat' | 'memory' | 'agentSwarm' | 'schedule' | 'groupChat' | 'promptLibrary' | 'debate' | 'aiTools' | 'imageGen' | 'agent' | 'translate' | 'docWriter' | 'ocr' | 'promptChain' | 'knowledgeBase' | 'workflow' | 'collab' | 'contextManager' | 'insightsDashboard' | 'sessionInsights' | 'pluginMarketplace' | 'themeBuilder' | 'batchQueue' | 'cacheControl' | 'auditLog'`
+- `ViewState` = `'home' | 'chat' | 'settings' | 'allChats' | 'projects' | 'projectDetail' | 'quickChat' | 'memory' | 'agentSwarm' | 'schedule' | 'groupChat' | 'promptLibrary' | 'debate' | 'aiTools' | 'imageGen' | 'agent' | 'translate' | 'docWriter' | 'ocr' | 'promptChain' | 'knowledgeBase' | 'workflow' | 'collab' | 'contextManager' | 'insights' | 'plugins' | 'themeBuilder' | 'batchQueue' | 'sessionInsights' | 'cacheControl' | 'auditLog'`
 - `MainLayout.renderContent()` dispatches based on `view` value
 - Navigation through store actions: `selectSession()`, `goHome()`, `setView()`
 
