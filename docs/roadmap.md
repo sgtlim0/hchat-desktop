@@ -504,14 +504,82 @@ type UsageCategory =
 
 ---
 
-## 11. Phase 6-8 우선순위 + 공수
+## 10-1. Phase 9: 스마트 UX & 멀티모달 확장 (예정)
+
+### 9-1. AI 대시보드 홈 (2일)
+
+**목표**: 위젯 기반 커스터마이즈 가능한 대시보드
+
+```
+신규: src/pages/dashboard/DashboardPage.tsx
+신규: src/entities/dashboard/dashboard.store.ts
+```
+
+- 위젯 그리드 시스템 (드래그 리사이즈, 순서 변경)
+- 위젯 6종: 최근 대화, 사용량 요약, 빠른 비서, 지식베이스, 일정, 즐겨찾기
+- 레이아웃 localStorage 영속
+
+### 9-2. 멀티모달 채팅 확장 (2일)
+
+**목표**: 이미지/오디오 입력 지원, 비전 모델 연동
+
+```
+수정: src/widgets/prompt-input/PromptInput.tsx (멀티모달 첨부)
+수정: src/widgets/message-list/MessageBubble.tsx (인라인 미디어 렌더)
+```
+
+- Claude Vision / GPT-4o Vision 이미지 분석
+- getUserMedia 카메라 캡처 → AI 분석
+- Whisper API 오디오 입력
+- 전역 드래그앤드롭 개선
+
+### 9-3. 대화 분석 & 태그 자동화 (1일)
+
+**목표**: AI 기반 자동 태깅, 감정 분석, 스마트 제목
+
+```
+수정: src/entities/session/session.store.ts (자동 태깅/제목)
+수정: src/entities/tag/tag.store.ts (AI 추천)
+```
+
+- AI 자동 태깅 (대화 종료 시 LLM 추천)
+- 대화 감정 분석 (긍정/부정/중립)
+- 스마트 세션 제목 자동 생성
+- "비슷한 대화" 추천
+
+### 9-4. 고급 프롬프트 에디터 (2일)
+
+**목표**: 파워유저를 위한 확장 프롬프트 에디터
+
+```
+신규: src/widgets/advanced-prompt/AdvancedPromptEditor.tsx
+수정: src/widgets/prompt-input/PromptInput.tsx (확장 모드 토글)
+```
+
+- 멀티라인 풀스크린 에디터
+- `{{변수}}` 자동완성, `/` 커맨드 스니펫
+- 프롬프트 히스토리 탐색
+- 마크다운 미리보기 토글
+
+### 9-5. 팀 워크스페이스 (3일)
+
+**목표**: 팀 단위 AI 협업 환경
+
+```
+신규: src/pages/workspace/WorkspacePage.tsx
+신규: src/entities/workspace/workspace.store.ts
+```
+
+- 워크스페이스 생성/참여, 멤버 관리 (3단 권한)
+- 공유 프롬프트 라이브러리, 공유 지식베이스
+- 활동 피드 타임라인
+
+---
+
+## 11. Phase 7-9 우선순위 + 공수
 
 | Phase | 기능 | 공수 | 임팩트 | 복잡도 |
 |-------|------|------|--------|--------|
-| **Phase 6** | 프롬프트 체이닝 | 1일 | 높음 | 낮음 |
-| **Phase 6** | 지식베이스 | 2일 | 높음 | 중간 |
-| **Phase 6** | 워크플로우 빌더 | 3일 | 높음 | 높음 |
-| **Phase 6** | 실시간 협업 | 2일 | 중간 | 중간 |
 | **Phase 7** | 컨텍스트 매니저 | 1일 | 중간 | 낮음 |
 | **Phase 7** | AI 인사이트 | 2일 | 중간 | 중간 |
 | **Phase 7** | 플러그인 시스템 | 3일 | 중간 | 높음 |
@@ -520,7 +588,12 @@ type UsageCategory =
 | **Phase 8** | 크로스 세션 인사이트 | 2일 | 높음 | 중간 |
 | **Phase 8** | 스마트 캐싱 | 2일 | 높음 | 중간 |
 | **Phase 8** | 감사 로그 | 2일 | 중간 | 낮음 |
-| **합계** | | **23일** | | |
+| **Phase 9** | AI 대시보드 홈 | 2일 | 높음 | 중간 |
+| **Phase 9** | 멀티모달 채팅 확장 | 2일 | 높음 | 높음 |
+| **Phase 9** | 대화 분석 자동화 | 1일 | 중간 | 낮음 |
+| **Phase 9** | 고급 프롬프트 에디터 | 2일 | 높음 | 중간 |
+| **Phase 9** | 팀 워크스페이스 | 3일 | 높음 | 높음 |
+| **합계** | | **25일** | | |
 
 ---
 
