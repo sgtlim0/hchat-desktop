@@ -36,6 +36,7 @@ shared/
 │   ├── translate.ts             # 번역 유틸리티 (청크 분할, 텍스트 추출, LLM 번역)
 │   ├── ocr.ts                   # OCR 래퍼 (tesseract.js, 4개 언어, 배치 처리)
 │   ├── artifact-detector.ts     # 아티팩트 자동 감지 (코드블록 파싱, 타입 추론)
+│   ├── conversation-analysis.ts # 대화 분석 (자동 태깅, 감정 분석, 스마트 제목)
 │   ├── pdf-extractor.ts         # PDF 텍스트 추출
 │   └── token-estimator.ts       # 토큰 추정
 ├── i18n/                        # 다국어 시스템

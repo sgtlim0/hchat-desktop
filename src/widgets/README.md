@@ -23,13 +23,17 @@ widgets/
 │   └── SearchModal.tsx          # 전역 검색 모달
 ├── header-tabs/
 │   └── HeaderTabs.tsx           # 도구 탭 바 (4탭 전환)
-└── artifact-panel/
-    ├── ArtifactPanel.tsx        # Canvas 사이드 패널 (헤더, 툴바, 콘텐츠)
-    ├── ArtifactPreview.tsx      # 타입별 프리뷰 디스패처
-    ├── ArtifactCodeView.tsx     # SyntaxHighlighter 코드 뷰
-    ├── ArtifactHtmlPreview.tsx  # sandboxed iframe (HTML/SVG)
-    ├── ArtifactMermaidPreview.tsx # Mermaid 다이어그램 렌더링
-    └── ResizeHandle.tsx         # 드래그 리사이즈 핸들
+├── artifact-panel/
+│   ├── ArtifactPanel.tsx        # Canvas 사이드 패널 (헤더, 툴바, 콘텐츠)
+│   ├── ArtifactPreview.tsx      # 타입별 프리뷰 디스패처
+│   ├── ArtifactCodeView.tsx     # SyntaxHighlighter 코드 뷰
+│   ├── ArtifactHtmlPreview.tsx  # sandboxed iframe (HTML/SVG)
+│   ├── ArtifactMermaidPreview.tsx # Mermaid 다이어그램 렌더링
+│   └── ResizeHandle.tsx         # 드래그 리사이즈 핸들
+├── multimodal/
+│   └── MultimodalInput.tsx      # 멀티모달 입력 (이미지/오디오/카메라)
+└── advanced-prompt/
+    └── AdvancedPromptEditor.tsx # 고급 프롬프트 에디터
 ```
 
 ## 위젯별 상세
@@ -94,6 +98,14 @@ widgets/
 - ChatPage에서 `flex-row` split layout으로 조합
 - 모바일 (< 768px): `fixed inset-0 z-50` 오버레이 모드
 - 드래그 리사이즈, localStorage 패널 너비 영속
+
+### MultimodalInput
+
+멀티모달 입력 위젯. Claude Vision / GPT-4o Vision 이미지 분석, getUserMedia 카메라 캡처, Whisper API 오디오 입력, 전역 드래그앤드롭 개선. ChatPage의 PromptInput을 확장합니다.
+
+### AdvancedPromptEditor
+
+고급 프롬프트 에디터 위젯. 멀티라인 풀스크린 에디터, `{{변수}}` 자동완성, 프롬프트 히스토리(↑/↓ 탐색), `/` 커맨드 스니펫, 마크다운 미리보기 토글, 줄번호/글자수 표시.
 
 ## 의존성 관계
 

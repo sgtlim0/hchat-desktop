@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-H Chat Desktop — Advanced AI chat Progressive Web App supporting multi-provider models (Claude, GPT, Gemini). React 19, TypeScript 5.9, Vite 7, Zustand 5, Tailwind CSS 3. **100% complete** (70/70 TODO items + Phase 1-8 complete) with 871 tests (53 suites). Features: assistant marketplace (8 presets), document translation, document writer wizard, OCR text extraction, header tool tabs, usage category tracking, canvas/artifacts side panel, prompt chaining, knowledge base, workflow builder, realtime collaboration, context manager, AI insights dashboard, plugin system, theme builder, batch processing queue, session insights, smart caching, audit logs, agent mode, web search, debate, image gen, PDF/Excel analysis, TTS/STT, prompt library, persona system, usage tracking, ROI dashboard, folders/tags, memory, schedule, swarm, channels, guardrail, auto-routing, offline support.
+H Chat Desktop — Advanced AI chat Progressive Web App supporting multi-provider models (Claude, GPT, Gemini). React 19, TypeScript 5.9, Vite 7, Zustand 5, Tailwind CSS 3. **100% complete** (70/70 TODO items + Phase 1-9 complete) with 919 tests (56 suites). Features: assistant marketplace (8 presets), document translation, document writer wizard, OCR text extraction, header tool tabs, usage category tracking, canvas/artifacts side panel, prompt chaining, knowledge base, workflow builder, realtime collaboration, context manager, AI insights dashboard, plugin system, theme builder, batch processing queue, session insights, smart caching, audit logs, AI dashboard home (widget grid), multimodal chat (vision/camera/whisper), conversation analysis (auto-tagging/sentiment), advanced prompt editor, team workspace, agent mode, web search, debate, image gen, PDF/Excel analysis, TTS/STT, prompt library, persona system, usage tracking, ROI dashboard, folders/tags, memory, schedule, swarm, channels, guardrail, auto-routing, offline support.
 
 ## Commands
 
@@ -14,7 +14,7 @@ npm run dev               # Vite dev server (localhost:5173)
 npm run build             # TypeScript check + Vite production build
 npm run lint              # ESLint
 npm run preview           # Preview production build locally
-npm test                  # Vitest unit/integration tests (871 tests, 53 suites)
+npm test                  # Vitest unit/integration tests (919 tests, 56 suites)
 npm run test:ui           # Vitest interactive UI
 npm run test:coverage     # Coverage report (83% stmts, 79% branches, 91% funcs, 82% lines)
 npx playwright test       # E2E tests (24 tests)
@@ -27,19 +27,20 @@ Uses **Feature-Sliced Design (FSD)** with `@/` path alias mapping to `src/`:
 ```
 src/
 ├── app/layouts/         # MainLayout — view routing dispatch, keyboard shortcuts, hydration
-├── pages/               # 30 screens: home (marketplace), chat, all-chats, projects, settings,
+├── pages/               # 35 screens: home (marketplace), chat, all-chats, projects, settings,
 │                        #   quick-chat, group-chat, memory, swarm, schedule, prompt-library,
 │                        #   debate, ai-tools, image-gen, agent, translate, doc-writer, ocr,
 │                        #   prompt-chain, knowledge, workflow, collab, context-manager,
 │                        #   insights-dashboard, session-insights, plugin-marketplace,
-│                        #   theme-builder, batch-queue, cache-control, audit-log
+│                        #   theme-builder, batch-queue, cache-control, audit-log,
+│                        #   dashboard, workspace
 ├── widgets/             # Complex feature components (message-list, prompt-input, sidebar, search,
-│                        #   header-tabs, artifact-panel)
-├── entities/            # 29 Zustand stores: session, settings, project, group-chat, channel, memory,
+│                        #   header-tabs, artifact-panel, multimodal, advanced-prompt)
+├── entities/            # 31 Zustand stores: session, settings, project, group-chat, channel, memory,
 │                        #   swarm, schedule, usage, persona, prompt-template (prompt-library), debate,
 │                        #   folder, tag, toast, translate, doc-writer, artifact, prompt-chain,
 │                        #   knowledge, workflow, collab, context-manager, insights, plugin, theme,
-│                        #   batch, cache, audit
+│                        #   batch, cache, audit, dashboard, workspace
 ├── shared/
 │   ├── ui/              # 13 reusable components (Button, Avatar, Toggle, AssistantCard, ToastContainer, etc.)
 │   ├── lib/             # Utilities, Bedrock client, provider factory, Dexie DB, token-estimator
@@ -56,13 +57,13 @@ src/
 
 No React Router. Navigation is state-driven via Zustand:
 - `SessionStore.view` (`ViewState` type) determines which page renders
-- `ViewState` = `'home' | 'chat' | 'settings' | 'allChats' | 'projects' | 'projectDetail' | 'quickChat' | 'memory' | 'agentSwarm' | 'schedule' | 'groupChat' | 'promptLibrary' | 'debate' | 'aiTools' | 'imageGen' | 'agent' | 'translate' | 'docWriter' | 'ocr' | 'promptChain' | 'knowledgeBase' | 'workflow' | 'collab' | 'contextManager' | 'insights' | 'plugins' | 'themeBuilder' | 'batchQueue' | 'sessionInsights' | 'cacheControl' | 'auditLog'`
+- `ViewState` = `'home' | 'chat' | 'settings' | 'allChats' | 'projects' | 'projectDetail' | 'quickChat' | 'memory' | 'agentSwarm' | 'schedule' | 'groupChat' | 'promptLibrary' | 'debate' | 'aiTools' | 'imageGen' | 'agent' | 'translate' | 'docWriter' | 'ocr' | 'promptChain' | 'knowledgeBase' | 'workflow' | 'collab' | 'contextManager' | 'insights' | 'plugins' | 'themeBuilder' | 'batchQueue' | 'sessionInsights' | 'cacheControl' | 'auditLog' | 'dashboard' | 'workspace'`
 - `MainLayout.renderContent()` dispatches based on `view` value
 - Navigation through store actions: `selectSession()`, `goHome()`, `setView()`
 
 ### State Management (Zustand)
 
-29 stores in `src/entities/`, all persisted via IndexedDB (Dexie v5):
+31 stores in `src/entities/`, all persisted via IndexedDB (Dexie v5):
 - **SessionStore** — sessions, messages (keyed by sessionId), currentSessionId, view state, streaming, folders/tags
 - **SettingsStore** — selectedModel, darkMode, sidebarOpen, credentials, language, systemPrompt, monthlyBudget, thinkingDepth
 - **ProjectStore** — projects, selectedProjectId
@@ -92,6 +93,8 @@ No React Router. Navigation is state-driven via Zustand:
 - **BatchStore** — batch processing queue, 3-tier priority (high/normal/low), progress tracking, pause/resume/cancel
 - **CacheStore** — smart response caching, prompt hash-based cache, TTL config (1-90 days), hit count, cost/token savings
 - **AuditStore** — enterprise audit logs, 10 action types, date/action/search filtering, CSV/JSON export, bulk delete
+- **DashboardStore** — AI dashboard home, widget grid layouts, 6 widget types, layout CRUD, widget reorder
+- **WorkspaceStore** — team workspace, member management (admin/editor/viewer), shared prompts/knowledge, activity feed
 
 ### Multi-Provider System
 
@@ -158,7 +161,7 @@ modal deploy backend/app.py    # Production deploy
 
 ## Feature Status
 
-**All features fully functional (100% complete + Phase 1-8 complete):**
+**All features fully functional (100% complete + Phase 1-9 complete):**
 
 ### Assistant Marketplace (Phase 1)
 - 8 official assistant presets (analyst, quickChat, docReview, translator, reportWriter, codeReviewer, dataAnalyst, emailWriter)
@@ -205,6 +208,13 @@ modal deploy backend/app.py    # Production deploy
 - Smart response caching (prompt hash-based cache, TTL config 1-90 days, hit count tracking, cost/token savings visualization)
 - Enterprise audit logs (10 action types - session/message/file/settings/export/import/guardrail/model/API, date/action/search filtering, CSV/JSON audit report export, bulk delete with confirmation)
 
+### Smart UX & Multimodal (Phase 9)
+- AI Dashboard Home (widget grid system, 6 widget types - recentChats/usageSummary/quickAssistants/knowledgeSummary/schedule/favorites, layout CRUD, widget reorder)
+- Multimodal chat (Claude Vision / GPT-4o Vision image analysis, getUserMedia camera capture, Whisper audio input, drag-and-drop enhancement)
+- Conversation analysis automation (AI auto-tagging, sentiment analysis - positive/negative/neutral, smart title generation, similar conversation recommendations)
+- Advanced prompt editor (fullscreen editor, `{{variable}}` autocomplete, prompt history navigation, `/` command snippets, markdown preview toggle, line numbers)
+- Team workspace (workspace create/manage, shared prompt library, shared knowledge base, member management - admin/editor/viewer 3-tier permissions, activity feed timeline)
+
 ### Core Chat
 - Multi-provider chat (Bedrock, OpenAI, Gemini) with SSE streaming
 - Group chat (multi-model parallel comparison)
@@ -245,7 +255,7 @@ modal deploy backend/app.py    # Production deploy
 - Channels (Slack/Telegram config + webhook notifications)
 
 ### UX & Quality
-- IndexedDB persistence (all 29 stores, backup/restore)
+- IndexedDB persistence (all 31 stores, backup/restore)
 - i18n (Korean/English)
 - PWA (installable, service worker caching)
 - Dark mode (CSS variables, comprehensive theming)
