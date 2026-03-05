@@ -96,7 +96,7 @@ export interface Skill {
   icon: string
 }
 
-export type ViewState = 'home' | 'chat' | 'settings' | 'allChats' | 'projects' | 'projectDetail' | 'quickChat' | 'memory' | 'agentSwarm' | 'schedule' | 'groupChat' | 'promptLibrary' | 'debate' | 'aiTools' | 'imageGen' | 'agent' | 'translate' | 'docWriter' | 'ocr' | 'promptChain' | 'knowledgeBase' | 'workflow' | 'collab' | 'contextManager' | 'insights' | 'plugins' | 'themeBuilder' | 'batchQueue' | 'sessionInsights' | 'cacheControl' | 'auditLog'
+export type ViewState = 'home' | 'chat' | 'settings' | 'allChats' | 'projects' | 'projectDetail' | 'quickChat' | 'memory' | 'agentSwarm' | 'schedule' | 'groupChat' | 'promptLibrary' | 'debate' | 'aiTools' | 'imageGen' | 'agent' | 'translate' | 'docWriter' | 'ocr' | 'promptChain' | 'knowledgeBase' | 'workflow' | 'collab' | 'contextManager' | 'insights' | 'plugins' | 'themeBuilder' | 'batchQueue' | 'sessionInsights' | 'cacheControl' | 'auditLog' | 'dashboard' | 'workspace'
 
 // Group Chat types
 
@@ -625,4 +625,89 @@ export interface AuditEntry {
   cost?: number
   metadata?: Record<string, unknown>
   createdAt: string
+}
+
+// Dashboard types (Phase 9)
+
+export type DashboardWidgetType = 'recentChats' | 'usageSummary' | 'quickAssistants' | 'knowledgeSummary' | 'schedule' | 'favorites'
+
+export interface DashboardWidget {
+  id: string
+  type: DashboardWidgetType
+  title: string
+  x: number
+  y: number
+  w: number
+  h: number
+  visible: boolean
+}
+
+export interface DashboardLayout {
+  id: string
+  name: string
+  widgets: DashboardWidget[]
+  createdAt: string
+  updatedAt: string
+}
+
+// Multimodal types (Phase 9)
+
+export type MultimodalType = 'image' | 'audio' | 'camera'
+
+export interface MultimodalAttachment {
+  id: string
+  type: MultimodalType
+  name: string
+  url: string
+  mimeType: string
+  size: number
+  thumbnail?: string
+  transcription?: string
+}
+
+// Conversation Analysis types (Phase 9)
+
+export type SentimentType = 'positive' | 'negative' | 'neutral'
+
+export interface ConversationAnalysis {
+  sessionId: string
+  sentiment: SentimentType
+  autoTags: string[]
+  smartTitle: string
+  analyzedAt: string
+}
+
+// Workspace types (Phase 9)
+
+export type WorkspaceRole = 'admin' | 'editor' | 'viewer'
+
+export interface WorkspaceMember {
+  id: string
+  name: string
+  email: string
+  role: WorkspaceRole
+  joinedAt: string
+  lastActiveAt: string
+}
+
+export interface WorkspaceActivity {
+  id: string
+  memberId: string
+  memberName: string
+  action: string
+  details: string
+  createdAt: string
+}
+
+export interface Workspace {
+  id: string
+  name: string
+  description: string
+  avatar: string
+  members: WorkspaceMember[]
+  sharedPromptIds: string[]
+  sharedKnowledgeIds: string[]
+  activities: WorkspaceActivity[]
+  createdAt: string
+  updatedAt: string
 }

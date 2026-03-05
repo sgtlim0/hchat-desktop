@@ -3,6 +3,7 @@ import type {
   Message, Session, Project, UsageEntry, SavedPrompt, Persona, Folder, Tag,
   MemoryEntry, Schedule, SwarmAgent, SwarmConnection, ChannelConfig, Artifact,
   PinnedMessage, InsightReport, Plugin, CustomTheme, BatchJob, CacheEntry, AuditEntry,
+  DashboardLayout, Workspace,
 } from '@/shared/types'
 
 const db = new Dexie('hchat-desktop') as Dexie & {
@@ -27,6 +28,8 @@ const db = new Dexie('hchat-desktop') as Dexie & {
   batchJobs: EntityTable<BatchJob, 'id'>
   cacheEntries: EntityTable<CacheEntry, 'id'>
   auditEntries: EntityTable<AuditEntry, 'id'>
+  dashboardLayouts: EntityTable<DashboardLayout, 'id'>
+  workspaces: EntityTable<Workspace, 'id'>
 }
 
 db.version(1).stores({
@@ -86,6 +89,32 @@ db.version(5).stores({
   swarmConnections: 'id, from, to',
   channelConfigs: 'id',
   artifacts: 'id, sessionId, messageId, updatedAt',
+})
+
+db.version(7).stores({
+  sessions: 'id, projectId, updatedAt, isFavorite',
+  messages: 'id, sessionId, createdAt',
+  projects: 'id, updatedAt',
+  usages: 'id, sessionId, modelId, createdAt',
+  prompts: 'id, category, isFavorite, updatedAt',
+  personas: 'id, isDefault, updatedAt',
+  folders: 'id',
+  tags: 'id',
+  memories: 'id, scope, updatedAt',
+  schedules: 'id, status, updatedAt',
+  swarmAgents: 'id, role',
+  swarmConnections: 'id, from, to',
+  channelConfigs: 'id',
+  artifacts: 'id, sessionId, messageId, updatedAt',
+  pinnedMessages: 'id, sessionId',
+  insightReports: 'id, type, createdAt',
+  plugins: 'id, status',
+  customThemes: 'id, isActive',
+  batchJobs: 'id, status, priority, createdAt',
+  cacheEntries: 'id, promptHash, createdAt, expiresAt',
+  auditEntries: 'id, action, createdAt',
+  dashboardLayouts: 'id, updatedAt',
+  workspaces: 'id, updatedAt',
 })
 
 db.version(6).stores({
@@ -437,6 +466,34 @@ export async function putAuditEntry(entry: AuditEntry): Promise<void> {
 
 export async function clearAllAuditEntries(): Promise<void> {
   await db.auditEntries.clear()
+}
+
+// Dashboard Layout CRUD
+
+export async function getAllDashboardLayouts(): Promise<DashboardLayout[]> {
+  return db.dashboardLayouts.toArray()
+}
+
+export async function putDashboardLayout(layout: DashboardLayout): Promise<void> {
+  await db.dashboardLayouts.put(layout)
+}
+
+export async function deleteDashboardLayoutFromDb(id: string): Promise<void> {
+  await db.dashboardLayouts.delete(id)
+}
+
+// Workspace CRUD
+
+export async function getAllWorkspaces(): Promise<Workspace[]> {
+  return db.workspaces.orderBy('updatedAt').reverse().toArray()
+}
+
+export async function putWorkspace(workspace: Workspace): Promise<void> {
+  await db.workspaces.put(workspace)
+}
+
+export async function deleteWorkspaceFromDb(id: string): Promise<void> {
+  await db.workspaces.delete(id)
 }
 
 export { db }

@@ -21,6 +21,8 @@ import { usePluginStore } from '@/entities/plugins/plugin.store'
 import { useThemeStore } from '@/entities/theme/theme.store'
 import { useContextManagerStore } from '@/entities/context-manager/context-manager.store'
 import { useInsightsStore } from '@/entities/insights/insights.store'
+import { useDashboardStore } from '@/entities/dashboard/dashboard.store'
+import { useWorkspaceStore } from '@/entities/workspace/workspace.store'
 import { Sidebar } from '@/widgets/sidebar/Sidebar'
 import { HeaderTabs } from '@/widgets/header-tabs/HeaderTabs'
 import { HomeScreen } from '@/pages/home/HomeScreen'
@@ -60,6 +62,8 @@ const BatchQueuePage = lazy(() => import('@/pages/batch/BatchQueuePage').then((m
 const SessionInsightsPage = lazy(() => import('@/pages/insights/SessionInsightsPage').then((m) => ({ default: m.SessionInsightsPage })))
 const CacheControlPage = lazy(() => import('@/pages/cache/CacheControlPage').then((m) => ({ default: m.CacheControlPage })))
 const AuditLogPage = lazy(() => import('@/pages/audit/AuditLogPage').then((m) => ({ default: m.AuditLogPage })))
+const DashboardPage = lazy(() => import('@/pages/dashboard/DashboardPage').then((m) => ({ default: m.DashboardPage })))
+const WorkspacePage = lazy(() => import('@/pages/workspace/WorkspacePage').then((m) => ({ default: m.WorkspacePage })))
 
 export function MainLayout() {
   const { t } = useTranslation()
@@ -93,6 +97,8 @@ export function MainLayout() {
   const hydrateTheme = useThemeStore((s) => s.hydrate)
   const hydrateContextManager = useContextManagerStore((s) => s.hydrate)
   const hydrateInsights = useInsightsStore((s) => s.hydrate)
+  const hydrateDashboard = useDashboardStore((s) => s.hydrate)
+  const hydrateWorkspace = useWorkspaceStore((s) => s.hydrate)
   const isOnline = useOnlineStatus()
 
   // Hydrate from IndexedDB on mount
@@ -118,7 +124,9 @@ export function MainLayout() {
     hydrateTheme()
     hydrateContextManager()
     hydrateInsights()
-  }, [hydrateSession, hydrateProject, hydrateUsage, hydratePromptLibrary, hydratePersona, hydrateFolder, hydrateTag, hydrateMemory, hydrateSchedule, hydrateSwarm, hydrateChannel, hydrateKnowledge, hydrateWorkflow, hydrateCollab, hydrateAudit, hydrateBatch, hydrateCache, hydratePlugin, hydrateTheme, hydrateContextManager, hydrateInsights])
+    hydrateDashboard()
+    hydrateWorkspace()
+  }, [hydrateSession, hydrateProject, hydrateUsage, hydratePromptLibrary, hydratePersona, hydrateFolder, hydrateTag, hydrateMemory, hydrateSchedule, hydrateSwarm, hydrateChannel, hydrateKnowledge, hydrateWorkflow, hydrateCollab, hydrateAudit, hydrateBatch, hydrateCache, hydratePlugin, hydrateTheme, hydrateContextManager, hydrateInsights, hydrateDashboard, hydrateWorkspace])
 
   // Keyboard shortcuts
   useEffect(() => {
@@ -266,6 +274,14 @@ export function MainLayout() {
 
     if (view === 'auditLog') {
       return <AuditLogPage />
+    }
+
+    if (view === 'dashboard') {
+      return <DashboardPage />
+    }
+
+    if (view === 'workspace') {
+      return <WorkspacePage />
     }
 
     if (currentSessionId && view === 'chat') {
