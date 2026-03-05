@@ -1,6 +1,6 @@
 # H Chat PWA — 로드맵
 
-> ✅ **Phase 1-9 전체 완료** | Phase 10-11 기획 완료 | 최종 업데이트: 2026-03-05
+> ✅ **Phase 1-9 전체 완료** | Phase 10-13 기획 완료 | 최종 업데이트: 2026-03-05
 > 919 tests, 56 suites | 83% coverage | 35 pages, 31 stores
 
 ---
@@ -598,6 +598,21 @@ type UsageCategory =
 | **Phase 10** | 모바일 네이티브 UX | 2일 | 📋 기획 |
 | **Phase 10** | 실시간 데이터 커넥터 | 2일 | 📋 기획 |
 | **Phase 10** | AI 코드 인터프리터 | 3일 | 📋 기획 |
+| **Phase 11** | AI 멘토링 시스템 | 2일 | 📋 기획 |
+| **Phase 11** | 데이터 파이프라인 빌더 | 3일 | 📋 기획 |
+| **Phase 11** | AI 코드 리뷰어 | 2일 | 📋 기획 |
+| **Phase 11** | 스마트 알림 센터 | 1일 | 📋 기획 |
+| **Phase 11** | 비주얼 프롬프트 빌더 | 2일 | 📋 기획 |
+| **Phase 12** | AI 회의록 작성기 | 2일 | 📋 기획 |
+| **Phase 12** | 스마트 보고서 생성기 | 2일 | 📋 기획 |
+| **Phase 12** | AI 학습 경로 추천 | 2일 | 📋 기획 |
+| **Phase 12** | 대화 북마크 & 하이라이트 | 1일 | 📋 기획 |
+| **Phase 12** | AI 번역 메모리 (TM) | 2일 | 📋 기획 |
+| **Phase 13** | AI 프레젠테이션 생성기 | 2일 | 📋 기획 |
+| **Phase 13** | 스마트 요약 피드 | 1일 | 📋 기획 |
+| **Phase 13** | AI 이메일 어시스턴트 | 2일 | 📋 기획 |
+| **Phase 13** | 대화 타임라인 뷰 | 1일 | 📋 기획 |
+| **Phase 13** | AI 마인드맵 생성기 | 2일 | 📋 기획 |
 
 ---
 
@@ -647,7 +662,161 @@ type UsageCategory =
 
 ---
 
-## 13. 참고 문서
+## 13. Phase 12: 고급 자동화 & 분석 인텔리전스 (📋 기획)
+
+### 12-1. AI 회의록 작성기 (2일)
+
+**목표**: 음성/텍스트 → 자동 회의록 생성, 액션 아이템 추출
+
+```
+신규: src/pages/meeting-notes/MeetingNotesPage.tsx
+신규: src/entities/meeting-notes/meeting-notes.store.ts
+```
+
+- 음성/텍스트 입력 → 자동 회의록 생성
+- 액션 아이템 자동 추출 (담당자, 기한)
+- 참석자 발언 분석 (발언 비율, 주요 주장)
+- 회의록 템플릿 (스탠드업/브레인스토밍/의사결정/회고)
+- 내보내기 (MD/PDF)
+
+### 12-2. 스마트 보고서 생성기 (2일)
+
+**목표**: 데이터/대화 기반 자동 보고서, 차트 삽입
+
+```
+신규: src/pages/report-generator/ReportGeneratorPage.tsx
+신규: src/entities/report-generator/report-generator.store.ts
+```
+
+- 데이터/대화 기반 자동 보고서 초안 생성
+- 차트/그래프 자동 삽입 (SVG 기반)
+- 템플릿 기반 포맷팅 (주간보고/월간보고/프로젝트보고)
+- 보고서 버전 관리 + 비교
+- 내보내기 (MD/PDF/HTML)
+
+### 12-3. AI 학습 경로 추천 (2일)
+
+**목표**: 사용 패턴 분석 → 개인화 학습 로드맵, 진도 추적
+
+```
+신규: src/pages/learning-path/LearningPathPage.tsx
+신규: src/entities/learning-path/learning-path.store.ts
+```
+
+- 사용 패턴 분석 → 개인화 학습 로드맵 생성
+- 주제별 퀴즈 자동 생성 (AI 기반)
+- 학습 진도 추적 (완료율, 이해도 점수)
+- 학습 리포트 (강점/약점 분석, 추천 자료)
+
+### 12-4. 대화 북마크 & 하이라이트 (1일)
+
+**목표**: 메시지 하이라이트, 북마크 컬렉션, 검색 연동
+
+```
+신규: src/entities/bookmark/bookmark.store.ts
+수정: src/widgets/message-list/MessageBubble.tsx (하이라이트)
+수정: src/widgets/search-modal/SearchModal.tsx (북마크 검색)
+```
+
+- 메시지 하이라이트 (드래그 선택 → 형광펜 색상)
+- 북마크 컬렉션 (폴더별 정리)
+- 태그 기반 북마크 분류
+- SearchModal 연동 (북마크 검색 탭)
+
+### 12-5. AI 번역 메모리 (TM) (2일)
+
+**목표**: 번역 쌍 자동 저장, 유사 문장 매칭, 용어집
+
+```
+신규: src/pages/translation-memory/TranslationMemoryPage.tsx
+신규: src/entities/translation-memory/translation-memory.store.ts
+수정: src/pages/translate/TranslatePage.tsx (TM 참조)
+```
+
+- 번역 쌍 자동 저장 (원문 ↔ 번역문)
+- 유사 문장 매칭 (Levenshtein + TF-IDF)
+- 일관성 점수 (동일 용어 번역 일관성 측정)
+- 용어집 관리 (도메인별 용어 사전)
+- TranslatePage 연동 (번역 시 TM 자동 참조)
+
+---
+
+## 14. Phase 13: 커뮤니케이션 & 크리에이티브 AI (📋 기획)
+
+### 13-1. AI 프레젠테이션 생성기 (2일)
+
+**목표**: 대화/데이터 기반 슬라이드 자동 생성, 발표 노트
+
+```
+신규: src/pages/presentation/PresentationPage.tsx
+신규: src/entities/presentation/presentation.store.ts
+```
+
+- 대화/데이터 기반 슬라이드 자동 생성 (AI 구조화)
+- Mermaid/SVG 차트 자동 삽입
+- 발표 노트 자동 생성
+- HTML 슬라이드쇼 내보내기 (reveal.js 스타일)
+- 슬라이드 템플릿 (비즈니스/기술/교육/요약)
+
+### 13-2. 스마트 요약 피드 (1일)
+
+**목표**: 일간/주간 전체 세션 자동 요약, 인사이트 추출
+
+```
+신규: src/pages/summary-feed/SummaryFeedPage.tsx
+신규: src/entities/summary-feed/summary-feed.store.ts
+```
+
+- 일간/주간 전체 세션 자동 요약
+- 핵심 인사이트 추출 (주요 결정, 아이디어, 액션)
+- 요약 피드 타임라인 UI
+- 이메일/Slack 전송 연동
+
+### 13-3. AI 이메일 어시스턴트 (2일)
+
+**목표**: 이메일 초안 작성, 톤/길이 조절, 회신 생성
+
+```
+신규: src/pages/email-assistant/EmailAssistantPage.tsx
+신규: src/entities/email-assistant/email-assistant.store.ts
+```
+
+- 이메일 초안 작성 (주제, 수신자, 톤 입력)
+- 톤/길이 조절 (격식/비격식, 짧게/길게)
+- 이메일 체인 분석 → 핵심 요약
+- 회신 초안 자동 생성, 이메일 템플릿
+
+### 13-4. 대화 타임라인 뷰 (1일)
+
+**목표**: 시각적 대화 히스토리, 주제별 구간 분리
+
+```
+신규: src/entities/conversation-timeline/conversation-timeline.store.ts
+수정: src/pages/all-chats/AllChatsScreen.tsx (타임라인 탭)
+수정: src/pages/chat/ChatPage.tsx (타임라인 사이드패널)
+```
+
+- 시각적 대화 히스토리 타임라인
+- 주제별 구간 자동 분리 (AI 기반)
+- 점프 네비게이션, 구간별 요약 호버
+
+### 13-5. AI 마인드맵 생성기 (2일)
+
+**목표**: 대화/문서 기반 마인드맵 자동 생성
+
+```
+신규: src/pages/mindmap/MindMapPage.tsx
+신규: src/entities/mindmap/mindmap.store.ts
+```
+
+- 대화/문서 기반 마인드맵 자동 생성 (LLM 구조 추출)
+- Mermaid mindmap 다이어그램 렌더링
+- 노드 편집/추가/삭제 (인터랙티브)
+- SVG/PNG 내보내기
+
+---
+
+## 15. 참고 문서
 
 | 문서 | 경로 | 용도 |
 |------|------|------|
