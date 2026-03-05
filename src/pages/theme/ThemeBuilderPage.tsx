@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useShallow } from 'zustand/react/shallow'
 import { X, Palette, Plus, Trash2, Check, Copy } from 'lucide-react'
 import { useSessionStore } from '@/entities/session/session.store'
 import { useThemeStore } from '@/entities/theme/theme.store'
@@ -18,7 +19,19 @@ export function ThemeBuilderPage() {
     activateTheme,
     deactivateTheme,
     duplicateTheme,
-  } = useThemeStore()
+  } = useThemeStore(
+    useShallow((s) => ({
+      themes: s.themes,
+      selectedThemeId: s.selectedThemeId,
+      selectTheme: s.selectTheme,
+      addTheme: s.addTheme,
+      updateTheme: s.updateTheme,
+      deleteTheme: s.deleteTheme,
+      activateTheme: s.activateTheme,
+      deactivateTheme: s.deactivateTheme,
+      duplicateTheme: s.duplicateTheme,
+    }))
+  )
 
   const [showAddModal, setShowAddModal] = useState(false)
   const [editingThemeId, setEditingThemeId] = useState<string | null>(null)

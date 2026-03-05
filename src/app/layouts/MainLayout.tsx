@@ -30,6 +30,7 @@ import { SearchModal } from '@/widgets/search/SearchModal'
 import { ToastContainer } from '@/shared/ui/ToastContainer'
 import { useTranslation } from '@/shared/i18n'
 import { useOnlineStatus } from '@/shared/hooks/useOnlineStatus'
+import { ErrorBoundary } from '@/shared/ui/ErrorBoundary'
 
 // Lazy-loaded pages for code splitting
 const ChatPage = lazy(() => import('@/pages/chat/ChatPage').then((m) => ({ default: m.ChatPage })))
@@ -64,6 +65,11 @@ const CacheControlPage = lazy(() => import('@/pages/cache/CacheControlPage').the
 const AuditLogPage = lazy(() => import('@/pages/audit/AuditLogPage').then((m) => ({ default: m.AuditLogPage })))
 const DashboardPage = lazy(() => import('@/pages/dashboard/DashboardPage').then((m) => ({ default: m.DashboardPage })))
 const WorkspacePage = lazy(() => import('@/pages/workspace/WorkspacePage').then((m) => ({ default: m.WorkspacePage })))
+const SnippetPage = lazy(() => import('@/pages/snippet/SnippetPage').then((m) => ({ default: m.SnippetPage })))
+const ApiTesterPage = lazy(() => import('@/pages/api-tester/ApiTesterPage').then((m) => ({ default: m.ApiTesterPage })))
+const RegexBuilderPage = lazy(() => import('@/pages/regex-builder/RegexBuilderPage').then((m) => ({ default: m.RegexBuilderPage })))
+const DataConverterPage = lazy(() => import('@/pages/data-converter/DataConverterPage').then((m) => ({ default: m.DataConverterPage })))
+const DiagramEditorPage = lazy(() => import('@/pages/diagram-editor/DiagramEditorPage').then((m) => ({ default: m.DiagramEditorPage })))
 
 export function MainLayout() {
   const { t } = useTranslation()
@@ -284,6 +290,26 @@ export function MainLayout() {
       return <WorkspacePage />
     }
 
+    if (view === 'snippets') {
+      return <SnippetPage />
+    }
+
+    if (view === 'apiTester') {
+      return <ApiTesterPage />
+    }
+
+    if (view === 'regexBuilder') {
+      return <RegexBuilderPage />
+    }
+
+    if (view === 'dataConverter') {
+      return <DataConverterPage />
+    }
+
+    if (view === 'diagramEditor') {
+      return <DiagramEditorPage />
+    }
+
     if (currentSessionId && view === 'chat') {
       return <ChatPage />
     }
@@ -308,13 +334,16 @@ export function MainLayout() {
         )}
         <HeaderTabs />
         <main id="main-content" className="flex-1 overflow-hidden">
-          <Suspense fallback={
-            <div className="flex-1 flex items-center justify-center h-full">
-              <div className="text-text-secondary text-sm">{t('common.loading')}</div>
-            </div>
-          }>
-            {renderContent()}
-          </Suspense>
+          <ErrorBoundary>
+            <Suspense fallback={
+              <div className="flex-1 flex flex-col items-center justify-center h-full gap-3">
+                <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+                <div className="text-text-secondary text-sm">{t('common.loading')}</div>
+              </div>
+            }>
+              {renderContent()}
+            </Suspense>
+          </ErrorBoundary>
         </main>
       </div>
       {searchOpen && <SearchModal />}

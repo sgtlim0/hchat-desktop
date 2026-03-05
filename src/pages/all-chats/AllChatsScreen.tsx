@@ -1,4 +1,5 @@
 import { useState, useMemo, useRef } from 'react'
+import { useShallow } from 'zustand/react/shallow'
 import { MessageSquare, Star, Search, Pin, Upload, Download } from 'lucide-react'
 import { useSessionStore } from '@/entities/session/session.store'
 import { getRelativeTime, getDateGroup } from '@/shared/lib/time'
@@ -11,7 +12,14 @@ type FilterType = 'all' | 'favorites' | 'projects' | 'pinned'
 
 export function AllChatsScreen() {
   const { t } = useTranslation()
-  const { sessions, messages, selectSession, importSession } = useSessionStore()
+  const { sessions, messages, selectSession, importSession } = useSessionStore(
+    useShallow((s) => ({
+      sessions: s.sessions,
+      messages: s.messages,
+      selectSession: s.selectSession,
+      importSession: s.importSession,
+    }))
+  )
   const [filter, setFilter] = useState<FilterType>('all')
   const [searchQuery, setSearchQuery] = useState('')
   const fileInputRef = useRef<HTMLInputElement>(null)

@@ -1,3 +1,4 @@
+import { useShallow } from 'zustand/react/shallow'
 import { Network, Play, Square } from 'lucide-react'
 import { useSwarmStore } from '@/entities/swarm/swarm.store'
 import { Button } from '@/shared/ui/Button'
@@ -18,7 +19,18 @@ function statusColor(status: AgentStatus): string {
 
 export function AgentSwarmBuilder() {
   const { t } = useTranslation()
-  const { agents, connections, selectedTemplate, isRunning, setTemplate, startSwarm, stopSwarm, resetSwarm } = useSwarmStore()
+  const { agents, connections, selectedTemplate, isRunning, setTemplate, startSwarm, stopSwarm, resetSwarm } = useSwarmStore(
+    useShallow((s) => ({
+      agents: s.agents,
+      connections: s.connections,
+      selectedTemplate: s.selectedTemplate,
+      isRunning: s.isRunning,
+      setTemplate: s.setTemplate,
+      startSwarm: s.startSwarm,
+      stopSwarm: s.stopSwarm,
+      resetSwarm: s.resetSwarm,
+    }))
+  )
 
   function statusLabel(status: AgentStatus): string {
     const map: Record<AgentStatus, string> = {

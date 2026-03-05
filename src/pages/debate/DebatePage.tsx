@@ -1,4 +1,5 @@
 import { useState, useRef } from 'react'
+import { useShallow } from 'zustand/react/shallow'
 import { ArrowLeft, Play, RotateCcw, Check, Loader2 } from 'lucide-react'
 import TextareaAutosize from 'react-textarea-autosize'
 import { useSessionStore } from '@/entities/session/session.store'
@@ -20,7 +21,18 @@ export function DebatePage() {
   const openaiApiKey = useSettingsStore((s) => s.openaiApiKey)
   const geminiApiKey = useSettingsStore((s) => s.geminiApiKey)
 
-  const { session, isRunning, startDebate, addRound, updateRoundResponse, setStatus, setSummary, reset } = useDebateStore()
+  const { session, isRunning, startDebate, addRound, updateRoundResponse, setStatus, setSummary, reset } = useDebateStore(
+    useShallow((s) => ({
+      session: s.session,
+      isRunning: s.isRunning,
+      startDebate: s.startDebate,
+      addRound: s.addRound,
+      updateRoundResponse: s.updateRoundResponse,
+      setStatus: s.setStatus,
+      setSummary: s.setSummary,
+      reset: s.reset,
+    }))
+  )
 
   const [topic, setTopic] = useState('')
   const [selectedModels, setSelectedModels] = useState<string[]>([])

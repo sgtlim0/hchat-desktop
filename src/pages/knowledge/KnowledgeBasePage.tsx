@@ -1,4 +1,5 @@
 import { useState, useRef } from 'react'
+import { useShallow } from 'zustand/react/shallow'
 import { BookOpen, Search, Plus, Trash2, FileText, Tag, FolderOpen, X, Upload } from 'lucide-react'
 import { useSessionStore } from '@/entities/session/session.store'
 import { useKnowledgeStore } from '@/entities/knowledge/knowledge.store'
@@ -23,7 +24,21 @@ export function KnowledgeBasePage() {
     addDocument,
     deleteDocument,
     updateDocument,
-  } = useKnowledgeStore()
+  } = useKnowledgeStore(
+    useShallow((s) => ({
+      documents: s.documents,
+      selectedDocumentId: s.selectedDocumentId,
+      searchQuery: s.searchQuery,
+      searchResults: s.searchResults,
+      categories: s.categories,
+      selectDocument: s.selectDocument,
+      searchDocuments: s.searchDocuments,
+      clearSearch: s.clearSearch,
+      addDocument: s.addDocument,
+      deleteDocument: s.deleteDocument,
+      updateDocument: s.updateDocument,
+    }))
+  )
 
   const [categoryFilter, setCategoryFilter] = useState<string>('all')
   const [showAddModal, setShowAddModal] = useState(false)

@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useShallow } from 'zustand/react/shallow'
 import {
   Workflow,
   Play,
@@ -79,7 +80,22 @@ export function WorkflowBuilderPage() {
     updateBlock,
     runWorkflow,
     stopWorkflow,
-  } = useWorkflowStore()
+  } = useWorkflowStore(
+    useShallow((s) => ({
+      workflows: s.workflows,
+      currentWorkflowId: s.currentWorkflowId,
+      isRunning: s.isRunning,
+      blockResults: s.blockResults,
+      createWorkflow: s.createWorkflow,
+      deleteWorkflow: s.deleteWorkflow,
+      selectWorkflow: s.selectWorkflow,
+      addBlock: s.addBlock,
+      removeBlock: s.removeBlock,
+      updateBlock: s.updateBlock,
+      runWorkflow: s.runWorkflow,
+      stopWorkflow: s.stopWorkflow,
+    }))
+  )
 
   const [isCreating, setIsCreating] = useState(false)
   const [newName, setNewName] = useState('')

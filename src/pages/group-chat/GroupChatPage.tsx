@@ -1,4 +1,5 @@
 import { useState, useRef } from 'react'
+import { useShallow } from 'zustand/react/shallow'
 import { ArrowLeft, Send, Square, Check, Trash2 } from 'lucide-react'
 import TextareaAutosize from 'react-textarea-autosize'
 import { useSessionStore } from '@/entities/session/session.store'
@@ -19,7 +20,18 @@ export function GroupChatPage() {
   const openaiApiKey = useSettingsStore((s) => s.openaiApiKey)
   const geminiApiKey = useSettingsStore((s) => s.geminiApiKey)
 
-  const { selectedModels, toggleModel, messages, addMessage, updateResponse, isStreaming, setStreaming, clearMessages } = useGroupChatStore()
+  const { selectedModels, toggleModel, messages, addMessage, updateResponse, isStreaming, setStreaming, clearMessages } = useGroupChatStore(
+    useShallow((s) => ({
+      selectedModels: s.selectedModels,
+      toggleModel: s.toggleModel,
+      messages: s.messages,
+      addMessage: s.addMessage,
+      updateResponse: s.updateResponse,
+      isStreaming: s.isStreaming,
+      setStreaming: s.setStreaming,
+      clearMessages: s.clearMessages,
+    }))
+  )
 
   const [input, setInput] = useState('')
   const [isComposing, setIsComposing] = useState(false)

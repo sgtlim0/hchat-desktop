@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useShallow } from 'zustand/react/shallow'
 import { ArrowLeft, Link2, Play, Square, Plus, Trash2, ChevronDown, GitBranch, Check, X } from 'lucide-react'
 import { useSessionStore } from '@/entities/session/session.store'
 import { usePromptChainStore } from '@/entities/prompt-chain/prompt-chain.store'
@@ -9,7 +10,21 @@ import type { ChainStepType } from '@/shared/types'
 export function PromptChainPage() {
   const { t } = useTranslation()
   const setView = useSessionStore((s) => s.setView)
-  const { chains, currentChainId, isRunning, createChain, updateChain, deleteChain, addStep, removeStep, selectChain, runChain, stopChain } = usePromptChainStore()
+  const { chains, currentChainId, isRunning, createChain, updateChain, deleteChain, addStep, removeStep, selectChain, runChain, stopChain } = usePromptChainStore(
+    useShallow((s) => ({
+      chains: s.chains,
+      currentChainId: s.currentChainId,
+      isRunning: s.isRunning,
+      createChain: s.createChain,
+      updateChain: s.updateChain,
+      deleteChain: s.deleteChain,
+      addStep: s.addStep,
+      removeStep: s.removeStep,
+      selectChain: s.selectChain,
+      runChain: s.runChain,
+      stopChain: s.stopChain,
+    }))
+  )
 
   const [isCreating, setIsCreating] = useState(false)
   const [newChainName, setNewChainName] = useState('')

@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useShallow } from 'zustand/react/shallow'
 import { ArrowLeft, Loader2, Plus, Trash2, Download, RefreshCw, ChevronRight, ChevronLeft, FileText } from 'lucide-react'
 import { useSessionStore } from '@/entities/session/session.store'
 import { useSettingsStore } from '@/entities/settings/settings.store'
@@ -46,7 +47,25 @@ export function DocWriterPage() {
     exportText,
     setStep,
     reset,
-  } = useDocWriterStore()
+  } = useDocWriterStore(
+    useShallow((s) => ({
+      currentProject: s.currentProject,
+      step: s.step,
+      isGenerating: s.isGenerating,
+      createProject: s.createProject,
+      setContext: s.setContext,
+      generateOutline: s.generateOutline,
+      updateOutlineSection: s.updateOutlineSection,
+      addOutlineSection: s.addOutlineSection,
+      removeOutlineSection: s.removeOutlineSection,
+      generateSectionContent: s.generateSectionContent,
+      updateSectionContent: s.updateSectionContent,
+      exportMarkdown: s.exportMarkdown,
+      exportText: s.exportText,
+      setStep: s.setStep,
+      reset: s.reset,
+    }))
+  )
 
   // Step 1 local state
   const [projectName, setProjectName] = useState('')

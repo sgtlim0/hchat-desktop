@@ -2,6 +2,7 @@ import { create } from 'zustand'
 import { DEFAULT_MODEL_ID, DEFAULT_AWS_REGION } from '@/shared/constants'
 import type { AwsCredentials, ThinkingDepth } from '@/shared/types'
 import type { Language } from '@/shared/i18n/types'
+import { encrypt, decryptWithMigration } from '@/shared/lib/crypto'
 
 const SETTINGS_KEY = 'hchat:settings'
 const LANGUAGE_KEY = 'hchat:language'
@@ -34,52 +35,67 @@ function saveSettings(settings: PersistedSettings): void {
   localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings))
 }
 
-function loadCredentials(): AwsCredentials | null {
-  try {
-    const raw = localStorage.getItem(CREDENTIALS_KEY)
-    return raw ? JSON.parse(raw) : null
-  } catch {
-    return null
-  }
-}
-
-function saveCredentials(credentials: AwsCredentials | null): void {
+async function saveCredentials(credentials: AwsCredentials | null): Promise<void> {
   if (credentials) {
-    localStorage.setItem(CREDENTIALS_KEY, JSON.stringify(credentials))
+    const encrypted = await encrypt(JSON.stringify(credentials))
+    localStorage.setItem(CREDENTIALS_KEY, encrypted)
   } else {
     localStorage.removeItem(CREDENTIALS_KEY)
   }
 }
 
-function loadOpenaiKey(): string | null {
+async function loadCredentialsAsync(): Promise<AwsCredentials | null> {
   try {
-    return localStorage.getItem(OPENAI_KEY)
+    const raw = localStorage.getItem(CREDENTIALS_KEY)
+    if (!raw) return null
+    const decrypted = await decryptWithMigration(raw, (encrypted) => {
+      localStorage.setItem(CREDENTIALS_KEY, encrypted)
+    })
+    return JSON.parse(decrypted)
   } catch {
     return null
   }
 }
 
-function saveOpenaiKey(key: string | null): void {
+async function saveOpenaiKey(key: string | null): Promise<void> {
   if (key) {
-    localStorage.setItem(OPENAI_KEY, key)
+    const encrypted = await encrypt(key)
+    localStorage.setItem(OPENAI_KEY, encrypted)
   } else {
     localStorage.removeItem(OPENAI_KEY)
   }
 }
 
-function loadGeminiKey(): string | null {
+async function loadOpenaiKeyAsync(): Promise<string | null> {
   try {
-    return localStorage.getItem(GEMINI_KEY)
+    const raw = localStorage.getItem(OPENAI_KEY)
+    if (!raw) return null
+    return await decryptWithMigration(raw, (encrypted) => {
+      localStorage.setItem(OPENAI_KEY, encrypted)
+    })
   } catch {
     return null
   }
 }
 
-function saveGeminiKey(key: string | null): void {
+async function saveGeminiKey(key: string | null): Promise<void> {
   if (key) {
-    localStorage.setItem(GEMINI_KEY, key)
+    const encrypted = await encrypt(key)
+    localStorage.setItem(GEMINI_KEY, encrypted)
   } else {
     localStorage.removeItem(GEMINI_KEY)
+  }
+}
+
+async function loadGeminiKeyAsync(): Promise<string | null> {
+  try {
+    const raw = localStorage.getItem(GEMINI_KEY)
+    if (!raw) return null
+    return await decryptWithMigration(raw, (encrypted) => {
+      localStorage.setItem(GEMINI_KEY, encrypted)
+    })
+  } catch {
+    return null
   }
 }
 
@@ -121,9 +137,6 @@ function buildPersistedSettings(s: {
 }
 
 const persisted = loadSettings()
-const savedCredentials = loadCredentials()
-const savedOpenaiKey = loadOpenaiKey()
-const savedGeminiKey = loadGeminiKey()
 const savedLanguage = loadLanguage()
 
 interface SettingsState {
@@ -157,6 +170,7 @@ interface SettingsState {
   setBudgetThreshold: (threshold: number) => void
   setGuardrailEnabled: (enabled: boolean) => void
   hasCredentials: () => boolean
+  hydrateSecrets: () => Promise<void>
 }
 
 export const useSettingsStore = create<SettingsState>((set, get) => ({
@@ -165,9 +179,9 @@ export const useSettingsStore = create<SettingsState>((set, get) => ({
   sidebarOpen: persisted.sidebarOpen ?? true,
   settingsOpen: false,
   settingsTab: 'api-keys',
-  credentials: savedCredentials,
-  openaiApiKey: savedOpenaiKey,
-  geminiApiKey: savedGeminiKey,
+  credentials: null,
+  openaiApiKey: null,
+  geminiApiKey: null,
   autoRouting: persisted.autoRouting ?? false,
   language: savedLanguage,
   thinkingDepth: (persisted.thinkingDepth as ThinkingDepth) ?? 'balanced',
@@ -195,17 +209,17 @@ export const useSettingsStore = create<SettingsState>((set, get) => ({
 
   setCredentials: (credentials) => {
     set({ credentials })
-    saveCredentials(credentials)
+    saveCredentials(credentials).catch(() => {})
   },
 
   setOpenaiApiKey: (key) => {
     set({ openaiApiKey: key })
-    saveOpenaiKey(key)
+    saveOpenaiKey(key).catch(() => {})
   },
 
   setGeminiApiKey: (key) => {
     set({ geminiApiKey: key })
-    saveGeminiKey(key)
+    saveGeminiKey(key).catch(() => {})
   },
 
   setAutoRouting: (enabled) => {
@@ -242,4 +256,16 @@ export const useSettingsStore = create<SettingsState>((set, get) => ({
     const { credentials } = get()
     return Boolean(credentials?.accessKeyId && credentials?.secretAccessKey && credentials?.region)
   },
+
+  hydrateSecrets: async () => {
+    const [credentials, openaiApiKey, geminiApiKey] = await Promise.all([
+      loadCredentialsAsync(),
+      loadOpenaiKeyAsync(),
+      loadGeminiKeyAsync(),
+    ])
+    set({ credentials, openaiApiKey, geminiApiKey })
+  },
 }))
+
+// Auto-hydrate encrypted secrets on module load
+useSettingsStore.getState().hydrateSecrets().catch(() => {})

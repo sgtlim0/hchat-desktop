@@ -1,3 +1,4 @@
+import { useShallow } from 'zustand/react/shallow'
 import { Layers, X } from 'lucide-react'
 import { useSessionStore } from '@/entities/session/session.store'
 import { useContextManagerStore } from '@/entities/context-manager/context-manager.store'
@@ -17,7 +18,17 @@ export function ContextManagerPage() {
     unpinMessage,
     setTemplate,
     toggleAutoCompression,
-  } = useContextManagerStore()
+  } = useContextManagerStore(
+    useShallow((s) => ({
+      pinnedMessages: s.pinnedMessages,
+      selectedTemplate: s.selectedTemplate,
+      autoCompression: s.autoCompression,
+      tokenUsage: s.tokenUsage,
+      unpinMessage: s.unpinMessage,
+      setTemplate: s.setTemplate,
+      toggleAutoCompression: s.toggleAutoCompression,
+    }))
+  )
 
   const usagePercent = (tokenUsage.used / tokenUsage.max) * 100
 

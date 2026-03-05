@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import { useShallow } from 'zustand/react/shallow'
 import { X, LayoutDashboard, Plus, GripVertical, MessageSquare, BarChart3, Zap, Database, CalendarClock, Star, Eye, EyeOff } from 'lucide-react'
 import { useSessionStore } from '@/entities/session/session.store'
 import { useDashboardStore } from '@/entities/dashboard/dashboard.store'
@@ -8,7 +9,15 @@ import { Button } from '@/shared/ui/Button'
 export function DashboardPage() {
   const { t } = useTranslation()
   const setView = useSessionStore((s) => s.setView)
-  const { layouts, activeLayoutId, hydrate, selectLayout, updateWidget } = useDashboardStore()
+  const { layouts, activeLayoutId, hydrate, selectLayout, updateWidget } = useDashboardStore(
+    useShallow((s) => ({
+      layouts: s.layouts,
+      activeLayoutId: s.activeLayoutId,
+      hydrate: s.hydrate,
+      selectLayout: s.selectLayout,
+      updateWidget: s.updateWidget,
+    }))
+  )
 
   useEffect(() => {
     hydrate()

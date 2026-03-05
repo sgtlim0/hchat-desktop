@@ -1,3 +1,4 @@
+import { useShallow } from 'zustand/react/shallow'
 import { CalendarClock, Plus, Play, Pause, Trash2, CheckCircle2, AlertCircle } from 'lucide-react'
 import { useScheduleStore } from '@/entities/schedule/schedule.store'
 import { Button } from '@/shared/ui/Button'
@@ -18,7 +19,16 @@ function statusDot(status: ScheduleStatus): string {
 
 export function ScheduleManager() {
   const { t } = useTranslation()
-  const { filterTab, setFilterTab, togglePause, deleteSchedule, filteredSchedules, stats } = useScheduleStore()
+  const { filterTab, setFilterTab, togglePause, deleteSchedule, filteredSchedules, stats } = useScheduleStore(
+    useShallow((s) => ({
+      filterTab: s.filterTab,
+      setFilterTab: s.setFilterTab,
+      togglePause: s.togglePause,
+      deleteSchedule: s.deleteSchedule,
+      filteredSchedules: s.filteredSchedules,
+      stats: s.stats,
+    }))
+  )
 
   const FILTER_TABS: { id: FilterTab; label: string }[] = [
     { id: 'all', label: t('schedule.all') },

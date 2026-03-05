@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useShallow } from 'zustand/react/shallow'
 import { Plus, Star, Search, Trash2, Edit3, Play, X } from 'lucide-react'
 import { usePromptLibraryStore } from '@/entities/prompt-library/prompt-library.store'
 import { useSessionStore } from '@/entities/session/session.store'
@@ -11,7 +12,16 @@ const CATEGORIES: PromptCategory[] = ['general', 'coding', 'writing', 'analysis'
 
 export function PromptLibraryPage() {
   const { t } = useTranslation()
-  const { prompts, addPrompt, updatePrompt, deletePrompt, toggleFavorite, incrementUsage } = usePromptLibraryStore()
+  const { prompts, addPrompt, updatePrompt, deletePrompt, toggleFavorite, incrementUsage } = usePromptLibraryStore(
+    useShallow((s) => ({
+      prompts: s.prompts,
+      addPrompt: s.addPrompt,
+      updatePrompt: s.updatePrompt,
+      deletePrompt: s.deletePrompt,
+      toggleFavorite: s.toggleFavorite,
+      incrementUsage: s.incrementUsage,
+    }))
+  )
   const createSession = useSessionStore((s) => s.createSession)
   const setPendingPrompt = useSessionStore((s) => s.setPendingPrompt)
 

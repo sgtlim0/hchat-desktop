@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import { useShallow } from 'zustand/react/shallow'
 import { X, Shield, Download, Filter, Search, Trash2 } from 'lucide-react'
 import { useSessionStore } from '@/entities/session/session.store'
 import { useAuditStore } from '@/entities/audit/audit.store'
@@ -22,7 +23,23 @@ export function AuditLogPage() {
     getFilteredEntries,
     exportAsJson,
     exportAsCsv,
-  } = useAuditStore()
+  } = useAuditStore(
+    useShallow((s) => ({
+      entries: s.entries,
+      filterAction: s.filterAction,
+      filterDateRange: s.filterDateRange,
+      searchQuery: s.searchQuery,
+      hydrated: s.hydrated,
+      hydrate: s.hydrate,
+      clearAll: s.clearAll,
+      setFilterAction: s.setFilterAction,
+      setFilterDateRange: s.setFilterDateRange,
+      setSearchQuery: s.setSearchQuery,
+      getFilteredEntries: s.getFilteredEntries,
+      exportAsJson: s.exportAsJson,
+      exportAsCsv: s.exportAsCsv,
+    }))
+  )
 
   useEffect(() => {
     if (!hydrated) {

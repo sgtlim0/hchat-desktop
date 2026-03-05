@@ -1,3 +1,4 @@
+import { useShallow } from 'zustand/react/shallow'
 import { Brain, Plus, Search, Pencil, Trash2 } from 'lucide-react'
 import { useMemoryStore } from '@/entities/memory/memory.store'
 import { Button } from '@/shared/ui/Button'
@@ -16,7 +17,18 @@ export function MemoryPanel() {
     setSearchQuery,
     deleteEntry,
     filteredEntries,
-  } = useMemoryStore()
+  } = useMemoryStore(
+    useShallow((s) => ({
+      scope: s.scope,
+      autoExtract: s.autoExtract,
+      searchQuery: s.searchQuery,
+      setScope: s.setScope,
+      setAutoExtract: s.setAutoExtract,
+      setSearchQuery: s.setSearchQuery,
+      deleteEntry: s.deleteEntry,
+      filteredEntries: s.filteredEntries,
+    }))
+  )
 
   const SCOPE_TABS: { id: MemoryScope; label: string }[] = [
     { id: 'session', label: t('memory.sessionMemory') },

@@ -1,3 +1,4 @@
+import { useShallow } from 'zustand/react/shallow'
 import { useProjectStore } from '@/entities/project/project.store'
 import { useSessionStore } from '@/entities/session/session.store'
 import { Button } from '@/shared/ui/Button'
@@ -8,8 +9,14 @@ import { useTranslation } from '@/shared/i18n'
 
 export function ProjectsScreen() {
   const { t } = useTranslation()
-  const { projects, selectProject, createProject } = useProjectStore()
-  const { setView } = useSessionStore()
+  const { projects, selectProject, createProject } = useProjectStore(
+    useShallow((s) => ({
+      projects: s.projects,
+      selectProject: s.selectProject,
+      createProject: s.createProject,
+    }))
+  )
+  const setView = useSessionStore((s) => s.setView)
   const [showCreateModal, setShowCreateModal] = useState(false)
   const [newProjectName, setNewProjectName] = useState('')
   const [newProjectDescription, setNewProjectDescription] = useState('')

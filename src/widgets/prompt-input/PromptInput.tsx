@@ -19,6 +19,7 @@ import { useOnlineStatus } from '@/shared/hooks/useOnlineStatus'
 import { estimateTokens } from '@/shared/lib/token-estimator'
 import * as stt from '@/shared/lib/stt'
 import { detectSensitiveData, getDetectionLabel } from '@/shared/lib/guardrail'
+import { createStreamThrottle } from '@/shared/lib/stream-throttle'
 
 interface PromptInputProps {
   onSend?: (message: string) => void
@@ -265,6 +266,7 @@ export function PromptInput({
     let fullText = ''
     let actualInputTokens: number | null = null
     let actualOutputTokens: number | null = null
+    const throttle = createStreamThrottle()
 
     try {
       // Build system prompt with optional PDF/Spreadsheet context
@@ -292,11 +294,14 @@ export function PromptInput({
       for await (const event of stream) {
         if (event.type === 'text' && event.content) {
           fullText += event.content
-          const currentText = fullText
-          updateLastMessage(sessionId, assistantMessageId, (msg) => ({
-            ...msg,
-            segments: [{ type: 'text', content: currentText }],
-          }))
+          const sid = sessionId
+          const mid = assistantMessageId
+          throttle.update(fullText, (text) => {
+            updateLastMessage(sid, mid, (msg) => ({
+              ...msg,
+              segments: [{ type: 'text', content: text }],
+            }))
+          })
         } else if (event.type === 'usage') {
           actualInputTokens = event.inputTokens ?? null
           actualOutputTokens = event.outputTokens ?? null
@@ -320,6 +325,13 @@ export function PromptInput({
         }))
       }
     } finally {
+      // Flush any pending throttled update
+      throttle.flush((text) => {
+        updateLastMessage(sessionId, assistantMessageId, (msg) => ({
+          ...msg,
+          segments: [{ type: 'text', content: text }],
+        }))
+      })
       abortRef.current = null
       setIsSending(false)
       setSessionStreaming(sessionId, false)

@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useShallow } from 'zustand/react/shallow'
 import { ArrowLeft, Plus, Trash2, Check } from 'lucide-react'
 import { useProjectStore } from '@/entities/project/project.store'
 import { useSessionStore } from '@/entities/session/session.store'
@@ -9,8 +10,22 @@ import { useTranslation } from '@/shared/i18n'
 
 export function ProjectDetailScreen() {
   const { t } = useTranslation()
-  const { projects, selectedProjectId, updateProject, deleteProject, selectProject } = useProjectStore()
-  const { sessions, setView, selectSession } = useSessionStore()
+  const { projects, selectedProjectId, updateProject, deleteProject, selectProject } = useProjectStore(
+    useShallow((s) => ({
+      projects: s.projects,
+      selectedProjectId: s.selectedProjectId,
+      updateProject: s.updateProject,
+      deleteProject: s.deleteProject,
+      selectProject: s.selectProject,
+    }))
+  )
+  const { sessions, setView, selectSession } = useSessionStore(
+    useShallow((s) => ({
+      sessions: s.sessions,
+      setView: s.setView,
+      selectSession: s.selectSession,
+    }))
+  )
   const [showAddMemory, setShowAddMemory] = useState(false)
   const [newMemoryKey, setNewMemoryKey] = useState('')
   const [newMemoryValue, setNewMemoryValue] = useState('')

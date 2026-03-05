@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useMemo, useCallback } from 'react'
+import { useShallow } from 'zustand/react/shallow'
 import { Search, Check, MessageSquare, FolderOpen, FileText } from 'lucide-react'
 import { useSessionStore } from '@/entities/session/session.store'
 import { useProjectStore } from '@/entities/project/project.store'
@@ -16,9 +17,23 @@ interface SearchResult {
 
 export function SearchModal() {
   const { t } = useTranslation()
-  const { searchOpen, setSearchOpen, sessions, currentSessionId, selectSession, searchMessages } = useSessionStore()
+  const { searchOpen, setSearchOpen, sessions, currentSessionId, selectSession, searchMessages } = useSessionStore(
+    useShallow((s) => ({
+      searchOpen: s.searchOpen,
+      setSearchOpen: s.setSearchOpen,
+      sessions: s.sessions,
+      currentSessionId: s.currentSessionId,
+      selectSession: s.selectSession,
+      searchMessages: s.searchMessages,
+    }))
+  )
   const setView = useSessionStore((s) => s.setView)
-  const { projects, selectProject } = useProjectStore()
+  const { projects, selectProject } = useProjectStore(
+    useShallow((s) => ({
+      projects: s.projects,
+      selectProject: s.selectProject,
+    }))
+  )
   const [query, setQuery] = useState('')
   const [selectedIndex, setSelectedIndex] = useState(0)
   const inputRef = useRef<HTMLInputElement>(null)

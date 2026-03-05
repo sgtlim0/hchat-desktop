@@ -1,3 +1,4 @@
+import { useShallow } from 'zustand/react/shallow'
 import { X, HardDrive, Search, Trash2 } from 'lucide-react'
 import { useSessionStore } from '@/entities/session/session.store'
 import { useCacheStore } from '@/entities/cache/cache.store'
@@ -20,7 +21,21 @@ export function CacheControlPage() {
     clearAll,
     getTotalSaved,
     getFilteredEntries,
-  } = useCacheStore()
+  } = useCacheStore(
+    useShallow((s) => ({
+      entries: s.entries,
+      isEnabled: s.isEnabled,
+      ttlDays: s.ttlDays,
+      searchQuery: s.searchQuery,
+      toggleEnabled: s.toggleEnabled,
+      setTtlDays: s.setTtlDays,
+      setSearchQuery: s.setSearchQuery,
+      deleteEntry: s.deleteEntry,
+      clearAll: s.clearAll,
+      getTotalSaved: s.getTotalSaved,
+      getFilteredEntries: s.getFilteredEntries,
+    }))
+  )
 
   const totalSaved = getTotalSaved()
   const filteredEntries = getFilteredEntries()

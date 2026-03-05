@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useShallow } from 'zustand/react/shallow'
 import { useTranslation } from '@/shared/i18n'
 import { useCollabStore } from '@/entities/collab/collab.store'
 import {
@@ -29,7 +30,21 @@ export function CollabRoomPage() {
     sendMessage,
     setTyping,
     deleteRoom,
-  } = useCollabStore()
+  } = useCollabStore(
+    useShallow((s) => ({
+      rooms: s.rooms,
+      currentRoomId: s.currentRoomId,
+      localParticipantId: s.localParticipantId,
+      messages: s.messages,
+      createRoom: s.createRoom,
+      joinRoom: s.joinRoom,
+      selectRoom: s.selectRoom,
+      leaveRoom: s.leaveRoom,
+      sendMessage: s.sendMessage,
+      setTyping: s.setTyping,
+      deleteRoom: s.deleteRoom,
+    }))
+  )
   const addToast = useToastStore((s) => s.addToast)
 
   const [showCreateModal, setShowCreateModal] = useState(false)

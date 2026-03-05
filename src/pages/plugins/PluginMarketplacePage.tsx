@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useShallow } from 'zustand/react/shallow'
 import { X, Puzzle, Search, Shield, Download, Settings, Trash2 } from 'lucide-react'
 import { useSessionStore } from '@/entities/session/session.store'
 import { usePluginStore } from '@/entities/plugins/plugin.store'
@@ -19,7 +20,20 @@ export function PluginMarketplacePage() {
     enablePlugin,
     disablePlugin,
     deletePlugin,
-  } = usePluginStore()
+  } = usePluginStore(
+    useShallow((s) => ({
+      plugins: s.plugins,
+      searchQuery: s.searchQuery,
+      selectedPluginId: s.selectedPluginId,
+      setSearchQuery: s.setSearchQuery,
+      selectPlugin: s.selectPlugin,
+      installPlugin: s.installPlugin,
+      uninstallPlugin: s.uninstallPlugin,
+      enablePlugin: s.enablePlugin,
+      disablePlugin: s.disablePlugin,
+      deletePlugin: s.deletePlugin,
+    }))
+  )
 
   const [activeTab, setActiveTab] = useState<'all' | 'installed' | 'available'>('all')
 

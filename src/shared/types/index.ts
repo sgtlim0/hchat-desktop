@@ -96,7 +96,7 @@ export interface Skill {
   icon: string
 }
 
-export type ViewState = 'home' | 'chat' | 'settings' | 'allChats' | 'projects' | 'projectDetail' | 'quickChat' | 'memory' | 'agentSwarm' | 'schedule' | 'groupChat' | 'promptLibrary' | 'debate' | 'aiTools' | 'imageGen' | 'agent' | 'translate' | 'docWriter' | 'ocr' | 'promptChain' | 'knowledgeBase' | 'workflow' | 'collab' | 'contextManager' | 'insights' | 'plugins' | 'themeBuilder' | 'batchQueue' | 'sessionInsights' | 'cacheControl' | 'auditLog' | 'dashboard' | 'workspace'
+export type ViewState = 'home' | 'chat' | 'settings' | 'allChats' | 'projects' | 'projectDetail' | 'quickChat' | 'memory' | 'agentSwarm' | 'schedule' | 'groupChat' | 'promptLibrary' | 'debate' | 'aiTools' | 'imageGen' | 'agent' | 'translate' | 'docWriter' | 'ocr' | 'promptChain' | 'knowledgeBase' | 'workflow' | 'collab' | 'contextManager' | 'insights' | 'plugins' | 'themeBuilder' | 'batchQueue' | 'sessionInsights' | 'cacheControl' | 'auditLog' | 'dashboard' | 'workspace' | 'snippets' | 'apiTester' | 'regexBuilder' | 'dataConverter' | 'diagramEditor'
 
 // Group Chat types
 
@@ -708,6 +708,102 @@ export interface Workspace {
   sharedPromptIds: string[]
   sharedKnowledgeIds: string[]
   activities: WorkspaceActivity[]
+  createdAt: string
+  updatedAt: string
+}
+
+// Code Snippet types (Phase 14)
+
+export interface CodeSnippet {
+  id: string
+  title: string
+  language: string
+  code: string
+  description: string
+  tags: string[]
+  isFavorite: boolean
+  usageCount: number
+  createdAt: string
+  updatedAt: string
+}
+
+// API Tester types (Phase 14)
+
+export type HttpMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
+
+export interface ApiHeader {
+  key: string
+  value: string
+  enabled: boolean
+}
+
+export interface ApiRequest {
+  id: string
+  name: string
+  method: HttpMethod
+  url: string
+  headers: ApiHeader[]
+  body: string
+  collectionId?: string
+  createdAt: string
+  updatedAt: string
+}
+
+export interface ApiResponse {
+  status: number
+  statusText: string
+  headers: Record<string, string>
+  body: string
+  duration: number
+  size: number
+  timestamp: string
+}
+
+export interface ApiCollection {
+  id: string
+  name: string
+  description: string
+  requestIds: string[]
+  createdAt: string
+}
+
+// Regex Builder types (Phase 14)
+
+export interface RegexPattern {
+  id: string
+  name: string
+  pattern: string
+  flags: string
+  description: string
+  testInput: string
+  isFavorite: boolean
+  createdAt: string
+  updatedAt: string
+}
+
+// Data Converter types (Phase 14)
+
+export type DataFormat = 'json' | 'yaml'
+
+export interface ConversionHistory {
+  id: string
+  sourceFormat: DataFormat
+  targetFormat: DataFormat
+  sourceContent: string
+  targetContent: string
+  createdAt: string
+}
+
+// Diagram Editor types (Phase 14)
+
+export type DiagramType = 'flowchart' | 'sequence' | 'class' | 'er' | 'gantt' | 'pie' | 'mindmap'
+
+export interface Diagram {
+  id: string
+  title: string
+  type: DiagramType
+  code: string
+  isFavorite: boolean
   createdAt: string
   updatedAt: string
 }

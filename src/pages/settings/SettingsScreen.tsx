@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
+import { useShallow } from 'zustand/react/shallow'
 import { Key, User, Sparkles, Palette, Puzzle, Plug, Monitor, Shield, Code, X, Radio, BarChart3, UserCircle, Trash2, Plus, HardDrive } from 'lucide-react'
 import { useSettingsStore } from '@/entities/settings/settings.store'
 import { useChannelStore } from '@/entities/channel/channel.store'
@@ -58,13 +59,50 @@ export function SettingsScreen() {
     setAutoRouting,
     language,
     setLanguage,
-  } = useSettingsStore()
-  const { slack, telegram, updateSlack, updateTelegram, testSlackConnection, connectTelegram, testStatus: channelTestStatus } = useChannelStore()
+  } = useSettingsStore(
+    useShallow((s) => ({
+      settingsTab: s.settingsTab,
+      setSettingsTab: s.setSettingsTab,
+      setSettingsOpen: s.setSettingsOpen,
+      darkMode: s.darkMode,
+      toggleDarkMode: s.toggleDarkMode,
+      credentials: s.credentials,
+      setCredentials: s.setCredentials,
+      selectedModel: s.selectedModel,
+      setSelectedModel: s.setSelectedModel,
+      openaiApiKey: s.openaiApiKey,
+      setOpenaiApiKey: s.setOpenaiApiKey,
+      geminiApiKey: s.geminiApiKey,
+      setGeminiApiKey: s.setGeminiApiKey,
+      autoRouting: s.autoRouting,
+      setAutoRouting: s.setAutoRouting,
+      language: s.language,
+      setLanguage: s.setLanguage,
+    }))
+  )
+  const { slack, telegram, updateSlack, updateTelegram, testSlackConnection, connectTelegram, testStatus: channelTestStatus } = useChannelStore(
+    useShallow((s) => ({
+      slack: s.slack,
+      telegram: s.telegram,
+      updateSlack: s.updateSlack,
+      updateTelegram: s.updateTelegram,
+      testSlackConnection: s.testSlackConnection,
+      connectTelegram: s.connectTelegram,
+      testStatus: s.testStatus,
+    }))
+  )
   const usageEntries = useUsageStore((s) => s.entries)
 
   const clearAllUsage = useUsageStore((s) => s.clearAll)
   const getCategorySummary = useUsageStore((s) => s.getCategorySummary)
-  const { personas, addPersona, updatePersona: updatePersonaStore, deletePersona: deletePersonaAction } = usePersonaStore()
+  const { personas, addPersona, updatePersona: updatePersonaStore, deletePersona: deletePersonaAction } = usePersonaStore(
+    useShallow((s) => ({
+      personas: s.personas,
+      addPersona: s.addPersona,
+      updatePersona: s.updatePersona,
+      deletePersona: s.deletePersona,
+    }))
+  )
 
   // Persona form state
   const [personaForm, setPersonaForm] = useState<Partial<Persona> | null>(null)

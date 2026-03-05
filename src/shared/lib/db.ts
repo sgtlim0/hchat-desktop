@@ -3,7 +3,8 @@ import type {
   Message, Session, Project, UsageEntry, SavedPrompt, Persona, Folder, Tag,
   MemoryEntry, Schedule, SwarmAgent, SwarmConnection, ChannelConfig, Artifact,
   PinnedMessage, InsightReport, Plugin, CustomTheme, BatchJob, CacheEntry, AuditEntry,
-  DashboardLayout, Workspace,
+  DashboardLayout, Workspace, CodeSnippet, ApiRequest, ApiCollection, RegexPattern,
+  ConversionHistory, Diagram,
 } from '@/shared/types'
 
 const db = new Dexie('hchat-desktop') as Dexie & {
@@ -30,6 +31,12 @@ const db = new Dexie('hchat-desktop') as Dexie & {
   auditEntries: EntityTable<AuditEntry, 'id'>
   dashboardLayouts: EntityTable<DashboardLayout, 'id'>
   workspaces: EntityTable<Workspace, 'id'>
+  snippets: EntityTable<CodeSnippet, 'id'>
+  apiRequests: EntityTable<ApiRequest, 'id'>
+  apiCollections: EntityTable<ApiCollection, 'id'>
+  regexPatterns: EntityTable<RegexPattern, 'id'>
+  conversionHistory: EntityTable<ConversionHistory, 'id'>
+  diagrams: EntityTable<Diagram, 'id'>
 }
 
 db.version(1).stores({
@@ -115,6 +122,12 @@ db.version(7).stores({
   auditEntries: 'id, action, createdAt',
   dashboardLayouts: 'id, updatedAt',
   workspaces: 'id, updatedAt',
+  snippets: 'id, language, updatedAt',
+  apiRequests: 'id, collectionId, updatedAt',
+  apiCollections: 'id',
+  regexPatterns: 'id, updatedAt',
+  conversionHistory: 'id, createdAt',
+  diagrams: 'id, type, updatedAt',
 })
 
 db.version(6).stores({
@@ -494,6 +507,88 @@ export async function putWorkspace(workspace: Workspace): Promise<void> {
 
 export async function deleteWorkspaceFromDb(id: string): Promise<void> {
   await db.workspaces.delete(id)
+}
+
+// Code Snippet CRUD (Phase 14)
+
+export async function getAllSnippets(): Promise<CodeSnippet[]> {
+  return db.snippets.orderBy('updatedAt').reverse().toArray()
+}
+
+export async function putSnippet(snippet: CodeSnippet): Promise<void> {
+  await db.snippets.put(snippet)
+}
+
+export async function deleteSnippetFromDb(id: string): Promise<void> {
+  await db.snippets.delete(id)
+}
+
+// API Tester CRUD (Phase 14)
+
+export async function getAllApiRequests(): Promise<ApiRequest[]> {
+  return db.apiRequests.orderBy('updatedAt').reverse().toArray()
+}
+
+export async function putApiRequest(request: ApiRequest): Promise<void> {
+  await db.apiRequests.put(request)
+}
+
+export async function deleteApiRequestFromDb(id: string): Promise<void> {
+  await db.apiRequests.delete(id)
+}
+
+export async function getAllApiCollections(): Promise<ApiCollection[]> {
+  return db.apiCollections.toArray()
+}
+
+export async function putApiCollection(collection: ApiCollection): Promise<void> {
+  await db.apiCollections.put(collection)
+}
+
+export async function deleteApiCollectionFromDb(id: string): Promise<void> {
+  await db.apiCollections.delete(id)
+}
+
+// Regex Pattern CRUD (Phase 14)
+
+export async function getAllRegexPatterns(): Promise<RegexPattern[]> {
+  return db.regexPatterns.orderBy('updatedAt').reverse().toArray()
+}
+
+export async function putRegexPattern(pattern: RegexPattern): Promise<void> {
+  await db.regexPatterns.put(pattern)
+}
+
+export async function deleteRegexPatternFromDb(id: string): Promise<void> {
+  await db.regexPatterns.delete(id)
+}
+
+// Conversion History CRUD (Phase 14)
+
+export async function getAllConversionHistory(): Promise<ConversionHistory[]> {
+  return db.conversionHistory.orderBy('createdAt').reverse().toArray()
+}
+
+export async function putConversionHistory(entry: ConversionHistory): Promise<void> {
+  await db.conversionHistory.put(entry)
+}
+
+export async function clearConversionHistory(): Promise<void> {
+  await db.conversionHistory.clear()
+}
+
+// Diagram CRUD (Phase 14)
+
+export async function getAllDiagrams(): Promise<Diagram[]> {
+  return db.diagrams.orderBy('updatedAt').reverse().toArray()
+}
+
+export async function putDiagram(diagram: Diagram): Promise<void> {
+  await db.diagrams.put(diagram)
+}
+
+export async function deleteDiagramFromDb(id: string): Promise<void> {
+  await db.diagrams.delete(id)
 }
 
 export { db }

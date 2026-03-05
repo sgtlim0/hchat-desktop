@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useShallow } from 'zustand/react/shallow'
 import { X, ListTodo, Plus, Pause, Play, XCircle, Trash2 } from 'lucide-react'
 import { useSessionStore } from '@/entities/session/session.store'
 import { useBatchStore } from '@/entities/batch/batch.store'
@@ -9,7 +10,17 @@ import type { BatchJob, BatchPriority } from '@/shared/types'
 export function BatchQueuePage() {
   const { t } = useTranslation()
   const setView = useSessionStore((s) => s.setView)
-  const { jobs, selectedJobId, selectJob, pauseJob, resumeJob, cancelJob, deleteJob } = useBatchStore()
+  const { jobs, selectedJobId, selectJob, pauseJob, resumeJob, cancelJob, deleteJob } = useBatchStore(
+    useShallow((s) => ({
+      jobs: s.jobs,
+      selectedJobId: s.selectedJobId,
+      selectJob: s.selectJob,
+      pauseJob: s.pauseJob,
+      resumeJob: s.resumeJob,
+      cancelJob: s.cancelJob,
+      deleteJob: s.deleteJob,
+    }))
+  )
   const [showModal, setShowModal] = useState(false)
 
   const selectedJob = jobs.find((j) => j.id === selectedJobId)

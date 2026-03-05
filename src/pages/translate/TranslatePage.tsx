@@ -1,4 +1,5 @@
 import { useState, useRef, useCallback } from 'react'
+import { useShallow } from 'zustand/react/shallow'
 import { ArrowLeft, Upload, X, Download, Copy, Loader2, RotateCcw, FileText, StopCircle } from 'lucide-react'
 import { useSessionStore } from '@/entities/session/session.store'
 import { useSettingsStore } from '@/entities/settings/settings.store'
@@ -36,7 +37,23 @@ export function TranslatePage() {
     engine, sourceLang, targetLang, files, isProcessing,
     setEngine, setSourceLang, setTargetLang,
     addFiles, removeFile, updateFile, setProcessing, clearAll,
-  } = useTranslateStore()
+  } = useTranslateStore(
+    useShallow((s) => ({
+      engine: s.engine,
+      sourceLang: s.sourceLang,
+      targetLang: s.targetLang,
+      files: s.files,
+      isProcessing: s.isProcessing,
+      setEngine: s.setEngine,
+      setSourceLang: s.setSourceLang,
+      setTargetLang: s.setTargetLang,
+      addFiles: s.addFiles,
+      removeFile: s.removeFile,
+      updateFile: s.updateFile,
+      setProcessing: s.setProcessing,
+      clearAll: s.clearAll,
+    }))
+  )
 
   const [isDragOver, setIsDragOver] = useState(false)
   const [selectedFileId, setSelectedFileId] = useState<string | null>(null)

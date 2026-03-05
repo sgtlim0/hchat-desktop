@@ -102,7 +102,7 @@ entities/
 | `darkMode` | 다크 모드 활성화 여부 |
 | `sidebarOpen` | 사이드바 표시 여부 |
 | `settingsOpen` | 설정 패널 표시 여부 |
-| `credentials` | AWS/OpenAI/Gemini 자격증명 |
+| `credentials` | AWS/OpenAI/Gemini 자격증명 (AES-GCM 256-bit 암호화) |
 | `language` | UI 언어 (ko/en) |
 | `systemPrompt` | 시스템 프롬프트 |
 

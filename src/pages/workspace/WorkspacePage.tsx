@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useShallow } from 'zustand/react/shallow'
 import { X, Users2, Plus, UserPlus, BookOpen, Database, Activity, Crown, Pencil, Eye, Trash2 } from 'lucide-react'
 import { useSessionStore } from '@/entities/session/session.store'
 import { useWorkspaceStore } from '@/entities/workspace/workspace.store'
@@ -9,7 +10,14 @@ import type { Workspace, WorkspaceRole } from '@/shared/types'
 export function WorkspacePage() {
   const { t } = useTranslation()
   const setView = useSessionStore((s) => s.setView)
-  const { workspaces, selectedWorkspaceId, selectWorkspace, deleteWorkspace } = useWorkspaceStore()
+  const { workspaces, selectedWorkspaceId, selectWorkspace, deleteWorkspace } = useWorkspaceStore(
+    useShallow((s) => ({
+      workspaces: s.workspaces,
+      selectedWorkspaceId: s.selectedWorkspaceId,
+      selectWorkspace: s.selectWorkspace,
+      deleteWorkspace: s.deleteWorkspace,
+    }))
+  )
   const [showCreateModal, setShowCreateModal] = useState(false)
 
   const selectedWorkspace = workspaces.find((w) => w.id === selectedWorkspaceId)

@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useShallow } from 'zustand/react/shallow'
 import { BarChart3, X, TrendingUp, DollarSign, Zap } from 'lucide-react'
 import { useSessionStore } from '@/entities/session/session.store'
 import { useInsightsStore } from '@/entities/insights/insights.store'
@@ -10,7 +11,14 @@ type Tab = 'quality' | 'recommendations' | 'reports'
 export function InsightsDashboardPage() {
   const { t } = useTranslation()
   const setView = useSessionStore((s) => s.setView)
-  const { qualityScores, recommendations, reports, addReport } = useInsightsStore()
+  const { qualityScores, recommendations, reports, addReport } = useInsightsStore(
+    useShallow((s) => ({
+      qualityScores: s.qualityScores,
+      recommendations: s.recommendations,
+      reports: s.reports,
+      addReport: s.addReport,
+    }))
+  )
   const [activeTab, setActiveTab] = useState<Tab>('quality')
 
   function handleGenerateReport(type: 'weekly' | 'monthly') {
