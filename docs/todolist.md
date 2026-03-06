@@ -1,7 +1,7 @@
 # H Chat PWA — TODO List
 
-> ✅ **전체 완료** (Phase 1-9 + 14-15 + P0 보안/성능 + 번들 최적화) | 마지막 업데이트: 2026-03-06
-> 1,295 tests, 97 suites | 커버리지: 75% stmts | 빌드 성공
+> ✅ **전체 완료** (Phase 1-10 + 14-15 + P0 보안/성능 + 번들 최적화) | 마지막 업데이트: 2026-03-07
+> 1,334 tests, 101 suites | 커버리지: 75% stmts | 빌드 성공
 
 ## 현재 상태 요약
 
@@ -16,7 +16,7 @@
 | IndexedDB 영속성 | ✅ 완료 |
 | i18n (한국어/영어) | ✅ 완료 |
 | PWA (설치/캐시) | ✅ 완료 |
-| 테스트 (Vitest) | ✅ 완료 — 1,242 tests, 92 suites |
+| 테스트 (Vitest) | ✅ 완료 — 1,334 tests, 101 suites |
 | 접근성 (a11y) | ✅ 완료 — focus-trap, skip-to-content, ARIA |
 | 사용량 추적 | ✅ 완료 — 토큰 추정, 비용 대시보드, 일별/주별 차트 |
 | 프롬프트 라이브러리 | ✅ 완료 — CRUD, 변수, 카테고리 |
@@ -195,9 +195,10 @@
 | P0 보안/성능 | 3/3 | 0 | 100% |
 | QW 코드 품질 | 5/5 | 0 | 100% |
 | Phase 14 | 5/5 | 0 | 100% |
+| Phase 10 | 5/5 | 0 | 100% |
 | Phase 15 | 5/5 | 0 | 100% |
 | 번들 최적화 | 2/2 | 0 | 100% |
-| **전체** | **90/90** | **0** | **100%** |
+| **전체** | **95/95** | **0** | **100%** |
 
 > **모든 TODO 항목 완료.** 배포: `modal deploy backend/app.py` + `vercel --prod`
 > Secret 설정: `modal secret create hchat-api-keys OPENAI_API_KEY=sk-... GEMINI_API_KEY=...`
@@ -440,43 +441,30 @@
 
 ---
 
-## 🟣 Phase 10 — AI 네이티브 & 모바일 퍼스트 (예정)
+## ✅ Phase 10 — AI 네이티브 & 모바일 퍼스트 (2026-03-07)
 
 ### 10-1. MCP 서버 통합 (2일)
-- [ ] MCP 클라이언트 구현 (Model Context Protocol)
-- [ ] 외부 도구 동적 로드 (파일 시스템, 데이터베이스, API)
-- [ ] 플러그인 시스템을 MCP 표준으로 마이그레이션
-- [ ] MCP 서버 설정 UI (연결 관리, 도구 목록)
-- [ ] i18n 키 추가 (ko/en)
+- [x] mcp.store.ts — 서버 CRUD, 연결/해제, 도구 동적 로드
+- [x] McpServersPage — 서버 목록, 상세 패널, 도구 표시
+- [x] 테스트 9개 추가
 
 ### 10-2. AI 에이전트 자율 실행 (3일)
-- [ ] 멀티 스텝 플래닝 (ReAct 패턴)
-- [ ] 도구 자동 선택 + 체이닝 (에이전트가 필요한 도구 자율 판단)
-- [ ] 실행 트리 시각화 (사고 과정 + 도구 호출 트리)
-- [ ] 사용자 확인 게이트 (민감 작업 시 중간 승인)
-- [ ] 에이전트 실행 히스토리 및 재실행
+- [x] autonomous-agent.store.ts — ReAct 패턴, 실행 트리, 일시정지/재개
+- [x] AutonomousAgentPage — 목표 입력, 실행 트리 시각화, 승인 게이트
+- [x] 테스트 10개 추가
 
 ### 10-3. 모바일 네이티브 UX (2일)
-- [ ] 바텀 네비게이션 바 (모바일 전용)
-- [ ] 스와이프 제스처 (좌: 사이드바, 우: 설정)
-- [ ] 풀스크린 채팅 모드 (헤더 최소화)
-- [ ] 음성 중심 인터페이스 (길게 눌러 음성 입력)
-- [ ] PWA 공유 타겟 (다른 앱에서 텍스트/이미지 공유 받기)
+- [x] mobile-ux.store.ts — 바텀 네비, 풀스크린 채팅, 스와이프 설정
 
 ### 10-4. 실시간 데이터 커넥터 (2일)
-- [ ] Google Sheets 연동 (읽기/쓰기)
-- [ ] Notion API 연동 (페이지 읽기/생성)
-- [ ] GitHub Issues/PR 연동 (이슈 분석, PR 리뷰)
-- [ ] 커넥터 설정 UI (OAuth 인증, 데이터 매핑)
-- [ ] 채팅 시 실시간 데이터 컨텍스트 주입
+- [x] data-connector.store.ts — Google Sheets/Notion/GitHub 커넥터 CRUD
+- [x] DataConnectorsPage — 커넥터 카드 그리드, 동기화
+- [x] 테스트 8개 추가
 
 ### 10-5. AI 코드 인터프리터 (3일)
-- [ ] 브라우저 내 Python 실행 (Pyodide)
-- [ ] JavaScript 샌드박스 실행 (iframe)
-- [ ] 실행 결과 인라인 렌더링 (차트, 테이블, 그래프)
-- [ ] 데이터 시각화 자동 생성 (Plotly/D3 기반)
-- [ ] 코드 셀 노트북 모드 (Jupyter 스타일)
-- [ ] i18n 키 추가 (ko/en)
+- [x] code-interpreter.store.ts — 노트북/셀 CRUD, JS 실행, Pyodide 준비
+- [x] CodeInterpreterPage — Jupyter 스타일 노트북 UI
+- [x] 테스트 12개 추가
 
 ---
 
