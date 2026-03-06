@@ -1415,6 +1415,49 @@ const en = {
   'codeInterpreter.newNotebook': 'New Notebook',
   'codeInterpreter.untitled': 'Untitled Notebook',
   'codeInterpreter.emptyCells': 'Add a cell to start coding',
+  // Phase 11 — Mentoring
+  'mentoring.title': 'AI Mentoring',
+  'mentoring.addGoal': 'Add Learning Goal',
+  'mentoring.topicPlaceholder': 'Topic (e.g., TypeScript, React)',
+  'mentoring.beginner': 'Beginner',
+  'mentoring.intermediate': 'Intermediate',
+  'mentoring.advanced': 'Advanced',
+  'mentoring.steps': 'steps',
+  'mentoring.step': 'step',
+  'mentoring.empty': 'Add a learning goal to get started',
+
+  // Phase 11 — Data Pipeline
+  'dataPipeline.title': 'Data Pipeline',
+  'dataPipeline.create': 'New Pipeline',
+  'dataPipeline.untitled': 'Untitled Pipeline',
+  'dataPipeline.selectPipeline': 'Select a pipeline',
+  'dataPipeline.run': 'Run',
+
+  // Phase 11 — Code Review
+  'codeReview.title': 'AI Code Review',
+  'codeReview.newReview': 'New Review',
+  'codeReview.reviewTitle': 'Review title',
+  'codeReview.pasteCode': 'Paste your code here...',
+  'codeReview.startReview': 'Start Review',
+  'codeReview.selectSession': 'Select a review session',
+  'codeReview.resolve': 'Mark Resolved',
+  'codeReview.comments': 'Comments',
+
+  // Phase 11 — Notification Center
+  'notification.title': 'Notification Center',
+  'notification.markAllRead': 'Mark all read',
+  'notification.clearAll': 'Clear all',
+  'notification.all': 'All',
+  'notification.empty': 'No notifications',
+
+  // Phase 11 — Visual Prompt Builder
+  'visualPrompt.title': 'Visual Prompt Builder',
+  'visualPrompt.create': 'New Prompt',
+  'visualPrompt.untitled': 'Untitled Prompt',
+  'visualPrompt.selectPrompt': 'Select a prompt',
+  'visualPrompt.preview': 'Generated Prompt',
+  'visualPrompt.quality': 'Quality',
+  'visualPrompt.emptyPreview': 'Add blocks to generate a prompt',
 } as const
 
 export default en

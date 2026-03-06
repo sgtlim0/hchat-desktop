@@ -96,7 +96,7 @@ export interface Skill {
   icon: string
 }
 
-export type ViewState = 'home' | 'chat' | 'settings' | 'allChats' | 'projects' | 'projectDetail' | 'quickChat' | 'memory' | 'agentSwarm' | 'schedule' | 'groupChat' | 'promptLibrary' | 'debate' | 'aiTools' | 'imageGen' | 'agent' | 'translate' | 'docWriter' | 'ocr' | 'promptChain' | 'knowledgeBase' | 'workflow' | 'collab' | 'contextManager' | 'insights' | 'plugins' | 'themeBuilder' | 'batchQueue' | 'sessionInsights' | 'cacheControl' | 'auditLog' | 'dashboard' | 'workspace' | 'snippets' | 'apiTester' | 'regexBuilder' | 'dataConverter' | 'diagramEditor' | 'voiceChat' | 'knowledgeGraph' | 'canvas' | 'autoWorkflow' | 'mcpServers' | 'autonomousAgent' | 'dataConnectors' | 'codeInterpreter'
+export type ViewState = 'home' | 'chat' | 'settings' | 'allChats' | 'projects' | 'projectDetail' | 'quickChat' | 'memory' | 'agentSwarm' | 'schedule' | 'groupChat' | 'promptLibrary' | 'debate' | 'aiTools' | 'imageGen' | 'agent' | 'translate' | 'docWriter' | 'ocr' | 'promptChain' | 'knowledgeBase' | 'workflow' | 'collab' | 'contextManager' | 'insights' | 'plugins' | 'themeBuilder' | 'batchQueue' | 'sessionInsights' | 'cacheControl' | 'auditLog' | 'dashboard' | 'workspace' | 'snippets' | 'apiTester' | 'regexBuilder' | 'dataConverter' | 'diagramEditor' | 'voiceChat' | 'knowledgeGraph' | 'canvas' | 'autoWorkflow' | 'mcpServers' | 'autonomousAgent' | 'dataConnectors' | 'codeInterpreter' | 'mentoring' | 'dataPipeline' | 'codeReview' | 'notificationCenter' | 'visualPrompt'
 
 // Group Chat types
 
@@ -965,6 +965,100 @@ export interface Notebook {
   id: string
   title: string
   cells: CodeCell[]
+  createdAt: string
+  updatedAt: string
+}
+
+// Phase 11 types — AI 고도화 & 데이터 인텔리전스
+
+// 11-1. Mentoring
+export type MentoringDifficulty = 'beginner' | 'intermediate' | 'advanced'
+
+export interface LearningGoal {
+  id: string
+  topic: string
+  difficulty: MentoringDifficulty
+  progress: number
+  totalSteps: number
+  status: 'active' | 'completed' | 'paused'
+  createdAt: string
+  updatedAt: string
+}
+
+// 11-2. Data Pipeline
+export type PipelineBlockType = 'source' | 'filter' | 'sort' | 'aggregate' | 'pivot' | 'output'
+export type PipelineStatus = 'draft' | 'running' | 'completed' | 'error'
+
+export interface PipelineBlock {
+  id: string
+  type: PipelineBlockType
+  label: string
+  config: Record<string, string>
+  order: number
+}
+
+export interface DataPipeline {
+  id: string
+  name: string
+  blocks: PipelineBlock[]
+  status: PipelineStatus
+  lastRun?: string
+  createdAt: string
+  updatedAt: string
+}
+
+// 11-3. Code Review
+export type ReviewSeverity = 'critical' | 'warning' | 'info' | 'suggestion'
+export type ReviewCategory = 'security' | 'performance' | 'readability' | 'best-practice'
+
+export interface ReviewComment {
+  id: string
+  line: number
+  severity: ReviewSeverity
+  category: ReviewCategory
+  message: string
+  suggestion?: string
+}
+
+export interface CodeReviewSession {
+  id: string
+  title: string
+  language: string
+  code: string
+  comments: ReviewComment[]
+  status: 'pending' | 'reviewed' | 'resolved'
+  createdAt: string
+}
+
+// 11-4. Notification
+export type NotificationCategory = 'schedule' | 'workflow' | 'collab' | 'system'
+
+export interface AppNotification {
+  id: string
+  category: NotificationCategory
+  title: string
+  message: string
+  isRead: boolean
+  actionUrl?: string
+  createdAt: string
+}
+
+// 11-5. Visual Prompt Builder
+export type PromptBlockType = 'instruction' | 'context' | 'constraint' | 'output_format' | 'example'
+
+export interface PromptBlock {
+  id: string
+  type: PromptBlockType
+  content: string
+  order: number
+}
+
+export interface VisualPrompt {
+  id: string
+  title: string
+  blocks: PromptBlock[]
+  generatedPrompt: string
+  qualityScore: number
   createdAt: string
   updatedAt: string
 }

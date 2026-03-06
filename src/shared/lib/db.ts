@@ -6,6 +6,7 @@ import type {
   DashboardLayout, Workspace, CodeSnippet, ApiRequest, ApiCollection, RegexPattern,
   ConversionHistory, Diagram, GraphNode, GraphEdge, Canvas, CanvasNode, CanvasEdge,
   WorkflowSuggestion, McpServer, AgentRun, DataConnector, Notebook,
+  LearningGoal, DataPipeline, CodeReviewSession, AppNotification, VisualPrompt,
 } from '@/shared/types'
 
 const db = new Dexie('hchat-desktop') as Dexie & {
@@ -48,6 +49,11 @@ const db = new Dexie('hchat-desktop') as Dexie & {
   agentRuns: EntityTable<AgentRun, 'id'>
   dataConnectors: EntityTable<DataConnector, 'id'>
   notebooks: EntityTable<Notebook, 'id'>
+  learningGoals: EntityTable<LearningGoal, 'id'>
+  dataPipelines: EntityTable<DataPipeline, 'id'>
+  codeReviewSessions: EntityTable<CodeReviewSession, 'id'>
+  appNotifications: EntityTable<AppNotification, 'id'>
+  visualPrompts: EntityTable<VisualPrompt, 'id'>
 }
 
 db.version(1).stores({
@@ -219,6 +225,51 @@ db.version(9).stores({
   agentRuns: 'id, status, createdAt',
   dataConnectors: 'id, type, status',
   notebooks: 'id, updatedAt',
+})
+
+db.version(10).stores({
+  sessions: 'id, projectId, updatedAt, isFavorite',
+  messages: 'id, sessionId, createdAt',
+  projects: 'id, updatedAt',
+  usages: 'id, sessionId, modelId, createdAt',
+  prompts: 'id, category, isFavorite, updatedAt',
+  personas: 'id, isDefault, updatedAt',
+  folders: 'id', tags: 'id',
+  memories: 'id, scope, updatedAt',
+  schedules: 'id, status, updatedAt',
+  swarmAgents: 'id, role', swarmConnections: 'id, from, to',
+  channelConfigs: 'id',
+  artifacts: 'id, sessionId, messageId, updatedAt',
+  pinnedMessages: 'id, sessionId',
+  insightReports: 'id, type, createdAt',
+  plugins: 'id, status',
+  customThemes: 'id, isActive',
+  batchJobs: 'id, status, priority, createdAt',
+  cacheEntries: 'id, promptHash, createdAt, expiresAt',
+  auditEntries: 'id, action, createdAt',
+  dashboardLayouts: 'id, updatedAt',
+  workspaces: 'id, updatedAt',
+  snippets: 'id, language, updatedAt',
+  apiRequests: 'id, collectionId, updatedAt',
+  apiCollections: 'id',
+  regexPatterns: 'id, updatedAt',
+  conversionHistory: 'id, createdAt',
+  diagrams: 'id, type, updatedAt',
+  graphNodes: 'id, type, sourceId, createdAt',
+  graphEdges: 'id, source, target',
+  canvases: 'id, updatedAt',
+  canvasNodes: 'id, canvasId, type',
+  canvasEdges: 'id, canvasId, source, target',
+  workflowSuggestions: 'id, status, createdAt',
+  mcpServers: 'id, status, createdAt',
+  agentRuns: 'id, status, createdAt',
+  dataConnectors: 'id, type, status',
+  notebooks: 'id, updatedAt',
+  learningGoals: 'id, status, updatedAt',
+  dataPipelines: 'id, status, updatedAt',
+  codeReviewSessions: 'id, status, createdAt',
+  appNotifications: 'id, category, isRead, createdAt',
+  visualPrompts: 'id, updatedAt',
 })
 
 db.version(6).stores({
@@ -823,5 +874,31 @@ export async function putNotebook(notebook: Notebook): Promise<void> {
 export async function deleteNotebookFromDb(id: string): Promise<void> {
   await db.notebooks.delete(id)
 }
+
+// Learning Goal CRUD (Phase 11)
+export async function getAllLearningGoals(): Promise<LearningGoal[]> { return db.learningGoals.orderBy('updatedAt').reverse().toArray() }
+export async function putLearningGoal(g: LearningGoal): Promise<void> { await db.learningGoals.put(g) }
+export async function deleteLearningGoalFromDb(id: string): Promise<void> { await db.learningGoals.delete(id) }
+
+// Data Pipeline CRUD (Phase 11)
+export async function getAllDataPipelines(): Promise<DataPipeline[]> { return db.dataPipelines.orderBy('updatedAt').reverse().toArray() }
+export async function putDataPipeline(p: DataPipeline): Promise<void> { await db.dataPipelines.put(p) }
+export async function deleteDataPipelineFromDb(id: string): Promise<void> { await db.dataPipelines.delete(id) }
+
+// Code Review CRUD (Phase 11)
+export async function getAllCodeReviewSessions(): Promise<CodeReviewSession[]> { return db.codeReviewSessions.orderBy('createdAt').reverse().toArray() }
+export async function putCodeReviewSession(s: CodeReviewSession): Promise<void> { await db.codeReviewSessions.put(s) }
+export async function deleteCodeReviewSessionFromDb(id: string): Promise<void> { await db.codeReviewSessions.delete(id) }
+
+// Notification CRUD (Phase 11)
+export async function getAllAppNotifications(): Promise<AppNotification[]> { return db.appNotifications.orderBy('createdAt').reverse().toArray() }
+export async function putAppNotification(n: AppNotification): Promise<void> { await db.appNotifications.put(n) }
+export async function deleteAppNotificationFromDb(id: string): Promise<void> { await db.appNotifications.delete(id) }
+export async function clearAllNotifications(): Promise<void> { await db.appNotifications.clear() }
+
+// Visual Prompt CRUD (Phase 11)
+export async function getAllVisualPrompts(): Promise<VisualPrompt[]> { return db.visualPrompts.orderBy('updatedAt').reverse().toArray() }
+export async function putVisualPrompt(p: VisualPrompt): Promise<void> { await db.visualPrompts.put(p) }
+export async function deleteVisualPromptFromDb(id: string): Promise<void> { await db.visualPrompts.delete(id) }
 
 export { db }

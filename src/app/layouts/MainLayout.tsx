@@ -72,6 +72,11 @@ const ApiTesterPage = lazy(() => import('@/pages/api-tester/ApiTesterPage').then
 const RegexBuilderPage = lazy(() => import('@/pages/regex-builder/RegexBuilderPage').then((m) => ({ default: m.RegexBuilderPage })))
 const DataConverterPage = lazy(() => import('@/pages/data-converter/DataConverterPage').then((m) => ({ default: m.DataConverterPage })))
 const DiagramEditorPage = lazy(() => import('@/pages/diagram-editor/DiagramEditorPage').then((m) => ({ default: m.DiagramEditorPage })))
+const MentoringPage = lazy(() => import('@/pages/mentoring/MentoringPage').then((m) => ({ default: m.MentoringPage })))
+const DataPipelinePage = lazy(() => import('@/pages/data-pipeline/DataPipelinePage').then((m) => ({ default: m.DataPipelinePage })))
+const CodeReviewPage = lazy(() => import('@/pages/code-review/CodeReviewPage').then((m) => ({ default: m.CodeReviewPage })))
+const NotificationCenterPage = lazy(() => import('@/pages/notification-center/NotificationCenterPage').then((m) => ({ default: m.NotificationCenterPage })))
+const VisualPromptBuilderPage = lazy(() => import('@/pages/visual-prompt/VisualPromptBuilderPage').then((m) => ({ default: m.VisualPromptBuilderPage })))
 const McpServersPage = lazy(() => import('@/pages/mcp/McpServersPage').then((m) => ({ default: m.McpServersPage })))
 const AutonomousAgentPage = lazy(() => import('@/pages/autonomous-agent/AutonomousAgentPage').then((m) => ({ default: m.AutonomousAgentPage })))
 const DataConnectorsPage = lazy(() => import('@/pages/data-connector/DataConnectorsPage').then((m) => ({ default: m.DataConnectorsPage })))
@@ -322,6 +327,26 @@ export function MainLayout() {
 
     if (view === 'diagramEditor') {
       return <DiagramEditorPage />
+    }
+
+    if (view === 'mentoring') {
+      return <MentoringPage />
+    }
+
+    if (view === 'dataPipeline') {
+      return <DataPipelinePage />
+    }
+
+    if (view === 'codeReview') {
+      return <CodeReviewPage />
+    }
+
+    if (view === 'notificationCenter') {
+      return <NotificationCenterPage />
+    }
+
+    if (view === 'visualPrompt') {
+      return <VisualPromptBuilderPage />
     }
 
     if (view === 'mcpServers') {

@@ -1415,6 +1415,49 @@ const ko = {
   'codeInterpreter.newNotebook': '새 노트북',
   'codeInterpreter.untitled': '제목 없는 노트북',
   'codeInterpreter.emptyCells': '셀을 추가하여 코드를 작성하세요',
+  // Phase 11 — Mentoring
+  'mentoring.title': 'AI 멘토링',
+  'mentoring.addGoal': '학습 목표 추가',
+  'mentoring.topicPlaceholder': '학습 주제 (예: TypeScript, React)',
+  'mentoring.beginner': '초급',
+  'mentoring.intermediate': '중급',
+  'mentoring.advanced': '고급',
+  'mentoring.steps': '단계',
+  'mentoring.step': '단계',
+  'mentoring.empty': '학습 목표를 추가하세요',
+
+  // Phase 11 — Data Pipeline
+  'dataPipeline.title': '데이터 파이프라인',
+  'dataPipeline.create': '새 파이프라인',
+  'dataPipeline.untitled': '제목 없는 파이프라인',
+  'dataPipeline.selectPipeline': '파이프라인을 선택하세요',
+  'dataPipeline.run': '실행',
+
+  // Phase 11 — Code Review
+  'codeReview.title': 'AI 코드 리뷰',
+  'codeReview.newReview': '새 리뷰',
+  'codeReview.reviewTitle': '리뷰 제목',
+  'codeReview.pasteCode': '코드를 붙여넣으세요...',
+  'codeReview.startReview': '리뷰 시작',
+  'codeReview.selectSession': '리뷰 세션을 선택하세요',
+  'codeReview.resolve': '해결 완료',
+  'codeReview.comments': '코멘트',
+
+  // Phase 11 — Notification Center
+  'notification.title': '알림 센터',
+  'notification.markAllRead': '모두 읽음',
+  'notification.clearAll': '모두 삭제',
+  'notification.all': '전체',
+  'notification.empty': '알림이 없습니다',
+
+  // Phase 11 — Visual Prompt Builder
+  'visualPrompt.title': '비주얼 프롬프트 빌더',
+  'visualPrompt.create': '새 프롬프트',
+  'visualPrompt.untitled': '제목 없는 프롬프트',
+  'visualPrompt.selectPrompt': '프롬프트를 선택하세요',
+  'visualPrompt.preview': '생성된 프롬프트',
+  'visualPrompt.quality': '품질 점수',
+  'visualPrompt.emptyPreview': '블록을 추가하면 프롬프트가 생성됩니다',
 } as const
 
 export default ko
