@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useShallow } from 'zustand/react/shallow'
-import { ArrowLeft, ArrowRightLeft, Copy, Trash2, Check, X, RotateCcw } from 'lucide-react'
+import { ArrowLeft, ArrowRightLeft, Copy, Check, X, RotateCcw } from 'lucide-react'
 import { useSessionStore } from '@/entities/session/session.store'
 import { useDataConverterStore } from '@/entities/data-converter/data-converter.store'
 import { useTranslation } from '@/shared/i18n'
@@ -121,7 +121,7 @@ export function DataConverterPage() {
             ))}
           </select>
 
-          <Button variant="ghost" size="sm" onClick={swapFormats} title={t('dataConverter.swap')}>
+          <Button variant="ghost" size="sm" onClick={swapFormats}>
             <ArrowRightLeft className="w-5 h-5" />
           </Button>
 
@@ -248,7 +248,6 @@ export function DataConverterPage() {
                       setSourceFormat(entry.sourceFormat)
                       setTargetFormat(entry.targetFormat)
                     }}
-                    title="Load"
                   >
                     <RotateCcw className="w-4 h-4" />
                   </Button>

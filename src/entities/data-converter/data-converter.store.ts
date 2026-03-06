@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 import type { DataFormat, ConversionHistory } from '@/shared/types'
-import { getAllConversionHistory, putConversionHistory, clearConversionHistory } from '@/shared/lib/db'
+import { getAllConversionHistory, putConversionHistory } from '@/shared/lib/db'
 
 interface DataConverterState {
   sourceContent: string
