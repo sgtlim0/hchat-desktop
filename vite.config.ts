@@ -59,10 +59,43 @@ export default defineConfig({
   build: {
     rollupOptions: {
       output: {
-        manualChunks: {
-          'vendor-react': ['react', 'react-dom'],
-          'vendor-markdown': ['react-markdown', 'remark-gfm'],
-          'vendor-ui': ['lucide-react', 'react-textarea-autosize'],
+        manualChunks(id) {
+          if (id.includes('node_modules')) {
+            // Core framework
+            if (id.includes('/react-dom/') || id.includes('/react/') || id.includes('/scheduler/')) {
+              return 'vendor-react'
+            }
+            // Markdown rendering
+            if (
+              id.includes('react-markdown') ||
+              id.includes('remark-') ||
+              id.includes('rehype-') ||
+              id.includes('unified') ||
+              id.includes('mdast') ||
+              id.includes('hast') ||
+              id.includes('micromark')
+            ) {
+              return 'vendor-markdown'
+            }
+            // Syntax highlighting (Prism + all language defs)
+            if (
+              id.includes('react-syntax-highlighter') ||
+              id.includes('refractor') ||
+              id.includes('prismjs') ||
+              id.includes('prism-') ||
+              id.includes('highlight.js')
+            ) {
+              return 'vendor-syntax'
+            }
+            // Icons (separate for long-term caching)
+            if (id.includes('lucide-react')) {
+              return 'vendor-icons'
+            }
+            // State management + persistence
+            if (id.includes('zustand') || id.includes('dexie')) {
+              return 'vendor-state'
+            }
+          }
         },
       },
     },

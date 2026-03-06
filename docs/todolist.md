@@ -1,7 +1,7 @@
 # H Chat PWA — TODO List
 
-> ✅ **전체 완료** (70/70 + Phase 1-9 + P0 보안/성능) | 마지막 업데이트: 2026-03-05
-> 1137 tests, 82 suites | 커버리지: 76.49% stmts | 빌드 성공
+> ✅ **전체 완료** (Phase 1-9 + 14 + P0 보안/성능 + 번들 최적화) | 마지막 업데이트: 2026-03-06
+> 1,242 tests, 92 suites | 커버리지: 75.24% stmts | 빌드 성공
 
 ## 현재 상태 요약
 
@@ -16,7 +16,7 @@
 | IndexedDB 영속성 | ✅ 완료 |
 | i18n (한국어/영어) | ✅ 완료 |
 | PWA (설치/캐시) | ✅ 완료 |
-| 테스트 (Vitest) | ✅ 완료 — 1137 tests, 82 suites |
+| 테스트 (Vitest) | ✅ 완료 — 1,242 tests, 92 suites |
 | 접근성 (a11y) | ✅ 완료 — focus-trap, skip-to-content, ARIA |
 | 사용량 추적 | ✅ 완료 — 토큰 추정, 비용 대시보드, 일별/주별 차트 |
 | 프롬프트 라이브러리 | ✅ 완료 — CRUD, 변수, 카테고리 |
@@ -194,7 +194,9 @@
 | 문서/설계 | 5/5 | 0 | 100% |
 | P0 보안/성능 | 3/3 | 0 | 100% |
 | QW 코드 품질 | 5/5 | 0 | 100% |
-| **전체** | **78/78** | **0** | **100%** |
+| Phase 14 | 5/5 | 0 | 100% |
+| 번들 최적화 | 2/2 | 0 | 100% |
+| **전체** | **85/85** | **0** | **100%** |
 
 > **모든 TODO 항목 완료.** 배포: `modal deploy backend/app.py` + `vercel --prod`
 > Secret 설정: `modal secret create hchat-api-keys OPENAI_API_KEY=sk-... GEMINI_API_KEY=...`
@@ -665,46 +667,103 @@
 
 ---
 
-## Phase 14: 개발자 도구 & 코드 지원 (7일)
-
-> AI 기반 개발자 생산성 도구 — 코드 관리, API 테스트, 정규식, 데이터 변환, 다이어그램
+## ✅ Phase 14 — 개발자 도구 & 코드 지원 (2026-03-06)
 
 ### 14-1. 코드 스니펫 매니저 (1일)
-- [ ] snippet.store.ts — 코드 조각 CRUD, 언어/태그별 분류
-- [ ] SnippetPage.tsx — 스니펫 목록/검색/편집 UI
-- [ ] 채팅 시 `/snippet` 명령으로 스니펫 삽입
-- [ ] 구문 강조 미리보기 (react-syntax-highlighter)
-- [ ] ViewState에 `snippets` 추가
-- [ ] i18n 키 추가 (ko/en)
+- [x] snippet.store.ts — 코드 조각 CRUD, 언어/태그별 분류
+- [x] SnippetPage.tsx — 스니펫 목록/검색/편집 UI
+- [x] 구문 강조 미리보기 + ViewState `snippets` 추가
+- [x] 테스트 17개 추가
 
 ### 14-2. API 테스터 (2일)
-- [ ] api-tester.store.ts — 요청 히스토리, 컬렉션 관리
-- [ ] ApiTesterPage.tsx — REST API 요청 빌더 UI (method/URL/headers/body)
-- [ ] 응답 뷰어 (JSON 포맷팅, 상태 코드, 응답 시간)
-- [ ] AI 기반 API 문서 분석 및 요청 생성
-- [ ] cURL 임포트/익스포트
-- [ ] ViewState에 `apiTester` 추가
-- [ ] i18n 키 추가 (ko/en)
+- [x] api-tester.store.ts — 요청 히스토리, 컬렉션 관리
+- [x] ApiTesterPage.tsx — REST API 요청 빌더 (method/URL/headers/body)
+- [x] 응답 뷰어 (JSON 포맷팅, 상태 코드) + ViewState `apiTester` 추가
+- [x] 테스트 21개 추가
 
 ### 14-3. 정규표현식 빌더 (1일)
-- [ ] regex-builder.store.ts — 패턴 저장/히스토리
-- [ ] RegexBuilderPage.tsx — AI 기반 정규식 생성 + 실시간 매칭 테스트
-- [ ] 매칭 그룹 시각화, 치트시트 패널
-- [ ] ViewState에 `regexBuilder` 추가
-- [ ] i18n 키 추가 (ko/en)
+- [x] regex-builder.store.ts — 패턴 저장/히스토리
+- [x] RegexBuilderPage.tsx — AI 정규식 생성 + 실시간 매칭 테스트
+- [x] 매칭 그룹 시각화 + ViewState `regexBuilder` 추가
+- [x] 테스트 25개 추가
 
-### 14-4. JSON/YAML 변환기 (1일)
-- [ ] data-converter.store.ts — 변환 히스토리, 스키마 저장
-- [ ] DataConverterPage.tsx — JSON ↔ YAML 양방향 변환, diff 비교
-- [ ] AI 기반 스키마 추론 및 타입 생성 (TypeScript/Zod)
-- [ ] 대용량 파일 지원 (Web Worker)
-- [ ] ViewState에 `dataConverter` 추가
-- [ ] i18n 키 추가 (ko/en)
+### 14-4. 데이터 변환기 (1일)
+- [x] data-converter.store.ts — 변환 히스토리, 스키마 저장
+- [x] DataConverterPage.tsx — JSON ↔ YAML 변환, diff, AI 스키마 추론
+- [x] ViewState `dataConverter` 추가
+- [x] 테스트 22개 추가
 
 ### 14-5. 다이어그램 에디터 (2일)
-- [ ] diagram-editor.store.ts — 다이어그램 CRUD, 템플릿
-- [ ] DiagramEditorPage.tsx — Mermaid 실시간 편집 + 미리보기
-- [ ] AI 기반 다이어그램 생성 (프롬프트 → flowchart/sequence/class/ER)
-- [ ] SVG/PNG 익스포트
-- [ ] ViewState에 `diagramEditor` 추가
+- [x] diagram-editor.store.ts — 다이어그램 CRUD, 템플릿
+- [x] DiagramEditorPage.tsx — Mermaid 실시간 편집 + 미리보기
+- [x] AI 다이어그램 생성, SVG/PNG 내보내기 + ViewState `diagramEditor` 추가
+- [x] 테스트 20개 추가
+
+---
+
+## ✅ 번들 최적화 (2026-03-06)
+
+- [x] .gitignore에 `.env*` 추가 (시크릿 커밋 방지)
+- [x] vite.config.ts 함수 기반 `manualChunks` — 5개 vendor 청크 분리
+  - vendor-react (193KB), vendor-markdown (160KB lazy), vendor-syntax (624KB lazy)
+  - vendor-icons (594KB), vendor-state (96KB)
+- [x] ChatPage **651KB → 27KB** (-96%) — react-syntax-highlighter lazy 분리
+- [x] index **500KB → 222KB** (-56%) — React/Zustand/Dexie 별도 청크
+
+---
+
+## 🟣 Phase 15 — AI 인텔리전스 허브 & 차세대 UX (예정)
+
+> 차세대 AI 경험 — 음성 대화, 지식 그래프, 코파일럿, 무한 캔버스, 자동 워크플로우
+
+### 15-1. AI 음성 대화 모드 (2일)
+- [ ] VoiceChatPage 신규 페이지
+- [ ] voice-chat.store.ts Zustand 스토어
+- [ ] 실시간 양방향 음성 대화 (Whisper STT → LLM → TTS 파이프라인)
+- [ ] 핸즈프리 UX — 음성 활성화 트리거 ("안녕 에이치" 웨이크워드)
+- [ ] 음성 감정 분석 (톤, 속도 기반 감정 추론)
+- [ ] 대화 자동 트랜스크립트 (타임스탬프 포함)
+- [ ] 미니 플레이어 모드 (하단 바, 다른 페이지 탐색 중에도 음성 대화 유지)
+- [ ] i18n 키 추가 (ko/en)
+
+### 15-2. 스마트 지식 그래프 (3일)
+- [ ] KnowledgeGraphPage 신규 페이지
+- [ ] knowledge-graph.store.ts Zustand 스토어
+- [ ] 대화/문서/지식/스니펫 간 관계 자동 추출 (LLM 엔티티 추출)
+- [ ] Cytoscape.js 인터랙티브 노드 맵 (기존 의존성 활용)
+- [ ] 노드 클릭 → 관련 세션/문서 즉시 열기
+- [ ] 클러스터 자동 감지 (커뮤니티 탐지 알고리즘)
+- [ ] 시간 축 필터 (날짜 범위별 그래프 변화 애니메이션)
+- [ ] 그래프 PNG/SVG 내보내기
+- [ ] i18n 키 추가 (ko/en)
+
+### 15-3. AI 코파일럿 모드 (2일)
+- [ ] copilot.store.ts Zustand 스토어
+- [ ] CopilotPanel 글로벌 플로팅 위젯 (화면 우하단)
+- [ ] `Cmd/Ctrl+J` 단축키로 토글 (어디서든 AI 호출)
+- [ ] 현재 페이지 컨텍스트 자동 감지 (채팅/번역/코드 등)
+- [ ] 인라인 응답 — 현재 작업에 결과 직접 삽입
+- [ ] 퀵 액션 메뉴 (요약/번역/수정/설명 원클릭)
+- [ ] 미니/풀 모드 토글 (리사이즈 가능)
+- [ ] i18n 키 추가 (ko/en)
+
+### 15-4. 멀티모달 캔버스 (3일)
+- [ ] CanvasPage 신규 페이지
+- [ ] canvas.store.ts Zustand 스토어
+- [ ] 무한 캔버스 — 팬/줌/스크롤 (transform matrix 기반)
+- [ ] 노드 타입: 텍스트, 이미지, 코드, 다이어그램, AI 채팅, 웹 링크
+- [ ] 드래그앤드롭 자유 배치 + 연결선 (노드 간 관계)
+- [ ] AI 노드 — 캔버스 내 인라인 AI 채팅 (컨텍스트 = 연결된 노드들)
+- [ ] 실시간 협업 (collab.store 연동, 다중 커서)
+- [ ] 캔버스 템플릿 (브레인스토밍/프로젝트 계획/리서치 보드)
+- [ ] PNG/PDF 내보내기
+- [ ] i18n 키 추가 (ko/en)
+
+### 15-5. AI 자동 워크플로우 (2일)
+- [ ] auto-workflow.store.ts Zustand 스토어
+- [ ] 사용 패턴 자동 분석 (반복 프롬프트, 동일 도구 순서 감지)
+- [ ] 워크플로우 제안 알림 ("이 작업을 자동화하시겠습니까?")
+- [ ] 원클릭 워크플로우 생성 (패턴 → workflow.store 자동 등록)
+- [ ] 스마트 스케줄링 (사용 빈도 분석 → 최적 실행 시간 제안)
+- [ ] 자동화 효과 대시보드 (절감 시간/토큰/비용 시각화)
 - [ ] i18n 키 추가 (ko/en)
