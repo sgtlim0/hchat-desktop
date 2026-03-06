@@ -31,6 +31,8 @@ import { ToastContainer } from '@/shared/ui/ToastContainer'
 import { useTranslation } from '@/shared/i18n'
 import { useOnlineStatus } from '@/shared/hooks/useOnlineStatus'
 import { ErrorBoundary } from '@/shared/ui/ErrorBoundary'
+import { useCopilotStore } from '@/entities/copilot/copilot.store'
+import { CopilotPanel } from '@/widgets/copilot/CopilotPanel'
 
 // Lazy-loaded pages for code splitting
 const ChatPage = lazy(() => import('@/pages/chat/ChatPage').then((m) => ({ default: m.ChatPage })))
@@ -70,6 +72,10 @@ const ApiTesterPage = lazy(() => import('@/pages/api-tester/ApiTesterPage').then
 const RegexBuilderPage = lazy(() => import('@/pages/regex-builder/RegexBuilderPage').then((m) => ({ default: m.RegexBuilderPage })))
 const DataConverterPage = lazy(() => import('@/pages/data-converter/DataConverterPage').then((m) => ({ default: m.DataConverterPage })))
 const DiagramEditorPage = lazy(() => import('@/pages/diagram-editor/DiagramEditorPage').then((m) => ({ default: m.DiagramEditorPage })))
+const VoiceChatPage = lazy(() => import('@/pages/voice-chat/VoiceChatPage').then((m) => ({ default: m.VoiceChatPage })))
+const KnowledgeGraphPage = lazy(() => import('@/pages/knowledge-graph/KnowledgeGraphPage').then((m) => ({ default: m.KnowledgeGraphPage })))
+const CanvasPage = lazy(() => import('@/pages/canvas/CanvasPage').then((m) => ({ default: m.CanvasPage })))
+const AutoWorkflowPage = lazy(() => import('@/pages/auto-workflow/AutoWorkflowPage').then((m) => ({ default: m.AutoWorkflowPage })))
 
 export function MainLayout() {
   const { t } = useTranslation()
@@ -148,6 +154,10 @@ export function MainLayout() {
       if ((e.metaKey || e.ctrlKey) && e.key === ',') {
         e.preventDefault()
         setSettingsOpen(!settingsOpen)
+      }
+      if ((e.metaKey || e.ctrlKey) && e.key === 'j') {
+        e.preventDefault()
+        useCopilotStore.getState().toggle()
       }
     }
 
@@ -310,6 +320,22 @@ export function MainLayout() {
       return <DiagramEditorPage />
     }
 
+    if (view === 'voiceChat') {
+      return <VoiceChatPage />
+    }
+
+    if (view === 'knowledgeGraph') {
+      return <KnowledgeGraphPage />
+    }
+
+    if (view === 'canvas') {
+      return <CanvasPage />
+    }
+
+    if (view === 'autoWorkflow') {
+      return <AutoWorkflowPage />
+    }
+
     if (currentSessionId && view === 'chat') {
       return <ChatPage />
     }
@@ -348,6 +374,7 @@ export function MainLayout() {
       </div>
       {searchOpen && <SearchModal />}
       <ToastContainer />
+      <CopilotPanel />
     </>
   )
 }

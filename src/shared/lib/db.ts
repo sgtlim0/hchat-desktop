@@ -4,7 +4,8 @@ import type {
   MemoryEntry, Schedule, SwarmAgent, SwarmConnection, ChannelConfig, Artifact,
   PinnedMessage, InsightReport, Plugin, CustomTheme, BatchJob, CacheEntry, AuditEntry,
   DashboardLayout, Workspace, CodeSnippet, ApiRequest, ApiCollection, RegexPattern,
-  ConversionHistory, Diagram,
+  ConversionHistory, Diagram, GraphNode, GraphEdge, Canvas, CanvasNode, CanvasEdge,
+  WorkflowSuggestion,
 } from '@/shared/types'
 
 const db = new Dexie('hchat-desktop') as Dexie & {
@@ -37,6 +38,12 @@ const db = new Dexie('hchat-desktop') as Dexie & {
   regexPatterns: EntityTable<RegexPattern, 'id'>
   conversionHistory: EntityTable<ConversionHistory, 'id'>
   diagrams: EntityTable<Diagram, 'id'>
+  graphNodes: EntityTable<GraphNode, 'id'>
+  graphEdges: EntityTable<GraphEdge, 'id'>
+  canvases: EntityTable<Canvas, 'id'>
+  canvasNodes: EntityTable<CanvasNode, 'id'>
+  canvasEdges: EntityTable<CanvasEdge, 'id'>
+  workflowSuggestions: EntityTable<WorkflowSuggestion, 'id'>
 }
 
 db.version(1).stores({
@@ -128,6 +135,44 @@ db.version(7).stores({
   regexPatterns: 'id, updatedAt',
   conversionHistory: 'id, createdAt',
   diagrams: 'id, type, updatedAt',
+})
+
+db.version(8).stores({
+  sessions: 'id, projectId, updatedAt, isFavorite',
+  messages: 'id, sessionId, createdAt',
+  projects: 'id, updatedAt',
+  usages: 'id, sessionId, modelId, createdAt',
+  prompts: 'id, category, isFavorite, updatedAt',
+  personas: 'id, isDefault, updatedAt',
+  folders: 'id',
+  tags: 'id',
+  memories: 'id, scope, updatedAt',
+  schedules: 'id, status, updatedAt',
+  swarmAgents: 'id, role',
+  swarmConnections: 'id, from, to',
+  channelConfigs: 'id',
+  artifacts: 'id, sessionId, messageId, updatedAt',
+  pinnedMessages: 'id, sessionId',
+  insightReports: 'id, type, createdAt',
+  plugins: 'id, status',
+  customThemes: 'id, isActive',
+  batchJobs: 'id, status, priority, createdAt',
+  cacheEntries: 'id, promptHash, createdAt, expiresAt',
+  auditEntries: 'id, action, createdAt',
+  dashboardLayouts: 'id, updatedAt',
+  workspaces: 'id, updatedAt',
+  snippets: 'id, language, updatedAt',
+  apiRequests: 'id, collectionId, updatedAt',
+  apiCollections: 'id',
+  regexPatterns: 'id, updatedAt',
+  conversionHistory: 'id, createdAt',
+  diagrams: 'id, type, updatedAt',
+  graphNodes: 'id, type, sourceId, createdAt',
+  graphEdges: 'id, source, target',
+  canvases: 'id, updatedAt',
+  canvasNodes: 'id, canvasId, type',
+  canvasEdges: 'id, canvasId, source, target',
+  workflowSuggestions: 'id, status, createdAt',
 })
 
 db.version(6).stores({
@@ -589,6 +634,92 @@ export async function putDiagram(diagram: Diagram): Promise<void> {
 
 export async function deleteDiagramFromDb(id: string): Promise<void> {
   await db.diagrams.delete(id)
+}
+
+// Knowledge Graph CRUD (Phase 15)
+
+export async function getAllGraphNodes(): Promise<GraphNode[]> {
+  return db.graphNodes.orderBy('createdAt').reverse().toArray()
+}
+
+export async function putGraphNode(node: GraphNode): Promise<void> {
+  await db.graphNodes.put(node)
+}
+
+export async function deleteGraphNodeFromDb(id: string): Promise<void> {
+  await db.transaction('rw', [db.graphNodes, db.graphEdges], async () => {
+    await db.graphNodes.delete(id)
+    await db.graphEdges.where('source').equals(id).delete()
+    await db.graphEdges.where('target').equals(id).delete()
+  })
+}
+
+export async function getAllGraphEdges(): Promise<GraphEdge[]> {
+  return db.graphEdges.toArray()
+}
+
+export async function putGraphEdge(edge: GraphEdge): Promise<void> {
+  await db.graphEdges.put(edge)
+}
+
+export async function deleteGraphEdgeFromDb(id: string): Promise<void> {
+  await db.graphEdges.delete(id)
+}
+
+// Canvas CRUD (Phase 15)
+
+export async function getAllCanvases(): Promise<Canvas[]> {
+  return db.canvases.orderBy('updatedAt').reverse().toArray()
+}
+
+export async function putCanvas(canvas: Canvas): Promise<void> {
+  await db.canvases.put(canvas)
+}
+
+export async function deleteCanvasFromDb(id: string): Promise<void> {
+  await db.transaction('rw', [db.canvases, db.canvasNodes, db.canvasEdges], async () => {
+    await db.canvases.delete(id)
+    await db.canvasNodes.where('canvasId').equals(id).delete()
+    await db.canvasEdges.where('canvasId').equals(id).delete()
+  })
+}
+
+export async function getCanvasNodes(canvasId: string): Promise<CanvasNode[]> {
+  return db.canvasNodes.where('canvasId').equals(canvasId).toArray()
+}
+
+export async function putCanvasNode(node: CanvasNode): Promise<void> {
+  await db.canvasNodes.put(node)
+}
+
+export async function deleteCanvasNodeFromDb(id: string): Promise<void> {
+  await db.canvasNodes.delete(id)
+}
+
+export async function getCanvasEdges(canvasId: string): Promise<CanvasEdge[]> {
+  return db.canvasEdges.where('canvasId').equals(canvasId).toArray()
+}
+
+export async function putCanvasEdge(edge: CanvasEdge): Promise<void> {
+  await db.canvasEdges.put(edge)
+}
+
+export async function deleteCanvasEdgeFromDb(id: string): Promise<void> {
+  await db.canvasEdges.delete(id)
+}
+
+// Workflow Suggestion CRUD (Phase 15)
+
+export async function getAllWorkflowSuggestions(): Promise<WorkflowSuggestion[]> {
+  return db.workflowSuggestions.orderBy('createdAt').reverse().toArray()
+}
+
+export async function putWorkflowSuggestion(suggestion: WorkflowSuggestion): Promise<void> {
+  await db.workflowSuggestions.put(suggestion)
+}
+
+export async function deleteWorkflowSuggestionFromDb(id: string): Promise<void> {
+  await db.workflowSuggestions.delete(id)
 }
 
 export { db }

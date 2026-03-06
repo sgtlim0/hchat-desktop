@@ -1322,6 +1322,58 @@ const ko = {
   'error.boundary.title': '오류가 발생했습니다',
   'error.boundary.message': '페이지를 로드하는 중 문제가 발생했습니다.',
   'error.boundary.retry': '다시 시도',
+
+  // Phase 15 — Voice Chat
+  'voiceChat.title': 'AI 음성 대화',
+  'voiceChat.state.idle': '마이크를 눌러 대화를 시작하세요',
+  'voiceChat.state.listening': '듣고 있습니다...',
+  'voiceChat.state.processing': 'AI가 생각하고 있습니다...',
+  'voiceChat.state.speaking': 'AI가 말하고 있습니다...',
+  'voiceChat.start': '대화 시작',
+  'voiceChat.stop': '대화 중지',
+  'voiceChat.autoListen': '자동 듣기',
+  'voiceChat.language': '언어 전환',
+  'voiceChat.clear': '대화 지우기',
+
+  // Phase 15 — Knowledge Graph
+  'knowledgeGraph.title': '스마트 지식 그래프',
+  'knowledgeGraph.addNode': '노드 추가',
+  'knowledgeGraph.nodeName': '노드 이름',
+  'knowledgeGraph.connections': '연결',
+  'knowledgeGraph.nodeCount': '노드 수',
+
+  // Phase 15 — Copilot
+  'copilot.title': 'AI 코파일럿',
+  'copilot.placeholder': 'Cmd+J로 어디서든 AI에게 물어보세요',
+  'copilot.inputPlaceholder': '무엇이든 물어보세요...',
+  'copilot.send': '전송',
+  'copilot.clear': '대화 지우기',
+  'copilot.error': '응답 생성 중 오류가 발생했습니다.',
+
+  // Phase 15 — Canvas
+  'canvas.title': '멀티모달 캔버스',
+  'canvas.description': '텍스트, 코드, 이미지, 다이어그램을 자유롭게 배치하세요',
+  'canvas.create': '새 캔버스',
+  'canvas.untitled': '제목 없는 캔버스',
+  'canvas.emptyNode': '내용을 입력하세요',
+
+  // Phase 15 — Auto Workflow
+  'autoWorkflow.title': 'AI 자동 워크플로우',
+  'autoWorkflow.description': '반복 작업 패턴을 감지하여 자동화를 제안합니다',
+  'autoWorkflow.detect': '패턴 감지',
+  'autoWorkflow.all': '전체',
+  'autoWorkflow.pending': '대기 중',
+  'autoWorkflow.accepted': '수락됨',
+  'autoWorkflow.dismissed': '무시됨',
+  'autoWorkflow.accept': '수락',
+  'autoWorkflow.dismiss': '무시',
+  'autoWorkflow.frequency': '빈도',
+  'autoWorkflow.estSavings': '예상 절감',
+  'autoWorkflow.costSaved': '절감 비용',
+  'autoWorkflow.tokensSaved': '절감 토큰',
+  'autoWorkflow.timeSaved': '절감 시간',
+  'autoWorkflow.minutes': '분',
+  'autoWorkflow.empty': '감지된 패턴이 없습니다',
 } as const
 
 export default ko

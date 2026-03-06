@@ -96,7 +96,7 @@ export interface Skill {
   icon: string
 }
 
-export type ViewState = 'home' | 'chat' | 'settings' | 'allChats' | 'projects' | 'projectDetail' | 'quickChat' | 'memory' | 'agentSwarm' | 'schedule' | 'groupChat' | 'promptLibrary' | 'debate' | 'aiTools' | 'imageGen' | 'agent' | 'translate' | 'docWriter' | 'ocr' | 'promptChain' | 'knowledgeBase' | 'workflow' | 'collab' | 'contextManager' | 'insights' | 'plugins' | 'themeBuilder' | 'batchQueue' | 'sessionInsights' | 'cacheControl' | 'auditLog' | 'dashboard' | 'workspace' | 'snippets' | 'apiTester' | 'regexBuilder' | 'dataConverter' | 'diagramEditor'
+export type ViewState = 'home' | 'chat' | 'settings' | 'allChats' | 'projects' | 'projectDetail' | 'quickChat' | 'memory' | 'agentSwarm' | 'schedule' | 'groupChat' | 'promptLibrary' | 'debate' | 'aiTools' | 'imageGen' | 'agent' | 'translate' | 'docWriter' | 'ocr' | 'promptChain' | 'knowledgeBase' | 'workflow' | 'collab' | 'contextManager' | 'insights' | 'plugins' | 'themeBuilder' | 'batchQueue' | 'sessionInsights' | 'cacheControl' | 'auditLog' | 'dashboard' | 'workspace' | 'snippets' | 'apiTester' | 'regexBuilder' | 'dataConverter' | 'diagramEditor' | 'voiceChat' | 'knowledgeGraph' | 'canvas' | 'autoWorkflow'
 
 // Group Chat types
 
@@ -806,4 +806,85 @@ export interface Diagram {
   isFavorite: boolean
   createdAt: string
   updatedAt: string
+}
+
+// Phase 15 types — AI Intelligence Hub & Next-gen UX
+
+// 15-1. Voice Chat
+export type VoiceState = 'idle' | 'listening' | 'processing' | 'speaking'
+
+export interface VoiceTranscript {
+  id: string
+  role: 'user' | 'assistant'
+  text: string
+  timestamp: string
+}
+
+// 15-2. Knowledge Graph
+export interface GraphNode {
+  id: string
+  label: string
+  type: 'session' | 'document' | 'knowledge' | 'snippet' | 'topic'
+  sourceId?: string
+  metadata?: Record<string, string>
+  createdAt: string
+}
+
+export interface GraphEdge {
+  id: string
+  source: string
+  target: string
+  label: string
+  weight: number
+  createdAt: string
+}
+
+// 15-3. Copilot (no DB types, ephemeral state only)
+
+// 15-4. Canvas
+export type CanvasNodeType = 'text' | 'image' | 'code' | 'diagram' | 'chat' | 'link'
+
+export interface CanvasNode {
+  id: string
+  canvasId: string
+  type: CanvasNodeType
+  x: number
+  y: number
+  width: number
+  height: number
+  content: string
+  metadata?: Record<string, string>
+  createdAt: string
+  updatedAt: string
+}
+
+export interface CanvasEdge {
+  id: string
+  canvasId: string
+  source: string
+  target: string
+  label?: string
+}
+
+export interface Canvas {
+  id: string
+  title: string
+  zoom: number
+  panX: number
+  panY: number
+  createdAt: string
+  updatedAt: string
+}
+
+// 15-5. Auto Workflow
+export interface WorkflowSuggestion {
+  id: string
+  pattern: string
+  description: string
+  frequency: number
+  lastDetected: string
+  status: 'pending' | 'accepted' | 'dismissed'
+  workflowId?: string
+  estimatedSavings: { tokens: number; cost: number; timeMinutes: number }
+  createdAt: string
 }

@@ -1322,6 +1322,58 @@ const en = {
   'error.boundary.title': 'Something went wrong',
   'error.boundary.message': 'There was a problem loading the page.',
   'error.boundary.retry': 'Try again',
+
+  // Phase 15 — Voice Chat
+  'voiceChat.title': 'AI Voice Chat',
+  'voiceChat.state.idle': 'Tap the mic to start a conversation',
+  'voiceChat.state.listening': 'Listening...',
+  'voiceChat.state.processing': 'AI is thinking...',
+  'voiceChat.state.speaking': 'AI is speaking...',
+  'voiceChat.start': 'Start conversation',
+  'voiceChat.stop': 'Stop conversation',
+  'voiceChat.autoListen': 'Auto-listen',
+  'voiceChat.language': 'Switch language',
+  'voiceChat.clear': 'Clear transcript',
+
+  // Phase 15 — Knowledge Graph
+  'knowledgeGraph.title': 'Smart Knowledge Graph',
+  'knowledgeGraph.addNode': 'Add Node',
+  'knowledgeGraph.nodeName': 'Node name',
+  'knowledgeGraph.connections': 'Connections',
+  'knowledgeGraph.nodeCount': 'Nodes',
+
+  // Phase 15 — Copilot
+  'copilot.title': 'AI Copilot',
+  'copilot.placeholder': 'Press Cmd+J to ask AI from anywhere',
+  'copilot.inputPlaceholder': 'Ask anything...',
+  'copilot.send': 'Send',
+  'copilot.clear': 'Clear chat',
+  'copilot.error': 'Error generating response.',
+
+  // Phase 15 — Canvas
+  'canvas.title': 'Multimodal Canvas',
+  'canvas.description': 'Freely arrange text, code, images, and diagrams',
+  'canvas.create': 'New Canvas',
+  'canvas.untitled': 'Untitled Canvas',
+  'canvas.emptyNode': 'Enter content',
+
+  // Phase 15 — Auto Workflow
+  'autoWorkflow.title': 'AI Auto Workflow',
+  'autoWorkflow.description': 'Detects repetitive patterns and suggests automation',
+  'autoWorkflow.detect': 'Detect Patterns',
+  'autoWorkflow.all': 'All',
+  'autoWorkflow.pending': 'Pending',
+  'autoWorkflow.accepted': 'Accepted',
+  'autoWorkflow.dismissed': 'Dismissed',
+  'autoWorkflow.accept': 'Accept',
+  'autoWorkflow.dismiss': 'Dismiss',
+  'autoWorkflow.frequency': 'Frequency',
+  'autoWorkflow.estSavings': 'Est. savings',
+  'autoWorkflow.costSaved': 'Cost Saved',
+  'autoWorkflow.tokensSaved': 'Tokens Saved',
+  'autoWorkflow.timeSaved': 'Time Saved',
+  'autoWorkflow.minutes': ' min',
+  'autoWorkflow.empty': 'No patterns detected',
 } as const
 
 export default en
