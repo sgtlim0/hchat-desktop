@@ -1374,6 +1374,47 @@ const ko = {
   'autoWorkflow.timeSaved': '절감 시간',
   'autoWorkflow.minutes': '분',
   'autoWorkflow.empty': '감지된 패턴이 없습니다',
+  // Phase 10 — MCP Servers
+  'mcp.title': 'MCP 서버 관리',
+  'mcp.addServer': '서버 추가',
+  'mcp.serverName': '서버 이름',
+  'mcp.empty': '등록된 MCP 서버가 없습니다',
+  'mcp.selectServer': '서버를 선택하세요',
+  'mcp.connect': '연결',
+  'mcp.disconnect': '연결 해제',
+  'mcp.lastConnected': '마지막 연결',
+  'mcp.tools': '도구 목록',
+  'mcp.noTools': '사용 가능한 도구 없음',
+  'mcp.status.label': '상태',
+  'mcp.status.disconnected': '연결 안됨',
+  'mcp.status.connecting': '연결 중...',
+  'mcp.status.connected': '연결됨',
+  'mcp.status.error': '오류',
+
+  // Phase 10 — Autonomous Agent
+  'autonomousAgent.title': 'AI 자율 에이전트',
+  'autonomousAgent.description': 'ReAct 패턴으로 다단계 작업을 자율 수행합니다',
+  'autonomousAgent.goalPlaceholder': '에이전트가 수행할 목표를 입력하세요...',
+  'autonomousAgent.start': '실행',
+  'autonomousAgent.requireApproval': '민감 작업 승인 요청',
+  'autonomousAgent.noRuns': '실행 내역이 없습니다',
+  'autonomousAgent.selectRun': '실행 내역을 선택하세요',
+  'autonomousAgent.noSteps': '아직 실행 단계가 없습니다',
+
+  // Phase 10 — Data Connectors
+  'dataConnector.title': '데이터 커넥터',
+  'dataConnector.add': '커넥터 추가',
+  'dataConnector.name': '커넥터 이름',
+  'dataConnector.empty': '등록된 커넥터가 없습니다',
+  'dataConnector.sync': '동기화',
+  'dataConnector.lastSync': '마지막 동기화',
+
+  // Phase 10 — Code Interpreter
+  'codeInterpreter.title': 'AI 코드 인터프리터',
+  'codeInterpreter.description': '브라우저에서 Python/JavaScript를 실행하세요',
+  'codeInterpreter.newNotebook': '새 노트북',
+  'codeInterpreter.untitled': '제목 없는 노트북',
+  'codeInterpreter.emptyCells': '셀을 추가하여 코드를 작성하세요',
 } as const
 
 export default ko

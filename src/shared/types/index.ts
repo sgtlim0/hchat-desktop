@@ -96,7 +96,7 @@ export interface Skill {
   icon: string
 }
 
-export type ViewState = 'home' | 'chat' | 'settings' | 'allChats' | 'projects' | 'projectDetail' | 'quickChat' | 'memory' | 'agentSwarm' | 'schedule' | 'groupChat' | 'promptLibrary' | 'debate' | 'aiTools' | 'imageGen' | 'agent' | 'translate' | 'docWriter' | 'ocr' | 'promptChain' | 'knowledgeBase' | 'workflow' | 'collab' | 'contextManager' | 'insights' | 'plugins' | 'themeBuilder' | 'batchQueue' | 'sessionInsights' | 'cacheControl' | 'auditLog' | 'dashboard' | 'workspace' | 'snippets' | 'apiTester' | 'regexBuilder' | 'dataConverter' | 'diagramEditor' | 'voiceChat' | 'knowledgeGraph' | 'canvas' | 'autoWorkflow'
+export type ViewState = 'home' | 'chat' | 'settings' | 'allChats' | 'projects' | 'projectDetail' | 'quickChat' | 'memory' | 'agentSwarm' | 'schedule' | 'groupChat' | 'promptLibrary' | 'debate' | 'aiTools' | 'imageGen' | 'agent' | 'translate' | 'docWriter' | 'ocr' | 'promptChain' | 'knowledgeBase' | 'workflow' | 'collab' | 'contextManager' | 'insights' | 'plugins' | 'themeBuilder' | 'batchQueue' | 'sessionInsights' | 'cacheControl' | 'auditLog' | 'dashboard' | 'workspace' | 'snippets' | 'apiTester' | 'regexBuilder' | 'dataConverter' | 'diagramEditor' | 'voiceChat' | 'knowledgeGraph' | 'canvas' | 'autoWorkflow' | 'mcpServers' | 'autonomousAgent' | 'dataConnectors' | 'codeInterpreter'
 
 // Group Chat types
 
@@ -887,4 +887,84 @@ export interface WorkflowSuggestion {
   workflowId?: string
   estimatedSavings: { tokens: number; cost: number; timeMinutes: number }
   createdAt: string
+}
+
+// Phase 10 types — AI Native & Mobile First
+
+// 10-1. MCP Server
+export type McpServerStatus = 'disconnected' | 'connecting' | 'connected' | 'error'
+
+export interface McpTool {
+  name: string
+  description: string
+  parameters: Record<string, { type: string; description: string }>
+}
+
+export interface McpServer {
+  id: string
+  name: string
+  url: string
+  status: McpServerStatus
+  tools: McpTool[]
+  lastConnected?: string
+  createdAt: string
+}
+
+// 10-2. Autonomous Agent
+export type AgentStepStatus = 'pending' | 'running' | 'done' | 'error' | 'awaiting_approval'
+
+export interface AgentStep {
+  id: string
+  type: 'think' | 'tool_call' | 'observe' | 'answer'
+  content: string
+  toolName?: string
+  toolArgs?: Record<string, string>
+  toolResult?: string
+  status: AgentStepStatus
+  timestamp: string
+}
+
+export interface AgentRun {
+  id: string
+  goal: string
+  steps: AgentStep[]
+  status: 'running' | 'completed' | 'failed' | 'paused'
+  modelId: string
+  createdAt: string
+  completedAt?: string
+}
+
+// 10-4. Data Connector
+export type ConnectorType = 'google_sheets' | 'notion' | 'github'
+export type ConnectorStatus = 'disconnected' | 'connected' | 'error'
+
+export interface DataConnector {
+  id: string
+  type: ConnectorType
+  name: string
+  status: ConnectorStatus
+  config: Record<string, string>
+  lastSynced?: string
+  createdAt: string
+}
+
+// 10-5. Code Interpreter
+export type CodeLanguage = 'python' | 'javascript'
+export type CellStatus = 'idle' | 'running' | 'done' | 'error'
+
+export interface CodeCell {
+  id: string
+  language: CodeLanguage
+  code: string
+  output: string
+  status: CellStatus
+  executedAt?: string
+}
+
+export interface Notebook {
+  id: string
+  title: string
+  cells: CodeCell[]
+  createdAt: string
+  updatedAt: string
 }

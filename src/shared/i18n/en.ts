@@ -1374,6 +1374,47 @@ const en = {
   'autoWorkflow.timeSaved': 'Time Saved',
   'autoWorkflow.minutes': ' min',
   'autoWorkflow.empty': 'No patterns detected',
+  // Phase 10 — MCP Servers
+  'mcp.title': 'MCP Server Manager',
+  'mcp.addServer': 'Add Server',
+  'mcp.serverName': 'Server name',
+  'mcp.empty': 'No MCP servers registered',
+  'mcp.selectServer': 'Select a server',
+  'mcp.connect': 'Connect',
+  'mcp.disconnect': 'Disconnect',
+  'mcp.lastConnected': 'Last connected',
+  'mcp.tools': 'Available Tools',
+  'mcp.noTools': 'No tools available',
+  'mcp.status.label': 'Status',
+  'mcp.status.disconnected': 'Disconnected',
+  'mcp.status.connecting': 'Connecting...',
+  'mcp.status.connected': 'Connected',
+  'mcp.status.error': 'Error',
+
+  // Phase 10 — Autonomous Agent
+  'autonomousAgent.title': 'AI Autonomous Agent',
+  'autonomousAgent.description': 'Autonomously executes multi-step tasks using ReAct pattern',
+  'autonomousAgent.goalPlaceholder': 'Enter a goal for the agent...',
+  'autonomousAgent.start': 'Run',
+  'autonomousAgent.requireApproval': 'Require approval for sensitive actions',
+  'autonomousAgent.noRuns': 'No runs yet',
+  'autonomousAgent.selectRun': 'Select a run',
+  'autonomousAgent.noSteps': 'No steps yet',
+
+  // Phase 10 — Data Connectors
+  'dataConnector.title': 'Data Connectors',
+  'dataConnector.add': 'Add Connector',
+  'dataConnector.name': 'Connector name',
+  'dataConnector.empty': 'No connectors registered',
+  'dataConnector.sync': 'Sync',
+  'dataConnector.lastSync': 'Last synced',
+
+  // Phase 10 — Code Interpreter
+  'codeInterpreter.title': 'AI Code Interpreter',
+  'codeInterpreter.description': 'Run Python/JavaScript in the browser',
+  'codeInterpreter.newNotebook': 'New Notebook',
+  'codeInterpreter.untitled': 'Untitled Notebook',
+  'codeInterpreter.emptyCells': 'Add a cell to start coding',
 } as const
 
 export default en

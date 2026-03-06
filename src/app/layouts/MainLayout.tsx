@@ -72,6 +72,10 @@ const ApiTesterPage = lazy(() => import('@/pages/api-tester/ApiTesterPage').then
 const RegexBuilderPage = lazy(() => import('@/pages/regex-builder/RegexBuilderPage').then((m) => ({ default: m.RegexBuilderPage })))
 const DataConverterPage = lazy(() => import('@/pages/data-converter/DataConverterPage').then((m) => ({ default: m.DataConverterPage })))
 const DiagramEditorPage = lazy(() => import('@/pages/diagram-editor/DiagramEditorPage').then((m) => ({ default: m.DiagramEditorPage })))
+const McpServersPage = lazy(() => import('@/pages/mcp/McpServersPage').then((m) => ({ default: m.McpServersPage })))
+const AutonomousAgentPage = lazy(() => import('@/pages/autonomous-agent/AutonomousAgentPage').then((m) => ({ default: m.AutonomousAgentPage })))
+const DataConnectorsPage = lazy(() => import('@/pages/data-connector/DataConnectorsPage').then((m) => ({ default: m.DataConnectorsPage })))
+const CodeInterpreterPage = lazy(() => import('@/pages/code-interpreter/CodeInterpreterPage').then((m) => ({ default: m.CodeInterpreterPage })))
 const VoiceChatPage = lazy(() => import('@/pages/voice-chat/VoiceChatPage').then((m) => ({ default: m.VoiceChatPage })))
 const KnowledgeGraphPage = lazy(() => import('@/pages/knowledge-graph/KnowledgeGraphPage').then((m) => ({ default: m.KnowledgeGraphPage })))
 const CanvasPage = lazy(() => import('@/pages/canvas/CanvasPage').then((m) => ({ default: m.CanvasPage })))
@@ -318,6 +322,22 @@ export function MainLayout() {
 
     if (view === 'diagramEditor') {
       return <DiagramEditorPage />
+    }
+
+    if (view === 'mcpServers') {
+      return <McpServersPage />
+    }
+
+    if (view === 'autonomousAgent') {
+      return <AutonomousAgentPage />
+    }
+
+    if (view === 'dataConnectors') {
+      return <DataConnectorsPage />
+    }
+
+    if (view === 'codeInterpreter') {
+      return <CodeInterpreterPage />
     }
 
     if (view === 'voiceChat') {

@@ -5,7 +5,7 @@ import type {
   PinnedMessage, InsightReport, Plugin, CustomTheme, BatchJob, CacheEntry, AuditEntry,
   DashboardLayout, Workspace, CodeSnippet, ApiRequest, ApiCollection, RegexPattern,
   ConversionHistory, Diagram, GraphNode, GraphEdge, Canvas, CanvasNode, CanvasEdge,
-  WorkflowSuggestion,
+  WorkflowSuggestion, McpServer, AgentRun, DataConnector, Notebook,
 } from '@/shared/types'
 
 const db = new Dexie('hchat-desktop') as Dexie & {
@@ -44,6 +44,10 @@ const db = new Dexie('hchat-desktop') as Dexie & {
   canvasNodes: EntityTable<CanvasNode, 'id'>
   canvasEdges: EntityTable<CanvasEdge, 'id'>
   workflowSuggestions: EntityTable<WorkflowSuggestion, 'id'>
+  mcpServers: EntityTable<McpServer, 'id'>
+  agentRuns: EntityTable<AgentRun, 'id'>
+  dataConnectors: EntityTable<DataConnector, 'id'>
+  notebooks: EntityTable<Notebook, 'id'>
 }
 
 db.version(1).stores({
@@ -173,6 +177,48 @@ db.version(8).stores({
   canvasNodes: 'id, canvasId, type',
   canvasEdges: 'id, canvasId, source, target',
   workflowSuggestions: 'id, status, createdAt',
+})
+
+db.version(9).stores({
+  sessions: 'id, projectId, updatedAt, isFavorite',
+  messages: 'id, sessionId, createdAt',
+  projects: 'id, updatedAt',
+  usages: 'id, sessionId, modelId, createdAt',
+  prompts: 'id, category, isFavorite, updatedAt',
+  personas: 'id, isDefault, updatedAt',
+  folders: 'id',
+  tags: 'id',
+  memories: 'id, scope, updatedAt',
+  schedules: 'id, status, updatedAt',
+  swarmAgents: 'id, role',
+  swarmConnections: 'id, from, to',
+  channelConfigs: 'id',
+  artifacts: 'id, sessionId, messageId, updatedAt',
+  pinnedMessages: 'id, sessionId',
+  insightReports: 'id, type, createdAt',
+  plugins: 'id, status',
+  customThemes: 'id, isActive',
+  batchJobs: 'id, status, priority, createdAt',
+  cacheEntries: 'id, promptHash, createdAt, expiresAt',
+  auditEntries: 'id, action, createdAt',
+  dashboardLayouts: 'id, updatedAt',
+  workspaces: 'id, updatedAt',
+  snippets: 'id, language, updatedAt',
+  apiRequests: 'id, collectionId, updatedAt',
+  apiCollections: 'id',
+  regexPatterns: 'id, updatedAt',
+  conversionHistory: 'id, createdAt',
+  diagrams: 'id, type, updatedAt',
+  graphNodes: 'id, type, sourceId, createdAt',
+  graphEdges: 'id, source, target',
+  canvases: 'id, updatedAt',
+  canvasNodes: 'id, canvasId, type',
+  canvasEdges: 'id, canvasId, source, target',
+  workflowSuggestions: 'id, status, createdAt',
+  mcpServers: 'id, status, createdAt',
+  agentRuns: 'id, status, createdAt',
+  dataConnectors: 'id, type, status',
+  notebooks: 'id, updatedAt',
 })
 
 db.version(6).stores({
@@ -720,6 +766,62 @@ export async function putWorkflowSuggestion(suggestion: WorkflowSuggestion): Pro
 
 export async function deleteWorkflowSuggestionFromDb(id: string): Promise<void> {
   await db.workflowSuggestions.delete(id)
+}
+
+// MCP Server CRUD (Phase 10)
+
+export async function getAllMcpServers(): Promise<McpServer[]> {
+  return db.mcpServers.orderBy('createdAt').reverse().toArray()
+}
+
+export async function putMcpServer(server: McpServer): Promise<void> {
+  await db.mcpServers.put(server)
+}
+
+export async function deleteMcpServerFromDb(id: string): Promise<void> {
+  await db.mcpServers.delete(id)
+}
+
+// Agent Run CRUD (Phase 10)
+
+export async function getAllAgentRuns(): Promise<AgentRun[]> {
+  return db.agentRuns.orderBy('createdAt').reverse().toArray()
+}
+
+export async function putAgentRun(run: AgentRun): Promise<void> {
+  await db.agentRuns.put(run)
+}
+
+export async function deleteAgentRunFromDb(id: string): Promise<void> {
+  await db.agentRuns.delete(id)
+}
+
+// Data Connector CRUD (Phase 10)
+
+export async function getAllDataConnectors(): Promise<DataConnector[]> {
+  return db.dataConnectors.toArray()
+}
+
+export async function putDataConnector(connector: DataConnector): Promise<void> {
+  await db.dataConnectors.put(connector)
+}
+
+export async function deleteDataConnectorFromDb(id: string): Promise<void> {
+  await db.dataConnectors.delete(id)
+}
+
+// Notebook CRUD (Phase 10)
+
+export async function getAllNotebooks(): Promise<Notebook[]> {
+  return db.notebooks.orderBy('updatedAt').reverse().toArray()
+}
+
+export async function putNotebook(notebook: Notebook): Promise<void> {
+  await db.notebooks.put(notebook)
+}
+
+export async function deleteNotebookFromDb(id: string): Promise<void> {
+  await db.notebooks.delete(id)
 }
 
 export { db }
