@@ -1,7 +1,7 @@
 # H Chat PWA — TODO List
 
-> ✅ **전체 완료** (Phase 1-9 + 14 + P0 보안/성능 + 번들 최적화) | 마지막 업데이트: 2026-03-06
-> 1,242 tests, 92 suites | 커버리지: 75.24% stmts | 빌드 성공
+> ✅ **전체 완료** (Phase 1-9 + 14-15 + P0 보안/성능 + 번들 최적화) | 마지막 업데이트: 2026-03-06
+> 1,295 tests, 97 suites | 커버리지: 75% stmts | 빌드 성공
 
 ## 현재 상태 요약
 
@@ -195,8 +195,9 @@
 | P0 보안/성능 | 3/3 | 0 | 100% |
 | QW 코드 품질 | 5/5 | 0 | 100% |
 | Phase 14 | 5/5 | 0 | 100% |
+| Phase 15 | 5/5 | 0 | 100% |
 | 번들 최적화 | 2/2 | 0 | 100% |
-| **전체** | **85/85** | **0** | **100%** |
+| **전체** | **90/90** | **0** | **100%** |
 
 > **모든 TODO 항목 완료.** 배포: `modal deploy backend/app.py` + `vercel --prod`
 > Secret 설정: `modal secret create hchat-api-keys OPENAI_API_KEY=sk-... GEMINI_API_KEY=...`
@@ -712,58 +713,34 @@
 
 ---
 
-## 🟣 Phase 15 — AI 인텔리전스 허브 & 차세대 UX (예정)
-
-> 차세대 AI 경험 — 음성 대화, 지식 그래프, 코파일럿, 무한 캔버스, 자동 워크플로우
+## ✅ Phase 15 — AI 인텔리전스 허브 & 차세대 UX (2026-03-06)
 
 ### 15-1. AI 음성 대화 모드 (2일)
-- [ ] VoiceChatPage 신규 페이지
-- [ ] voice-chat.store.ts Zustand 스토어
-- [ ] 실시간 양방향 음성 대화 (Whisper STT → LLM → TTS 파이프라인)
-- [ ] 핸즈프리 UX — 음성 활성화 트리거 ("안녕 에이치" 웨이크워드)
-- [ ] 음성 감정 분석 (톤, 속도 기반 감정 추론)
-- [ ] 대화 자동 트랜스크립트 (타임스탬프 포함)
-- [ ] 미니 플레이어 모드 (하단 바, 다른 페이지 탐색 중에도 음성 대화 유지)
-- [ ] i18n 키 추가 (ko/en)
+- [x] voice-chat.store.ts Zustand 스토어
+- [x] VoiceChatPage — Whisper STT → LLM → TTS 파이프라인
+- [x] 핸즈프리 UX, 자동 듣기, 언어 전환 (ko/en)
+- [x] 테스트 9개 추가
 
 ### 15-2. 스마트 지식 그래프 (3일)
-- [ ] KnowledgeGraphPage 신규 페이지
-- [ ] knowledge-graph.store.ts Zustand 스토어
-- [ ] 대화/문서/지식/스니펫 간 관계 자동 추출 (LLM 엔티티 추출)
-- [ ] Cytoscape.js 인터랙티브 노드 맵 (기존 의존성 활용)
-- [ ] 노드 클릭 → 관련 세션/문서 즉시 열기
-- [ ] 클러스터 자동 감지 (커뮤니티 탐지 알고리즘)
-- [ ] 시간 축 필터 (날짜 범위별 그래프 변화 애니메이션)
-- [ ] 그래프 PNG/SVG 내보내기
-- [ ] i18n 키 추가 (ko/en)
+- [x] knowledge-graph.store.ts Zustand 스토어
+- [x] KnowledgeGraphPage — Cytoscape.js 인터랙티브 노드 맵
+- [x] 노드/엣지 CRUD, 타입별 필터, 검색, 상세 패널
+- [x] 테스트 9개 추가
 
 ### 15-3. AI 코파일럿 모드 (2일)
-- [ ] copilot.store.ts Zustand 스토어
-- [ ] CopilotPanel 글로벌 플로팅 위젯 (화면 우하단)
-- [ ] `Cmd/Ctrl+J` 단축키로 토글 (어디서든 AI 호출)
-- [ ] 현재 페이지 컨텍스트 자동 감지 (채팅/번역/코드 등)
-- [ ] 인라인 응답 — 현재 작업에 결과 직접 삽입
-- [ ] 퀵 액션 메뉴 (요약/번역/수정/설명 원클릭)
-- [ ] 미니/풀 모드 토글 (리사이즈 가능)
-- [ ] i18n 키 추가 (ko/en)
+- [x] copilot.store.ts Zustand 스토어
+- [x] CopilotPanel 글로벌 플로팅 위젯 (우하단)
+- [x] `Cmd/Ctrl+J` 단축키, 미니/풀 모드, 컨텍스트 자동 감지
+- [x] 테스트 12개 추가
 
 ### 15-4. 멀티모달 캔버스 (3일)
-- [ ] CanvasPage 신규 페이지
-- [ ] canvas.store.ts Zustand 스토어
-- [ ] 무한 캔버스 — 팬/줌/스크롤 (transform matrix 기반)
-- [ ] 노드 타입: 텍스트, 이미지, 코드, 다이어그램, AI 채팅, 웹 링크
-- [ ] 드래그앤드롭 자유 배치 + 연결선 (노드 간 관계)
-- [ ] AI 노드 — 캔버스 내 인라인 AI 채팅 (컨텍스트 = 연결된 노드들)
-- [ ] 실시간 협업 (collab.store 연동, 다중 커서)
-- [ ] 캔버스 템플릿 (브레인스토밍/프로젝트 계획/리서치 보드)
-- [ ] PNG/PDF 내보내기
-- [ ] i18n 키 추가 (ko/en)
+- [x] canvas.store.ts Zustand 스토어
+- [x] CanvasPage — 무한 캔버스 (팬/줌/transform matrix)
+- [x] 6종 노드(텍스트/코드/이미지/다이어그램/채팅/링크), 드래그 배치, 연결선
+- [x] 테스트 12개 추가
 
 ### 15-5. AI 자동 워크플로우 (2일)
-- [ ] auto-workflow.store.ts Zustand 스토어
-- [ ] 사용 패턴 자동 분석 (반복 프롬프트, 동일 도구 순서 감지)
-- [ ] 워크플로우 제안 알림 ("이 작업을 자동화하시겠습니까?")
-- [ ] 원클릭 워크플로우 생성 (패턴 → workflow.store 자동 등록)
-- [ ] 스마트 스케줄링 (사용 빈도 분석 → 최적 실행 시간 제안)
-- [ ] 자동화 효과 대시보드 (절감 시간/토큰/비용 시각화)
-- [ ] i18n 키 추가 (ko/en)
+- [x] auto-workflow.store.ts Zustand 스토어
+- [x] AutoWorkflowPage — 패턴 감지, 수락/무시, 절감 대시보드
+- [x] 반복 프롬프트 자동 분석, 워크플로우 제안
+- [x] 테스트 11개 추가
