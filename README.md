@@ -1,8 +1,8 @@
 # H Chat Desktop
 
-AI 모델(Claude, GPT, Gemini)과 대화하는 Progressive Web App. 멀티 프로바이더, 실시간 스트리밍, 고급 AI 도구, 로컬 저장, PWA 지원.
+AI 모델(Claude, GPT, Gemini)과 대화하는 Progressive Web App. 멀티 프로바이더, 실시간 스트리밍, 80개 AI 기능, 65개 스토어, 68개 페이지, 로컬 저장, PWA 지원.
 
-**상태**: 100% 완료 (Phase 1-16 전체) | **테스트**: 1,479 tests, 121 suites | **배포**: Vercel + Modal
+**상태**: Phase 1-16 전체 완료 (80개 기능) | **62K+ 코드** | **1,479 tests / 121 suites** | **배포**: [Vercel](https://hchat-desktop.vercel.app) + Modal
 
 ---
 
@@ -869,8 +869,8 @@ Pencil MCP를 통한 28개 프레임 설계:
 | 문서 | 내용 |
 |------|------|
 | `CLAUDE.md` | 아키텍처, 커맨드, 배포 가이드 |
-| `docs/todolist.md` | 상세 TODO 목록 (Phase 1-16 전체 완료) |
-| `docs/roadmap.md` | 향후 로드맵 |
+| `docs/todolist.md` | 상세 TODO 목록 (Phase 1-16 완료 + Phase 17 기획) |
+| `docs/roadmap.md` | 향후 로드맵 (Phase 17 기획) |
 | `docs/v2-implementation-plan.md` | v2-extension 이식 계획 |
 | `docs/hchat-implementation-plan.md` | H Chat 이식 계획 |
 | `docs/hchat-screenshot-analysis.md` | H Chat UI 심층 분석 |
@@ -937,6 +937,16 @@ Pencil MCP를 통한 28개 프레임 설계:
 - **멀티에이전트 디베이트** — N개 에이전트 역할별 토론, 라운드 투표, 합의 도출
 - **AI 포트폴리오 생성기** — 프로젝트 관리, 5개 테마, HTML 자동 생성, iframe 미리보기
 
+### Phase 17: AI 하이퍼 인텔리전스 & 이머시브 경험 (📋 기획)
+
+| 기능 | 설명 | 공수 | 임팩트 |
+|------|------|------|--------|
+| **AI 실시간 번역 통화** | 양방향 음성 번역, 다국어 회의 (4개 언어), 실시간 자막, 트랜스크립트 | 3일 | 높음 |
+| **스마트 문서 OCR 분석기** | 영수증/계약서/명함 자동 인식, 구조화 데이터 추출, 표→테이블 변환 | 2일 | 높음 |
+| **AI 게임화 학습 시스템** | 퀴즈 배틀, XP/레벨/배지, 일일 챌린지, 플래시카드, 스킬 트리 | 3일 | 높음 |
+| **인터랙티브 데이터 스토리텔링** | 데이터→내러티브 자동 생성, 스크롤 차트 애니메이션, 공유 링크 | 2일 | 중간 |
+| **AI 감정 일기 & 웰빙 트래커** | 감정 패턴 분석, 주간 웰빙 리포트, 마인드풀니스 제안, 무드 캘린더 | 2일 | 중간 |
+
 ---
 
 ## 기여 및 개발
@@ -977,4 +987,4 @@ MIT
 
 - **프로젝트**: github.com:sgtlim0/hchat-desktop.git
 - **배포**: Vercel (Frontend) / Modal (Backend)
-- **상태**: 100% 기능 완성 (Phase 1-16 전체), 65개 스토어, 68개 페이지, 62K+ 코드, 1,479 tests
+- **상태**: Phase 1-16 전체 완료 (80개 기능), 65 스토어, 68 페이지, 62K+ 코드, 1,479 tests
