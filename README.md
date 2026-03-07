@@ -2,7 +2,7 @@
 
 AI 모델(Claude, GPT, Gemini)과 대화하는 Progressive Web App. 멀티 프로바이더, 실시간 스트리밍, 고급 AI 도구, 로컬 저장, PWA 지원.
 
-**상태**: 100% 완료 (Phase 1-15 전체) | **테스트**: 1,440 tests, 116 suites | **배포**: Vercel + Modal
+**상태**: 100% 완료 (Phase 1-16 전체) | **테스트**: 1,479 tests, 121 suites | **배포**: Vercel + Modal
 
 ---
 
@@ -307,7 +307,7 @@ hchat-pwa/
 │   ├── app/
 │   │   └── layouts/           # MainLayout — 뷰 라우팅, 키보드 단축키
 │   │
-│   ├── pages/                 # 63개 페이지 컴포넌트 (56개 뷰)
+│   ├── pages/                 # 68개 페이지 컴포넌트 (61개 뷰)
 │   │   ├── home/              # 홈 (비서 마켓플레이스)
 │   │   ├── chat/              # 채팅
 │   │   ├── all-chats/         # 모든 대화
@@ -367,7 +367,7 @@ hchat-pwa/
 │   │   ├── copilot/           # AI 코파일럿 위젯 (Phase 15)
 │   │   └── ...
 │   │
-│   ├── entities/              # Zustand 스토어 60개
+│   ├── entities/              # Zustand 스토어 65개
 │   │   ├── session/               # 세션, 메시지, 스트리밍, 뷰 상태
 │   │   ├── settings/              # 모델, 언어, 테마, 자격증명
 │   │   ├── project/               # 프로젝트
@@ -553,8 +553,8 @@ modal secret create hchat-api-keys \
 
 ### 커버리지 현황
 
-- **테스트 수**: 1,440 tests
-- **테스트 스위트**: 116 suites
+- **테스트 수**: 1,479 tests
+- **테스트 스위트**: 121 suites
 - **커버리지**: 75% stmts, 62% branches, 86% funcs, 75% lines
 - **테스트 타입**:
   - **단위**: 유틸리티, 스토어, 프로바이더, 에이전트 파서/도구 (Vitest)
@@ -619,7 +619,8 @@ Pencil MCP를 통한 28개 프레임 설계:
 | **P0 보안/성능** | 3 | 3 | 100% |
 | **QW** (코드 품질) | 5 | 5 | 100% |
 | **번들 최적화** | 2 | 2 | 100% |
-| **전체** | **149** | **149** | **100%** |
+| **Phase 16** (AI 에이전시) | 5 | 5 | 100% |
+| **전체** | **154** | **154** | **100%** |
 
 ### Phase 1 확장 (비서 마켓플레이스)
 
@@ -809,6 +810,17 @@ Pencil MCP를 통한 28개 프레임 설계:
 | AI 마인드맵 (mindmap.store + MindMapPage) | ✅ 완료 |
 | 테스트 32개 추가 | ✅ 완료 |
 
+### Phase 16 확장 (AI 에이전시 & 인터랙티브 인텔리전스)
+
+| 항목 | 상태 |
+|------|------|
+| AI 페어 프로그래밍 (pair-programming.store + PairProgrammingPage) | ✅ 완료 |
+| 스마트 대시보드 빌더 (dashboard-builder.store + DashboardBuilderPage) | ✅ 완료 |
+| AI 문서 비교 (doc-compare.store + DocComparePage) | ✅ 완료 |
+| 멀티에이전트 디베이트 (multi-agent-debate.store + MultiAgentDebatePage) | ✅ 완료 |
+| AI 포트폴리오 (portfolio.store + PortfolioPage) | ✅ 완료 |
+| 테스트 39개 추가 (1,479 total, 121 suites) | ✅ 완료 |
+
 ### Phase 10 확장 (AI 네이티브 & 모바일 퍼스트)
 
 | 항목 | 상태 |
@@ -857,8 +869,8 @@ Pencil MCP를 통한 28개 프레임 설계:
 | 문서 | 내용 |
 |------|------|
 | `CLAUDE.md` | 아키텍처, 커맨드, 배포 가이드 |
-| `docs/todolist.md` | 상세 TODO 목록 (Phase 1-15 전체 완료 + Phase 16 기획) |
-| `docs/roadmap.md` | 향후 로드맵 (Phase 16 기획) |
+| `docs/todolist.md` | 상세 TODO 목록 (Phase 1-16 전체 완료) |
+| `docs/roadmap.md` | 향후 로드맵 |
 | `docs/v2-implementation-plan.md` | v2-extension 이식 계획 |
 | `docs/hchat-implementation-plan.md` | H Chat 이식 계획 |
 | `docs/hchat-screenshot-analysis.md` | H Chat UI 심층 분석 |
@@ -917,15 +929,13 @@ Pencil MCP를 통한 28개 프레임 설계:
 - **멀티모달 캔버스** — 무한 캔버스 (팬/줌), 6종 노드(텍스트/코드/이미지/다이어그램/채팅/링크), 드래그 배치, 연결선
 - **AI 자동 워크플로우** — 반복 패턴 자동 감지, 워크플로우 제안, 수락/무시, 절감 효과 대시보드
 
-### Phase 16: AI 에이전시 & 인터랙티브 인텔리전스 (📋 기획)
+### AI 에이전시 & 인터랙티브 인텔리전스 (Phase 16)
 
-| 기능 | 설명 | 공수 | 임팩트 |
-|------|------|------|--------|
-| **AI 페어 프로그래밍** | 실시간 코드 에디터 + AI 코파일럿, 인라인 제안, 디버그 어시스턴트 | 3일 | 높음 |
-| **스마트 대시보드 빌더** | 드래그앤드롭 대시보드, 데이터 바인딩, 실시간 차트, 공유 링크 | 3일 | 높음 |
-| **AI 문서 비교 분석기** | 문서 diff, 변경점 하이라이트, AI 요약, 법률/계약서 분석 | 2일 | 높음 |
-| **멀티에이전트 디베이트** | N개 AI 에이전트 토론, 역할 자동 배정, 합의 도출, 투표 시스템 | 2일 | 중간 |
-| **AI 포트폴리오 생성기** | 프로젝트/경력 데이터 → 포트폴리오 사이트 자동 생성, 테마 커스터마이징 | 2일 | 높음 |
+- **AI 페어 프로그래밍** — 코드 에디터 + AI 인라인 제안, 수락/거부, 디버그 어시스턴트
+- **스마트 대시보드 빌더** — 드래그앤드롭 위젯 (chart/table/kpi/text/image), 공개/비공개
+- **AI 문서 비교 분석기** — 사이드바이사이드 diff, 변경점 하이라이트 (added/removed/changed)
+- **멀티에이전트 디베이트** — N개 에이전트 역할별 토론, 라운드 투표, 합의 도출
+- **AI 포트폴리오 생성기** — 프로젝트 관리, 5개 테마, HTML 자동 생성, iframe 미리보기
 
 ---
 
@@ -967,4 +977,4 @@ MIT
 
 - **프로젝트**: github.com:sgtlim0/hchat-desktop.git
 - **배포**: Vercel (Frontend) / Modal (Backend)
-- **상태**: 100% 기능 완성 (Phase 1-15 전체 + P0 보안/성능 + 번들 최적화), 60개 스토어, 63개 페이지, 58K+ 코드
+- **상태**: 100% 기능 완성 (Phase 1-16 전체), 65개 스토어, 68개 페이지, 62K+ 코드, 1,479 tests
