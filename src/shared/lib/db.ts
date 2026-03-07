@@ -10,6 +10,7 @@ import type {
   MeetingNote, Report, LearningPath, Bookmark, TranslationPair, GlossaryTerm,
   Presentation, FeedEntry, EmailDraft, TimelineSegment, MindMap,
   PairSession, CustomDashboard, DocComparison, MultiAgentDebateSession, Portfolio,
+  LiveTranslateSession, DocAnalysis, LearningChallenge, DataStory, MoodEntry, WellbeingReport,
 } from '@/shared/types'
 
 const db = new Dexie('hchat-desktop') as Dexie & {
@@ -73,6 +74,12 @@ const db = new Dexie('hchat-desktop') as Dexie & {
   docComparisons: EntityTable<DocComparison, 'id'>
   multiAgentDebates: EntityTable<MultiAgentDebateSession, 'id'>
   portfolios: EntityTable<Portfolio, 'id'>
+  liveTranslateSessions: EntityTable<LiveTranslateSession, 'id'>
+  docAnalyses: EntityTable<DocAnalysis, 'id'>
+  learningChallenges: EntityTable<LearningChallenge, 'id'>
+  dataStories: EntityTable<DataStory, 'id'>
+  moodEntries: EntityTable<MoodEntry, 'id'>
+  wellbeingReports: EntityTable<WellbeingReport, 'id'>
 }
 
 db.version(1).stores({
@@ -305,6 +312,12 @@ db.version(10).stores({
   docComparisons: 'id, createdAt',
   multiAgentDebates: 'id, status, createdAt',
   portfolios: 'id, updatedAt',
+  liveTranslateSessions: 'id, createdAt',
+  docAnalyses: 'id, type, createdAt',
+  learningChallenges: 'id, topic, createdAt',
+  dataStories: 'id, updatedAt',
+  moodEntries: 'id, date, createdAt',
+  wellbeingReports: 'id, period, createdAt',
 })
 
 db.version(6).stores({
@@ -1002,5 +1015,30 @@ export async function deleteMultiAgentDebateFromDb(id: string): Promise<void> { 
 export async function getAllPortfolios(): Promise<Portfolio[]> { return db.portfolios.orderBy('updatedAt').reverse().toArray() }
 export async function putPortfolio(p: Portfolio): Promise<void> { await db.portfolios.put(p) }
 export async function deletePortfolioFromDb(id: string): Promise<void> { await db.portfolios.delete(id) }
+
+// Phase 17 CRUD
+export async function getAllLiveTranslateSessions(): Promise<LiveTranslateSession[]> { return db.liveTranslateSessions.orderBy('createdAt').reverse().toArray() }
+export async function putLiveTranslateSession(s: LiveTranslateSession): Promise<void> { await db.liveTranslateSessions.put(s) }
+export async function deleteLiveTranslateSessionFromDb(id: string): Promise<void> { await db.liveTranslateSessions.delete(id) }
+
+export async function getAllDocAnalyses(): Promise<DocAnalysis[]> { return db.docAnalyses.orderBy('createdAt').reverse().toArray() }
+export async function putDocAnalysis(a: DocAnalysis): Promise<void> { await db.docAnalyses.put(a) }
+export async function deleteDocAnalysisFromDb(id: string): Promise<void> { await db.docAnalyses.delete(id) }
+
+export async function getAllLearningChallenges(): Promise<LearningChallenge[]> { return db.learningChallenges.orderBy('createdAt').reverse().toArray() }
+export async function putLearningChallenge(c: LearningChallenge): Promise<void> { await db.learningChallenges.put(c) }
+export async function deleteLearningChallengeFromDb(id: string): Promise<void> { await db.learningChallenges.delete(id) }
+
+export async function getAllDataStories(): Promise<DataStory[]> { return db.dataStories.orderBy('updatedAt').reverse().toArray() }
+export async function putDataStory(s: DataStory): Promise<void> { await db.dataStories.put(s) }
+export async function deleteDataStoryFromDb(id: string): Promise<void> { await db.dataStories.delete(id) }
+
+export async function getAllMoodEntries(): Promise<MoodEntry[]> { return db.moodEntries.orderBy('createdAt').reverse().toArray() }
+export async function putMoodEntry(e: MoodEntry): Promise<void> { await db.moodEntries.put(e) }
+export async function deleteMoodEntryFromDb(id: string): Promise<void> { await db.moodEntries.delete(id) }
+
+export async function getAllWellbeingReports(): Promise<WellbeingReport[]> { return db.wellbeingReports.orderBy('createdAt').reverse().toArray() }
+export async function putWellbeingReport(r: WellbeingReport): Promise<void> { await db.wellbeingReports.put(r) }
+export async function deleteWellbeingReportFromDb(id: string): Promise<void> { await db.wellbeingReports.delete(id) }
 
 export { db }

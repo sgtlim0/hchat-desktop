@@ -96,7 +96,7 @@ export interface Skill {
   icon: string
 }
 
-export type ViewState = 'home' | 'chat' | 'settings' | 'allChats' | 'projects' | 'projectDetail' | 'quickChat' | 'memory' | 'agentSwarm' | 'schedule' | 'groupChat' | 'promptLibrary' | 'debate' | 'aiTools' | 'imageGen' | 'agent' | 'translate' | 'docWriter' | 'ocr' | 'promptChain' | 'knowledgeBase' | 'workflow' | 'collab' | 'contextManager' | 'insights' | 'plugins' | 'themeBuilder' | 'batchQueue' | 'sessionInsights' | 'cacheControl' | 'auditLog' | 'dashboard' | 'workspace' | 'snippets' | 'apiTester' | 'regexBuilder' | 'dataConverter' | 'diagramEditor' | 'voiceChat' | 'knowledgeGraph' | 'canvas' | 'autoWorkflow' | 'mcpServers' | 'autonomousAgent' | 'dataConnectors' | 'codeInterpreter' | 'mentoring' | 'dataPipeline' | 'codeReview' | 'notificationCenter' | 'visualPrompt' | 'meetingNotes' | 'reportGenerator' | 'learningPath' | 'bookmarks' | 'translationMemory' | 'presentation' | 'summaryFeed' | 'emailAssistant' | 'conversationTimeline' | 'mindMap' | 'pairProgramming' | 'dashboardBuilder' | 'docCompare' | 'multiAgentDebate' | 'portfolio'
+export type ViewState = 'home' | 'chat' | 'settings' | 'allChats' | 'projects' | 'projectDetail' | 'quickChat' | 'memory' | 'agentSwarm' | 'schedule' | 'groupChat' | 'promptLibrary' | 'debate' | 'aiTools' | 'imageGen' | 'agent' | 'translate' | 'docWriter' | 'ocr' | 'promptChain' | 'knowledgeBase' | 'workflow' | 'collab' | 'contextManager' | 'insights' | 'plugins' | 'themeBuilder' | 'batchQueue' | 'sessionInsights' | 'cacheControl' | 'auditLog' | 'dashboard' | 'workspace' | 'snippets' | 'apiTester' | 'regexBuilder' | 'dataConverter' | 'diagramEditor' | 'voiceChat' | 'knowledgeGraph' | 'canvas' | 'autoWorkflow' | 'mcpServers' | 'autonomousAgent' | 'dataConnectors' | 'codeInterpreter' | 'mentoring' | 'dataPipeline' | 'codeReview' | 'notificationCenter' | 'visualPrompt' | 'meetingNotes' | 'reportGenerator' | 'learningPath' | 'bookmarks' | 'translationMemory' | 'presentation' | 'summaryFeed' | 'emailAssistant' | 'conversationTimeline' | 'mindMap' | 'pairProgramming' | 'dashboardBuilder' | 'docCompare' | 'multiAgentDebate' | 'portfolio' | 'liveTranslate' | 'docAnalyzer' | 'gamifiedLearning' | 'dataStory' | 'wellbeing'
 
 // Group Chat types
 
@@ -1345,4 +1345,117 @@ export interface Portfolio {
   generatedHtml: string
   createdAt: string
   updatedAt: string
+}
+
+// Phase 17 types — AI Hyper Intelligence & Immersive
+
+// 17-1. Live Translate
+export interface LiveTranslateSession {
+  id: string
+  title: string
+  sourceLang: string
+  targetLang: string
+  transcripts: TranslateUtterance[]
+  isActive: boolean
+  createdAt: string
+}
+
+export interface TranslateUtterance {
+  id: string
+  speaker: 'local' | 'remote'
+  original: string
+  translated: string
+  confidence: number
+  timestamp: string
+}
+
+// 17-2. Doc Analyzer
+export type DocAnalysisType = 'receipt' | 'contract' | 'businessCard' | 'table' | 'general'
+
+export interface AnalyzedField {
+  key: string
+  value: string
+  confidence: number
+}
+
+export interface DocAnalysis {
+  id: string
+  title: string
+  type: DocAnalysisType
+  imageUrl: string
+  extractedText: string
+  fields: AnalyzedField[]
+  createdAt: string
+}
+
+// 17-3. Gamified Learning
+export interface QuizQuestion {
+  id: string
+  question: string
+  options: string[]
+  correctIndex: number
+  userAnswer?: number
+}
+
+export interface LearningChallenge {
+  id: string
+  title: string
+  topic: string
+  questions: QuizQuestion[]
+  score: number
+  xpEarned: number
+  completedAt?: string
+  createdAt: string
+}
+
+export interface LearnerProfile {
+  xp: number
+  level: number
+  streak: number
+  badges: string[]
+  lastActiveDate: string
+}
+
+// 17-4. Data Story
+export interface StoryChapter {
+  id: string
+  title: string
+  narrative: string
+  chartType: 'bar' | 'line' | 'pie' | 'scatter'
+  data: Record<string, number>[]
+  insight: string
+  order: number
+}
+
+export interface DataStory {
+  id: string
+  title: string
+  chapters: StoryChapter[]
+  sourceData: string
+  generatedHtml: string
+  createdAt: string
+  updatedAt: string
+}
+
+// 17-5. Wellbeing
+export type MoodLevel = 'great' | 'good' | 'neutral' | 'low' | 'stressed'
+
+export interface MoodEntry {
+  id: string
+  date: string
+  mood: MoodLevel
+  note: string
+  sessionCount: number
+  topEmotions: string[]
+  createdAt: string
+}
+
+export interface WellbeingReport {
+  id: string
+  period: 'weekly' | 'monthly'
+  stressIndex: number
+  productivityScore: number
+  moodTrend: MoodLevel[]
+  suggestions: string[]
+  createdAt: string
 }

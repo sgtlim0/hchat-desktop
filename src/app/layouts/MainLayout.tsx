@@ -72,6 +72,11 @@ const ApiTesterPage = lazy(() => import('@/pages/api-tester/ApiTesterPage').then
 const RegexBuilderPage = lazy(() => import('@/pages/regex-builder/RegexBuilderPage').then((m) => ({ default: m.RegexBuilderPage })))
 const DataConverterPage = lazy(() => import('@/pages/data-converter/DataConverterPage').then((m) => ({ default: m.DataConverterPage })))
 const DiagramEditorPage = lazy(() => import('@/pages/diagram-editor/DiagramEditorPage').then((m) => ({ default: m.DiagramEditorPage })))
+const LiveTranslatePage = lazy(() => import('@/pages/live-translate/LiveTranslatePage').then((m) => ({ default: m.LiveTranslatePage })))
+const DocAnalyzerPage = lazy(() => import('@/pages/doc-analyzer/DocAnalyzerPage').then((m) => ({ default: m.DocAnalyzerPage })))
+const GamifiedLearningPage = lazy(() => import('@/pages/gamified-learning/GamifiedLearningPage').then((m) => ({ default: m.GamifiedLearningPage })))
+const DataStoryPage = lazy(() => import('@/pages/data-story/DataStoryPage').then((m) => ({ default: m.DataStoryPage })))
+const WellbeingPage = lazy(() => import('@/pages/wellbeing/WellbeingPage').then((m) => ({ default: m.WellbeingPage })))
 const PairProgrammingPage = lazy(() => import('@/pages/pair-programming/PairProgrammingPage').then((m) => ({ default: m.PairProgrammingPage })))
 const DashboardBuilderPage = lazy(() => import('@/pages/dashboard-builder/DashboardBuilderPage').then((m) => ({ default: m.DashboardBuilderPage })))
 const DocComparePage = lazy(() => import('@/pages/doc-compare/DocComparePage').then((m) => ({ default: m.DocComparePage })))
@@ -342,6 +347,26 @@ export function MainLayout() {
 
     if (view === 'diagramEditor') {
       return <DiagramEditorPage />
+    }
+
+    if (view === 'liveTranslate') {
+      return <LiveTranslatePage />
+    }
+
+    if (view === 'docAnalyzer') {
+      return <DocAnalyzerPage />
+    }
+
+    if (view === 'gamifiedLearning') {
+      return <GamifiedLearningPage />
+    }
+
+    if (view === 'dataStory') {
+      return <DataStoryPage />
+    }
+
+    if (view === 'wellbeing') {
+      return <WellbeingPage />
     }
 
     if (view === 'pairProgramming') {
