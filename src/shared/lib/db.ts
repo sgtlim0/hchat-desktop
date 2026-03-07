@@ -11,6 +11,7 @@ import type {
   Presentation, FeedEntry, EmailDraft, TimelineSegment, MindMap,
   PairSession, CustomDashboard, DocComparison, MultiAgentDebateSession, Portfolio,
   LiveTranslateSession, DocAnalysis, LearningChallenge, DataStory, MoodEntry, WellbeingReport,
+  Whiteboard, Contract, Tutorial, Habit, FocusSession,
 } from '@/shared/types'
 
 const db = new Dexie('hchat-desktop') as Dexie & {
@@ -80,6 +81,11 @@ const db = new Dexie('hchat-desktop') as Dexie & {
   dataStories: EntityTable<DataStory, 'id'>
   moodEntries: EntityTable<MoodEntry, 'id'>
   wellbeingReports: EntityTable<WellbeingReport, 'id'>
+  whiteboards: EntityTable<Whiteboard, 'id'>
+  contracts: EntityTable<Contract, 'id'>
+  tutorials: EntityTable<Tutorial, 'id'>
+  habits: EntityTable<Habit, 'id'>
+  focusSessions: EntityTable<FocusSession, 'id'>
 }
 
 db.version(1).stores({
@@ -318,6 +324,11 @@ db.version(10).stores({
   dataStories: 'id, updatedAt',
   moodEntries: 'id, date, createdAt',
   wellbeingReports: 'id, period, createdAt',
+  whiteboards: 'id, updatedAt',
+  contracts: 'id, template, updatedAt',
+  tutorials: 'id, updatedAt',
+  habits: 'id, frequency, createdAt',
+  focusSessions: 'id, completedAt',
 })
 
 db.version(6).stores({
@@ -1040,5 +1051,25 @@ export async function deleteMoodEntryFromDb(id: string): Promise<void> { await d
 export async function getAllWellbeingReports(): Promise<WellbeingReport[]> { return db.wellbeingReports.orderBy('createdAt').reverse().toArray() }
 export async function putWellbeingReport(r: WellbeingReport): Promise<void> { await db.wellbeingReports.put(r) }
 export async function deleteWellbeingReportFromDb(id: string): Promise<void> { await db.wellbeingReports.delete(id) }
+
+// Phase 18 CRUD
+export async function getAllWhiteboards(): Promise<Whiteboard[]> { return db.whiteboards.orderBy('updatedAt').reverse().toArray() }
+export async function putWhiteboard(w: Whiteboard): Promise<void> { await db.whiteboards.put(w) }
+export async function deleteWhiteboardFromDb(id: string): Promise<void> { await db.whiteboards.delete(id) }
+
+export async function getAllContracts(): Promise<Contract[]> { return db.contracts.orderBy('updatedAt').reverse().toArray() }
+export async function putContract(c: Contract): Promise<void> { await db.contracts.put(c) }
+export async function deleteContractFromDb(id: string): Promise<void> { await db.contracts.delete(id) }
+
+export async function getAllTutorials(): Promise<Tutorial[]> { return db.tutorials.orderBy('updatedAt').reverse().toArray() }
+export async function putTutorial(t: Tutorial): Promise<void> { await db.tutorials.put(t) }
+export async function deleteTutorialFromDb(id: string): Promise<void> { await db.tutorials.delete(id) }
+
+export async function getAllHabits(): Promise<Habit[]> { return db.habits.orderBy('createdAt').reverse().toArray() }
+export async function putHabit(h: Habit): Promise<void> { await db.habits.put(h) }
+export async function deleteHabitFromDb(id: string): Promise<void> { await db.habits.delete(id) }
+
+export async function getAllFocusSessions(): Promise<FocusSession[]> { return db.focusSessions.orderBy('completedAt').reverse().toArray() }
+export async function putFocusSession(s: FocusSession): Promise<void> { await db.focusSessions.put(s) }
 
 export { db }

@@ -72,6 +72,11 @@ const ApiTesterPage = lazy(() => import('@/pages/api-tester/ApiTesterPage').then
 const RegexBuilderPage = lazy(() => import('@/pages/regex-builder/RegexBuilderPage').then((m) => ({ default: m.RegexBuilderPage })))
 const DataConverterPage = lazy(() => import('@/pages/data-converter/DataConverterPage').then((m) => ({ default: m.DataConverterPage })))
 const DiagramEditorPage = lazy(() => import('@/pages/diagram-editor/DiagramEditorPage').then((m) => ({ default: m.DiagramEditorPage })))
+const WhiteboardPage = lazy(() => import('@/pages/whiteboard/WhiteboardPage').then((m) => ({ default: m.WhiteboardPage })))
+const ContractPage = lazy(() => import('@/pages/contract/ContractPage').then((m) => ({ default: m.ContractPage })))
+const SoundscapePage = lazy(() => import('@/pages/soundscape/SoundscapePage').then((m) => ({ default: m.SoundscapePage })))
+const TutorialBuilderPage = lazy(() => import('@/pages/tutorial-builder/TutorialBuilderPage').then((m) => ({ default: m.TutorialBuilderPage })))
+const HabitTrackerPage = lazy(() => import('@/pages/habit-tracker/HabitTrackerPage').then((m) => ({ default: m.HabitTrackerPage })))
 const LiveTranslatePage = lazy(() => import('@/pages/live-translate/LiveTranslatePage').then((m) => ({ default: m.LiveTranslatePage })))
 const DocAnalyzerPage = lazy(() => import('@/pages/doc-analyzer/DocAnalyzerPage').then((m) => ({ default: m.DocAnalyzerPage })))
 const GamifiedLearningPage = lazy(() => import('@/pages/gamified-learning/GamifiedLearningPage').then((m) => ({ default: m.GamifiedLearningPage })))
@@ -347,6 +352,26 @@ export function MainLayout() {
 
     if (view === 'diagramEditor') {
       return <DiagramEditorPage />
+    }
+
+    if (view === 'whiteboard') {
+      return <WhiteboardPage />
+    }
+
+    if (view === 'contract') {
+      return <ContractPage />
+    }
+
+    if (view === 'soundscape') {
+      return <SoundscapePage />
+    }
+
+    if (view === 'tutorialBuilder') {
+      return <TutorialBuilderPage />
+    }
+
+    if (view === 'habitTracker') {
+      return <HabitTrackerPage />
     }
 
     if (view === 'liveTranslate') {

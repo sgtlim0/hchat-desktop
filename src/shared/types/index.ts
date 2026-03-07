@@ -96,7 +96,7 @@ export interface Skill {
   icon: string
 }
 
-export type ViewState = 'home' | 'chat' | 'settings' | 'allChats' | 'projects' | 'projectDetail' | 'quickChat' | 'memory' | 'agentSwarm' | 'schedule' | 'groupChat' | 'promptLibrary' | 'debate' | 'aiTools' | 'imageGen' | 'agent' | 'translate' | 'docWriter' | 'ocr' | 'promptChain' | 'knowledgeBase' | 'workflow' | 'collab' | 'contextManager' | 'insights' | 'plugins' | 'themeBuilder' | 'batchQueue' | 'sessionInsights' | 'cacheControl' | 'auditLog' | 'dashboard' | 'workspace' | 'snippets' | 'apiTester' | 'regexBuilder' | 'dataConverter' | 'diagramEditor' | 'voiceChat' | 'knowledgeGraph' | 'canvas' | 'autoWorkflow' | 'mcpServers' | 'autonomousAgent' | 'dataConnectors' | 'codeInterpreter' | 'mentoring' | 'dataPipeline' | 'codeReview' | 'notificationCenter' | 'visualPrompt' | 'meetingNotes' | 'reportGenerator' | 'learningPath' | 'bookmarks' | 'translationMemory' | 'presentation' | 'summaryFeed' | 'emailAssistant' | 'conversationTimeline' | 'mindMap' | 'pairProgramming' | 'dashboardBuilder' | 'docCompare' | 'multiAgentDebate' | 'portfolio' | 'liveTranslate' | 'docAnalyzer' | 'gamifiedLearning' | 'dataStory' | 'wellbeing'
+export type ViewState = 'home' | 'chat' | 'settings' | 'allChats' | 'projects' | 'projectDetail' | 'quickChat' | 'memory' | 'agentSwarm' | 'schedule' | 'groupChat' | 'promptLibrary' | 'debate' | 'aiTools' | 'imageGen' | 'agent' | 'translate' | 'docWriter' | 'ocr' | 'promptChain' | 'knowledgeBase' | 'workflow' | 'collab' | 'contextManager' | 'insights' | 'plugins' | 'themeBuilder' | 'batchQueue' | 'sessionInsights' | 'cacheControl' | 'auditLog' | 'dashboard' | 'workspace' | 'snippets' | 'apiTester' | 'regexBuilder' | 'dataConverter' | 'diagramEditor' | 'voiceChat' | 'knowledgeGraph' | 'canvas' | 'autoWorkflow' | 'mcpServers' | 'autonomousAgent' | 'dataConnectors' | 'codeInterpreter' | 'mentoring' | 'dataPipeline' | 'codeReview' | 'notificationCenter' | 'visualPrompt' | 'meetingNotes' | 'reportGenerator' | 'learningPath' | 'bookmarks' | 'translationMemory' | 'presentation' | 'summaryFeed' | 'emailAssistant' | 'conversationTimeline' | 'mindMap' | 'pairProgramming' | 'dashboardBuilder' | 'docCompare' | 'multiAgentDebate' | 'portfolio' | 'liveTranslate' | 'docAnalyzer' | 'gamifiedLearning' | 'dataStory' | 'wellbeing' | 'whiteboard' | 'contract' | 'soundscape' | 'tutorialBuilder' | 'habitTracker'
 
 // Group Chat types
 
@@ -1457,5 +1457,100 @@ export interface WellbeingReport {
   productivityScore: number
   moodTrend: MoodLevel[]
   suggestions: string[]
+  createdAt: string
+}
+
+// Phase 18 types — Creative Studio & Life Intelligence
+
+// 18-1. Whiteboard
+export type WhiteboardTool = 'pen' | 'rectangle' | 'circle' | 'text' | 'sticker' | 'eraser'
+
+export interface WhiteboardElement {
+  id: string
+  tool: WhiteboardTool
+  x: number; y: number; width: number; height: number
+  content: string
+  color: string
+  layer: number
+}
+
+export interface Whiteboard {
+  id: string
+  title: string
+  elements: WhiteboardElement[]
+  template: 'blank' | 'brainstorm' | 'wireframe' | 'flowchart' | 'kj'
+  createdAt: string
+  updatedAt: string
+}
+
+// 18-2. Contract
+export type ContractTemplate = 'nda' | 'employment' | 'service' | 'lease'
+
+export interface ContractClause {
+  id: string
+  title: string
+  content: string
+  isRisky: boolean
+  riskNote?: string
+  order: number
+}
+
+export interface Contract {
+  id: string
+  title: string
+  template: ContractTemplate
+  parties: { name: string; role: string }[]
+  clauses: ContractClause[]
+  createdAt: string
+  updatedAt: string
+}
+
+// 18-3. Soundscape
+export type SoundType = 'nature' | 'lofi' | 'whitenoise' | 'cafe'
+
+export interface SoundLayer {
+  id: string
+  type: SoundType
+  label: string
+  volume: number
+  isPlaying: boolean
+}
+
+export interface FocusSession {
+  id: string
+  duration: number
+  completedAt: string
+}
+
+// 18-4. Tutorial
+export interface TutorialStep {
+  id: string
+  title: string
+  description: string
+  imageUrl?: string
+  annotations: string[]
+  order: number
+}
+
+export interface Tutorial {
+  id: string
+  title: string
+  steps: TutorialStep[]
+  createdAt: string
+  updatedAt: string
+}
+
+// 18-5. Habit
+export type HabitFrequency = 'daily' | 'weekday' | 'weekly'
+
+export interface Habit {
+  id: string
+  name: string
+  frequency: HabitFrequency
+  icon: string
+  color: string
+  streak: number
+  bestStreak: number
+  completedDates: string[]
   createdAt: string
 }
