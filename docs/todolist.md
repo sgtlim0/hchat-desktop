@@ -1,7 +1,7 @@
 # H Chat PWA — TODO List
 
-> ✅ **Phase 1-16 전체 완료** (80개 기능) | 마지막 업데이트: 2026-03-07
-> 1,479 tests, 121 suites | 65 stores, 68 pages, 62K+ lines | Phase 17 기획 추가
+> ✅ **Phase 1-17 전체 완료** (85개 기능) | 마지막 업데이트: 2026-03-07
+> 1,518 tests, 126 suites | 70 stores, 73 pages, 65K+ lines | Vercel 배포 완료
 
 ## 현재 상태 요약
 
@@ -202,7 +202,8 @@
 | Phase 15 | 5/5 | 0 | 100% |
 | 번들 최적화 | 2/2 | 0 | 100% |
 | Phase 16 | 5/5 | 0 | 100% |
-| **전체** | **110/110** | **0** | **100%** |
+| Phase 17 | 5/5 | 0 | 100% |
+| **전체** | **115/115** | **0** | **100%** |
 
 > **모든 TODO 항목 완료.** 배포: `modal deploy backend/app.py` + `vercel --prod`
 > Secret 설정: `modal secret create hchat-api-keys OPENAI_API_KEY=sk-... GEMINI_API_KEY=...`
@@ -552,12 +553,12 @@
 
 ---
 
-## 🟣 Phase 17 — AI 하이퍼 인텔리전스 & 이머시브 경험 (예정)
+## ✅ Phase 17 — AI 하이퍼 인텔리전스 & 이머시브 경험 (2026-03-07)
 
 > 몰입형 AI 경험 — 실시간 번역 통화, 문서 OCR 분석, 게임화 학습, 데이터 스토리텔링, 감정 웰빙
 
 ### 17-1. AI 실시간 번역 통화 (3일)
-- [ ] LiveTranslatePage 신규 페이지
+- [x] LiveTranslatePage 신규 페이지
 - [ ] live-translate.store.ts Zustand 스토어
 - [ ] 양방향 실시간 음성 번역 (STT → 번역 → TTS 파이프라인)
 - [ ] 다국어 회의 모드 (최대 4개 언어 동시 지원)
