@@ -1,7 +1,7 @@
 # H Chat PWA — TODO List
 
-> ✅ **Phase 1-18 전체 완료** (90개 기능) | Phase 19 기획 | 마지막 업데이트: 2026-03-07
-> 1,539 tests, 131 suites | 75 stores, 82 pages, 66K lines | Vercel 배포 완료
+> ✅ **Phase 1-19 전체 완료** (95개 기능) | Phase 20 기획 | 마지막 업데이트: 2026-03-07
+> 1,556 tests, 136 suites | 80 stores, 87 pages, 67K lines
 
 ## 현재 상태 요약
 
@@ -204,7 +204,8 @@
 | Phase 16 | 5/5 | 0 | 100% |
 | Phase 17 | 5/5 | 0 | 100% |
 | Phase 18 | 5/5 | 0 | 100% |
-| **전체** | **120/120** | **0** | **100%** |
+| Phase 19 | 5/5 | 0 | 100% |
+| **전체** | **125/125** | **0** | **100%** |
 
 > **모든 TODO 항목 완료.** 배포: `modal deploy backend/app.py` + `vercel --prod`
 > Secret 설정: `modal secret create hchat-api-keys OPENAI_API_KEY=sk-... GEMINI_API_KEY=...`
@@ -648,40 +649,76 @@
 
 ---
 
-## 🟣 Phase 19 — AI 유니버설 어시스턴트 & 스마트 라이프 (예정)
+## ✅ Phase 19 — AI 유니버설 어시스턴트 & 스마트 라이프 (2026-03-07)
 
 > 생활 밀착형 AI — 여행, 식단, 면접, 재무, 독서
 
 ### 19-1. AI 여행 플래너 (3일)
-- [ ] TravelPlannerPage + travel.store.ts
-- [ ] 여행 일정 자동 생성 (출발/도착, 기간, 예산)
-- [ ] 일자별 스케줄 (장소, 시간, 이동 수단)
-- [ ] 예산 자동 계산 (교통/숙박/식비/관광)
-- [ ] 날씨/환율 정보 통합
+- [x] TravelPlannerPage + travel.store.ts
+- [x] 여행 일정 자동 생성 (출발/도착, 기간, 예산)
+- [x] 일자별 스케줄 (장소, 시간, 이동 수단)
+- [x] 예산 자동 계산 (교통/숙박/식비/관광)
+- [x] 날씨/환율 정보 통합
 
 ### 19-2. 스마트 레시피 & 식단 (2일)
-- [ ] RecipePage + recipe.store.ts
-- [ ] AI 레시피 추천 (재료 기반)
-- [ ] 영양 분석 (칼로리/단백질/탄수화물)
-- [ ] 주간 식단 플래너, 장보기 목록 자동 생성
+- [x] RecipePage + recipe.store.ts
+- [x] AI 레시피 추천 (재료 기반)
+- [x] 영양 분석 (칼로리/단백질/탄수화물)
+- [x] 주간 식단 플래너, 장보기 목록 자동 생성
 
 ### 19-3. AI 인터뷰 코치 (2일)
-- [ ] InterviewCoachPage + interview.store.ts
-- [ ] 직무별 모의 면접 (AI 면접관)
-- [ ] 답변 분석 + 피드백 리포트
-- [ ] 질문 은행 (기술/행동/상황 분류)
+- [x] InterviewCoachPage + interview.store.ts
+- [x] 직무별 모의 면접 (AI 면접관)
+- [x] 답변 분석 + 피드백 리포트
+- [x] 질문 은행 (기술/행동/상황 분류)
 
 ### 19-4. 개인 재무 대시보드 (2일)
-- [ ] FinancePage + finance.store.ts
-- [ ] 수입/지출 트래커 (카테고리별)
-- [ ] 예산 관리 + AI 절약 제안
-- [ ] 차트 시각화 (월별 추이, 카테고리 비율)
+- [x] FinancePage + finance.store.ts
+- [x] 수입/지출 트래커 (카테고리별)
+- [x] 예산 관리 + AI 절약 제안
+- [x] 차트 시각화 (월별 추이, 카테고리 비율)
 
 ### 19-5. AI 독서 노트 (2일)
-- [ ] ReadingNotePage + reading.store.ts
-- [ ] 책 정보 관리 (제목/저자/장르)
-- [ ] AI 요약 + 인용구 수집
-- [ ] 독서 통계 (월별 권수, 장르별 비율)
+- [x] ReadingNotePage + reading.store.ts
+- [x] 책 정보 관리 (제목/저자/장르)
+- [x] AI 요약 + 인용구 수집
+- [x] 독서 통계 (월별 권수, 장르별 비율)
+
+---
+
+## 🟣 Phase 20 — AI 슈퍼 프로덕티비티 & 소셜 인텔리전스 (예정)
+
+> 생산성 극대화 + 소셜 AI — OKR, CRM, 저널, 소셜 미디어, 프로젝트 타임라인
+
+### 20-1. AI OKR 트래커 (2일)
+- [ ] OkrPage + okr.store.ts
+- [ ] 목표(Objective) + 핵심결과(Key Result) CRUD
+- [ ] 진행률 자동 추적 (0-100%)
+- [ ] AI 달성 전략 제안, 분기별 리뷰
+
+### 20-2. 스마트 CRM (3일)
+- [ ] CrmPage + crm.store.ts
+- [ ] 연락처 CRUD (이름/회사/이메일/전화/태그)
+- [ ] 상호작용 기록 (미팅/이메일/전화 로그)
+- [ ] AI 팔로우업 제안, 관계 점수 계산
+
+### 20-3. AI 일기 & 저널 (2일)
+- [ ] JournalPage + journal.store.ts
+- [ ] 매일 AI 질문 (성찰/감사/목표)
+- [ ] 감정 분석 + 성장 추적 그래프
+- [ ] 감사 일기 + 3가지 좋은 일 패턴
+
+### 20-4. 소셜 미디어 도우미 (2일)
+- [ ] SocialMediaPage + social-media.store.ts
+- [ ] 게시물 초안 생성 (LinkedIn/Twitter/Instagram)
+- [ ] 해시태그 추천, 톤 조절 (전문/캐주얼/유머)
+- [ ] 최적 게시 시간 제안
+
+### 20-5. AI 프로젝트 타임라인 (3일)
+- [ ] ProjectTimelinePage + project-timeline.store.ts
+- [ ] 간트 차트 (SVG 기반)
+- [ ] 마일스톤 + 의존성 관리
+- [ ] AI 일정 최적화 (병목 감지, 리소스 배분)
 
 ---
 
