@@ -96,7 +96,7 @@ export interface Skill {
   icon: string
 }
 
-export type ViewState = 'home' | 'chat' | 'settings' | 'allChats' | 'projects' | 'projectDetail' | 'quickChat' | 'memory' | 'agentSwarm' | 'schedule' | 'groupChat' | 'promptLibrary' | 'debate' | 'aiTools' | 'imageGen' | 'agent' | 'translate' | 'docWriter' | 'ocr' | 'promptChain' | 'knowledgeBase' | 'workflow' | 'collab' | 'contextManager' | 'insights' | 'plugins' | 'themeBuilder' | 'batchQueue' | 'sessionInsights' | 'cacheControl' | 'auditLog' | 'dashboard' | 'workspace' | 'snippets' | 'apiTester' | 'regexBuilder' | 'dataConverter' | 'diagramEditor' | 'voiceChat' | 'knowledgeGraph' | 'canvas' | 'autoWorkflow' | 'mcpServers' | 'autonomousAgent' | 'dataConnectors' | 'codeInterpreter' | 'mentoring' | 'dataPipeline' | 'codeReview' | 'notificationCenter' | 'visualPrompt'
+export type ViewState = 'home' | 'chat' | 'settings' | 'allChats' | 'projects' | 'projectDetail' | 'quickChat' | 'memory' | 'agentSwarm' | 'schedule' | 'groupChat' | 'promptLibrary' | 'debate' | 'aiTools' | 'imageGen' | 'agent' | 'translate' | 'docWriter' | 'ocr' | 'promptChain' | 'knowledgeBase' | 'workflow' | 'collab' | 'contextManager' | 'insights' | 'plugins' | 'themeBuilder' | 'batchQueue' | 'sessionInsights' | 'cacheControl' | 'auditLog' | 'dashboard' | 'workspace' | 'snippets' | 'apiTester' | 'regexBuilder' | 'dataConverter' | 'diagramEditor' | 'voiceChat' | 'knowledgeGraph' | 'canvas' | 'autoWorkflow' | 'mcpServers' | 'autonomousAgent' | 'dataConnectors' | 'codeInterpreter' | 'mentoring' | 'dataPipeline' | 'codeReview' | 'notificationCenter' | 'visualPrompt' | 'meetingNotes' | 'reportGenerator' | 'learningPath' | 'bookmarks' | 'translationMemory' | 'presentation' | 'summaryFeed' | 'emailAssistant' | 'conversationTimeline' | 'mindMap'
 
 // Group Chat types
 
@@ -1059,6 +1059,170 @@ export interface VisualPrompt {
   blocks: PromptBlock[]
   generatedPrompt: string
   qualityScore: number
+  createdAt: string
+  updatedAt: string
+}
+
+// Phase 12 types
+
+// 12-1. Meeting Notes
+export type MeetingTemplate = 'standup' | 'brainstorm' | 'decision' | 'retrospective'
+
+export interface ActionItem {
+  id: string
+  text: string
+  assignee: string
+  dueDate?: string
+  done: boolean
+}
+
+export interface MeetingNote {
+  id: string
+  title: string
+  template: MeetingTemplate
+  content: string
+  actionItems: ActionItem[]
+  participants: string[]
+  createdAt: string
+  updatedAt: string
+}
+
+// 12-2. Report Generator
+export type ReportTemplate = 'weekly' | 'monthly' | 'project' | 'custom'
+
+export interface Report {
+  id: string
+  title: string
+  template: ReportTemplate
+  content: string
+  version: number
+  createdAt: string
+  updatedAt: string
+}
+
+// 12-3. Learning Path
+export interface LearningStep {
+  id: string
+  title: string
+  description: string
+  completed: boolean
+  score?: number
+}
+
+export interface LearningPath {
+  id: string
+  title: string
+  topic: string
+  steps: LearningStep[]
+  progress: number
+  createdAt: string
+  updatedAt: string
+}
+
+// 12-4. Bookmark
+export type HighlightColor = 'yellow' | 'green' | 'blue' | 'pink'
+
+export interface Bookmark {
+  id: string
+  sessionId: string
+  messageId: string
+  text: string
+  color: HighlightColor
+  note?: string
+  tags: string[]
+  createdAt: string
+}
+
+// 12-5. Translation Memory
+export interface TranslationPair {
+  id: string
+  source: string
+  target: string
+  sourceLang: string
+  targetLang: string
+  domain: string
+  usageCount: number
+  createdAt: string
+}
+
+export interface GlossaryTerm {
+  id: string
+  term: string
+  translation: string
+  domain: string
+  note?: string
+}
+
+// Phase 13 types
+
+// 13-1. Presentation
+export interface Slide {
+  id: string
+  title: string
+  content: string
+  notes: string
+  order: number
+}
+
+export interface Presentation {
+  id: string
+  title: string
+  slides: Slide[]
+  template: 'business' | 'tech' | 'education' | 'summary'
+  createdAt: string
+  updatedAt: string
+}
+
+// 13-2. Summary Feed
+export interface FeedEntry {
+  id: string
+  period: 'daily' | 'weekly'
+  summary: string
+  insights: string[]
+  sessionCount: number
+  createdAt: string
+}
+
+// 13-3. Email Assistant
+export type EmailTone = 'formal' | 'casual' | 'friendly' | 'professional'
+
+export interface EmailDraft {
+  id: string
+  subject: string
+  recipient: string
+  tone: EmailTone
+  body: string
+  isReply: boolean
+  originalThread?: string
+  createdAt: string
+}
+
+// 13-4. Conversation Timeline
+export interface TimelineSegment {
+  id: string
+  sessionId: string
+  topic: string
+  summary: string
+  startIndex: number
+  endIndex: number
+  createdAt: string
+}
+
+// 13-5. Mind Map
+export interface MindMapNode {
+  id: string
+  label: string
+  parentId: string | null
+  children: string[]
+  level: number
+}
+
+export interface MindMap {
+  id: string
+  title: string
+  rootId: string
+  nodes: MindMapNode[]
+  mermaidCode: string
   createdAt: string
   updatedAt: string
 }

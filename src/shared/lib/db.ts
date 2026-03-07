@@ -7,6 +7,8 @@ import type {
   ConversionHistory, Diagram, GraphNode, GraphEdge, Canvas, CanvasNode, CanvasEdge,
   WorkflowSuggestion, McpServer, AgentRun, DataConnector, Notebook,
   LearningGoal, DataPipeline, CodeReviewSession, AppNotification, VisualPrompt,
+  MeetingNote, Report, LearningPath, Bookmark, TranslationPair, GlossaryTerm,
+  Presentation, FeedEntry, EmailDraft, TimelineSegment, MindMap,
 } from '@/shared/types'
 
 const db = new Dexie('hchat-desktop') as Dexie & {
@@ -54,6 +56,17 @@ const db = new Dexie('hchat-desktop') as Dexie & {
   codeReviewSessions: EntityTable<CodeReviewSession, 'id'>
   appNotifications: EntityTable<AppNotification, 'id'>
   visualPrompts: EntityTable<VisualPrompt, 'id'>
+  meetingNotes: EntityTable<MeetingNote, 'id'>
+  reports: EntityTable<Report, 'id'>
+  learningPaths: EntityTable<LearningPath, 'id'>
+  bookmarks: EntityTable<Bookmark, 'id'>
+  translationPairs: EntityTable<TranslationPair, 'id'>
+  glossaryTerms: EntityTable<GlossaryTerm, 'id'>
+  presentations: EntityTable<Presentation, 'id'>
+  feedEntries: EntityTable<FeedEntry, 'id'>
+  emailDrafts: EntityTable<EmailDraft, 'id'>
+  timelineSegments: EntityTable<TimelineSegment, 'id'>
+  mindMaps: EntityTable<MindMap, 'id'>
 }
 
 db.version(1).stores({
@@ -270,6 +283,17 @@ db.version(10).stores({
   codeReviewSessions: 'id, status, createdAt',
   appNotifications: 'id, category, isRead, createdAt',
   visualPrompts: 'id, updatedAt',
+  meetingNotes: 'id, template, updatedAt',
+  reports: 'id, template, updatedAt',
+  learningPaths: 'id, updatedAt',
+  bookmarks: 'id, sessionId, messageId, createdAt',
+  translationPairs: 'id, sourceLang, targetLang, domain',
+  glossaryTerms: 'id, domain',
+  presentations: 'id, updatedAt',
+  feedEntries: 'id, period, createdAt',
+  emailDrafts: 'id, createdAt',
+  timelineSegments: 'id, sessionId',
+  mindMaps: 'id, updatedAt',
 })
 
 db.version(6).stores({
@@ -900,5 +924,51 @@ export async function clearAllNotifications(): Promise<void> { await db.appNotif
 export async function getAllVisualPrompts(): Promise<VisualPrompt[]> { return db.visualPrompts.orderBy('updatedAt').reverse().toArray() }
 export async function putVisualPrompt(p: VisualPrompt): Promise<void> { await db.visualPrompts.put(p) }
 export async function deleteVisualPromptFromDb(id: string): Promise<void> { await db.visualPrompts.delete(id) }
+
+// Phase 12 CRUD
+export async function getAllMeetingNotes(): Promise<MeetingNote[]> { return db.meetingNotes.orderBy('updatedAt').reverse().toArray() }
+export async function putMeetingNote(n: MeetingNote): Promise<void> { await db.meetingNotes.put(n) }
+export async function deleteMeetingNoteFromDb(id: string): Promise<void> { await db.meetingNotes.delete(id) }
+
+export async function getAllReports(): Promise<Report[]> { return db.reports.orderBy('updatedAt').reverse().toArray() }
+export async function putReport(r: Report): Promise<void> { await db.reports.put(r) }
+export async function deleteReportFromDb(id: string): Promise<void> { await db.reports.delete(id) }
+
+export async function getAllLearningPaths(): Promise<LearningPath[]> { return db.learningPaths.orderBy('updatedAt').reverse().toArray() }
+export async function putLearningPath(p: LearningPath): Promise<void> { await db.learningPaths.put(p) }
+export async function deleteLearningPathFromDb(id: string): Promise<void> { await db.learningPaths.delete(id) }
+
+export async function getAllBookmarks(): Promise<Bookmark[]> { return db.bookmarks.orderBy('createdAt').reverse().toArray() }
+export async function putBookmark(b: Bookmark): Promise<void> { await db.bookmarks.put(b) }
+export async function deleteBookmarkFromDb(id: string): Promise<void> { await db.bookmarks.delete(id) }
+
+export async function getAllTranslationPairs(): Promise<TranslationPair[]> { return db.translationPairs.toArray() }
+export async function putTranslationPair(p: TranslationPair): Promise<void> { await db.translationPairs.put(p) }
+export async function deleteTranslationPairFromDb(id: string): Promise<void> { await db.translationPairs.delete(id) }
+
+export async function getAllGlossaryTerms(): Promise<GlossaryTerm[]> { return db.glossaryTerms.toArray() }
+export async function putGlossaryTerm(t: GlossaryTerm): Promise<void> { await db.glossaryTerms.put(t) }
+export async function deleteGlossaryTermFromDb(id: string): Promise<void> { await db.glossaryTerms.delete(id) }
+
+// Phase 13 CRUD
+export async function getAllPresentations(): Promise<Presentation[]> { return db.presentations.orderBy('updatedAt').reverse().toArray() }
+export async function putPresentation(p: Presentation): Promise<void> { await db.presentations.put(p) }
+export async function deletePresentationFromDb(id: string): Promise<void> { await db.presentations.delete(id) }
+
+export async function getAllFeedEntries(): Promise<FeedEntry[]> { return db.feedEntries.orderBy('createdAt').reverse().toArray() }
+export async function putFeedEntry(e: FeedEntry): Promise<void> { await db.feedEntries.put(e) }
+export async function deleteFeedEntryFromDb(id: string): Promise<void> { await db.feedEntries.delete(id) }
+
+export async function getAllEmailDrafts(): Promise<EmailDraft[]> { return db.emailDrafts.orderBy('createdAt').reverse().toArray() }
+export async function putEmailDraft(d: EmailDraft): Promise<void> { await db.emailDrafts.put(d) }
+export async function deleteEmailDraftFromDb(id: string): Promise<void> { await db.emailDrafts.delete(id) }
+
+export async function getTimelineSegments(sessionId: string): Promise<TimelineSegment[]> { return db.timelineSegments.where('sessionId').equals(sessionId).toArray() }
+export async function putTimelineSegment(s: TimelineSegment): Promise<void> { await db.timelineSegments.put(s) }
+export async function deleteTimelineSegmentFromDb(id: string): Promise<void> { await db.timelineSegments.delete(id) }
+
+export async function getAllMindMaps(): Promise<MindMap[]> { return db.mindMaps.orderBy('updatedAt').reverse().toArray() }
+export async function putMindMap(m: MindMap): Promise<void> { await db.mindMaps.put(m) }
+export async function deleteMindMapFromDb(id: string): Promise<void> { await db.mindMaps.delete(id) }
 
 export { db }

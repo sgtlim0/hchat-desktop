@@ -72,6 +72,16 @@ const ApiTesterPage = lazy(() => import('@/pages/api-tester/ApiTesterPage').then
 const RegexBuilderPage = lazy(() => import('@/pages/regex-builder/RegexBuilderPage').then((m) => ({ default: m.RegexBuilderPage })))
 const DataConverterPage = lazy(() => import('@/pages/data-converter/DataConverterPage').then((m) => ({ default: m.DataConverterPage })))
 const DiagramEditorPage = lazy(() => import('@/pages/diagram-editor/DiagramEditorPage').then((m) => ({ default: m.DiagramEditorPage })))
+const MeetingNotesPage = lazy(() => import('@/pages/meeting-notes/MeetingNotesPage').then((m) => ({ default: m.MeetingNotesPage })))
+const ReportGeneratorPage = lazy(() => import('@/pages/report-generator/ReportGeneratorPage').then((m) => ({ default: m.ReportGeneratorPage })))
+const LearningPathPage = lazy(() => import('@/pages/learning-path/LearningPathPage').then((m) => ({ default: m.LearningPathPage })))
+const BookmarkPage = lazy(() => import('@/pages/bookmark/BookmarkPage').then((m) => ({ default: m.BookmarkPage })))
+const TranslationMemoryPage = lazy(() => import('@/pages/translation-memory/TranslationMemoryPage').then((m) => ({ default: m.TranslationMemoryPage })))
+const PresentationPage = lazy(() => import('@/pages/presentation/PresentationPage').then((m) => ({ default: m.PresentationPage })))
+const SummaryFeedPage = lazy(() => import('@/pages/summary-feed/SummaryFeedPage').then((m) => ({ default: m.SummaryFeedPage })))
+const EmailAssistantPage = lazy(() => import('@/pages/email-assistant/EmailAssistantPage').then((m) => ({ default: m.EmailAssistantPage })))
+const ConversationTimelinePage = lazy(() => import('@/pages/conversation-timeline/ConversationTimelinePage').then((m) => ({ default: m.ConversationTimelinePage })))
+const MindMapPage = lazy(() => import('@/pages/mindmap/MindMapPage').then((m) => ({ default: m.MindMapPage })))
 const MentoringPage = lazy(() => import('@/pages/mentoring/MentoringPage').then((m) => ({ default: m.MentoringPage })))
 const DataPipelinePage = lazy(() => import('@/pages/data-pipeline/DataPipelinePage').then((m) => ({ default: m.DataPipelinePage })))
 const CodeReviewPage = lazy(() => import('@/pages/code-review/CodeReviewPage').then((m) => ({ default: m.CodeReviewPage })))
@@ -327,6 +337,46 @@ export function MainLayout() {
 
     if (view === 'diagramEditor') {
       return <DiagramEditorPage />
+    }
+
+    if (view === 'meetingNotes') {
+      return <MeetingNotesPage />
+    }
+
+    if (view === 'reportGenerator') {
+      return <ReportGeneratorPage />
+    }
+
+    if (view === 'learningPath') {
+      return <LearningPathPage />
+    }
+
+    if (view === 'bookmarks') {
+      return <BookmarkPage />
+    }
+
+    if (view === 'translationMemory') {
+      return <TranslationMemoryPage />
+    }
+
+    if (view === 'presentation') {
+      return <PresentationPage />
+    }
+
+    if (view === 'summaryFeed') {
+      return <SummaryFeedPage />
+    }
+
+    if (view === 'emailAssistant') {
+      return <EmailAssistantPage />
+    }
+
+    if (view === 'conversationTimeline') {
+      return <ConversationTimelinePage />
+    }
+
+    if (view === 'mindMap') {
+      return <MindMapPage />
     }
 
     if (view === 'mentoring') {
