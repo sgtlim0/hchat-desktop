@@ -2,9 +2,9 @@
 
 AI 모델(Claude, GPT, Gemini)과 대화하는 Progressive Web App. 115개 AI 기능, 100개 스토어, 107개 페이지. 멀티 프로바이더, 실시간 스트리밍, 로컬 저장, PWA 지원.
 
-**Phase 1-23 완료** (115 기능) | **67K 코드 · 98 커밋** | **100 스토어 · 107 페이지** | **1,632 tests / 156 suites** | [**Live Demo**](https://hchat-desktop.vercel.app)
+**Phase 1-23 완료** (115 기능) | **67K 코드 · 99 커밋** | **100 스토어 · 107 페이지** | **1,632 tests / 156 suites** | [**Live Demo**](https://hchat-desktop.vercel.app)
 
-> 7일 만에 67K줄, 110개 기능, 95 스토어, 97 페이지를 구현한 AI 채팅 앱
+> 7일 만에 67K줄, 115개 기능, 100 스토어, 97 페이지를 구현한 AI 채팅 앱
 
 ---
 
@@ -1082,4 +1082,4 @@ MIT
 
 - **프로젝트**: github.com:sgtlim0/hchat-desktop.git
 - **배포**: Vercel (Frontend) / Modal (Backend)
-- **상태**: Phase 1-23 완료 · 115기능 · 90스토어 · 97페이지 · 67K코드 · 1,593 tests
+- **상태**: Phase 1-23 완료** (115 기능) · 90스토어 · 97페이지 · 67K코드 · 1,593 tests
