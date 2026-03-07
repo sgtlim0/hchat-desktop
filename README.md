@@ -2,7 +2,7 @@
 
 AI 모델(Claude, GPT, Gemini)과 대화하는 Progressive Web App. 멀티 프로바이더, 실시간 스트리밍, 80개 AI 기능, 65개 스토어, 68개 페이지, 로컬 저장, PWA 지원.
 
-**상태**: Phase 1-17 전체 완료 (85개 기능) | **65K+ 코드** | **1,518 tests / 126 suites** | **배포**: [Vercel](https://hchat-desktop.vercel.app) + Modal
+**Phase 1-17 완료** (85개 기능) | **65K 코드** | **70 스토어 · 73 페이지** | **1,518 tests** | [**Live Demo**](https://hchat-desktop.vercel.app)
 
 ---
 
@@ -307,7 +307,7 @@ hchat-pwa/
 │   ├── app/
 │   │   └── layouts/           # MainLayout — 뷰 라우팅, 키보드 단축키
 │   │
-│   ├── pages/                 # 68개 페이지 컴포넌트 (61개 뷰)
+│   ├── pages/                 # 73개 페이지 컴포넌트 (66개 뷰)
 │   │   ├── home/              # 홈 (비서 마켓플레이스)
 │   │   ├── chat/              # 채팅
 │   │   ├── all-chats/         # 모든 대화
@@ -367,7 +367,7 @@ hchat-pwa/
 │   │   ├── copilot/           # AI 코파일럿 위젯 (Phase 15)
 │   │   └── ...
 │   │
-│   ├── entities/              # Zustand 스토어 65개
+│   ├── entities/              # Zustand 스토어 70개
 │   │   ├── session/               # 세션, 메시지, 스트리밍, 뷰 상태
 │   │   ├── settings/              # 모델, 언어, 테마, 자격증명
 │   │   ├── project/               # 프로젝트
@@ -553,7 +553,7 @@ modal secret create hchat-api-keys \
 
 ### 커버리지 현황
 
-- **테스트 수**: 1,518 tests
+- **테스트 수**: 1,518 tests (전부 통과)
 - **테스트 스위트**: 126 suites
 - **커버리지**: 75% stmts, 62% branches, 86% funcs, 75% lines
 - **테스트 타입**:
@@ -621,7 +621,7 @@ Pencil MCP를 통한 28개 프레임 설계:
 | **번들 최적화** | 2 | 2 | 100% |
 | **Phase 16** (AI 에이전시) | 5 | 5 | 100% |
 | **Phase 17** (하이퍼 인텔리전스) | 5 | 5 | 100% |
-| **전체** | **159** | **159** | **100%** |
+| **전체** | **159/159** | **159** | **100%** |
 
 ### Phase 1 확장 (비서 마켓플레이스)
 
@@ -811,6 +811,17 @@ Pencil MCP를 통한 28개 프레임 설계:
 | AI 마인드맵 (mindmap.store + MindMapPage) | ✅ 완료 |
 | 테스트 32개 추가 | ✅ 완료 |
 
+### Phase 17 확장 (AI 하이퍼 인텔리전스 & 이머시브)
+
+| 항목 | 상태 |
+|------|------|
+| AI 실시간 번역 통화 (live-translate.store + LiveTranslatePage) | ✅ 완료 |
+| 스마트 문서 OCR 분석 (doc-analyzer.store + DocAnalyzerPage) | ✅ 완료 |
+| AI 게임화 학습 (gamified-learning.store + GamifiedLearningPage) | ✅ 완료 |
+| 데이터 스토리텔링 (data-story.store + DataStoryPage) | ✅ 완료 |
+| 감정 일기 & 웰빙 (wellbeing.store + WellbeingPage) | ✅ 완료 |
+| 테스트 39개 추가 (1,518 total, 126 suites) | ✅ 완료 |
+
 ### Phase 16 확장 (AI 에이전시 & 인터랙티브 인텔리전스)
 
 | 항목 | 상태 |
@@ -870,8 +881,8 @@ Pencil MCP를 통한 28개 프레임 설계:
 | 문서 | 내용 |
 |------|------|
 | `CLAUDE.md` | 아키텍처, 커맨드, 배포 가이드 |
-| `docs/todolist.md` | 상세 TODO 목록 (Phase 1-16 완료 + Phase 17 기획) |
-| `docs/roadmap.md` | 향후 로드맵 (Phase 17 기획) |
+| `docs/todolist.md` | 상세 TODO 목록 (Phase 1-17 완료 + Phase 18 기획) |
+| `docs/roadmap.md` | 향후 로드맵 (Phase 18 기획) |
 | `docs/v2-implementation-plan.md` | v2-extension 이식 계획 |
 | `docs/hchat-implementation-plan.md` | H Chat 이식 계획 |
 | `docs/hchat-screenshot-analysis.md` | H Chat UI 심층 분석 |
@@ -946,6 +957,16 @@ Pencil MCP를 통한 28개 프레임 설계:
 - **인터랙티브 데이터 스토리텔링** — 챕터 기반 내러티브, 차트 타입 선택, 인사이트 카드
 - **AI 감정 일기 & 웰빙 트래커** — 무드 5단계, 감정 그래프, 웰빙 리포트, 마인드풀니스
 
+### Phase 18: AI 크리에이티브 스튜디오 & 라이프 인텔리전스 (📋 기획)
+
+| 기능 | 설명 | 공수 | 임팩트 |
+|------|------|------|--------|
+| **AI 화이트보드 협업** | 실시간 멀티 유저 화이트보드, AI 드로잉 보조, 스티커/도형/텍스트, SVG 내보내기 | 3일 | 높음 |
+| **스마트 계약서 생성기** | AI 법률 문서 초안, 조항 템플릿 라이브러리, 위험 조항 자동 감지 | 2일 | 높음 |
+| **AI 사운드스케이프** | 집중/휴식 배경음 생성, 포모도로 타이머 연동, 자연음/로파이/화이트노이즈 | 2일 | 중간 |
+| **인터랙티브 튜토리얼 빌더** | 단계별 가이드 생성, 스크린샷 어노테이션, HTML 내보내기 | 2일 | 높음 |
+| **AI 습관 트래커 & 코치** | 습관 CRUD, 스트릭, AI 동기부여 메시지, 주간 진행 리포트 | 2일 | 중간 |
+
 ---
 
 ## 기여 및 개발
@@ -986,4 +1007,4 @@ MIT
 
 - **프로젝트**: github.com:sgtlim0/hchat-desktop.git
 - **배포**: Vercel (Frontend) / Modal (Backend)
-- **상태**: Phase 1-17 전체 완료 (85개 기능), 70 스토어, 73 페이지, 65K+ 코드, 1,518 tests
+- **상태**: Phase 1-17 전체 완료 (85개 기능), 70 스토어, 73 페이지, 65K 코드, 1,518 tests, Phase 18 기획

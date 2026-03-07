@@ -1,7 +1,7 @@
 # H Chat PWA — TODO List
 
-> ✅ **Phase 1-17 전체 완료** (85개 기능) | 마지막 업데이트: 2026-03-07
-> 1,518 tests, 126 suites | 70 stores, 73 pages, 65K+ lines | Vercel 배포 완료
+> ✅ **Phase 1-17 전체 완료** (85개 기능) | Phase 18 기획 | 마지막 업데이트: 2026-03-07
+> 1,518 tests, 126 suites | 70 stores, 73 pages, 65K lines | Vercel 배포 완료
 
 ## 현재 상태 요약
 
@@ -609,6 +609,41 @@
 - [ ] 무드 보드 (시각적 감정 캘린더)
 - [ ] 프라이버시 보호 — 모든 데이터 로컬 저장
 - [ ] i18n 키 추가 (ko/en)
+
+---
+
+## 🟣 Phase 18 — AI 크리에이티브 스튜디오 & 라이프 인텔리전스 (예정)
+
+> 크리에이티브 도구 + 라이프스타일 AI — 화이트보드, 계약서, 사운드, 튜토리얼, 습관 코칭
+
+### 18-1. AI 화이트보드 협업 (3일)
+- [ ] WhiteboardPage + whiteboard.store.ts
+- [ ] Canvas API 드로잉 (펜/형상/텍스트/스티커)
+- [ ] AI 스케치→도형 자동 정돈, 보드 템플릿
+- [ ] 다중 사용자 협업, SVG/PNG 내보내기
+
+### 18-2. 스마트 계약서 생성기 (2일)
+- [ ] ContractPage + contract.store.ts
+- [ ] AI 법률 문서 초안 (NDA/고용/서비스/임대)
+- [ ] 조항 템플릿 + 위험 조항 자동 감지
+- [ ] PDF/DOCX 내보내기
+
+### 18-3. AI 사운드스케이프 (2일)
+- [ ] SoundscapePage + soundscape.store.ts
+- [ ] 집중/휴식 배경음 (자연음/로파이/화이트노이즈)
+- [ ] 포모도로 타이머 (25분/5분), 볼륨 믹서
+- [ ] 집중 시간 통계
+
+### 18-4. 인터랙티브 튜토리얼 빌더 (2일)
+- [ ] TutorialBuilderPage + tutorial.store.ts
+- [ ] 단계별 가이드 + 스크린샷 어노테이션
+- [ ] AI 설명 자동 생성, HTML 내보내기
+
+### 18-5. AI 습관 트래커 & 코치 (2일)
+- [ ] HabitTrackerPage + habit.store.ts
+- [ ] 습관 CRUD, 스트릭 추적, 일일 체크인
+- [ ] AI 동기부여 메시지, 주간 리포트
+- [ ] GitHub 스타일 히트맵 캘린더
 
 ---
 
