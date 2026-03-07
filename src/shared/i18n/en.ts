@@ -1767,6 +1767,12 @@ const en = {
   'emotionAvatar.title': 'AI Emotion Avatar', 'emotionAvatar.create': 'New Avatar', 'emotionAvatar.empty': 'No avatars',
   'data3d.title': 'AI 3D Visualization', 'data3d.create': 'New Scene', 'data3d.empty': 'No scenes',
   'orchestra.title': 'AI Orchestra', 'orchestra.create': 'New Session', 'orchestra.empty': 'No sessions',
+  // Phase 23
+  'digitalTwin.title': 'AI Digital Twin', 'digitalTwin.create': 'New Twin', 'digitalTwin.empty': 'No twins',
+  'musicComposer.title': 'AI Music Composer', 'musicComposer.create': 'New Composition', 'musicComposer.empty': 'No compositions',
+  'dreamSim.title': 'AI Dream Simulator', 'dreamSim.create': 'New Scenario', 'dreamSim.empty': 'No scenarios',
+  'quantumViz.title': 'AI Quantum Viz', 'quantumViz.create': 'New Dataset', 'quantumViz.empty': 'No datasets',
+  'philosopher.title': 'AI Philosopher', 'philosopher.create': 'New Dialogue', 'philosopher.empty': 'No dialogues',
 } as const
 
 export default en

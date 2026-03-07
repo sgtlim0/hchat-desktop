@@ -1168,4 +1168,23 @@ export async function getAllOrchestraSessions(): Promise<OrchestraSession[]> { r
 export async function putOrchestraSession(_s: OrchestraSession): Promise<void> {}
 export async function deleteOrchestraSessionFromDb(_id: string): Promise<void> {}
 
+
+// Phase 23 CRUD
+import type { DigitalTwin, MusicComposition, DreamScenario, QuantumDataset, PhilosophyDialogue } from '@/shared/types'
+export async function getAllDigitalTwins(): Promise<DigitalTwin[]> { return [] }
+export async function putDigitalTwin(_t: DigitalTwin): Promise<void> {}
+export async function deleteDigitalTwinFromDb(_id: string): Promise<void> {}
+export async function getAllMusicCompositions(): Promise<MusicComposition[]> { return [] }
+export async function putMusicComposition(_c: MusicComposition): Promise<void> {}
+export async function deleteMusicCompositionFromDb(_id: string): Promise<void> {}
+export async function getAllDreamScenarios(): Promise<DreamScenario[]> { return [] }
+export async function putDreamScenario(_s: DreamScenario): Promise<void> {}
+export async function deleteDreamScenarioFromDb(_id: string): Promise<void> {}
+export async function getAllQuantumDatasets(): Promise<QuantumDataset[]> { return [] }
+export async function putQuantumDataset(_d: QuantumDataset): Promise<void> {}
+export async function deleteQuantumDatasetFromDb(_id: string): Promise<void> {}
+export async function getAllPhilosophyDialogues(): Promise<PhilosophyDialogue[]> { return [] }
+export async function putPhilosophyDialogue(_d: PhilosophyDialogue): Promise<void> {}
+export async function deletePhilosophyDialogueFromDb(_id: string): Promise<void> {}
+
 export { db }

@@ -72,6 +72,11 @@ const ApiTesterPage = lazy(() => import('@/pages/api-tester/ApiTesterPage').then
 const RegexBuilderPage = lazy(() => import('@/pages/regex-builder/RegexBuilderPage').then((m) => ({ default: m.RegexBuilderPage })))
 const DataConverterPage = lazy(() => import('@/pages/data-converter/DataConverterPage').then((m) => ({ default: m.DataConverterPage })))
 const DiagramEditorPage = lazy(() => import('@/pages/diagram-editor/DiagramEditorPage').then((m) => ({ default: m.DiagramEditorPage })))
+const DigitalTwinPage = lazy(() => import('@/pages/digital-twin/DigitalTwinPage').then((m) => ({ default: m.DigitalTwinPage })))
+const MusicComposerPage = lazy(() => import('@/pages/music-composer/MusicComposerPage').then((m) => ({ default: m.MusicComposerPage })))
+const DreamSimPage = lazy(() => import('@/pages/dream-sim/DreamSimPage').then((m) => ({ default: m.DreamSimPage })))
+const QuantumVizPage = lazy(() => import('@/pages/quantum-viz/QuantumVizPage').then((m) => ({ default: m.QuantumVizPage })))
+const PhilosopherPage = lazy(() => import('@/pages/philosopher/PhilosopherPage').then((m) => ({ default: m.PhilosopherPage })))
 const VirtualSpacePage = lazy(() => import('@/pages/virtual-space/VirtualSpacePage').then((m) => ({ default: m.VirtualSpacePage })))
 const GameScenarioPage = lazy(() => import('@/pages/game-scenario/GameScenarioPage').then((m) => ({ default: m.GameScenarioPage })))
 const EmotionAvatarPage = lazy(() => import('@/pages/emotion-avatar/EmotionAvatarPage').then((m) => ({ default: m.EmotionAvatarPage })))
@@ -374,6 +379,11 @@ export function MainLayout() {
       return <DiagramEditorPage />
     }
 
+    if (view === 'digitalTwin') { return <DigitalTwinPage /> }
+    if (view === 'musicComposer') { return <MusicComposerPage /> }
+    if (view === 'dreamSim') { return <DreamSimPage /> }
+    if (view === 'quantumViz') { return <QuantumVizPage /> }
+    if (view === 'philosopher') { return <PhilosopherPage /> }
     if (view === 'virtualSpace') { return <VirtualSpacePage /> }
     if (view === 'gameScenario') { return <GameScenarioPage /> }
     if (view === 'emotionAvatar') { return <EmotionAvatarPage /> }

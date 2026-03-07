@@ -1767,6 +1767,12 @@ const ko = {
   'emotionAvatar.title': 'AI 감정 아바타', 'emotionAvatar.create': '새 아바타', 'emotionAvatar.empty': '아바타가 없습니다',
   'data3d.title': 'AI 3D 시각화', 'data3d.create': '새 씬', 'data3d.empty': '씬이 없습니다',
   'orchestra.title': 'AI 오케스트라', 'orchestra.create': '새 세션', 'orchestra.empty': '세션이 없습니다',
+  // Phase 23
+  'digitalTwin.title': 'AI 디지털 트윈', 'digitalTwin.create': '새 트윈', 'digitalTwin.empty': '트윈이 없습니다',
+  'musicComposer.title': 'AI 작곡', 'musicComposer.create': '새 곡', 'musicComposer.empty': '곡이 없습니다',
+  'dreamSim.title': 'AI 드림 시뮬레이터', 'dreamSim.create': '새 시나리오', 'dreamSim.empty': '시나리오가 없습니다',
+  'quantumViz.title': 'AI 양자 시각화', 'quantumViz.create': '새 데이터셋', 'quantumViz.empty': '데이터셋이 없습니다',
+  'philosopher.title': 'AI 철학자', 'philosopher.create': '새 대화', 'philosopher.empty': '대화가 없습니다',
 } as const
 
 export default ko
