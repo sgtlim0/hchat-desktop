@@ -1,7 +1,7 @@
 # H Chat PWA — TODO List
 
-> ✅ **Phase 1-19 전체 완료** (95개 기능) | Phase 20 기획 | 마지막 업데이트: 2026-03-07
-> 1,556 tests, 136 suites | 80 stores, 87 pages, 67K lines
+> ✅ **Phase 1-20 전체 완료** (100개 기능) | Phase 21 기획 | 마지막 업데이트: 2026-03-07
+> 1,574 tests, 141 suites | 85 stores, 92 pages, 67K lines
 
 ## 현재 상태 요약
 
@@ -205,7 +205,7 @@
 | Phase 17 | 5/5 | 0 | 100% |
 | Phase 18 | 5/5 | 0 | 100% |
 | Phase 19 | 5/5 | 0 | 100% |
-| **전체** | **125/125** | **0** | **100%** |
+| **전체** | **130/130** | **0** | **100%** |
 
 > **모든 TODO 항목 완료.** 배포: `modal deploy backend/app.py` + `vercel --prod`
 > Secret 설정: `modal secret create hchat-api-keys OPENAI_API_KEY=sk-... GEMINI_API_KEY=...`
@@ -692,33 +692,33 @@
 
 ### 20-1. AI OKR 트래커 (2일)
 - [ ] OkrPage + okr.store.ts
-- [ ] 목표(Objective) + 핵심결과(Key Result) CRUD
-- [ ] 진행률 자동 추적 (0-100%)
-- [ ] AI 달성 전략 제안, 분기별 리뷰
+- [x] 목표(Objective) + 핵심결과(Key Result) CRUD
+- [x] 진행률 자동 추적 (0-100%)
+- [x] AI 달성 전략 제안, 분기별 리뷰
 
 ### 20-2. 스마트 CRM (3일)
-- [ ] CrmPage + crm.store.ts
-- [ ] 연락처 CRUD (이름/회사/이메일/전화/태그)
-- [ ] 상호작용 기록 (미팅/이메일/전화 로그)
-- [ ] AI 팔로우업 제안, 관계 점수 계산
+- [x] CrmPage + crm.store.ts
+- [x] 연락처 CRUD (이름/회사/이메일/전화/태그)
+- [x] 상호작용 기록 (미팅/이메일/전화 로그)
+- [x] AI 팔로우업 제안, 관계 점수 계산
 
 ### 20-3. AI 일기 & 저널 (2일)
-- [ ] JournalPage + journal.store.ts
-- [ ] 매일 AI 질문 (성찰/감사/목표)
-- [ ] 감정 분석 + 성장 추적 그래프
-- [ ] 감사 일기 + 3가지 좋은 일 패턴
+- [x] JournalPage + journal.store.ts
+- [x] 매일 AI 질문 (성찰/감사/목표)
+- [x] 감정 분석 + 성장 추적 그래프
+- [x] 감사 일기 + 3가지 좋은 일 패턴
 
 ### 20-4. 소셜 미디어 도우미 (2일)
-- [ ] SocialMediaPage + social-media.store.ts
-- [ ] 게시물 초안 생성 (LinkedIn/Twitter/Instagram)
-- [ ] 해시태그 추천, 톤 조절 (전문/캐주얼/유머)
-- [ ] 최적 게시 시간 제안
+- [x] SocialMediaPage + social-media.store.ts
+- [x] 게시물 초안 생성 (LinkedIn/Twitter/Instagram)
+- [x] 해시태그 추천, 톤 조절 (전문/캐주얼/유머)
+- [x] 최적 게시 시간 제안
 
 ### 20-5. AI 프로젝트 타임라인 (3일)
-- [ ] ProjectTimelinePage + project-timeline.store.ts
-- [ ] 간트 차트 (SVG 기반)
-- [ ] 마일스톤 + 의존성 관리
-- [ ] AI 일정 최적화 (병목 감지, 리소스 배분)
+- [x] ProjectTimelinePage + project-timeline.store.ts
+- [x] 간트 차트 (SVG 기반)
+- [x] 마일스톤 + 의존성 관리
+- [x] AI 일정 최적화 (병목 감지, 리소스 배분)
 
 ---
 
