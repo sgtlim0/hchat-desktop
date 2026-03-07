@@ -1743,6 +1743,12 @@ const ko = {
   'habit.weekday': '평일',
   'habit.weekly': '주간',
   'habit.report': '주간 리포트',
+  // Phase 19
+  'travel.title': 'AI 여행 플래너', 'travel.create': '새 여행', 'travel.empty': '여행 계획이 없습니다', 'travel.destination': '목적지', 'travel.budget': '예산', 'travel.days': '일정', 'travel.addDay': '일정 추가',
+  'recipe.title': '스마트 레시피', 'recipe.create': '새 레시피', 'recipe.empty': '레시피가 없습니다', 'recipe.ingredients': '재료', 'recipe.calories': '칼로리', 'recipe.instructions': '조리법',
+  'interview.title': 'AI 인터뷰 코치', 'interview.create': '새 면접', 'interview.empty': '면접이 없습니다', 'interview.jobTitle': '직무', 'interview.score': '점수', 'interview.feedback': '피드백',
+  'finance.title': '개인 재무', 'finance.income': '수입', 'finance.expense': '지출', 'finance.budget': '예산', 'finance.savings': '저축', 'finance.addTransaction': '거래 추가', 'finance.empty': '거래가 없습니다',
+  'reading.title': 'AI 독서 노트', 'reading.create': '새 책', 'reading.empty': '책이 없습니다', 'reading.author': '저자', 'reading.genre': '장르', 'reading.summary': '요약', 'reading.quotes': '인용구', 'reading.rating': '평점',
 } as const
 
 export default ko

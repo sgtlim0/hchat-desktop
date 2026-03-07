@@ -12,6 +12,7 @@ import type {
   PairSession, CustomDashboard, DocComparison, MultiAgentDebateSession, Portfolio,
   LiveTranslateSession, DocAnalysis, LearningChallenge, DataStory, MoodEntry, WellbeingReport,
   Whiteboard, Contract, Tutorial, Habit, FocusSession,
+  TravelPlan, Recipe, MealPlan, InterviewSession, Transaction, Budget, FinanceReport, BookNote,
 } from '@/shared/types'
 
 const db = new Dexie('hchat-desktop') as Dexie & {
@@ -86,6 +87,14 @@ const db = new Dexie('hchat-desktop') as Dexie & {
   tutorials: EntityTable<Tutorial, 'id'>
   habits: EntityTable<Habit, 'id'>
   focusSessions: EntityTable<FocusSession, 'id'>
+  travelPlans: EntityTable<TravelPlan, 'id'>
+  recipes: EntityTable<Recipe, 'id'>
+  mealPlans: EntityTable<MealPlan, 'id'>
+  interviewSessions: EntityTable<InterviewSession, 'id'>
+  transactions: EntityTable<Transaction, 'id'>
+  budgets: EntityTable<Budget, 'id'>
+  financeReports: EntityTable<FinanceReport, 'id'>
+  bookNotes: EntityTable<BookNote, 'id'>
 }
 
 db.version(1).stores({
@@ -329,6 +338,14 @@ db.version(10).stores({
   tutorials: 'id, updatedAt',
   habits: 'id, frequency, createdAt',
   focusSessions: 'id, completedAt',
+  travelPlans: 'id, updatedAt',
+  recipes: 'id, isFavorite, createdAt',
+  mealPlans: 'id, week',
+  interviewSessions: 'id, createdAt',
+  transactions: 'id, type, category, date',
+  budgets: 'id, category, month',
+  financeReports: 'id, month',
+  bookNotes: 'id, status, updatedAt',
 })
 
 db.version(6).stores({
@@ -1071,5 +1088,29 @@ export async function deleteHabitFromDb(id: string): Promise<void> { await db.ha
 
 export async function getAllFocusSessions(): Promise<FocusSession[]> { return db.focusSessions.orderBy('completedAt').reverse().toArray() }
 export async function putFocusSession(s: FocusSession): Promise<void> { await db.focusSessions.put(s) }
+
+// Phase 19 CRUD
+export async function getAllTravelPlans(): Promise<TravelPlan[]> { return db.travelPlans.orderBy('updatedAt').reverse().toArray() }
+export async function putTravelPlan(p: TravelPlan): Promise<void> { await db.travelPlans.put(p) }
+export async function deleteTravelPlanFromDb(id: string): Promise<void> { await db.travelPlans.delete(id) }
+export async function getAllRecipes(): Promise<Recipe[]> { return db.recipes.orderBy('createdAt').reverse().toArray() }
+export async function putRecipe(r: Recipe): Promise<void> { await db.recipes.put(r) }
+export async function deleteRecipeFromDb(id: string): Promise<void> { await db.recipes.delete(id) }
+export async function getAllMealPlans(): Promise<MealPlan[]> { return db.mealPlans.toArray() }
+export async function putMealPlan(m: MealPlan): Promise<void> { await db.mealPlans.put(m) }
+export async function getAllInterviewSessions(): Promise<InterviewSession[]> { return db.interviewSessions.orderBy('createdAt').reverse().toArray() }
+export async function putInterviewSession(s: InterviewSession): Promise<void> { await db.interviewSessions.put(s) }
+export async function deleteInterviewSessionFromDb(id: string): Promise<void> { await db.interviewSessions.delete(id) }
+export async function getAllTransactions(): Promise<Transaction[]> { return db.transactions.orderBy('date').reverse().toArray() }
+export async function putTransaction(t: Transaction): Promise<void> { await db.transactions.put(t) }
+export async function deleteTransactionFromDb(id: string): Promise<void> { await db.transactions.delete(id) }
+export async function getAllBudgets(): Promise<Budget[]> { return db.budgets.toArray() }
+export async function putBudget(b: Budget): Promise<void> { await db.budgets.put(b) }
+export async function deleteBudgetFromDb(id: string): Promise<void> { await db.budgets.delete(id) }
+export async function getAllFinanceReports(): Promise<FinanceReport[]> { return db.financeReports.orderBy('month').reverse().toArray() }
+export async function putFinanceReport(r: FinanceReport): Promise<void> { await db.financeReports.put(r) }
+export async function getAllBookNotes(): Promise<BookNote[]> { return db.bookNotes.orderBy('updatedAt').reverse().toArray() }
+export async function putBookNote(n: BookNote): Promise<void> { await db.bookNotes.put(n) }
+export async function deleteBookNoteFromDb(id: string): Promise<void> { await db.bookNotes.delete(id) }
 
 export { db }

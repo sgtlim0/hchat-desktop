@@ -72,6 +72,11 @@ const ApiTesterPage = lazy(() => import('@/pages/api-tester/ApiTesterPage').then
 const RegexBuilderPage = lazy(() => import('@/pages/regex-builder/RegexBuilderPage').then((m) => ({ default: m.RegexBuilderPage })))
 const DataConverterPage = lazy(() => import('@/pages/data-converter/DataConverterPage').then((m) => ({ default: m.DataConverterPage })))
 const DiagramEditorPage = lazy(() => import('@/pages/diagram-editor/DiagramEditorPage').then((m) => ({ default: m.DiagramEditorPage })))
+const TravelPlannerPage = lazy(() => import('@/pages/travel/TravelPlannerPage').then((m) => ({ default: m.TravelPlannerPage })))
+const RecipePage = lazy(() => import('@/pages/recipe/RecipePage').then((m) => ({ default: m.RecipePage })))
+const InterviewCoachPage = lazy(() => import('@/pages/interview-coach/InterviewCoachPage').then((m) => ({ default: m.InterviewCoachPage })))
+const FinancePage = lazy(() => import('@/pages/finance/FinancePage').then((m) => ({ default: m.FinancePage })))
+const ReadingNotePage = lazy(() => import('@/pages/reading-note/ReadingNotePage').then((m) => ({ default: m.ReadingNotePage })))
 const WhiteboardPage = lazy(() => import('@/pages/whiteboard/WhiteboardPage').then((m) => ({ default: m.WhiteboardPage })))
 const ContractPage = lazy(() => import('@/pages/contract/ContractPage').then((m) => ({ default: m.ContractPage })))
 const SoundscapePage = lazy(() => import('@/pages/soundscape/SoundscapePage').then((m) => ({ default: m.SoundscapePage })))
@@ -353,6 +358,12 @@ export function MainLayout() {
     if (view === 'diagramEditor') {
       return <DiagramEditorPage />
     }
+
+    if (view === 'travelPlanner') { return <TravelPlannerPage /> }
+    if (view === 'recipe') { return <RecipePage /> }
+    if (view === 'interviewCoach') { return <InterviewCoachPage /> }
+    if (view === 'finance') { return <FinancePage /> }
+    if (view === 'readingNote') { return <ReadingNotePage /> }
 
     if (view === 'whiteboard') {
       return <WhiteboardPage />

@@ -96,7 +96,7 @@ export interface Skill {
   icon: string
 }
 
-export type ViewState = 'home' | 'chat' | 'settings' | 'allChats' | 'projects' | 'projectDetail' | 'quickChat' | 'memory' | 'agentSwarm' | 'schedule' | 'groupChat' | 'promptLibrary' | 'debate' | 'aiTools' | 'imageGen' | 'agent' | 'translate' | 'docWriter' | 'ocr' | 'promptChain' | 'knowledgeBase' | 'workflow' | 'collab' | 'contextManager' | 'insights' | 'plugins' | 'themeBuilder' | 'batchQueue' | 'sessionInsights' | 'cacheControl' | 'auditLog' | 'dashboard' | 'workspace' | 'snippets' | 'apiTester' | 'regexBuilder' | 'dataConverter' | 'diagramEditor' | 'voiceChat' | 'knowledgeGraph' | 'canvas' | 'autoWorkflow' | 'mcpServers' | 'autonomousAgent' | 'dataConnectors' | 'codeInterpreter' | 'mentoring' | 'dataPipeline' | 'codeReview' | 'notificationCenter' | 'visualPrompt' | 'meetingNotes' | 'reportGenerator' | 'learningPath' | 'bookmarks' | 'translationMemory' | 'presentation' | 'summaryFeed' | 'emailAssistant' | 'conversationTimeline' | 'mindMap' | 'pairProgramming' | 'dashboardBuilder' | 'docCompare' | 'multiAgentDebate' | 'portfolio' | 'liveTranslate' | 'docAnalyzer' | 'gamifiedLearning' | 'dataStory' | 'wellbeing' | 'whiteboard' | 'contract' | 'soundscape' | 'tutorialBuilder' | 'habitTracker'
+export type ViewState = 'home' | 'chat' | 'settings' | 'allChats' | 'projects' | 'projectDetail' | 'quickChat' | 'memory' | 'agentSwarm' | 'schedule' | 'groupChat' | 'promptLibrary' | 'debate' | 'aiTools' | 'imageGen' | 'agent' | 'translate' | 'docWriter' | 'ocr' | 'promptChain' | 'knowledgeBase' | 'workflow' | 'collab' | 'contextManager' | 'insights' | 'plugins' | 'themeBuilder' | 'batchQueue' | 'sessionInsights' | 'cacheControl' | 'auditLog' | 'dashboard' | 'workspace' | 'snippets' | 'apiTester' | 'regexBuilder' | 'dataConverter' | 'diagramEditor' | 'voiceChat' | 'knowledgeGraph' | 'canvas' | 'autoWorkflow' | 'mcpServers' | 'autonomousAgent' | 'dataConnectors' | 'codeInterpreter' | 'mentoring' | 'dataPipeline' | 'codeReview' | 'notificationCenter' | 'visualPrompt' | 'meetingNotes' | 'reportGenerator' | 'learningPath' | 'bookmarks' | 'translationMemory' | 'presentation' | 'summaryFeed' | 'emailAssistant' | 'conversationTimeline' | 'mindMap' | 'pairProgramming' | 'dashboardBuilder' | 'docCompare' | 'multiAgentDebate' | 'portfolio' | 'liveTranslate' | 'docAnalyzer' | 'gamifiedLearning' | 'dataStory' | 'wellbeing' | 'whiteboard' | 'contract' | 'soundscape' | 'tutorialBuilder' | 'habitTracker' | 'travelPlanner' | 'recipe' | 'interviewCoach' | 'finance' | 'readingNote'
 
 // Group Chat types
 
@@ -1554,3 +1554,22 @@ export interface Habit {
   completedDates: string[]
   createdAt: string
 }
+
+// Phase 19 types
+
+export interface TravelDay { id: string; date: string; places: string[]; transport: string; notes: string }
+export interface TravelPlan { id: string; title: string; destination: string; startDate: string; endDate: string; budget: number; days: TravelDay[]; createdAt: string; updatedAt: string }
+
+export interface Recipe { id: string; title: string; ingredients: string[]; instructions: string; calories: number; protein: number; carbs: number; isFavorite: boolean; createdAt: string }
+export interface MealPlan { id: string; week: string; meals: Record<string, string[]>; shoppingList: string[]; createdAt: string }
+
+export type InterviewType = 'technical' | 'behavioral' | 'situational'
+export interface InterviewQuestion { id: string; type: InterviewType; question: string; userAnswer?: string; feedback?: string; score?: number }
+export interface InterviewSession { id: string; title: string; jobTitle: string; questions: InterviewQuestion[]; overallScore: number; createdAt: string }
+
+export type TransactionType = 'income' | 'expense'
+export interface Transaction { id: string; type: TransactionType; amount: number; category: string; description: string; date: string }
+export interface Budget { id: string; category: string; limit: number; spent: number; month: string }
+export interface FinanceReport { id: string; month: string; totalIncome: number; totalExpense: number; savings: number; suggestions: string[]; createdAt: string }
+
+export interface BookNote { id: string; title: string; author: string; genre: string; summary: string; quotes: string[]; rating: number; status: 'reading' | 'completed' | 'wishlist'; createdAt: string; updatedAt: string }

@@ -1743,6 +1743,12 @@ const en = {
   'habit.weekday': 'Weekday',
   'habit.weekly': 'Weekly',
   'habit.report': 'Weekly Report',
+  // Phase 19
+  'travel.title': 'AI Travel Planner', 'travel.create': 'New Trip', 'travel.empty': 'No travel plans', 'travel.destination': 'Destination', 'travel.budget': 'Budget', 'travel.days': 'Itinerary', 'travel.addDay': 'Add Day',
+  'recipe.title': 'Smart Recipes', 'recipe.create': 'New Recipe', 'recipe.empty': 'No recipes', 'recipe.ingredients': 'Ingredients', 'recipe.calories': 'Calories', 'recipe.instructions': 'Instructions',
+  'interview.title': 'AI Interview Coach', 'interview.create': 'New Interview', 'interview.empty': 'No interviews', 'interview.jobTitle': 'Job Title', 'interview.score': 'Score', 'interview.feedback': 'Feedback',
+  'finance.title': 'Personal Finance', 'finance.income': 'Income', 'finance.expense': 'Expense', 'finance.budget': 'Budget', 'finance.savings': 'Savings', 'finance.addTransaction': 'Add Transaction', 'finance.empty': 'No transactions',
+  'reading.title': 'AI Reading Notes', 'reading.create': 'New Book', 'reading.empty': 'No books', 'reading.author': 'Author', 'reading.genre': 'Genre', 'reading.summary': 'Summary', 'reading.quotes': 'Quotes', 'reading.rating': 'Rating',
 } as const
 
 export default en
