@@ -1,11 +1,22 @@
 import { create } from 'zustand'
 import type { KnowledgeDocument, KnowledgeChunk } from '@/shared/types'
+import { embedText } from '@/shared/lib/embedding'
+import {
+  searchRAG,
+  buildRAGContext,
+  extractKeyPoints,
+  chunkWithOverlap,
+  type RAGSearchResult,
+  type RAGContext,
+  type Citation,
+} from '@/shared/lib/rag'
 
 interface KnowledgeState {
   documents: KnowledgeDocument[]
   selectedDocumentId: string | null
   searchQuery: string
-  searchResults: KnowledgeChunk[]
+  searchResults: RAGSearchResult[]
+  ragContext: RAGContext | null
   isProcessing: boolean
   categories: string[]
 
@@ -16,13 +27,17 @@ interface KnowledgeState {
     fileType: string,
     fileSize: number,
     tags: string[],
-    category: string
+    category: string,
   ) => void
-  updateDocument: (id: string, updates: Partial<Omit<KnowledgeDocument, 'id' | 'createdAt' | 'updatedAt'>>) => void
+  updateDocument: (
+    id: string,
+    updates: Partial<Omit<KnowledgeDocument, 'id' | 'createdAt' | 'updatedAt'>>,
+  ) => void
   deleteDocument: (id: string) => void
   selectDocument: (id: string | null) => void
   searchDocuments: (query: string) => void
-  chunkDocument: (content: string) => KnowledgeChunk[]
+  getRAGContext: (query: string) => RAGContext | null
+  getDocumentSummary: (id: string) => string[]
   clearSearch: () => void
 }
 
@@ -31,6 +46,7 @@ export const useKnowledgeStore = create<KnowledgeState>((set, get) => ({
   selectedDocumentId: null,
   searchQuery: '',
   searchResults: [],
+  ragContext: null,
   isProcessing: false,
   categories: ['general', 'technical', 'business', 'reference'],
 
@@ -42,10 +58,16 @@ export const useKnowledgeStore = create<KnowledgeState>((set, get) => ({
     const now = new Date().toISOString()
     const id = `kb-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`
 
-    const chunks = get().chunkDocument(content).map((chunk, idx) => ({
-      ...chunk,
+    set({ isProcessing: true })
+
+    // Chunk with overlap for better context
+    const rawChunks = chunkWithOverlap(content, 500, 100)
+    const chunks: KnowledgeChunk[] = rawChunks.map((raw, idx) => ({
+      id: `chunk-${Date.now()}-${idx}`,
       documentId: id,
+      content: raw.content,
       index: idx,
+      embedding: embedText(raw.content),
     }))
 
     const newDoc: KnowledgeDocument = {
@@ -64,6 +86,7 @@ export const useKnowledgeStore = create<KnowledgeState>((set, get) => ({
 
     set((state) => ({
       documents: [newDoc, ...state.documents],
+      isProcessing: false,
     }))
   },
 
@@ -74,10 +97,12 @@ export const useKnowledgeStore = create<KnowledgeState>((set, get) => ({
 
         const newContent = updates.content ?? doc.content
         const newChunks = updates.content
-          ? get().chunkDocument(newContent).map((chunk, idx) => ({
-              ...chunk,
+          ? chunkWithOverlap(newContent, 500, 100).map((raw, idx) => ({
+              id: `chunk-${Date.now()}-${idx}`,
               documentId: id,
+              content: raw.content,
               index: idx,
+              embedding: embedText(raw.content),
             }))
           : doc.chunks
 
@@ -110,60 +135,29 @@ export const useKnowledgeStore = create<KnowledgeState>((set, get) => ({
     set({ searchQuery: query })
 
     if (!query.trim()) {
-      set({ searchResults: [] })
+      set({ searchResults: [], ragContext: null })
       return
     }
 
-    const lowerQuery = query.toLowerCase()
-    const results: KnowledgeChunk[] = []
+    const results = searchRAG(query, get().documents, 10, 0.05)
+    const ragContext = results.length > 0 ? buildRAGContext(results, query) : null
 
-    for (const doc of get().documents) {
-      for (const chunk of doc.chunks) {
-        if (chunk.content.toLowerCase().includes(lowerQuery)) {
-          results.push(chunk)
-        }
-      }
-    }
-
-    set({ searchResults: results })
+    set({ searchResults: results, ragContext })
   },
 
-  chunkDocument: (content) => {
-    const targetSize = 500
-    const paragraphs = content.split(/\n\n+/).filter((p) => p.trim())
-    const chunks: KnowledgeChunk[] = []
+  getRAGContext: (query) => {
+    const results = searchRAG(query, get().documents, 5, 0.1)
+    if (results.length === 0) return null
+    return buildRAGContext(results, query)
+  },
 
-    let buffer = ''
-    let chunkIndex = 0
-
-    for (const para of paragraphs) {
-      if (buffer.length + para.length > targetSize && buffer.length > 0) {
-        chunks.push({
-          id: `chunk-${Date.now()}-${chunkIndex}`,
-          documentId: '', // filled by caller
-          content: buffer.trim(),
-          index: chunkIndex,
-        })
-        chunkIndex++
-        buffer = ''
-      }
-
-      buffer += (buffer ? '\n\n' : '') + para
-    }
-
-    if (buffer.trim()) {
-      chunks.push({
-        id: `chunk-${Date.now()}-${chunkIndex}`,
-        documentId: '',
-        content: buffer.trim(),
-        index: chunkIndex,
-      })
-    }
-
-    return chunks
+  getDocumentSummary: (id) => {
+    const doc = get().documents.find((d) => d.id === id)
+    if (!doc) return []
+    return extractKeyPoints(doc.content, 5)
   },
 
   clearSearch: () => {
-    set({ searchQuery: '', searchResults: [] })
+    set({ searchQuery: '', searchResults: [], ragContext: null })
   },
 }))
