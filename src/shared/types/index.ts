@@ -96,7 +96,7 @@ export interface Skill {
   icon: string
 }
 
-export type ViewState = 'home' | 'chat' | 'settings' | 'allChats' | 'projects' | 'projectDetail' | 'quickChat' | 'memory' | 'agentSwarm' | 'schedule' | 'groupChat' | 'promptLibrary' | 'debate' | 'aiTools' | 'imageGen' | 'agent' | 'translate' | 'docWriter' | 'ocr' | 'promptChain' | 'knowledgeBase' | 'workflow' | 'collab' | 'contextManager' | 'insights' | 'plugins' | 'themeBuilder' | 'batchQueue' | 'sessionInsights' | 'cacheControl' | 'auditLog' | 'dashboard' | 'workspace' | 'snippets' | 'apiTester' | 'regexBuilder' | 'dataConverter' | 'diagramEditor' | 'voiceChat' | 'knowledgeGraph' | 'canvas' | 'autoWorkflow' | 'mcpServers' | 'autonomousAgent' | 'dataConnectors' | 'codeInterpreter' | 'mentoring' | 'dataPipeline' | 'codeReview' | 'notificationCenter' | 'visualPrompt' | 'meetingNotes' | 'reportGenerator' | 'learningPath' | 'bookmarks' | 'translationMemory' | 'presentation' | 'summaryFeed' | 'emailAssistant' | 'conversationTimeline' | 'mindMap'
+export type ViewState = 'home' | 'chat' | 'settings' | 'allChats' | 'projects' | 'projectDetail' | 'quickChat' | 'memory' | 'agentSwarm' | 'schedule' | 'groupChat' | 'promptLibrary' | 'debate' | 'aiTools' | 'imageGen' | 'agent' | 'translate' | 'docWriter' | 'ocr' | 'promptChain' | 'knowledgeBase' | 'workflow' | 'collab' | 'contextManager' | 'insights' | 'plugins' | 'themeBuilder' | 'batchQueue' | 'sessionInsights' | 'cacheControl' | 'auditLog' | 'dashboard' | 'workspace' | 'snippets' | 'apiTester' | 'regexBuilder' | 'dataConverter' | 'diagramEditor' | 'voiceChat' | 'knowledgeGraph' | 'canvas' | 'autoWorkflow' | 'mcpServers' | 'autonomousAgent' | 'dataConnectors' | 'codeInterpreter' | 'mentoring' | 'dataPipeline' | 'codeReview' | 'notificationCenter' | 'visualPrompt' | 'meetingNotes' | 'reportGenerator' | 'learningPath' | 'bookmarks' | 'translationMemory' | 'presentation' | 'summaryFeed' | 'emailAssistant' | 'conversationTimeline' | 'mindMap' | 'pairProgramming' | 'dashboardBuilder' | 'docCompare' | 'multiAgentDebate' | 'portfolio'
 
 // Group Chat types
 
@@ -1223,6 +1223,126 @@ export interface MindMap {
   rootId: string
   nodes: MindMapNode[]
   mermaidCode: string
+  createdAt: string
+  updatedAt: string
+}
+
+// Phase 16 types — AI Agency & Interactive Intelligence
+
+// 16-1. Pair Programming
+export interface PairSession {
+  id: string
+  title: string
+  language: string
+  code: string
+  aiSuggestions: AiSuggestion[]
+  createdAt: string
+  updatedAt: string
+}
+
+export interface AiSuggestion {
+  id: string
+  line: number
+  type: 'completion' | 'fix' | 'refactor'
+  original: string
+  suggestion: string
+  accepted: boolean
+}
+
+// 16-2. Dashboard Builder
+export type BuilderWidgetType = 'chart' | 'table' | 'kpi' | 'text' | 'image'
+
+export interface BuilderWidget {
+  id: string
+  type: BuilderWidgetType
+  title: string
+  x: number
+  y: number
+  width: number
+  height: number
+  config: Record<string, string>
+}
+
+export interface CustomDashboard {
+  id: string
+  title: string
+  widgets: BuilderWidget[]
+  isPublic: boolean
+  shareUrl?: string
+  createdAt: string
+  updatedAt: string
+}
+
+// 16-3. Doc Compare
+export interface DocComparison {
+  id: string
+  title: string
+  docA: string
+  docB: string
+  diffSummary: string
+  highlights: DocHighlight[]
+  createdAt: string
+}
+
+export interface DocHighlight {
+  id: string
+  type: 'added' | 'removed' | 'changed'
+  lineStart: number
+  lineEnd: number
+  text: string
+  aiComment?: string
+}
+
+// 16-4. Multi-Agent Debate
+export type DebateRole = 'proponent' | 'opponent' | 'moderator' | 'expert'
+
+export interface DebateAgent {
+  id: string
+  name: string
+  role: DebateRole
+  modelId: string
+}
+
+export interface DebateRound {
+  id: string
+  roundNumber: number
+  agentId: string
+  content: string
+  votes: number
+  timestamp: string
+}
+
+export interface MultiAgentDebateSession {
+  id: string
+  topic: string
+  agents: DebateAgent[]
+  rounds: DebateRound[]
+  consensus?: string
+  status: 'setup' | 'running' | 'voting' | 'completed'
+  maxRounds: number
+  createdAt: string
+}
+
+// 16-5. Portfolio
+export type PortfolioTheme = 'minimal' | 'modern' | 'creative' | 'developer' | 'elegant'
+
+export interface PortfolioProject {
+  id: string
+  title: string
+  description: string
+  techStack: string[]
+  imageUrl?: string
+  liveUrl?: string
+}
+
+export interface Portfolio {
+  id: string
+  name: string
+  title: string
+  bio: string
+  theme: PortfolioTheme
+  projects: PortfolioProject[]
+  generatedHtml: string
   createdAt: string
   updatedAt: string
 }

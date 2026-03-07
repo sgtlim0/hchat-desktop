@@ -72,6 +72,11 @@ const ApiTesterPage = lazy(() => import('@/pages/api-tester/ApiTesterPage').then
 const RegexBuilderPage = lazy(() => import('@/pages/regex-builder/RegexBuilderPage').then((m) => ({ default: m.RegexBuilderPage })))
 const DataConverterPage = lazy(() => import('@/pages/data-converter/DataConverterPage').then((m) => ({ default: m.DataConverterPage })))
 const DiagramEditorPage = lazy(() => import('@/pages/diagram-editor/DiagramEditorPage').then((m) => ({ default: m.DiagramEditorPage })))
+const PairProgrammingPage = lazy(() => import('@/pages/pair-programming/PairProgrammingPage').then((m) => ({ default: m.PairProgrammingPage })))
+const DashboardBuilderPage = lazy(() => import('@/pages/dashboard-builder/DashboardBuilderPage').then((m) => ({ default: m.DashboardBuilderPage })))
+const DocComparePage = lazy(() => import('@/pages/doc-compare/DocComparePage').then((m) => ({ default: m.DocComparePage })))
+const MultiAgentDebatePage = lazy(() => import('@/pages/multi-agent-debate/MultiAgentDebatePage').then((m) => ({ default: m.MultiAgentDebatePage })))
+const PortfolioPage = lazy(() => import('@/pages/portfolio/PortfolioPage').then((m) => ({ default: m.PortfolioPage })))
 const MeetingNotesPage = lazy(() => import('@/pages/meeting-notes/MeetingNotesPage').then((m) => ({ default: m.MeetingNotesPage })))
 const ReportGeneratorPage = lazy(() => import('@/pages/report-generator/ReportGeneratorPage').then((m) => ({ default: m.ReportGeneratorPage })))
 const LearningPathPage = lazy(() => import('@/pages/learning-path/LearningPathPage').then((m) => ({ default: m.LearningPathPage })))
@@ -337,6 +342,26 @@ export function MainLayout() {
 
     if (view === 'diagramEditor') {
       return <DiagramEditorPage />
+    }
+
+    if (view === 'pairProgramming') {
+      return <PairProgrammingPage />
+    }
+
+    if (view === 'dashboardBuilder') {
+      return <DashboardBuilderPage />
+    }
+
+    if (view === 'docCompare') {
+      return <DocComparePage />
+    }
+
+    if (view === 'multiAgentDebate') {
+      return <MultiAgentDebatePage />
+    }
+
+    if (view === 'portfolio') {
+      return <PortfolioPage />
     }
 
     if (view === 'meetingNotes') {

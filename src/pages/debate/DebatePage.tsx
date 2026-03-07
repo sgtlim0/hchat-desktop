@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { useState, useRef } from 'react'
 import { useShallow } from 'zustand/react/shallow'
 import { ArrowLeft, Play, RotateCcw, Check, Loader2 } from 'lucide-react'

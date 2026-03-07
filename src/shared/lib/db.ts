@@ -9,6 +9,7 @@ import type {
   LearningGoal, DataPipeline, CodeReviewSession, AppNotification, VisualPrompt,
   MeetingNote, Report, LearningPath, Bookmark, TranslationPair, GlossaryTerm,
   Presentation, FeedEntry, EmailDraft, TimelineSegment, MindMap,
+  PairSession, CustomDashboard, DocComparison, MultiAgentDebateSession, Portfolio,
 } from '@/shared/types'
 
 const db = new Dexie('hchat-desktop') as Dexie & {
@@ -67,6 +68,11 @@ const db = new Dexie('hchat-desktop') as Dexie & {
   emailDrafts: EntityTable<EmailDraft, 'id'>
   timelineSegments: EntityTable<TimelineSegment, 'id'>
   mindMaps: EntityTable<MindMap, 'id'>
+  pairSessions: EntityTable<PairSession, 'id'>
+  customDashboards: EntityTable<CustomDashboard, 'id'>
+  docComparisons: EntityTable<DocComparison, 'id'>
+  multiAgentDebates: EntityTable<MultiAgentDebateSession, 'id'>
+  portfolios: EntityTable<Portfolio, 'id'>
 }
 
 db.version(1).stores({
@@ -294,6 +300,11 @@ db.version(10).stores({
   emailDrafts: 'id, createdAt',
   timelineSegments: 'id, sessionId',
   mindMaps: 'id, updatedAt',
+  pairSessions: 'id, updatedAt',
+  customDashboards: 'id, updatedAt',
+  docComparisons: 'id, createdAt',
+  multiAgentDebates: 'id, status, createdAt',
+  portfolios: 'id, updatedAt',
 })
 
 db.version(6).stores({
@@ -970,5 +981,26 @@ export async function deleteTimelineSegmentFromDb(id: string): Promise<void> { a
 export async function getAllMindMaps(): Promise<MindMap[]> { return db.mindMaps.orderBy('updatedAt').reverse().toArray() }
 export async function putMindMap(m: MindMap): Promise<void> { await db.mindMaps.put(m) }
 export async function deleteMindMapFromDb(id: string): Promise<void> { await db.mindMaps.delete(id) }
+
+// Phase 16 CRUD
+export async function getAllPairSessions(): Promise<PairSession[]> { return db.pairSessions.orderBy('updatedAt').reverse().toArray() }
+export async function putPairSession(s: PairSession): Promise<void> { await db.pairSessions.put(s) }
+export async function deletePairSessionFromDb(id: string): Promise<void> { await db.pairSessions.delete(id) }
+
+export async function getAllCustomDashboards(): Promise<CustomDashboard[]> { return db.customDashboards.orderBy('updatedAt').reverse().toArray() }
+export async function putCustomDashboard(d: CustomDashboard): Promise<void> { await db.customDashboards.put(d) }
+export async function deleteCustomDashboardFromDb(id: string): Promise<void> { await db.customDashboards.delete(id) }
+
+export async function getAllDocComparisons(): Promise<DocComparison[]> { return db.docComparisons.orderBy('createdAt').reverse().toArray() }
+export async function putDocComparison(c: DocComparison): Promise<void> { await db.docComparisons.put(c) }
+export async function deleteDocComparisonFromDb(id: string): Promise<void> { await db.docComparisons.delete(id) }
+
+export async function getAllMultiAgentDebates(): Promise<MultiAgentDebateSession[]> { return db.multiAgentDebates.orderBy('createdAt').reverse().toArray() }
+export async function putMultiAgentDebate(d: MultiAgentDebateSession): Promise<void> { await db.multiAgentDebates.put(d) }
+export async function deleteMultiAgentDebateFromDb(id: string): Promise<void> { await db.multiAgentDebates.delete(id) }
+
+export async function getAllPortfolios(): Promise<Portfolio[]> { return db.portfolios.orderBy('updatedAt').reverse().toArray() }
+export async function putPortfolio(p: Portfolio): Promise<void> { await db.portfolios.put(p) }
+export async function deletePortfolioFromDb(id: string): Promise<void> { await db.portfolios.delete(id) }
 
 export { db }
