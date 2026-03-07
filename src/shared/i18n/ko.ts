@@ -1761,6 +1761,12 @@ const ko = {
   'wiki.title': 'AI 지식 위키', 'wiki.create': '새 페이지', 'wiki.empty': '페이지가 없습니다',
   'playground.title': 'AI 코드 놀이터', 'playground.create': '새 놀이터', 'playground.empty': '놀이터가 없습니다',
   'voiceClone.title': 'AI 보이스 클론', 'voiceClone.create': '새 나레이션', 'voiceClone.empty': '나레이션이 없습니다',
+  // Phase 22
+  'virtualSpace.title': 'AI 가상 공간', 'virtualSpace.create': '새 공간', 'virtualSpace.empty': '공간이 없습니다',
+  'gameScenario.title': 'AI 게임 시나리오', 'gameScenario.create': '새 시나리오', 'gameScenario.empty': '시나리오가 없습니다',
+  'emotionAvatar.title': 'AI 감정 아바타', 'emotionAvatar.create': '새 아바타', 'emotionAvatar.empty': '아바타가 없습니다',
+  'data3d.title': 'AI 3D 시각화', 'data3d.create': '새 씬', 'data3d.empty': '씬이 없습니다',
+  'orchestra.title': 'AI 오케스트라', 'orchestra.create': '새 세션', 'orchestra.empty': '세션이 없습니다',
 } as const
 
 export default ko

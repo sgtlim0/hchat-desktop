@@ -96,7 +96,7 @@ export interface Skill {
   icon: string
 }
 
-export type ViewState = 'home' | 'chat' | 'settings' | 'allChats' | 'projects' | 'projectDetail' | 'quickChat' | 'memory' | 'agentSwarm' | 'schedule' | 'groupChat' | 'promptLibrary' | 'debate' | 'aiTools' | 'imageGen' | 'agent' | 'translate' | 'docWriter' | 'ocr' | 'promptChain' | 'knowledgeBase' | 'workflow' | 'collab' | 'contextManager' | 'insights' | 'plugins' | 'themeBuilder' | 'batchQueue' | 'sessionInsights' | 'cacheControl' | 'auditLog' | 'dashboard' | 'workspace' | 'snippets' | 'apiTester' | 'regexBuilder' | 'dataConverter' | 'diagramEditor' | 'voiceChat' | 'knowledgeGraph' | 'canvas' | 'autoWorkflow' | 'mcpServers' | 'autonomousAgent' | 'dataConnectors' | 'codeInterpreter' | 'mentoring' | 'dataPipeline' | 'codeReview' | 'notificationCenter' | 'visualPrompt' | 'meetingNotes' | 'reportGenerator' | 'learningPath' | 'bookmarks' | 'translationMemory' | 'presentation' | 'summaryFeed' | 'emailAssistant' | 'conversationTimeline' | 'mindMap' | 'pairProgramming' | 'dashboardBuilder' | 'docCompare' | 'multiAgentDebate' | 'portfolio' | 'liveTranslate' | 'docAnalyzer' | 'gamifiedLearning' | 'dataStory' | 'wellbeing' | 'whiteboard' | 'contract' | 'soundscape' | 'tutorialBuilder' | 'habitTracker' | 'travelPlanner' | 'recipe' | 'interviewCoach' | 'finance' | 'readingNote' | 'okr' | 'crm' | 'journal' | 'socialMedia' | 'projectTimeline' | 'videoMeeting' | 'apiMarketplace' | 'wiki' | 'codePlayground' | 'voiceClone'
+export type ViewState = 'home' | 'chat' | 'settings' | 'allChats' | 'projects' | 'projectDetail' | 'quickChat' | 'memory' | 'agentSwarm' | 'schedule' | 'groupChat' | 'promptLibrary' | 'debate' | 'aiTools' | 'imageGen' | 'agent' | 'translate' | 'docWriter' | 'ocr' | 'promptChain' | 'knowledgeBase' | 'workflow' | 'collab' | 'contextManager' | 'insights' | 'plugins' | 'themeBuilder' | 'batchQueue' | 'sessionInsights' | 'cacheControl' | 'auditLog' | 'dashboard' | 'workspace' | 'snippets' | 'apiTester' | 'regexBuilder' | 'dataConverter' | 'diagramEditor' | 'voiceChat' | 'knowledgeGraph' | 'canvas' | 'autoWorkflow' | 'mcpServers' | 'autonomousAgent' | 'dataConnectors' | 'codeInterpreter' | 'mentoring' | 'dataPipeline' | 'codeReview' | 'notificationCenter' | 'visualPrompt' | 'meetingNotes' | 'reportGenerator' | 'learningPath' | 'bookmarks' | 'translationMemory' | 'presentation' | 'summaryFeed' | 'emailAssistant' | 'conversationTimeline' | 'mindMap' | 'pairProgramming' | 'dashboardBuilder' | 'docCompare' | 'multiAgentDebate' | 'portfolio' | 'liveTranslate' | 'docAnalyzer' | 'gamifiedLearning' | 'dataStory' | 'wellbeing' | 'whiteboard' | 'contract' | 'soundscape' | 'tutorialBuilder' | 'habitTracker' | 'travelPlanner' | 'recipe' | 'interviewCoach' | 'finance' | 'readingNote' | 'okr' | 'crm' | 'journal' | 'socialMedia' | 'projectTimeline' | 'videoMeeting' | 'apiMarketplace' | 'wiki' | 'codePlayground' | 'voiceClone' | 'virtualSpace' | 'gameScenario' | 'emotionAvatar' | 'data3d' | 'orchestra'
 
 // Group Chat types
 
@@ -1605,3 +1605,21 @@ export interface CodePlayground { id: string; title: string; tabs: PlaygroundTab
 
 export type VoicePreset = 'anchor' | 'professor' | 'narrator' | 'dj'
 export interface VoiceNarration { id: string; text: string; preset: VoicePreset; pitch: number; rate: number; createdAt: string }
+
+// Phase 22 types
+export interface SpaceObject { id: string; type: 'furniture' | 'decor' | 'wall' | 'text'; x: number; y: number; z: number; label: string; color: string }
+export interface VirtualSpace { id: string; title: string; template: 'office' | 'cafe' | 'gallery' | 'classroom'; objects: SpaceObject[]; createdAt: string; updatedAt: string }
+
+export interface StoryChoice { id: string; text: string; nextNodeId: string }
+export interface StoryNode { id: string; text: string; choices: StoryChoice[]; isEnding: boolean }
+export interface GameScenario { id: string; title: string; genre: string; nodes: StoryNode[]; currentNodeId: string; createdAt: string }
+
+export type AvatarEmotion = 'joy' | 'sad' | 'angry' | 'surprise' | 'neutral'
+export interface AvatarConfig { id: string; name: string; emotion: AvatarEmotion; hairStyle: string; hairColor: string; skinColor: string; outfit: string; createdAt: string }
+
+export interface Data3DPoint { x: number; y: number; z: number; label: string; cluster?: number }
+export interface Data3DScene { id: string; title: string; points: Data3DPoint[]; chartType: '3d-bar' | '3d-scatter' | '3d-pie'; createdAt: string }
+
+export type OrchestraRole = 'researcher' | 'writer' | 'editor' | 'reviewer'
+export interface OrchestraAgent { id: string; name: string; role: OrchestraRole; modelId: string; output: string; status: 'idle' | 'running' | 'done' }
+export interface OrchestraSession { id: string; title: string; goal: string; agents: OrchestraAgent[]; finalOutput: string; status: 'setup' | 'running' | 'merging' | 'completed'; createdAt: string }

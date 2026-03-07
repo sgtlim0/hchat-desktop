@@ -1761,6 +1761,12 @@ const en = {
   'wiki.title': 'AI Knowledge Wiki', 'wiki.create': 'New Page', 'wiki.empty': 'No pages',
   'playground.title': 'AI Code Playground', 'playground.create': 'New Playground', 'playground.empty': 'No playgrounds',
   'voiceClone.title': 'AI Voice Clone', 'voiceClone.create': 'New Narration', 'voiceClone.empty': 'No narrations',
+  // Phase 22
+  'virtualSpace.title': 'AI Virtual Space', 'virtualSpace.create': 'New Space', 'virtualSpace.empty': 'No spaces',
+  'gameScenario.title': 'AI Game Scenario', 'gameScenario.create': 'New Scenario', 'gameScenario.empty': 'No scenarios',
+  'emotionAvatar.title': 'AI Emotion Avatar', 'emotionAvatar.create': 'New Avatar', 'emotionAvatar.empty': 'No avatars',
+  'data3d.title': 'AI 3D Visualization', 'data3d.create': 'New Scene', 'data3d.empty': 'No scenes',
+  'orchestra.title': 'AI Orchestra', 'orchestra.create': 'New Session', 'orchestra.empty': 'No sessions',
 } as const
 
 export default en

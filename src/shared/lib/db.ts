@@ -1149,4 +1149,23 @@ export async function getAllVoiceNarrations(): Promise<VoiceNarration[]> { retur
 export async function putVoiceNarration(_n: VoiceNarration): Promise<void> {}
 export async function deleteVoiceNarrationFromDb(_id: string): Promise<void> {}
 
+
+// Phase 22 CRUD (lightweight)
+import type { VirtualSpace, GameScenario, AvatarConfig, Data3DScene, OrchestraSession } from '@/shared/types'
+export async function getAllVirtualSpaces(): Promise<VirtualSpace[]> { return [] }
+export async function putVirtualSpace(_s: VirtualSpace): Promise<void> {}
+export async function deleteVirtualSpaceFromDb(_id: string): Promise<void> {}
+export async function getAllGameScenarios(): Promise<GameScenario[]> { return [] }
+export async function putGameScenario(_s: GameScenario): Promise<void> {}
+export async function deleteGameScenarioFromDb(_id: string): Promise<void> {}
+export async function getAllAvatarConfigs(): Promise<AvatarConfig[]> { return [] }
+export async function putAvatarConfig(_a: AvatarConfig): Promise<void> {}
+export async function deleteAvatarConfigFromDb(_id: string): Promise<void> {}
+export async function getAllData3DScenes(): Promise<Data3DScene[]> { return [] }
+export async function putData3DScene(_s: Data3DScene): Promise<void> {}
+export async function deleteData3DSceneFromDb(_id: string): Promise<void> {}
+export async function getAllOrchestraSessions(): Promise<OrchestraSession[]> { return [] }
+export async function putOrchestraSession(_s: OrchestraSession): Promise<void> {}
+export async function deleteOrchestraSessionFromDb(_id: string): Promise<void> {}
+
 export { db }

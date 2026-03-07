@@ -72,6 +72,11 @@ const ApiTesterPage = lazy(() => import('@/pages/api-tester/ApiTesterPage').then
 const RegexBuilderPage = lazy(() => import('@/pages/regex-builder/RegexBuilderPage').then((m) => ({ default: m.RegexBuilderPage })))
 const DataConverterPage = lazy(() => import('@/pages/data-converter/DataConverterPage').then((m) => ({ default: m.DataConverterPage })))
 const DiagramEditorPage = lazy(() => import('@/pages/diagram-editor/DiagramEditorPage').then((m) => ({ default: m.DiagramEditorPage })))
+const VirtualSpacePage = lazy(() => import('@/pages/virtual-space/VirtualSpacePage').then((m) => ({ default: m.VirtualSpacePage })))
+const GameScenarioPage = lazy(() => import('@/pages/game-scenario/GameScenarioPage').then((m) => ({ default: m.GameScenarioPage })))
+const EmotionAvatarPage = lazy(() => import('@/pages/emotion-avatar/EmotionAvatarPage').then((m) => ({ default: m.EmotionAvatarPage })))
+const Data3DPage = lazy(() => import('@/pages/data-3d/Data3DPage').then((m) => ({ default: m.Data3DPage })))
+const OrchestraPage = lazy(() => import('@/pages/orchestra/OrchestraPage').then((m) => ({ default: m.OrchestraPage })))
 const VideoMeetingPage = lazy(() => import('@/pages/video-meeting/VideoMeetingPage').then((m) => ({ default: m.VideoMeetingPage })))
 const ApiMarketplacePage = lazy(() => import('@/pages/api-marketplace/ApiMarketplacePage').then((m) => ({ default: m.ApiMarketplacePage })))
 const WikiPageComponent = lazy(() => import('@/pages/wiki/WikiPage').then((m) => ({ default: m.WikiPage })))
@@ -369,6 +374,11 @@ export function MainLayout() {
       return <DiagramEditorPage />
     }
 
+    if (view === 'virtualSpace') { return <VirtualSpacePage /> }
+    if (view === 'gameScenario') { return <GameScenarioPage /> }
+    if (view === 'emotionAvatar') { return <EmotionAvatarPage /> }
+    if (view === 'data3d') { return <Data3DPage /> }
+    if (view === 'orchestra') { return <OrchestraPage /> }
     if (view === 'videoMeeting') { return <VideoMeetingPage /> }
     if (view === 'apiMarketplace') { return <ApiMarketplacePage /> }
     if (view === 'wiki') { return <WikiPageComponent /> }
