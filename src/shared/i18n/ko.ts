@@ -1749,6 +1749,12 @@ const ko = {
   'interview.title': 'AI 인터뷰 코치', 'interview.create': '새 면접', 'interview.empty': '면접이 없습니다', 'interview.jobTitle': '직무', 'interview.score': '점수', 'interview.feedback': '피드백',
   'finance.title': '개인 재무', 'finance.income': '수입', 'finance.expense': '지출', 'finance.budget': '예산', 'finance.savings': '저축', 'finance.addTransaction': '거래 추가', 'finance.empty': '거래가 없습니다',
   'reading.title': 'AI 독서 노트', 'reading.create': '새 책', 'reading.empty': '책이 없습니다', 'reading.author': '저자', 'reading.genre': '장르', 'reading.summary': '요약', 'reading.quotes': '인용구', 'reading.rating': '평점',
+  // Phase 20
+  'okr.title': 'AI OKR 트래커', 'okr.create': '새 목표', 'okr.empty': 'OKR이 없습니다', 'okr.quarter': '분기', 'okr.keyResults': '핵심 결과', 'okr.progress': '진행률',
+  'crm.title': '스마트 CRM', 'crm.create': '새 연락처', 'crm.empty': '연락처가 없습니다', 'crm.interactions': '상호작용', 'crm.score': '관계 점수',
+  'journal.title': 'AI 일기 & 저널', 'journal.create': '오늘의 일기', 'journal.empty': '일기가 없습니다', 'journal.gratitude': '감사', 'journal.question': 'AI 질문',
+  'socialMedia.title': '소셜 미디어 도우미', 'socialMedia.create': '새 게시물', 'socialMedia.empty': '게시물이 없습니다', 'socialMedia.hashtags': '해시태그', 'socialMedia.tone': '톤',
+  'projectTimeline.title': 'AI 프로젝트 타임라인', 'projectTimeline.create': '새 타임라인', 'projectTimeline.empty': '타임라인이 없습니다', 'projectTimeline.milestones': '마일스톤', 'projectTimeline.tasks': '태스크',
 } as const
 
 export default ko

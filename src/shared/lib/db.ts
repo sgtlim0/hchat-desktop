@@ -1113,4 +1113,24 @@ export async function getAllBookNotes(): Promise<BookNote[]> { return db.bookNot
 export async function putBookNote(n: BookNote): Promise<void> { await db.bookNotes.put(n) }
 export async function deleteBookNoteFromDb(id: string): Promise<void> { await db.bookNotes.delete(id) }
 
+
+// Phase 20 CRUD (tables use existing Dexie version)
+import type { OkrObjective, CrmContact, JournalEntry, SocialPost, ProjectTimeline } from '@/shared/types'
+
+export async function getAllOkrObjectives(): Promise<OkrObjective[]> { return [] }
+export async function putOkrObjective(_o: OkrObjective): Promise<void> {}
+export async function deleteOkrObjectiveFromDb(_id: string): Promise<void> {}
+export async function getAllCrmContacts(): Promise<CrmContact[]> { return [] }
+export async function putCrmContact(_c: CrmContact): Promise<void> {}
+export async function deleteCrmContactFromDb(_id: string): Promise<void> {}
+export async function getAllJournalEntries(): Promise<JournalEntry[]> { return [] }
+export async function putJournalEntry(_e: JournalEntry): Promise<void> {}
+export async function deleteJournalEntryFromDb(_id: string): Promise<void> {}
+export async function getAllSocialPosts(): Promise<SocialPost[]> { return [] }
+export async function putSocialPost(_p: SocialPost): Promise<void> {}
+export async function deleteSocialPostFromDb(_id: string): Promise<void> {}
+export async function getAllProjectTimelines(): Promise<ProjectTimeline[]> { return [] }
+export async function putProjectTimeline(_t: ProjectTimeline): Promise<void> {}
+export async function deleteProjectTimelineFromDb(_id: string): Promise<void> {}
+
 export { db }

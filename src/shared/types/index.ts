@@ -96,7 +96,7 @@ export interface Skill {
   icon: string
 }
 
-export type ViewState = 'home' | 'chat' | 'settings' | 'allChats' | 'projects' | 'projectDetail' | 'quickChat' | 'memory' | 'agentSwarm' | 'schedule' | 'groupChat' | 'promptLibrary' | 'debate' | 'aiTools' | 'imageGen' | 'agent' | 'translate' | 'docWriter' | 'ocr' | 'promptChain' | 'knowledgeBase' | 'workflow' | 'collab' | 'contextManager' | 'insights' | 'plugins' | 'themeBuilder' | 'batchQueue' | 'sessionInsights' | 'cacheControl' | 'auditLog' | 'dashboard' | 'workspace' | 'snippets' | 'apiTester' | 'regexBuilder' | 'dataConverter' | 'diagramEditor' | 'voiceChat' | 'knowledgeGraph' | 'canvas' | 'autoWorkflow' | 'mcpServers' | 'autonomousAgent' | 'dataConnectors' | 'codeInterpreter' | 'mentoring' | 'dataPipeline' | 'codeReview' | 'notificationCenter' | 'visualPrompt' | 'meetingNotes' | 'reportGenerator' | 'learningPath' | 'bookmarks' | 'translationMemory' | 'presentation' | 'summaryFeed' | 'emailAssistant' | 'conversationTimeline' | 'mindMap' | 'pairProgramming' | 'dashboardBuilder' | 'docCompare' | 'multiAgentDebate' | 'portfolio' | 'liveTranslate' | 'docAnalyzer' | 'gamifiedLearning' | 'dataStory' | 'wellbeing' | 'whiteboard' | 'contract' | 'soundscape' | 'tutorialBuilder' | 'habitTracker' | 'travelPlanner' | 'recipe' | 'interviewCoach' | 'finance' | 'readingNote'
+export type ViewState = 'home' | 'chat' | 'settings' | 'allChats' | 'projects' | 'projectDetail' | 'quickChat' | 'memory' | 'agentSwarm' | 'schedule' | 'groupChat' | 'promptLibrary' | 'debate' | 'aiTools' | 'imageGen' | 'agent' | 'translate' | 'docWriter' | 'ocr' | 'promptChain' | 'knowledgeBase' | 'workflow' | 'collab' | 'contextManager' | 'insights' | 'plugins' | 'themeBuilder' | 'batchQueue' | 'sessionInsights' | 'cacheControl' | 'auditLog' | 'dashboard' | 'workspace' | 'snippets' | 'apiTester' | 'regexBuilder' | 'dataConverter' | 'diagramEditor' | 'voiceChat' | 'knowledgeGraph' | 'canvas' | 'autoWorkflow' | 'mcpServers' | 'autonomousAgent' | 'dataConnectors' | 'codeInterpreter' | 'mentoring' | 'dataPipeline' | 'codeReview' | 'notificationCenter' | 'visualPrompt' | 'meetingNotes' | 'reportGenerator' | 'learningPath' | 'bookmarks' | 'translationMemory' | 'presentation' | 'summaryFeed' | 'emailAssistant' | 'conversationTimeline' | 'mindMap' | 'pairProgramming' | 'dashboardBuilder' | 'docCompare' | 'multiAgentDebate' | 'portfolio' | 'liveTranslate' | 'docAnalyzer' | 'gamifiedLearning' | 'dataStory' | 'wellbeing' | 'whiteboard' | 'contract' | 'soundscape' | 'tutorialBuilder' | 'habitTracker' | 'travelPlanner' | 'recipe' | 'interviewCoach' | 'finance' | 'readingNote' | 'okr' | 'crm' | 'journal' | 'socialMedia' | 'projectTimeline'
 
 // Group Chat types
 
@@ -1573,3 +1573,20 @@ export interface Budget { id: string; category: string; limit: number; spent: nu
 export interface FinanceReport { id: string; month: string; totalIncome: number; totalExpense: number; savings: number; suggestions: string[]; createdAt: string }
 
 export interface BookNote { id: string; title: string; author: string; genre: string; summary: string; quotes: string[]; rating: number; status: 'reading' | 'completed' | 'wishlist'; createdAt: string; updatedAt: string }
+
+// Phase 20 types
+export interface KeyResult { id: string; title: string; target: number; current: number; unit: string }
+export interface OkrObjective { id: string; title: string; quarter: string; keyResults: KeyResult[]; progress: number; status: 'active' | 'completed' | 'paused'; createdAt: string; updatedAt: string }
+
+export interface CrmContact { id: string; name: string; company: string; email: string; phone: string; tags: string[]; score: number; interactions: CrmInteraction[]; createdAt: string }
+export interface CrmInteraction { id: string; type: 'meeting' | 'email' | 'call' | 'note'; content: string; date: string }
+
+export interface JournalEntry { id: string; date: string; aiQuestion: string; answer: string; gratitude: string[]; mood: string; createdAt: string }
+
+export type SocialPlatform = 'linkedin' | 'twitter' | 'instagram'
+export type PostTone = 'professional' | 'casual' | 'humorous'
+export interface SocialPost { id: string; platform: SocialPlatform; content: string; tone: PostTone; hashtags: string[]; scheduledAt?: string; createdAt: string }
+
+export interface ProjectMilestone { id: string; title: string; date: string; completed: boolean }
+export interface ProjectTask { id: string; title: string; startDate: string; endDate: string; progress: number; dependencies: string[]; assignee: string; milestoneId?: string }
+export interface ProjectTimeline { id: string; title: string; milestones: ProjectMilestone[]; tasks: ProjectTask[]; createdAt: string; updatedAt: string }

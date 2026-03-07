@@ -72,6 +72,11 @@ const ApiTesterPage = lazy(() => import('@/pages/api-tester/ApiTesterPage').then
 const RegexBuilderPage = lazy(() => import('@/pages/regex-builder/RegexBuilderPage').then((m) => ({ default: m.RegexBuilderPage })))
 const DataConverterPage = lazy(() => import('@/pages/data-converter/DataConverterPage').then((m) => ({ default: m.DataConverterPage })))
 const DiagramEditorPage = lazy(() => import('@/pages/diagram-editor/DiagramEditorPage').then((m) => ({ default: m.DiagramEditorPage })))
+const OkrPage = lazy(() => import('@/pages/okr/OkrPage').then((m) => ({ default: m.OkrPage })))
+const CrmPage = lazy(() => import('@/pages/crm/CrmPage').then((m) => ({ default: m.CrmPage })))
+const JournalPage = lazy(() => import('@/pages/journal/JournalPage').then((m) => ({ default: m.JournalPage })))
+const SocialMediaPage = lazy(() => import('@/pages/social-media/SocialMediaPage').then((m) => ({ default: m.SocialMediaPage })))
+const ProjectTimelinePage = lazy(() => import('@/pages/project-timeline/ProjectTimelinePage').then((m) => ({ default: m.ProjectTimelinePage })))
 const TravelPlannerPage = lazy(() => import('@/pages/travel/TravelPlannerPage').then((m) => ({ default: m.TravelPlannerPage })))
 const RecipePage = lazy(() => import('@/pages/recipe/RecipePage').then((m) => ({ default: m.RecipePage })))
 const InterviewCoachPage = lazy(() => import('@/pages/interview-coach/InterviewCoachPage').then((m) => ({ default: m.InterviewCoachPage })))
@@ -359,6 +364,11 @@ export function MainLayout() {
       return <DiagramEditorPage />
     }
 
+    if (view === 'okr') { return <OkrPage /> }
+    if (view === 'crm') { return <CrmPage /> }
+    if (view === 'journal') { return <JournalPage /> }
+    if (view === 'socialMedia') { return <SocialMediaPage /> }
+    if (view === 'projectTimeline') { return <ProjectTimelinePage /> }
     if (view === 'travelPlanner') { return <TravelPlannerPage /> }
     if (view === 'recipe') { return <RecipePage /> }
     if (view === 'interviewCoach') { return <InterviewCoachPage /> }

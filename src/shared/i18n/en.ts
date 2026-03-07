@@ -1749,6 +1749,12 @@ const en = {
   'interview.title': 'AI Interview Coach', 'interview.create': 'New Interview', 'interview.empty': 'No interviews', 'interview.jobTitle': 'Job Title', 'interview.score': 'Score', 'interview.feedback': 'Feedback',
   'finance.title': 'Personal Finance', 'finance.income': 'Income', 'finance.expense': 'Expense', 'finance.budget': 'Budget', 'finance.savings': 'Savings', 'finance.addTransaction': 'Add Transaction', 'finance.empty': 'No transactions',
   'reading.title': 'AI Reading Notes', 'reading.create': 'New Book', 'reading.empty': 'No books', 'reading.author': 'Author', 'reading.genre': 'Genre', 'reading.summary': 'Summary', 'reading.quotes': 'Quotes', 'reading.rating': 'Rating',
+  // Phase 20
+  'okr.title': 'AI OKR Tracker', 'okr.create': 'New Objective', 'okr.empty': 'No OKRs', 'okr.quarter': 'Quarter', 'okr.keyResults': 'Key Results', 'okr.progress': 'Progress',
+  'crm.title': 'Smart CRM', 'crm.create': 'New Contact', 'crm.empty': 'No contacts', 'crm.interactions': 'Interactions', 'crm.score': 'Relationship Score',
+  'journal.title': 'AI Journal', 'journal.create': "Today's Entry", 'journal.empty': 'No entries', 'journal.gratitude': 'Gratitude', 'journal.question': 'AI Question',
+  'socialMedia.title': 'Social Media Helper', 'socialMedia.create': 'New Post', 'socialMedia.empty': 'No posts', 'socialMedia.hashtags': 'Hashtags', 'socialMedia.tone': 'Tone',
+  'projectTimeline.title': 'AI Project Timeline', 'projectTimeline.create': 'New Timeline', 'projectTimeline.empty': 'No timelines', 'projectTimeline.milestones': 'Milestones', 'projectTimeline.tasks': 'Tasks',
 } as const
 
 export default en
