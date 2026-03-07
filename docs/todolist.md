@@ -1,7 +1,7 @@
 # H Chat PWA — TODO List
 
-> ✅ **전체 완료** (Phase 1-10 + 14-15 + P0 보안/성능 + 번들 최적화) | 마지막 업데이트: 2026-03-07
-> 1,334 tests, 101 suites | 커버리지: 75% stmts | 빌드 성공
+> ✅ **전체 완료** (Phase 1-15 전체 + P0 보안/성능 + 번들 최적화) | 마지막 업데이트: 2026-03-07
+> 1,440 tests, 116 suites | 60 stores, 63 pages, 58K+ lines | Vercel 배포 완료
 
 ## 현재 상태 요약
 
@@ -16,7 +16,7 @@
 | IndexedDB 영속성 | ✅ 완료 |
 | i18n (한국어/영어) | ✅ 완료 |
 | PWA (설치/캐시) | ✅ 완료 |
-| 테스트 (Vitest) | ✅ 완료 — 1,334 tests, 101 suites |
+| 테스트 (Vitest) | ✅ 완료 — 1,440 tests, 116 suites |
 | 접근성 (a11y) | ✅ 완료 — focus-trap, skip-to-content, ARIA |
 | 사용량 추적 | ✅ 완료 — 토큰 추정, 비용 대시보드, 일별/주별 차트 |
 | 프롬프트 라이브러리 | ✅ 완료 — CRUD, 변수, 카테고리 |
@@ -196,9 +196,12 @@
 | QW 코드 품질 | 5/5 | 0 | 100% |
 | Phase 14 | 5/5 | 0 | 100% |
 | Phase 10 | 5/5 | 0 | 100% |
+| Phase 11 | 5/5 | 0 | 100% |
+| Phase 12 | 5/5 | 0 | 100% |
+| Phase 13 | 5/5 | 0 | 100% |
 | Phase 15 | 5/5 | 0 | 100% |
 | 번들 최적화 | 2/2 | 0 | 100% |
-| **전체** | **95/95** | **0** | **100%** |
+| **전체** | **105/105** | **0** | **100%** |
 
 > **모든 TODO 항목 완료.** 배포: `modal deploy backend/app.py` + `vercel --prod`
 > Secret 설정: `modal secret create hchat-api-keys OPENAI_API_KEY=sk-... GEMINI_API_KEY=...`
@@ -518,106 +521,77 @@
 
 ---
 
-## ⚪ Phase 12 — 고급 자동화 & 분석 인텔리전스 (예정)
+## ✅ Phase 12 — 고급 자동화 & 분석 인텔리전스 (2026-03-07)
 
-### 12-1. AI 회의록 작성기 (2일)
-- [ ] MeetingNotesPage 신규 페이지
-- [ ] meeting-notes.store.ts Zustand 스토어
-- [ ] 음성/텍스트 입력 → 자동 회의록 생성
-- [ ] 액션 아이템 자동 추출 (담당자, 기한)
-- [ ] 참석자 발언 분석 (발언 비율, 주요 주장)
-- [ ] 회의록 템플릿 (스탠드업/브레인스토밍/의사결정/회고)
-- [ ] 회의록 내보내기 (MD/PDF)
-- [ ] i18n 키 추가 (ko/en)
-
-### 12-2. 스마트 보고서 생성기 (2일)
-- [ ] ReportGeneratorPage 신규 페이지
-- [ ] report-generator.store.ts Zustand 스토어
-- [ ] 데이터/대화 기반 자동 보고서 초안 생성
-- [ ] 차트/그래프 자동 삽입 (SVG 기반)
-- [ ] 템플릿 기반 포맷팅 (주간보고/월간보고/프로젝트보고)
-- [ ] 보고서 버전 관리 + 비교
-- [ ] 내보내기 (MD/PDF/HTML)
-- [ ] i18n 키 추가 (ko/en)
-
-### 12-3. AI 학습 경로 추천 (2일)
-- [ ] LearningPathPage 신규 페이지
-- [ ] learning-path.store.ts Zustand 스토어
-- [ ] 사용 패턴 분석 → 개인화 학습 로드맵 생성
-- [ ] 주제별 퀴즈 자동 생성 (AI 기반)
-- [ ] 학습 진도 추적 (완료율, 이해도 점수)
-- [ ] 학습 리포트 (강점/약점 분석, 추천 자료)
-- [ ] i18n 키 추가 (ko/en)
-
-### 12-4. 대화 북마크 & 하이라이트 (1일)
-- [ ] bookmark.store.ts Zustand 스토어
-- [ ] 메시지 하이라이트 (드래그 선택 → 형광펜 색상)
-- [ ] 북마크 컬렉션 (폴더별 정리)
-- [ ] 태그 기반 북마크 분류
-- [ ] 북마크 검색 연동 (SearchModal 확장)
-- [ ] 북마크 내보내기
-- [ ] i18n 키 추가 (ko/en)
-
-### 12-5. AI 번역 메모리 (TM) (2일)
-- [ ] TranslationMemoryPage 신규 페이지
-- [ ] translation-memory.store.ts Zustand 스토어
-- [ ] 번역 쌍 자동 저장 (원문 ↔ 번역문)
-- [ ] 유사 문장 매칭 (Levenshtein + TF-IDF)
-- [ ] 일관성 점수 (동일 용어 번역 일관성 측정)
-- [ ] 용어집 관리 (도메인별 용어 사전)
-- [ ] 번역 시 TM 자동 참조 (TranslatePage 연동)
-- [ ] i18n 키 추가 (ko/en)
+- [x] AI 회의록 (meeting-notes.store + MeetingNotesPage, 8 tests)
+- [x] 스마트 보고서 (report-generator.store + ReportGeneratorPage, 6 tests)
+- [x] AI 학습 경로 (learning-path.store + LearningPathPage, 7 tests)
+- [x] 북마크 & 하이라이트 (bookmark.store + BookmarkPage, 8 tests)
+- [x] 번역 메모리 (translation-memory.store + TranslationMemoryPage, 8 tests)
 
 ---
 
-## ⚫ Phase 13 — 커뮤니케이션 & 크리에이티브 AI (예정)
+## ✅ Phase 13 — 커뮤니케이션 & 크리에이티브 AI (2026-03-07)
 
-### 13-1. AI 프레젠테이션 생성기 (2일)
-- [ ] PresentationPage 신규 페이지
-- [ ] presentation.store.ts Zustand 스토어
-- [ ] 대화/데이터 기반 슬라이드 자동 생성 (AI 구조화)
-- [ ] Mermaid/SVG 차트 자동 삽입
-- [ ] 발표 노트 자동 생성
-- [ ] HTML 슬라이드쇼 내보내기 (reveal.js 스타일)
-- [ ] 슬라이드 템플릿 (비즈니스/기술/교육/요약)
+- [x] AI 프레젠테이션 (presentation.store + PresentationPage, 7 tests)
+- [x] 스마트 요약 피드 (summary-feed.store + SummaryFeedPage, 6 tests)
+- [x] AI 이메일 어시스턴트 (email-assistant.store + EmailAssistantPage, 6 tests)
+- [x] 대화 타임라인 (conversation-timeline.store + ConversationTimelinePage, 6 tests)
+- [x] AI 마인드맵 (mindmap.store + MindMapPage, 7 tests)
+
+---
+
+## 🟣 Phase 16 — AI 에이전시 & 인터랙티브 인텔리전스 (예정)
+
+> 차세대 AI 에이전시 경험 — 페어 프로그래밍, 대시보드 빌더, 문서 비교, 멀티에이전트, 포트폴리오
+
+### 16-1. AI 페어 프로그래밍 (3일)
+- [ ] PairProgrammingPage 신규 페이지
+- [ ] pair-programming.store.ts Zustand 스토어
+- [ ] 모나코 에디터 통합 (monaco-editor, lazy load)
+- [ ] AI 인라인 코드 제안 (커서 위치 기반 자동완성)
+- [ ] 실시간 디버그 어시스턴트 (에러 감지 → 수정 제안)
+- [ ] 코드 실행 + 결과 인라인 표시
+- [ ] 세션 히스토리 (되돌리기/앞으로)
 - [ ] i18n 키 추가 (ko/en)
 
-### 13-2. 스마트 요약 피드 (1일)
-- [ ] SummaryFeedPage 신규 페이지
-- [ ] summary-feed.store.ts Zustand 스토어
-- [ ] 일간/주간 전체 세션 자동 요약
-- [ ] 핵심 인사이트 추출 (주요 결정, 아이디어, 액션)
-- [ ] 요약 피드 타임라인 UI
-- [ ] 이메일/Slack 전송 연동 (채널 시스템 활용)
+### 16-2. 스마트 대시보드 빌더 (3일)
+- [ ] DashboardBuilderPage 신규 페이지
+- [ ] dashboard-builder.store.ts Zustand 스토어
+- [ ] 드래그앤드롭 위젯 배치 (차트/테이블/KPI/텍스트)
+- [ ] 데이터 바인딩 (CSV/JSON/API 소스 연결)
+- [ ] 실시간 차트 업데이트 (SVG 기반)
+- [ ] 대시보드 공유 링크 생성
+- [ ] 템플릿 갤러리 (매출/마케팅/운영/개인)
 - [ ] i18n 키 추가 (ko/en)
 
-### 13-3. AI 이메일 어시스턴트 (2일)
-- [ ] EmailAssistantPage 신규 페이지
-- [ ] email-assistant.store.ts Zustand 스토어
-- [ ] 이메일 초안 작성 (주제, 수신자, 톤 입력)
-- [ ] 톤/길이 조절 (격식/비격식, 짧게/길게)
-- [ ] 이메일 체인 분석 (붙여넣기 → 핵심 요약)
-- [ ] 회신 초안 자동 생성
-- [ ] 이메일 템플릿 라이브러리
+### 16-3. AI 문서 비교 분석기 (2일)
+- [ ] DocComparePage 신규 페이지
+- [ ] doc-compare.store.ts Zustand 스토어
+- [ ] 문서 2개 사이드바이사이드 diff 뷰
+- [ ] 변경점 AI 요약 (추가/삭제/수정 분류)
+- [ ] 법률/계약서 특화 분석 (위험 조항 감지)
+- [ ] 하이라이트 + 코멘트
 - [ ] i18n 키 추가 (ko/en)
 
-### 13-4. 대화 타임라인 뷰 (1일)
-- [ ] conversation-timeline.store.ts Zustand 스토어
-- [ ] 시각적 대화 히스토리 타임라인
-- [ ] 주제별 구간 자동 분리 (AI 기반)
-- [ ] 타임라인 점프 네비게이션
-- [ ] 구간별 요약 호버 미리보기
-- [ ] AllChatsScreen / ChatPage 연동
+### 16-4. 멀티에이전트 디베이트 (2일)
+- [ ] MultiAgentDebatePage 신규 페이지
+- [ ] multi-agent-debate.store.ts Zustand 스토어
+- [ ] N개 AI 에이전트 동시 토론 (2-5개 모델)
+- [ ] 역할 자동 배정 (찬성/반대/중재/전문가)
+- [ ] 라운드 기반 진행 + 합의 도출 알고리즘
+- [ ] 투표 시스템 (에이전트 간 + 사용자 투표)
+- [ ] 토론 트랜스크립트 내보내기
 - [ ] i18n 키 추가 (ko/en)
 
-### 13-5. AI 마인드맵 생성기 (2일)
-- [ ] MindMapPage 신규 페이지
-- [ ] mindmap.store.ts Zustand 스토어
-- [ ] 대화/문서 기반 마인드맵 자동 생성 (LLM 구조 추출)
-- [ ] Mermaid mindmap 다이어그램 렌더링
-- [ ] 노드 편집/추가/삭제 (인터랙티브)
-- [ ] SVG/PNG 내보내기
-- [ ] 마인드맵 히스토리 관리
+### 16-5. AI 포트폴리오 생성기 (2일)
+- [ ] PortfolioPage 신규 페이지
+- [ ] portfolio.store.ts Zustand 스토어
+- [ ] 프로젝트/경력 데이터 입력 (폼 + AI 보조)
+- [ ] 포트폴리오 사이트 자동 생성 (HTML/CSS)
+- [ ] 테마 커스터마이징 (5가지 테마)
+- [ ] 실시간 미리보기 (sandboxed iframe)
+- [ ] HTML/PDF 내보내기
 - [ ] i18n 키 추가 (ko/en)
 
 ---
