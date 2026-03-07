@@ -1187,4 +1187,24 @@ export async function getAllPhilosophyDialogues(): Promise<PhilosophyDialogue[]>
 export async function putPhilosophyDialogue(_d: PhilosophyDialogue): Promise<void> {}
 export async function deletePhilosophyDialogueFromDb(_id: string): Promise<void> {}
 
+
+// Phase 24 CRUD
+import type { Simulation, SmartContractTemplate, MovieScript, NeuroEntry, NeuroReport, SpaceExploration } from '@/shared/types'
+export async function getAllSimulations(): Promise<Simulation[]> { return [] }
+export async function putSimulation(_s: Simulation): Promise<void> {}
+export async function deleteSimulationFromDb(_id: string): Promise<void> {}
+export async function getAllSmartContracts(): Promise<SmartContractTemplate[]> { return [] }
+export async function putSmartContract(_c: SmartContractTemplate): Promise<void> {}
+export async function deleteSmartContractFromDb(_id: string): Promise<void> {}
+export async function getAllMovieScripts(): Promise<MovieScript[]> { return [] }
+export async function putMovieScript(_s: MovieScript): Promise<void> {}
+export async function deleteMovieScriptFromDb(_id: string): Promise<void> {}
+export async function getAllNeuroEntries(): Promise<NeuroEntry[]> { return [] }
+export async function putNeuroEntry(_e: NeuroEntry): Promise<void> {}
+export async function getAllNeuroReports(): Promise<NeuroReport[]> { return [] }
+export async function putNeuroReport(_r: NeuroReport): Promise<void> {}
+export async function getAllSpaceExplorations(): Promise<SpaceExploration[]> { return [] }
+export async function putSpaceExploration(_e: SpaceExploration): Promise<void> {}
+export async function deleteSpaceExplorationFromDb(_id: string): Promise<void> {}
+
 export { db }

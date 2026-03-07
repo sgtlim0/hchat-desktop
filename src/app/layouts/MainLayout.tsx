@@ -72,6 +72,11 @@ const ApiTesterPage = lazy(() => import('@/pages/api-tester/ApiTesterPage').then
 const RegexBuilderPage = lazy(() => import('@/pages/regex-builder/RegexBuilderPage').then((m) => ({ default: m.RegexBuilderPage })))
 const DataConverterPage = lazy(() => import('@/pages/data-converter/DataConverterPage').then((m) => ({ default: m.DataConverterPage })))
 const DiagramEditorPage = lazy(() => import('@/pages/diagram-editor/DiagramEditorPage').then((m) => ({ default: m.DiagramEditorPage })))
+const SimulationLabPage = lazy(() => import('@/pages/simulation/SimulationLabPage').then((m) => ({ default: m.SimulationLabPage })))
+const SmartContractPage = lazy(() => import('@/pages/smart-contract/SmartContractPage').then((m) => ({ default: m.SmartContractPage })))
+const MovieScriptPage = lazy(() => import('@/pages/movie-script/MovieScriptPage').then((m) => ({ default: m.MovieScriptPage })))
+const NeuroFeedbackPage = lazy(() => import('@/pages/neuro-feedback/NeuroFeedbackPage').then((m) => ({ default: m.NeuroFeedbackPage })))
+const SpaceExplorerPage = lazy(() => import('@/pages/space-explorer/SpaceExplorerPage').then((m) => ({ default: m.SpaceExplorerPage })))
 const DigitalTwinPage = lazy(() => import('@/pages/digital-twin/DigitalTwinPage').then((m) => ({ default: m.DigitalTwinPage })))
 const MusicComposerPage = lazy(() => import('@/pages/music-composer/MusicComposerPage').then((m) => ({ default: m.MusicComposerPage })))
 const DreamSimPage = lazy(() => import('@/pages/dream-sim/DreamSimPage').then((m) => ({ default: m.DreamSimPage })))
@@ -379,6 +384,11 @@ export function MainLayout() {
       return <DiagramEditorPage />
     }
 
+    if (view === 'simulation') { return <SimulationLabPage /> }
+    if (view === 'smartContract') { return <SmartContractPage /> }
+    if (view === 'movieScript') { return <MovieScriptPage /> }
+    if (view === 'neuroFeedback') { return <NeuroFeedbackPage /> }
+    if (view === 'spaceExplorer') { return <SpaceExplorerPage /> }
     if (view === 'digitalTwin') { return <DigitalTwinPage /> }
     if (view === 'musicComposer') { return <MusicComposerPage /> }
     if (view === 'dreamSim') { return <DreamSimPage /> }

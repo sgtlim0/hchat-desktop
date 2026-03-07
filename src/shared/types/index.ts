@@ -96,7 +96,7 @@ export interface Skill {
   icon: string
 }
 
-export type ViewState = 'home' | 'chat' | 'settings' | 'allChats' | 'projects' | 'projectDetail' | 'quickChat' | 'memory' | 'agentSwarm' | 'schedule' | 'groupChat' | 'promptLibrary' | 'debate' | 'aiTools' | 'imageGen' | 'agent' | 'translate' | 'docWriter' | 'ocr' | 'promptChain' | 'knowledgeBase' | 'workflow' | 'collab' | 'contextManager' | 'insights' | 'plugins' | 'themeBuilder' | 'batchQueue' | 'sessionInsights' | 'cacheControl' | 'auditLog' | 'dashboard' | 'workspace' | 'snippets' | 'apiTester' | 'regexBuilder' | 'dataConverter' | 'diagramEditor' | 'voiceChat' | 'knowledgeGraph' | 'canvas' | 'autoWorkflow' | 'mcpServers' | 'autonomousAgent' | 'dataConnectors' | 'codeInterpreter' | 'mentoring' | 'dataPipeline' | 'codeReview' | 'notificationCenter' | 'visualPrompt' | 'meetingNotes' | 'reportGenerator' | 'learningPath' | 'bookmarks' | 'translationMemory' | 'presentation' | 'summaryFeed' | 'emailAssistant' | 'conversationTimeline' | 'mindMap' | 'pairProgramming' | 'dashboardBuilder' | 'docCompare' | 'multiAgentDebate' | 'portfolio' | 'liveTranslate' | 'docAnalyzer' | 'gamifiedLearning' | 'dataStory' | 'wellbeing' | 'whiteboard' | 'contract' | 'soundscape' | 'tutorialBuilder' | 'habitTracker' | 'travelPlanner' | 'recipe' | 'interviewCoach' | 'finance' | 'readingNote' | 'okr' | 'crm' | 'journal' | 'socialMedia' | 'projectTimeline' | 'videoMeeting' | 'apiMarketplace' | 'wiki' | 'codePlayground' | 'voiceClone' | 'virtualSpace' | 'gameScenario' | 'emotionAvatar' | 'data3d' | 'orchestra' | 'digitalTwin' | 'musicComposer' | 'dreamSim' | 'quantumViz' | 'philosopher'
+export type ViewState = 'home' | 'chat' | 'settings' | 'allChats' | 'projects' | 'projectDetail' | 'quickChat' | 'memory' | 'agentSwarm' | 'schedule' | 'groupChat' | 'promptLibrary' | 'debate' | 'aiTools' | 'imageGen' | 'agent' | 'translate' | 'docWriter' | 'ocr' | 'promptChain' | 'knowledgeBase' | 'workflow' | 'collab' | 'contextManager' | 'insights' | 'plugins' | 'themeBuilder' | 'batchQueue' | 'sessionInsights' | 'cacheControl' | 'auditLog' | 'dashboard' | 'workspace' | 'snippets' | 'apiTester' | 'regexBuilder' | 'dataConverter' | 'diagramEditor' | 'voiceChat' | 'knowledgeGraph' | 'canvas' | 'autoWorkflow' | 'mcpServers' | 'autonomousAgent' | 'dataConnectors' | 'codeInterpreter' | 'mentoring' | 'dataPipeline' | 'codeReview' | 'notificationCenter' | 'visualPrompt' | 'meetingNotes' | 'reportGenerator' | 'learningPath' | 'bookmarks' | 'translationMemory' | 'presentation' | 'summaryFeed' | 'emailAssistant' | 'conversationTimeline' | 'mindMap' | 'pairProgramming' | 'dashboardBuilder' | 'docCompare' | 'multiAgentDebate' | 'portfolio' | 'liveTranslate' | 'docAnalyzer' | 'gamifiedLearning' | 'dataStory' | 'wellbeing' | 'whiteboard' | 'contract' | 'soundscape' | 'tutorialBuilder' | 'habitTracker' | 'travelPlanner' | 'recipe' | 'interviewCoach' | 'finance' | 'readingNote' | 'okr' | 'crm' | 'journal' | 'socialMedia' | 'projectTimeline' | 'videoMeeting' | 'apiMarketplace' | 'wiki' | 'codePlayground' | 'voiceClone' | 'virtualSpace' | 'gameScenario' | 'emotionAvatar' | 'data3d' | 'orchestra' | 'digitalTwin' | 'musicComposer' | 'dreamSim' | 'quantumViz' | 'philosopher' | 'simulation' | 'smartContract' | 'movieScript' | 'neuroFeedback' | 'spaceExplorer'
 
 // Group Chat types
 
@@ -1639,3 +1639,21 @@ export interface QuantumDataset { id: string; title: string; dimensions: number;
 
 export type PhilosophyTopic = 'ethics' | 'epistemology' | 'metaphysics' | 'logic' | 'aesthetics'
 export interface PhilosophyDialogue { id: string; topic: PhilosophyTopic; messages: { role: 'user' | 'socrates'; content: string }[]; experiment?: string; createdAt: string }
+
+// Phase 24 types
+export interface SimParam { id: string; name: string; value: number; min: number; max: number; step: number }
+export interface SimResult { tick: number; values: Record<string, number> }
+export interface Simulation { id: string; title: string; type: 'physics' | 'economy' | 'society'; params: SimParam[]; results: SimResult[]; isRunning: boolean; createdAt: string }
+
+export interface SmartContractTemplate { id: string; name: string; standard: 'ERC-20' | 'ERC-721' | 'ERC-1155' | 'custom'; code: string; vulnerabilities: string[]; gasEstimate: number; createdAt: string }
+
+export interface MovieCharacter { id: string; name: string; role: string; arc: string }
+export interface MovieScene { id: string; act: 1 | 2 | 3; title: string; description: string; dialogue: string; order: number }
+export interface MovieScript { id: string; title: string; genre: string; characters: MovieCharacter[]; scenes: MovieScene[]; createdAt: string; updatedAt: string }
+
+export interface NeuroEntry { id: string; timestamp: string; focus: number; stress: number; energy: number; note: string }
+export interface NeuroReport { id: string; period: string; peakHours: string[]; avgFocus: number; avgStress: number; suggestions: string[]; createdAt: string }
+
+export interface CelestialBody { id: string; name: string; type: 'star' | 'planet' | 'moon' | 'asteroid'; description: string; distance: number; magnitude: number }
+export interface SpaceQuiz { id: string; question: string; options: string[]; correctIndex: number; userAnswer?: number }
+export interface SpaceExploration { id: string; title: string; bodies: CelestialBody[]; quizzes: SpaceQuiz[]; score: number; createdAt: string }

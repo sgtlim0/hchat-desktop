@@ -1773,6 +1773,12 @@ const ko = {
   'dreamSim.title': 'AI 드림 시뮬레이터', 'dreamSim.create': '새 시나리오', 'dreamSim.empty': '시나리오가 없습니다',
   'quantumViz.title': 'AI 양자 시각화', 'quantumViz.create': '새 데이터셋', 'quantumViz.empty': '데이터셋이 없습니다',
   'philosopher.title': 'AI 철학자', 'philosopher.create': '새 대화', 'philosopher.empty': '대화가 없습니다',
+  // Phase 24
+  'simulation.title': 'AI 시뮬레이션 랩', 'simulation.create': '새 시뮬레이션', 'simulation.empty': '시뮬레이션이 없습니다',
+  'smartContract.title': '스마트 컨트랙트', 'smartContract.create': '새 컨트랙트', 'smartContract.empty': '컨트랙트가 없습니다',
+  'movieScript.title': 'AI 영화 시나리오', 'movieScript.create': '새 시나리오', 'movieScript.empty': '시나리오가 없습니다',
+  'neuroFeedback.title': '뉴로 피드백', 'neuroFeedback.create': '기록 추가', 'neuroFeedback.empty': '기록이 없습니다',
+  'spaceExplorer.title': 'AI 우주 탐험가', 'spaceExplorer.create': '새 탐험', 'spaceExplorer.empty': '탐험이 없습니다',
 } as const
 
 export default ko

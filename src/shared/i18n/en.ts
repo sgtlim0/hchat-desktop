@@ -1773,6 +1773,12 @@ const en = {
   'dreamSim.title': 'AI Dream Simulator', 'dreamSim.create': 'New Scenario', 'dreamSim.empty': 'No scenarios',
   'quantumViz.title': 'AI Quantum Viz', 'quantumViz.create': 'New Dataset', 'quantumViz.empty': 'No datasets',
   'philosopher.title': 'AI Philosopher', 'philosopher.create': 'New Dialogue', 'philosopher.empty': 'No dialogues',
+  // Phase 24
+  'simulation.title': 'AI Simulation Lab', 'simulation.create': 'New Simulation', 'simulation.empty': 'No simulations',
+  'smartContract.title': 'Smart Contracts', 'smartContract.create': 'New Contract', 'smartContract.empty': 'No contracts',
+  'movieScript.title': 'AI Movie Script', 'movieScript.create': 'New Script', 'movieScript.empty': 'No scripts',
+  'neuroFeedback.title': 'Neuro Feedback', 'neuroFeedback.create': 'Add Entry', 'neuroFeedback.empty': 'No entries',
+  'spaceExplorer.title': 'AI Space Explorer', 'spaceExplorer.create': 'New Exploration', 'spaceExplorer.empty': 'No explorations',
 } as const
 
 export default en
