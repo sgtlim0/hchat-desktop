@@ -96,7 +96,7 @@ export interface Skill {
   icon: string
 }
 
-export type ViewState = 'home' | 'chat' | 'settings' | 'allChats' | 'projects' | 'projectDetail' | 'quickChat' | 'memory' | 'agentSwarm' | 'schedule' | 'groupChat' | 'promptLibrary' | 'debate' | 'aiTools' | 'imageGen' | 'agent' | 'translate' | 'docWriter' | 'ocr' | 'promptChain' | 'knowledgeBase' | 'workflow' | 'collab' | 'contextManager' | 'insights' | 'plugins' | 'themeBuilder' | 'batchQueue' | 'sessionInsights' | 'cacheControl' | 'auditLog' | 'dashboard' | 'workspace' | 'snippets' | 'apiTester' | 'regexBuilder' | 'dataConverter' | 'diagramEditor' | 'voiceChat' | 'knowledgeGraph' | 'canvas' | 'autoWorkflow' | 'mcpServers' | 'autonomousAgent' | 'dataConnectors' | 'codeInterpreter' | 'mentoring' | 'dataPipeline' | 'codeReview' | 'notificationCenter' | 'visualPrompt' | 'meetingNotes' | 'reportGenerator' | 'learningPath' | 'bookmarks' | 'translationMemory' | 'presentation' | 'summaryFeed' | 'emailAssistant' | 'conversationTimeline' | 'mindMap' | 'pairProgramming' | 'dashboardBuilder' | 'docCompare' | 'multiAgentDebate' | 'portfolio' | 'liveTranslate' | 'docAnalyzer' | 'gamifiedLearning' | 'dataStory' | 'wellbeing' | 'whiteboard' | 'contract' | 'soundscape' | 'tutorialBuilder' | 'habitTracker' | 'travelPlanner' | 'recipe' | 'interviewCoach' | 'finance' | 'readingNote' | 'okr' | 'crm' | 'journal' | 'socialMedia' | 'projectTimeline'
+export type ViewState = 'home' | 'chat' | 'settings' | 'allChats' | 'projects' | 'projectDetail' | 'quickChat' | 'memory' | 'agentSwarm' | 'schedule' | 'groupChat' | 'promptLibrary' | 'debate' | 'aiTools' | 'imageGen' | 'agent' | 'translate' | 'docWriter' | 'ocr' | 'promptChain' | 'knowledgeBase' | 'workflow' | 'collab' | 'contextManager' | 'insights' | 'plugins' | 'themeBuilder' | 'batchQueue' | 'sessionInsights' | 'cacheControl' | 'auditLog' | 'dashboard' | 'workspace' | 'snippets' | 'apiTester' | 'regexBuilder' | 'dataConverter' | 'diagramEditor' | 'voiceChat' | 'knowledgeGraph' | 'canvas' | 'autoWorkflow' | 'mcpServers' | 'autonomousAgent' | 'dataConnectors' | 'codeInterpreter' | 'mentoring' | 'dataPipeline' | 'codeReview' | 'notificationCenter' | 'visualPrompt' | 'meetingNotes' | 'reportGenerator' | 'learningPath' | 'bookmarks' | 'translationMemory' | 'presentation' | 'summaryFeed' | 'emailAssistant' | 'conversationTimeline' | 'mindMap' | 'pairProgramming' | 'dashboardBuilder' | 'docCompare' | 'multiAgentDebate' | 'portfolio' | 'liveTranslate' | 'docAnalyzer' | 'gamifiedLearning' | 'dataStory' | 'wellbeing' | 'whiteboard' | 'contract' | 'soundscape' | 'tutorialBuilder' | 'habitTracker' | 'travelPlanner' | 'recipe' | 'interviewCoach' | 'finance' | 'readingNote' | 'okr' | 'crm' | 'journal' | 'socialMedia' | 'projectTimeline' | 'videoMeeting' | 'apiMarketplace' | 'wiki' | 'codePlayground' | 'voiceClone'
 
 // Group Chat types
 
@@ -1590,3 +1590,18 @@ export interface SocialPost { id: string; platform: SocialPlatform; content: str
 export interface ProjectMilestone { id: string; title: string; date: string; completed: boolean }
 export interface ProjectTask { id: string; title: string; startDate: string; endDate: string; progress: number; dependencies: string[]; assignee: string; milestoneId?: string }
 export interface ProjectTimeline { id: string; title: string; milestones: ProjectMilestone[]; tasks: ProjectTask[]; createdAt: string; updatedAt: string }
+
+// Phase 21 types
+export interface MeetingTranscript { id: string; speaker: string; text: string; timestamp: string }
+export interface VideoMeeting { id: string; title: string; transcripts: MeetingTranscript[]; summary: string; actionItems: string[]; isRecording: boolean; createdAt: string }
+
+export interface AiModel { id: string; name: string; provider: string; category: string; speed: number; quality: number; costPer1k: number; endpoint?: string }
+export interface ModelBenchmark { modelId: string; latency: number; tokensPerSec: number; score: number }
+
+export interface WikiPage { id: string; title: string; content: string; category: string; linkedPages: string[]; version: number; tags: string[]; createdAt: string; updatedAt: string }
+
+export interface PlaygroundTab { id: string; language: 'html' | 'css' | 'javascript'; code: string }
+export interface CodePlayground { id: string; title: string; tabs: PlaygroundTab[]; previewHtml: string; shareUrl?: string; createdAt: string; updatedAt: string }
+
+export type VoicePreset = 'anchor' | 'professor' | 'narrator' | 'dj'
+export interface VoiceNarration { id: string; text: string; preset: VoicePreset; pitch: number; rate: number; createdAt: string }

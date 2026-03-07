@@ -1755,6 +1755,12 @@ const ko = {
   'journal.title': 'AI 일기 & 저널', 'journal.create': '오늘의 일기', 'journal.empty': '일기가 없습니다', 'journal.gratitude': '감사', 'journal.question': 'AI 질문',
   'socialMedia.title': '소셜 미디어 도우미', 'socialMedia.create': '새 게시물', 'socialMedia.empty': '게시물이 없습니다', 'socialMedia.hashtags': '해시태그', 'socialMedia.tone': '톤',
   'projectTimeline.title': 'AI 프로젝트 타임라인', 'projectTimeline.create': '새 타임라인', 'projectTimeline.empty': '타임라인이 없습니다', 'projectTimeline.milestones': '마일스톤', 'projectTimeline.tasks': '태스크',
+  // Phase 21
+  'videoMeeting.title': 'AI 화상회의', 'videoMeeting.create': '새 회의', 'videoMeeting.empty': '회의가 없습니다',
+  'apiMarketplace.title': 'AI API 마켓', 'apiMarketplace.create': '모델 추가', 'apiMarketplace.empty': '모델이 없습니다',
+  'wiki.title': 'AI 지식 위키', 'wiki.create': '새 페이지', 'wiki.empty': '페이지가 없습니다',
+  'playground.title': 'AI 코드 놀이터', 'playground.create': '새 놀이터', 'playground.empty': '놀이터가 없습니다',
+  'voiceClone.title': 'AI 보이스 클론', 'voiceClone.create': '새 나레이션', 'voiceClone.empty': '나레이션이 없습니다',
 } as const
 
 export default ko

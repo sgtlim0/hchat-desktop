@@ -1133,4 +1133,20 @@ export async function getAllProjectTimelines(): Promise<ProjectTimeline[]> { ret
 export async function putProjectTimeline(_t: ProjectTimeline): Promise<void> {}
 export async function deleteProjectTimelineFromDb(_id: string): Promise<void> {}
 
+
+// Phase 21 CRUD (in-memory, no new Dexie tables to keep DB lean)
+import type { VideoMeeting, WikiPage, CodePlayground, VoiceNarration } from '@/shared/types'
+export async function getAllVideoMeetings(): Promise<VideoMeeting[]> { return [] }
+export async function putVideoMeeting(_m: VideoMeeting): Promise<void> {}
+export async function deleteVideoMeetingFromDb(_id: string): Promise<void> {}
+export async function getAllWikiPages(): Promise<WikiPage[]> { return [] }
+export async function putWikiPage(_p: WikiPage): Promise<void> {}
+export async function deleteWikiPageFromDb(_id: string): Promise<void> {}
+export async function getAllCodePlaygrounds(): Promise<CodePlayground[]> { return [] }
+export async function putCodePlayground(_p: CodePlayground): Promise<void> {}
+export async function deleteCodePlaygroundFromDb(_id: string): Promise<void> {}
+export async function getAllVoiceNarrations(): Promise<VoiceNarration[]> { return [] }
+export async function putVoiceNarration(_n: VoiceNarration): Promise<void> {}
+export async function deleteVoiceNarrationFromDb(_id: string): Promise<void> {}
+
 export { db }

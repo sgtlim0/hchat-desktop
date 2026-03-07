@@ -1755,6 +1755,12 @@ const en = {
   'journal.title': 'AI Journal', 'journal.create': "Today's Entry", 'journal.empty': 'No entries', 'journal.gratitude': 'Gratitude', 'journal.question': 'AI Question',
   'socialMedia.title': 'Social Media Helper', 'socialMedia.create': 'New Post', 'socialMedia.empty': 'No posts', 'socialMedia.hashtags': 'Hashtags', 'socialMedia.tone': 'Tone',
   'projectTimeline.title': 'AI Project Timeline', 'projectTimeline.create': 'New Timeline', 'projectTimeline.empty': 'No timelines', 'projectTimeline.milestones': 'Milestones', 'projectTimeline.tasks': 'Tasks',
+  // Phase 21
+  'videoMeeting.title': 'AI Video Meeting', 'videoMeeting.create': 'New Meeting', 'videoMeeting.empty': 'No meetings',
+  'apiMarketplace.title': 'AI API Market', 'apiMarketplace.create': 'Add Model', 'apiMarketplace.empty': 'No models',
+  'wiki.title': 'AI Knowledge Wiki', 'wiki.create': 'New Page', 'wiki.empty': 'No pages',
+  'playground.title': 'AI Code Playground', 'playground.create': 'New Playground', 'playground.empty': 'No playgrounds',
+  'voiceClone.title': 'AI Voice Clone', 'voiceClone.create': 'New Narration', 'voiceClone.empty': 'No narrations',
 } as const
 
 export default en

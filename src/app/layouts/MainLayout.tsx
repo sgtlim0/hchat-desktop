@@ -72,6 +72,11 @@ const ApiTesterPage = lazy(() => import('@/pages/api-tester/ApiTesterPage').then
 const RegexBuilderPage = lazy(() => import('@/pages/regex-builder/RegexBuilderPage').then((m) => ({ default: m.RegexBuilderPage })))
 const DataConverterPage = lazy(() => import('@/pages/data-converter/DataConverterPage').then((m) => ({ default: m.DataConverterPage })))
 const DiagramEditorPage = lazy(() => import('@/pages/diagram-editor/DiagramEditorPage').then((m) => ({ default: m.DiagramEditorPage })))
+const VideoMeetingPage = lazy(() => import('@/pages/video-meeting/VideoMeetingPage').then((m) => ({ default: m.VideoMeetingPage })))
+const ApiMarketplacePage = lazy(() => import('@/pages/api-marketplace/ApiMarketplacePage').then((m) => ({ default: m.ApiMarketplacePage })))
+const WikiPageComponent = lazy(() => import('@/pages/wiki/WikiPage').then((m) => ({ default: m.WikiPage })))
+const CodePlaygroundPage = lazy(() => import('@/pages/code-playground/CodePlaygroundPage').then((m) => ({ default: m.CodePlaygroundPage })))
+const VoiceClonePage = lazy(() => import('@/pages/voice-clone/VoiceClonePage').then((m) => ({ default: m.VoiceClonePage })))
 const OkrPage = lazy(() => import('@/pages/okr/OkrPage').then((m) => ({ default: m.OkrPage })))
 const CrmPage = lazy(() => import('@/pages/crm/CrmPage').then((m) => ({ default: m.CrmPage })))
 const JournalPage = lazy(() => import('@/pages/journal/JournalPage').then((m) => ({ default: m.JournalPage })))
@@ -364,6 +369,11 @@ export function MainLayout() {
       return <DiagramEditorPage />
     }
 
+    if (view === 'videoMeeting') { return <VideoMeetingPage /> }
+    if (view === 'apiMarketplace') { return <ApiMarketplacePage /> }
+    if (view === 'wiki') { return <WikiPageComponent /> }
+    if (view === 'codePlayground') { return <CodePlaygroundPage /> }
+    if (view === 'voiceClone') { return <VoiceClonePage /> }
     if (view === 'okr') { return <OkrPage /> }
     if (view === 'crm') { return <CrmPage /> }
     if (view === 'journal') { return <JournalPage /> }
