@@ -1,8 +1,10 @@
 # H Chat Desktop
 
-AI 모델(Claude, GPT, Gemini)과 대화하는 Progressive Web App. 멀티 프로바이더, 실시간 스트리밍, 80개 AI 기능, 65개 스토어, 68개 페이지, 로컬 저장, PWA 지원.
+AI 모델(Claude, GPT, Gemini)과 대화하는 Progressive Web App. 95개 AI 기능, 80개 스토어, 87개 페이지. 멀티 프로바이더, 실시간 스트리밍, 로컬 저장, PWA 지원.
 
-**Phase 1-19 완료** (95개 기능) | **67K 코드** | **80 스토어 · 87 페이지** | **1,556 tests** | [**Live Demo**](https://hchat-desktop.vercel.app)
+**Phase 1-19 완료** (95 기능) | **67K 코드 · 89 커밋** | **80 스토어 · 87 페이지** | **1,556 tests / 136 suites** | [**Live Demo**](https://hchat-desktop.vercel.app)
+
+> 7일 만에 67K줄, 95개 기능, 80개 스토어를 구현한 AI 채팅 앱
 
 ---
 
@@ -883,8 +885,8 @@ Pencil MCP를 통한 28개 프레임 설계:
 | 문서 | 내용 |
 |------|------|
 | `CLAUDE.md` | 아키텍처, 커맨드, 배포 가이드 |
-| `docs/todolist.md` | 상세 TODO 목록 (Phase 1-19 완료 + Phase 20 기획) |
-| `docs/roadmap.md` | 향후 로드맵 (Phase 20 기획) |
+| `docs/todolist.md` | 상세 TODO 목록 (Phase 1-19 완료 + Phase 20-21 기획) |
+| `docs/roadmap.md` | 향후 로드맵 (Phase 20-21 기획) |
 | `docs/v2-implementation-plan.md` | v2-extension 이식 계획 |
 | `docs/hchat-implementation-plan.md` | H Chat 이식 계획 |
 | `docs/hchat-screenshot-analysis.md` | H Chat UI 심층 분석 |
@@ -984,6 +986,16 @@ Pencil MCP를 통한 28개 프레임 설계:
 | **AI 일기 & 저널** | 매일 AI 질문, 감사 일기, 감정 분석, 성장 추적 | 2일 | 중간 |
 | **소셜 미디어 도우미** | 게시물 초안 생성, 해시태그 추천, 최적 게시 시간, 톤 조절 | 2일 | 중간 |
 | **AI 프로젝트 타임라인** | 간트 차트, 마일스톤, 의존성 관리, AI 일정 최적화 | 3일 | 높음 |
+
+### Phase 21: AI 엔터프라이즈 플랫폼 & 차세대 협업 (📋 기획)
+
+| 기능 | 설명 | 공수 | 임팩트 |
+|------|------|------|--------|
+| **AI 화상회의 어시스턴트** | 실시간 트랜스크립트, AI 요약, 액션 아이템 자동 추출 | 3일 | 높음 |
+| **AI API 마켓플레이스** | 서드파티 모델 마켓, 벤치마크 비교, 원클릭 전환 | 3일 | 높음 |
+| **AI 지식 위키** | 위키 CRUD, AI 크로스 링크, 버전 히스토리, 전문 검색 | 2일 | 높음 |
+| **AI 코드 놀이터** | 멀티탭 에디터 (HTML/CSS/JS), 실시간 미리보기, 공유 링크 | 2일 | 중간 |
+| **AI 보이스 클론 & 나레이션** | 커스텀 보이스, 프리셋 캐릭터, 팟캐스트 대화 생성 | 2일 | 중간 |
 
 ---
 

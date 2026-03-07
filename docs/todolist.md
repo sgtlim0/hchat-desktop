@@ -722,6 +722,46 @@
 
 ---
 
+## 🟣 Phase 21 — AI 엔터프라이즈 플랫폼 & 차세대 협업 (예정)
+
+> 엔터프라이즈 협업 + 차세대 AI 경험 — 화상회의, API 마켓, 지식 위키, 코드 놀이터, 보이스 클론
+
+### 21-1. AI 화상회의 어시스턴트 (3일)
+- [ ] VideoMeetingPage + video-meeting.store.ts
+- [ ] 실시간 회의 트랜스크립트 (Web Speech API)
+- [ ] AI 실시간 요약 (발언자별 키포인트)
+- [ ] 액션 아이템 자동 추출 + 슬랙 전송
+- [ ] 회의 녹화 → AI 하이라이트 클립 생성
+
+### 21-2. AI API 마켓플레이스 (3일)
+- [ ] ApiMarketplacePage + api-marketplace.store.ts
+- [ ] 서드파티 AI 모델 마켓 (Hugging Face, Replicate 연동)
+- [ ] 모델 벤치마크 비교 (속도/품질/비용)
+- [ ] 원클릭 모델 전환, 커스텀 모델 엔드포인트 등록
+
+### 21-3. AI 지식 위키 (2일)
+- [ ] WikiPage + wiki.store.ts
+- [ ] 위키 페이지 CRUD (마크다운, 링크, 카테고리)
+- [ ] AI 자동 크로스 링크 (관련 페이지 자동 연결)
+- [ ] 버전 히스토리 + diff 비교
+- [ ] 전문 검색 (전체 텍스트 + 태그)
+
+### 21-4. AI 코드 놀이터 (2일)
+- [ ] CodePlaygroundPage + playground.store.ts
+- [ ] 멀티탭 코드 에디터 (HTML/CSS/JS 분리)
+- [ ] 실시간 미리보기 (sandboxed iframe)
+- [ ] AI 코드 자동 완성 + 에러 수정
+- [ ] 스니펫 공유 링크 생성
+
+### 21-5. AI 보이스 클론 & 나레이션 (2일)
+- [ ] VoiceClonePage + voice-clone.store.ts
+- [ ] 텍스트 → 커스텀 보이스 나레이션 (Web Speech + 피치/속도 조절)
+- [ ] 프리셋 보이스 캐릭터 (뉴스앵커/교수/내레이터/DJ)
+- [ ] 오디오 내보내기 (WAV)
+- [ ] 팟캐스트 스타일 대화 생성 (2인 보이스)
+
+---
+
 ## 🔶 Quick Wins — 코드 품질 & 인프라 (예정)
 
 > Phase 기능과 별도로 진행 가능한 기술 부채 해소 및 인프라 개선 항목
