@@ -1819,6 +1819,14 @@ const en = {
   'sync.pending': 'Pending',
   'sync.lastSync': 'Last sync',
   'sync.offlineTooltip': 'Offline - will sync when reconnected',
+  // Phase 42: Keyboard Shortcuts
+  'shortcuts.title': 'Keyboard Shortcuts',
+  'shortcuts.search': 'Open search',
+  'shortcuts.sidebar': 'Toggle sidebar',
+  'shortcuts.settings': 'Open settings',
+  'shortcuts.copilot': 'Toggle copilot',
+  'shortcuts.close': 'Close / Cancel',
+  'shortcuts.hint': 'Press ⌘ ? to open this help',
 } as const
 
 export default en

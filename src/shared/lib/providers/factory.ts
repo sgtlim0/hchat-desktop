@@ -4,12 +4,26 @@ import { MODELS } from '../../constants'
 import { streamChat } from '../bedrock-client'
 import { streamOpenAI } from './openai'
 import { streamGemini } from './gemini'
+import { getRateLimiter } from '../rate-limiter'
 
 export async function* createStream(
   config: ProviderConfig,
   params: StreamParams
 ): AsyncGenerator<ChatStreamEvent> {
   try {
+    // Check rate limit before making API call
+    const rateLimiter = getRateLimiter(config.provider)
+    const canProceed = await rateLimiter.acquire()
+
+    if (!canProceed) {
+      const waitTime = rateLimiter.getWaitTime()
+      yield {
+        type: 'error',
+        error: `Rate limit exceeded. Please wait ${Math.ceil(waitTime / 1000)} seconds before trying again.`,
+      }
+      return
+    }
+
     switch (config.provider) {
       case 'bedrock': {
         if (!config.credentials) {

@@ -1819,6 +1819,14 @@ const ko = {
   'sync.pending': '대기 중',
   'sync.lastSync': '마지막 동기화',
   'sync.offlineTooltip': '오프라인 - 재연결 시 동기화됩니다',
+  // Phase 42: Keyboard Shortcuts
+  'shortcuts.title': '키보드 단축키',
+  'shortcuts.search': '검색 열기',
+  'shortcuts.sidebar': '사이드바 토글',
+  'shortcuts.settings': '설정 열기',
+  'shortcuts.copilot': '코파일럿 토글',
+  'shortcuts.close': '닫기 / 취소',
+  'shortcuts.hint': '⌘ ? 를 눌러 이 도움말을 열 수 있습니다',
 } as const
 
 export default ko

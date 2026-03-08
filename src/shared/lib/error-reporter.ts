@@ -1,14 +1,17 @@
+import type { ViewState } from '@/shared/types'
+import { useSessionStore } from '@/entities/session/session.store'
+
 export interface ErrorReport {
   id: string
   message: string
   stack?: string
-  severity: 'low' | 'medium' | 'high' | 'critical'
-  timestamp: string
+  view: ViewState          // current ViewState
+  sessionId?: string        // current session
+  timestamp: string         // ISO string
   userAgent: string
-  context?: Record<string, unknown>
+  severity: 'low' | 'medium' | 'high' | 'critical'
+  context?: Record<string, unknown>  // arbitrary metadata
 }
-
-const MAX_REPORTS = 100
 
 function detectSeverity(error: Error): ErrorReport['severity'] {
   if (error instanceof TypeError || error instanceof ReferenceError) return 'high'
@@ -18,39 +21,45 @@ function detectSeverity(error: Error): ErrorReport['severity'] {
 
 class ErrorReporter {
   private reports: ErrorReport[] = []
+  private maxReports = 100  // FIFO
 
   report(
     error: Error,
     severity?: ErrorReport['severity'],
     context?: Record<string, unknown>,
-  ): ErrorReport {
+  ): void {
+    // Auto-capture view and sessionId from Zustand stores
+    const state = useSessionStore.getState()
+    const view = state.view
+    const sessionId = state.currentSessionId || undefined
+
     const report: ErrorReport = {
       id: `err-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
       message: error.message,
       stack: error.stack,
-      severity: severity ?? detectSeverity(error),
+      view,
+      sessionId,
       timestamp: new Date().toISOString(),
       userAgent: typeof navigator !== 'undefined' ? navigator.userAgent : 'unknown',
+      severity: severity ?? detectSeverity(error),
       context,
     }
 
-    this.reports = [report, ...this.reports].slice(0, MAX_REPORTS)
-    return report
+    // Immutable update with FIFO eviction
+    this.reports = [...this.reports, report].slice(-this.maxReports)
   }
 
-  getReports(): readonly ErrorReport[] {
-    return this.reports
+  getReports(): ErrorReport[] {
+    // Return a copy to preserve immutability
+    return [...this.reports]
   }
 
   getReportCount(): number {
     return this.reports.length
   }
 
-  getReportsBySeverity(severity: ErrorReport['severity']): readonly ErrorReport[] {
-    return this.reports.filter((r) => r.severity === severity)
-  }
-
   exportReports(): string {
+    // JSON string for download
     return JSON.stringify(this.reports, null, 2)
   }
 

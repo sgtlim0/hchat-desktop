@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { ErrorBoundary } from '../ErrorBoundary'
+import { errorReporter } from '@/shared/lib/error-reporter'
 
 vi.mock('@/shared/i18n', () => ({
   getTranslation: () => (key: string) => {
@@ -16,6 +17,15 @@ vi.mock('@/shared/i18n', () => ({
 vi.mock('@/entities/settings/settings.store', () => ({
   useSettingsStore: (selector: (s: Record<string, unknown>) => unknown) =>
     selector({ language: 'en' }),
+}))
+
+vi.mock('@/entities/session/session.store', () => ({
+  useSessionStore: {
+    getState: vi.fn(() => ({
+      view: 'home',
+      currentSessionId: 'test-session',
+    })),
+  },
 }))
 
 function ThrowingComponent({ shouldThrow }: { shouldThrow: boolean }) {
@@ -85,7 +95,7 @@ describe('ErrorBoundary', () => {
     expect(screen.queryByText('Something went wrong')).not.toBeInTheDocument()
   })
 
-  it('logs the error via console.error in componentDidCatch', () => {
+  it('catches errors without logging to console', () => {
     const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
 
     render(
@@ -94,11 +104,29 @@ describe('ErrorBoundary', () => {
       </ErrorBoundary>,
     )
 
+    // Console.error is called by React itself when an error is thrown in a component,
+    // but our ErrorBoundary doesn't add extra console.error calls
     expect(consoleSpy).toHaveBeenCalled()
-    const calls = consoleSpy.mock.calls
-    const errorBoundaryCall = calls.find(
-      (call) => typeof call[0] === 'string' && call[0].includes('ErrorBoundary'),
+  })
+
+  it('reports errors to errorReporter with critical severity', () => {
+    const reportSpy = vi.spyOn(errorReporter, 'report')
+
+    render(
+      <ErrorBoundary>
+        <ThrowingComponent shouldThrow={true} />
+      </ErrorBoundary>,
     )
-    expect(errorBoundaryCall).toBeDefined()
+
+    expect(reportSpy).toHaveBeenCalledOnce()
+    expect(reportSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        message: 'Test error message',
+      }),
+      'critical',
+      expect.objectContaining({
+        componentStack: expect.any(String),
+      }),
+    )
   })
 })

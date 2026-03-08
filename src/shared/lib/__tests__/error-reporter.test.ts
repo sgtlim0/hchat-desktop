@@ -1,98 +1,204 @@
-import { describe, it, expect, beforeEach } from 'vitest'
+import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { errorReporter } from '../error-reporter'
+import { useSessionStore } from '@/entities/session/session.store'
 
-describe('errorReporter', () => {
+// Mock the session store
+vi.mock('@/entities/session/session.store', () => ({
+  useSessionStore: {
+    getState: vi.fn(() => ({
+      view: 'home',
+      currentSessionId: 'test-session-123',
+    })),
+  },
+}))
+
+describe('ErrorReporter', () => {
   beforeEach(() => {
+    // Clear reports before each test
     errorReporter.clearReports()
+    vi.clearAllMocks()
   })
 
-  it('reports a basic error', () => {
-    const error = new Error('test error')
-    const report = errorReporter.report(error)
-    expect(report.message).toBe('test error')
-    expect(report.id).toMatch(/^err-/)
-  })
+  it('should report a basic error', () => {
+    const error = new Error('Test error')
+    errorReporter.report(error)
 
-  it('auto-captures timestamp', () => {
-    const report = errorReporter.report(new Error('test'))
-    expect(report.timestamp).toBeTruthy()
-    expect(new Date(report.timestamp).getTime()).toBeGreaterThan(0)
-  })
-
-  it('stores reports newest first', () => {
-    errorReporter.report(new Error('first'))
-    errorReporter.report(new Error('second'))
     const reports = errorReporter.getReports()
-    expect(reports[0].message).toBe('second')
-    expect(reports[1].message).toBe('first')
+    expect(reports).toHaveLength(1)
+    expect(reports[0].message).toBe('Test error')
+    expect(reports[0].stack).toBeDefined()
+    expect(reports[0].view).toBe('home')
+    expect(reports[0].sessionId).toBe('test-session-123')
   })
 
-  it('enforces FIFO at 100 limit', () => {
-    for (let i = 0; i < 110; i++) {
-      errorReporter.report(new Error(`error-${i}`))
+  it('should auto-capture timestamp', () => {
+    const error = new Error('Test error')
+    const beforeTime = new Date().toISOString()
+
+    errorReporter.report(error)
+
+    const afterTime = new Date().toISOString()
+    const reports = errorReporter.getReports()
+    expect(reports[0].timestamp).toBeDefined()
+    expect(new Date(reports[0].timestamp).getTime()).toBeGreaterThanOrEqual(new Date(beforeTime).getTime())
+    expect(new Date(reports[0].timestamp).getTime()).toBeLessThanOrEqual(new Date(afterTime).getTime())
+  })
+
+  it('should enforce FIFO eviction at 100 limit', () => {
+    // Add 101 errors
+    for (let i = 0; i < 101; i++) {
+      errorReporter.report(new Error(`Error ${i}`))
     }
-    expect(errorReporter.getReportCount()).toBe(100)
-    expect(errorReporter.getReports()[0].message).toBe('error-109')
+
+    const reports = errorReporter.getReports()
+    expect(reports).toHaveLength(100)
+
+    // First error should be Error 1 (Error 0 was evicted)
+    expect(reports[0].message).toBe('Error 1')
+
+    // Last error should be Error 100
+    expect(reports[99].message).toBe('Error 100')
   })
 
-  it('detects TypeError as high severity', () => {
-    const report = errorReporter.report(new TypeError('type error'))
-    expect(report.severity).toBe('high')
+  it('should auto-detect severity for TypeError as high', () => {
+    const typeError = new TypeError('Type mismatch')
+    errorReporter.report(typeError)
+
+    const reports = errorReporter.getReports()
+    expect(reports[0].severity).toBe('high')
   })
 
-  it('detects ReferenceError as high severity', () => {
-    const report = errorReporter.report(new ReferenceError('ref error'))
-    expect(report.severity).toBe('high')
+  it('should auto-detect severity for ReferenceError as high', () => {
+    const refError = new ReferenceError('Variable not defined')
+    errorReporter.report(refError)
+
+    const reports = errorReporter.getReports()
+    expect(reports[0].severity).toBe('high')
   })
 
-  it('detects generic Error as medium severity', () => {
-    const report = errorReporter.report(new Error('generic'))
-    expect(report.severity).toBe('medium')
+  it('should default to medium severity for other errors', () => {
+    const error = new Error('Generic error')
+    errorReporter.report(error)
+
+    const reports = errorReporter.getReports()
+    expect(reports[0].severity).toBe('medium')
   })
 
-  it('allows manual severity override', () => {
-    const report = errorReporter.report(new Error('critical issue'), 'critical')
-    expect(report.severity).toBe('critical')
+  it('should allow manual severity override', () => {
+    const error = new Error('Test error')
+    errorReporter.report(error, 'critical')
+
+    const reports = errorReporter.getReports()
+    expect(reports[0].severity).toBe('critical')
   })
 
-  it('attaches context metadata', () => {
-    const ctx = { view: 'chat', sessionId: 'sess-1' }
-    const report = errorReporter.report(new Error('test'), undefined, ctx)
-    expect(report.context).toEqual(ctx)
+  it('should attach context metadata', () => {
+    const error = new Error('Test error')
+    const context = { userId: '123', action: 'save' }
+
+    errorReporter.report(error, 'low', context)
+
+    const reports = errorReporter.getReports()
+    expect(reports[0].context).toEqual(context)
   })
 
-  it('exports as JSON string', () => {
-    errorReporter.report(new Error('test'))
-    const json = errorReporter.exportReports()
-    const parsed = JSON.parse(json)
-    expect(parsed).toHaveLength(1)
-    expect(parsed[0].message).toBe('test')
+  it('should export reports as JSON string', () => {
+    errorReporter.report(new Error('Error 1'))
+    errorReporter.report(new Error('Error 2'))
+
+    const jsonString = errorReporter.exportReports()
+    const parsed = JSON.parse(jsonString)
+
+    expect(parsed).toHaveLength(2)
+    expect(parsed[0].message).toBe('Error 1')
+    expect(parsed[1].message).toBe('Error 2')
   })
 
-  it('clears all reports', () => {
-    errorReporter.report(new Error('test'))
+  it('should clear all reports', () => {
+    errorReporter.report(new Error('Error 1'))
+    errorReporter.report(new Error('Error 2'))
+
+    expect(errorReporter.getReportCount()).toBe(2)
+
+    errorReporter.clearReports()
+
+    expect(errorReporter.getReportCount()).toBe(0)
+    expect(errorReporter.getReports()).toEqual([])
+  })
+
+  it('should return accurate report count', () => {
+    expect(errorReporter.getReportCount()).toBe(0)
+
+    errorReporter.report(new Error('Error 1'))
+    expect(errorReporter.getReportCount()).toBe(1)
+
+    errorReporter.report(new Error('Error 2'))
+    expect(errorReporter.getReportCount()).toBe(2)
+
     errorReporter.clearReports()
     expect(errorReporter.getReportCount()).toBe(0)
-    expect(errorReporter.getReports()).toHaveLength(0)
   })
 
-  it('filters reports by severity', () => {
-    errorReporter.report(new TypeError('high'))
-    errorReporter.report(new Error('medium'))
-    errorReporter.report(new Error('low'), 'low')
-    expect(errorReporter.getReportsBySeverity('high')).toHaveLength(1)
-    expect(errorReporter.getReportsBySeverity('medium')).toHaveLength(1)
-    expect(errorReporter.getReportsBySeverity('low')).toHaveLength(1)
+  it('should handle multiple concurrent reports', () => {
+    const errors = [
+      new Error('Error 1'),
+      new TypeError('Error 2'),
+      new ReferenceError('Error 3'),
+    ]
+
+    errors.forEach(error => errorReporter.report(error))
+
+    const reports = errorReporter.getReports()
+    expect(reports).toHaveLength(3)
+    expect(reports[0].message).toBe('Error 1')
+    expect(reports[1].message).toBe('Error 2')
+    expect(reports[2].message).toBe('Error 3')
   })
 
-  it('captures stack trace', () => {
-    const report = errorReporter.report(new Error('with stack'))
-    expect(report.stack).toBeTruthy()
-    expect(report.stack).toContain('Error: with stack')
+  it('should generate unique IDs for each report', () => {
+    errorReporter.report(new Error('Error 1'))
+    errorReporter.report(new Error('Error 2'))
+    errorReporter.report(new Error('Error 3'))
+
+    const reports = errorReporter.getReports()
+    const ids = reports.map(r => r.id)
+    const uniqueIds = new Set(ids)
+
+    expect(uniqueIds.size).toBe(3)
   })
 
-  it('captures userAgent', () => {
-    const report = errorReporter.report(new Error('test'))
-    expect(report.userAgent).toBeTruthy()
+  it('should capture userAgent', () => {
+    const error = new Error('Test error')
+    errorReporter.report(error)
+
+    const reports = errorReporter.getReports()
+    expect(reports[0].userAgent).toBeDefined()
+    expect(reports[0].userAgent).toBe(navigator.userAgent)
+  })
+
+  it('should handle errors without stack traces', () => {
+    const error = new Error('Test error')
+    delete error.stack
+
+    errorReporter.report(error)
+
+    const reports = errorReporter.getReports()
+    expect(reports[0].message).toBe('Test error')
+    expect(reports[0].stack).toBeUndefined()
+  })
+
+  it('should preserve immutability of reports', () => {
+    errorReporter.report(new Error('Error 1'))
+
+    const reports1 = errorReporter.getReports()
+    errorReporter.report(new Error('Error 2'))
+    const reports2 = errorReporter.getReports()
+
+    // Should be different array references
+    expect(reports1).not.toBe(reports2)
+
+    // Original array should be unchanged
+    expect(reports1).toHaveLength(1)
+    expect(reports2).toHaveLength(2)
   })
 })

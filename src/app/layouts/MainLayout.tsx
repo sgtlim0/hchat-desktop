@@ -1,4 +1,4 @@
-import { useEffect, Suspense } from 'react'
+import { useEffect, useState, Suspense } from 'react'
 import { useSessionStore } from '@/entities/session/session.store'
 import { useSettingsStore } from '@/entities/settings/settings.store'
 import { useProjectStore } from '@/entities/project/project.store'
@@ -33,6 +33,7 @@ import { useOnlineStatus } from '@/shared/hooks/useOnlineStatus'
 import { ErrorBoundary } from '@/shared/ui/ErrorBoundary'
 import { InstallBanner } from '@/shared/ui/InstallBanner'
 import { SyncStatusBadge } from '@/shared/ui/SyncStatusBadge'
+import { KeyboardShortcutsHelp } from '@/shared/ui/KeyboardShortcutsHelp'
 import { useCopilotStore } from '@/entities/copilot/copilot.store'
 import { CopilotPanel } from '@/widgets/copilot/CopilotPanel'
 import { ROUTE_MAP, SettingsScreen, ChatPage } from './route-map'
@@ -72,6 +73,7 @@ export function MainLayout() {
   const hydrateDashboard = useDashboardStore((s) => s.hydrate)
   const hydrateWorkspace = useWorkspaceStore((s) => s.hydrate)
   const isOnline = useOnlineStatus()
+  const [shortcutsOpen, setShortcutsOpen] = useState(false)
 
   // Hydrate from IndexedDB on mount
   useEffect(() => {
@@ -118,6 +120,10 @@ export function MainLayout() {
       if ((e.metaKey || e.ctrlKey) && e.key === 'j') {
         e.preventDefault()
         useCopilotStore.getState().toggle()
+      }
+      if ((e.metaKey || e.ctrlKey) && e.key === '?') {
+        e.preventDefault()
+        setShortcutsOpen((prev) => !prev)
       }
     }
 
@@ -188,6 +194,7 @@ export function MainLayout() {
       {searchOpen && <SearchModal />}
       <ToastContainer />
       <CopilotPanel />
+      <KeyboardShortcutsHelp open={shortcutsOpen} onClose={() => setShortcutsOpen(false)} />
     </>
   )
 }
