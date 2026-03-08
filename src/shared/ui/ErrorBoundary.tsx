@@ -2,6 +2,7 @@ import { Component } from 'react'
 import type { ReactNode, ErrorInfo } from 'react'
 import { getTranslation } from '@/shared/i18n'
 import { useSettingsStore } from '@/entities/settings/settings.store'
+import { errorReporter } from '@/shared/lib/error-reporter'
 
 interface ErrorBoundaryProps {
   children: ReactNode
@@ -67,7 +68,9 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
-    console.error('ErrorBoundary caught an error:', error, errorInfo)
+    errorReporter.report(error, 'critical', {
+      componentStack: errorInfo.componentStack,
+    })
   }
 
   handleReset = (): void => {

@@ -1814,6 +1814,11 @@ const ko = {
   // Phase 40: PWA Install Banner
   'pwa.installBanner': 'H Chat을 홈 화면에 추가하세요',
   'pwa.install': '설치',
+  // Phase 41: Sync Status
+  'sync.synced': '동기화됨',
+  'sync.pending': '대기 중',
+  'sync.lastSync': '마지막 동기화',
+  'sync.offlineTooltip': '오프라인 - 재연결 시 동기화됩니다',
 } as const
 
 export default ko

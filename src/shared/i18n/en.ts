@@ -1814,6 +1814,11 @@ const en = {
   // Phase 40: PWA Install Banner
   'pwa.installBanner': 'Add H Chat to your home screen',
   'pwa.install': 'Install',
+  // Phase 41: Sync Status
+  'sync.synced': 'Synced',
+  'sync.pending': 'Pending',
+  'sync.lastSync': 'Last sync',
+  'sync.offlineTooltip': 'Offline - will sync when reconnected',
 } as const
 
 export default en
