@@ -1843,6 +1843,18 @@ const ko = {
   'tools.enableConfluence': 'Confluence 검색 활성화',
   'tools.enableJira': 'Jira 검색 활성화',
   'tools.searchingInternal': '사내 문서 검색 중...',
+  // Phase 55: Internal Search
+  'sidebar.internalSearch': '사내검색',
+  'internalSearch.title': '사내 문서 검색',
+  'internalSearch.desc': 'Confluence 문서와 Jira 이슈를 자연어로 검색합니다',
+  'internalSearch.placeholder': '검색어를 입력하세요...',
+  'internalSearch.search': '검색',
+  'internalSearch.empty.title': '사내 문서를 검색하세요',
+  'internalSearch.empty.examples': '"API 설계 문서", "스프린트 버그 목록", "배포 가이드"',
+  'internalSearch.noResults': '검색 결과가 없습니다',
+  'internalSearch.source': '출처',
+  'internalSearch.summary': 'AI 요약',
+  'internalSearch.configNeeded': '도구 연동 설정에서 Atlassian 토큰을 등록하세요',
 } as const
 
 export default ko

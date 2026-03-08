@@ -1843,6 +1843,18 @@ const en = {
   'tools.enableConfluence': 'Enable Confluence search',
   'tools.enableJira': 'Enable Jira search',
   'tools.searchingInternal': 'Searching internal docs...',
+  // Phase 55: Internal Search
+  'sidebar.internalSearch': 'Internal Search',
+  'internalSearch.title': 'Internal Document Search',
+  'internalSearch.desc': 'Search Confluence docs and Jira issues with natural language',
+  'internalSearch.placeholder': 'Enter your search query...',
+  'internalSearch.search': 'Search',
+  'internalSearch.empty.title': 'Search your internal documents',
+  'internalSearch.empty.examples': '"API design docs", "Sprint bug list", "Deploy guide"',
+  'internalSearch.noResults': 'No results found',
+  'internalSearch.source': 'Source',
+  'internalSearch.summary': 'AI Summary',
+  'internalSearch.configNeeded': 'Register Atlassian token in Tool Integration settings',
 } as const
 
 export default en

@@ -9,10 +9,16 @@ export const SkeletonLine = memo(function SkeletonLine({
   height?: string
   className?: string
 }) {
+  // Check if height is a Tailwind class (starts with h-) or a CSS value
+  const isHeightClass = height?.startsWith('h-')
+
   return (
     <div
-      className={`animate-pulse bg-card rounded ${height} ${className}`}
-      style={width ? { width } : undefined}
+      className={`animate-pulse bg-card rounded ${isHeightClass ? height : 'h-4'} ${width ? '' : 'w-full'} ${className}`}
+      style={{
+        ...(width && { width }),
+        ...(!isHeightClass && height && { height })
+      }}
     />
   )
 })
@@ -39,7 +45,7 @@ export const SkeletonBlock = memo(function SkeletonBlock({
   rows?: number
   className?: string
 }) {
-  const widths = ['100%', '80%', '60%', '90%', '70%']
+  const widths = ['100%', '80%', '60%']
   return (
     <div className={`flex flex-col gap-2 ${className}`}>
       {Array.from({ length: rows }, (_, i) => (
@@ -62,8 +68,13 @@ export const SkeletonCard = memo(function SkeletonCard({ className = '' }: { cla
 
 export const SkeletonPage = memo(function SkeletonPage({ className = '' }: { className?: string }) {
   return (
-    <div className={`flex flex-col gap-4 p-4 ${className}`}>
-      <SkeletonLine width="40%" height="h-6" />
+    <div className={`p-4 space-y-4 ${className}`}>
+      {/* Header */}
+      <div className="space-y-2">
+        <SkeletonLine width="40%" height="24px" />
+        <SkeletonLine width="60%" />
+      </div>
+      {/* Cards */}
       <SkeletonCard />
       <SkeletonCard />
       <SkeletonCard />

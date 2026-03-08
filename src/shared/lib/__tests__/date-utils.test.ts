@@ -83,6 +83,14 @@ describe('date-utils', () => {
       vi.setSystemTime(new Date(2026, 2, 9, 12, 0, 0))
       expect(formatRelative(new Date(2026, 2, 8, 12, 0, 0))).toBe('yesterday')
     })
+    it('formats date in same year', () => {
+      vi.setSystemTime(new Date(2026, 2, 15, 12, 0, 0))
+      expect(formatRelative(new Date(2026, 2, 8, 12, 0, 0))).toBe('Mar 8')
+    })
+    it('formats date with year for different year', () => {
+      vi.setSystemTime(new Date(2026, 2, 8, 12, 0, 0))
+      expect(formatRelative(new Date(2025, 11, 25, 12, 0, 0))).toBe('Dec 25, 2025')
+    })
   })
 
   describe('daysBetween', () => {

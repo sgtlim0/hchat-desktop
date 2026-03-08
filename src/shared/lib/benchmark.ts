@@ -56,10 +56,50 @@ export function clearResults(): void {
   results.length = 0
 }
 
+export function compare(name1: string, name2: string): {
+  faster: string
+  slower: string
+  speedup: number
+  percentFaster: number
+} {
+  const result1 = results.find(r => r.name === name1)
+  const result2 = results.find(r => r.name === name2)
+
+  if (!result1) {
+    throw new Error(`Benchmark "${name1}" not found`)
+  }
+  if (!result2) {
+    throw new Error(`Benchmark "${name2}" not found`)
+  }
+
+  const faster = result1.avgMs <= result2.avgMs ? name1 : name2
+  const slower = result1.avgMs > result2.avgMs ? name1 : name2
+  const fasterTime = Math.min(result1.avgMs, result2.avgMs)
+  const slowerTime = Math.max(result1.avgMs, result2.avgMs)
+
+  const speedup = slowerTime / fasterTime
+  const percentFaster = ((slowerTime - fasterTime) / slowerTime) * 100
+
+  return {
+    faster,
+    slower,
+    speedup,
+    percentFaster
+  }
+}
+
 export function formatResult(result: BenchmarkResult): string {
-  return `${result.name}: avg=${result.avgMs.toFixed(3)}ms min=${result.minMs.toFixed(3)}ms max=${result.maxMs.toFixed(3)}ms (${result.iterations} iterations)`
+  return `${result.name}: ${result.iterations} iterations
+  avg: ${result.avgMs.toFixed(2)}ms
+  min: ${result.minMs.toFixed(2)}ms
+  max: ${result.maxMs.toFixed(2)}ms
+  median: ${result.medianMs.toFixed(2)}ms`
 }
 
 export function exportResults(): string {
-  return JSON.stringify(results, null, 2)
+  return JSON.stringify({
+    benchmarks: results,
+    timestamp: new Date().toISOString(),
+    version: '1.0.0'
+  }, null, 2)
 }

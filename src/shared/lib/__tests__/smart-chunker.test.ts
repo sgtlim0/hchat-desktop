@@ -43,7 +43,8 @@ describe('smart-chunker', () => {
     expect(chunks[0]).toHaveProperty('id')
     expect(chunks[0]).toHaveProperty('page')
     expect(chunks[0]).toHaveProperty('content')
-    expect(chunks[0].id).toMatch(/^chunk-\d+$/)
+    expect(chunks[0]).toHaveProperty('startOffset')
+    expect(chunks[0].id).toMatch(/^chunk-\d+-\d+$/)
   })
 })
 

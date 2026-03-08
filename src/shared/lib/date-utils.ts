@@ -35,20 +35,32 @@ export function endOfDay(date: Date): Date {
 }
 
 export function formatRelative(date: Date): string {
-  const now = Date.now()
-  const diff = now - date.getTime()
+  const now = new Date()
+  const diff = now.getTime() - date.getTime()
   const seconds = Math.floor(diff / 1000)
   const minutes = Math.floor(seconds / 60)
   const hours = Math.floor(minutes / 60)
-  const days = Math.floor(hours / 24)
 
   if (seconds < 60) return 'just now'
   if (minutes < 60) return `${minutes}m ago`
   if (hours < 24) return `${hours}h ago`
-  if (days === 1) return 'yesterday'
-  if (days < 7) return `${days}d ago`
 
-  return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+  // Check if it's yesterday
+  if (isYesterday(date)) return 'yesterday'
+
+  // Format as date for older dates
+  const month = date.toLocaleDateString('en-US', { month: 'short' })
+  const day = date.getDate()
+  const year = date.getFullYear()
+  const currentYear = now.getFullYear()
+
+  // Same year: "Mar 8"
+  if (year === currentYear) {
+    return `${month} ${day}`
+  }
+
+  // Different year: "Mar 8, 2023"
+  return `${month} ${day}, ${year}`
 }
 
 export function daysBetween(a: Date, b: Date): number {

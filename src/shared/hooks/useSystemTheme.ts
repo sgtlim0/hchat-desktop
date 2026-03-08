@@ -2,6 +2,19 @@ import { useState, useEffect } from 'react'
 
 type Theme = 'light' | 'dark'
 
+/**
+ * Hook that detects and tracks the system's color scheme preference
+ *
+ * Usage:
+ * ```typescript
+ * function MyComponent() {
+ *   const systemTheme = useSystemTheme() // 'light' | 'dark'
+ *
+ *   return <div>System prefers: {systemTheme}</div>
+ * }
+ * ```
+ */
+
 function getSystemTheme(): Theme {
   if (typeof window === 'undefined') return 'light'
   return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'

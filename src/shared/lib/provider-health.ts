@@ -136,12 +136,12 @@ export function getProviderStatus(provider: string): HealthStatus | null {
 /**
  * Check if a provider is currently healthy (based on cache)
  * @param provider - Provider name
- * @returns true if provider is healthy or unknown, false if unhealthy
+ * @returns true if provider is healthy, false if unhealthy or unknown
  */
 export function isProviderHealthy(provider: string): boolean {
   const status = getProviderStatus(provider)
-  // Default to true for unknown providers (optimistic approach)
-  return status?.healthy ?? true
+  // Default to false for unknown providers (pessimistic approach)
+  return status?.healthy ?? false
 }
 
 /**

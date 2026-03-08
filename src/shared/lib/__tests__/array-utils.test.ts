@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { unique, groupBy, chunk, flatten, flattenDeep, sortBy, compact, intersection, difference } from '../array-utils'
+import { unique, groupBy, chunk, flatten, flattenDeep, sortBy, compact, intersection, difference, shuffle } from '../array-utils'
 
 describe('array-utils', () => {
   describe('unique', () => {
@@ -36,6 +36,10 @@ describe('array-utils', () => {
     })
     it('handles remainder', () => {
       expect(chunk([1, 2, 3], 2)).toEqual([[1, 2], [3]])
+    })
+    it('throws on invalid size', () => {
+      expect(() => chunk([1, 2], 0)).toThrow()
+      expect(() => chunk([1, 2], -1)).toThrow()
     })
   })
 
@@ -85,6 +89,31 @@ describe('array-utils', () => {
   describe('difference', () => {
     it('returns elements not in second', () => {
       expect(difference([1, 2, 3], [2, 3, 4])).toEqual([1])
+    })
+  })
+
+  describe('shuffle', () => {
+    it('returns same length array', () => {
+      const input = [1, 2, 3, 4, 5]
+      const result = shuffle(input)
+      expect(result).toHaveLength(5)
+    })
+
+    it('contains all original elements', () => {
+      const input = [1, 2, 3, 4, 5]
+      const result = shuffle(input)
+      expect(result.sort()).toEqual(input.sort())
+    })
+
+    it('does not modify original array', () => {
+      const input = [1, 2, 3]
+      const original = [...input]
+      shuffle(input)
+      expect(input).toEqual(original)
+    })
+
+    it('handles empty array', () => {
+      expect(shuffle([])).toEqual([])
     })
   })
 })

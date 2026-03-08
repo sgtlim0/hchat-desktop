@@ -112,6 +112,7 @@ const KnowledgeGraphPage: LazyPage = lazy(() => import('@/pages/knowledge-graph/
 const CanvasPage: LazyPage = lazy(() => import('@/pages/canvas/CanvasPage').then((m) => ({ default: m.CanvasPage })))
 const AutoWorkflowPage: LazyPage = lazy(() => import('@/pages/auto-workflow/AutoWorkflowPage').then((m) => ({ default: m.AutoWorkflowPage })))
 const DeepResearchPage: LazyPage = lazy(() => import('@/pages/research/ResearchPage').then((m) => ({ default: m.ResearchPage })))
+const InternalSearchPage: LazyPage = lazy(() => import('@/pages/internal-search/InternalSearchPage').then((m) => ({ default: m.InternalSearchPage })))
 
 // ViewState → Component routing table
 export const ROUTE_MAP: Partial<Record<ViewState, LazyPage>> = {
@@ -219,4 +220,5 @@ export const ROUTE_MAP: Partial<Record<ViewState, LazyPage>> = {
   canvas: CanvasPage,
   autoWorkflow: AutoWorkflowPage,
   deepResearch: DeepResearchPage,
+  internalSearch: InternalSearchPage,
 }
