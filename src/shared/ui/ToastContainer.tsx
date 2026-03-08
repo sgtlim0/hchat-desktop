@@ -65,6 +65,25 @@ export function ToastContainer() {
             }}
           >
             <p className="text-sm text-text-primary pr-2">{toast.message}</p>
+            {toast.action && (
+              <button
+                onClick={() => {
+                  toast.action!.onClick()
+                  handleRemove(toast.id)
+                }}
+                className="text-xs font-medium text-primary hover:text-primary/80 transition-colors mt-1"
+              >
+                {toast.action.label}
+              </button>
+            )}
+            {toast.progress !== undefined && (
+              <div className="mt-2 h-1 bg-border rounded-full overflow-hidden">
+                <div
+                  className="h-full bg-primary transition-all duration-300 rounded-full"
+                  style={{ width: `${toast.progress}%` }}
+                />
+              </div>
+            )}
             <button
               onClick={() => handleRemove(toast.id)}
               className="absolute top-2 right-2 text-text-secondary hover:text-text-primary transition-colors p-1"

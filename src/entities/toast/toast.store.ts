@@ -1,16 +1,24 @@
 import { create } from 'zustand'
 
+export interface ToastAction {
+  label: string
+  onClick: () => void
+}
+
 export interface Toast {
   id: string
   type: 'success' | 'error' | 'warning' | 'info'
   message: string
   duration?: number
+  action?: ToastAction
+  progress?: number
 }
 
 interface ToastState {
   toasts: Toast[]
   addToast: (toast: Omit<Toast, 'id'>) => void
   removeToast: (id: string) => void
+  updateProgress: (id: string, progress: number) => void
   clearAll: () => void
 }
 
@@ -39,6 +47,13 @@ export const useToastStore = create<ToastState>((set) => ({
   removeToast: (id) =>
     set((state) => ({
       toasts: state.toasts.filter((t) => t.id !== id),
+    })),
+
+  updateProgress: (id, progress) =>
+    set((state) => ({
+      toasts: state.toasts.map((t) =>
+        t.id === id ? { ...t, progress: Math.min(100, Math.max(0, progress)) } : t,
+      ),
     })),
 
   clearAll: () => set({ toasts: [] }),

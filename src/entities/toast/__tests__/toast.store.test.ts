@@ -121,4 +121,55 @@ describe('ToastStore', () => {
     expect(toasts[2].type).toBe('warning')
     expect(toasts[3].type).toBe('info')
   })
+
+  it('should support toast with action button', () => {
+    const onClick = vi.fn()
+    useToastStore.getState().addToast({
+      type: 'info',
+      message: 'Deleted',
+      action: { label: 'Undo', onClick },
+      duration: 0,
+    })
+    const toast = useToastStore.getState().toasts[0]
+    expect(toast.action).toBeDefined()
+    expect(toast.action!.label).toBe('Undo')
+    toast.action!.onClick()
+    expect(onClick).toHaveBeenCalled()
+  })
+
+  it('should support toast with progress bar', () => {
+    useToastStore.getState().addToast({
+      type: 'info',
+      message: 'Uploading...',
+      progress: 0,
+      duration: 0,
+    })
+    expect(useToastStore.getState().toasts[0].progress).toBe(0)
+  })
+
+  it('should update progress on a toast', () => {
+    useToastStore.getState().addToast({
+      type: 'info',
+      message: 'Processing...',
+      progress: 0,
+      duration: 0,
+    })
+    const id = useToastStore.getState().toasts[0].id
+    useToastStore.getState().updateProgress(id, 50)
+    expect(useToastStore.getState().toasts[0].progress).toBe(50)
+  })
+
+  it('should clamp progress between 0 and 100', () => {
+    useToastStore.getState().addToast({
+      type: 'info',
+      message: 'Test',
+      progress: 0,
+      duration: 0,
+    })
+    const id = useToastStore.getState().toasts[0].id
+    useToastStore.getState().updateProgress(id, 150)
+    expect(useToastStore.getState().toasts[0].progress).toBe(100)
+    useToastStore.getState().updateProgress(id, -10)
+    expect(useToastStore.getState().toasts[0].progress).toBe(0)
+  })
 })
