@@ -20,6 +20,7 @@ import { estimateTokens } from '@/shared/lib/token-estimator'
 import * as stt from '@/shared/lib/stt'
 import { detectSensitiveData, getDetectionLabel } from '@/shared/lib/guardrail'
 import { createStreamThrottle } from '@/shared/lib/stream-throttle'
+import { useCompressionStore } from '@/entities/compression/compression.store'
 
 interface PromptInputProps {
   onSend?: (message: string) => void
@@ -245,13 +246,27 @@ export function PromptInput({
 
     // Build message history for context
     const allMessages = useSessionStore.getState().messages[sessionId] ?? []
-    const chatHistory = allMessages
+    let chatHistory = allMessages
       .filter((m) => m.id !== assistantMessageId)
       .map((m) => ({
         role: m.role,
         content: m.segments.find((s) => s.type === 'text')?.content ?? '',
       }))
       .filter((m) => m.content.length > 0)
+
+    // Phase 37: Apply compression + context pruning
+    const { compressMessages, pruneMessages, enabled: compressionEnabled, recordCompression } = useCompressionStore.getState()
+    const preTokens = chatHistory.reduce((s, m) => s + estimateTokens(m.content), 0)
+    chatHistory = pruneMessages(chatHistory)
+    chatHistory = compressMessages(chatHistory)
+    if (compressionEnabled) {
+      const postTokens = chatHistory.reduce((s, m) => s + estimateTokens(m.content), 0)
+      const saved = preTokens - postTokens
+      if (saved > 0) {
+        const model = MODELS.find((m) => m.id === effectiveModel)
+        recordCompression(saved, model ? model.cost.input / 1_000_000 : 0)
+      }
+    }
 
     // Get provider config
     const config = getProviderConfig(effectiveModel, {

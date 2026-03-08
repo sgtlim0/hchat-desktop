@@ -17,6 +17,7 @@
   "dependencies": {
     "@aws-sdk/client-bedrock-runtime": "^3.1000.0",
     "dexie": "^4.3.0",
+    "dompurify": "^3.3.2",
     "jspdf": "^4.2.0",
     "lucide-react": "^0.575.0",
     "mermaid": "^11.12.3",
@@ -40,6 +41,7 @@
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
     "@testing-library/user-event": "^14.6.1",
+    "@types/dompurify": "^3.0.5",
     "@types/node": "^24.10.1",
     "@types/react": "^19.2.7",
     "@types/react-dom": "^19.2.3",

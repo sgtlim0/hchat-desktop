@@ -11,6 +11,7 @@ import {
 } from '@/shared/lib/db'
 import { useSettingsStore } from '@/entities/settings/settings.store'
 import { BEDROCK_MODEL_MAP } from '@/shared/constants'
+import type { OrchestrationStrategy } from './swarm-templates'
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL || ''
 
@@ -33,11 +34,13 @@ interface SwarmState {
   agents: SwarmAgent[]
   connections: SwarmConnection[]
   selectedTemplate: string
+  strategy: OrchestrationStrategy
   isRunning: boolean
   agentOutputs: Record<string, string>
 
   hydrate: () => Promise<void>
   setTemplate: (templateId: string) => void
+  setStrategy: (strategy: OrchestrationStrategy) => void
   addAgent: (role: AgentRole, x: number, y: number) => Promise<void>
   removeAgent: (id: string) => Promise<void>
   updateAgentStatus: (id: string, status: AgentStatus) => Promise<void>
@@ -53,6 +56,7 @@ export const useSwarmStore = create<SwarmState>((set, get) => ({
   agents: [],
   connections: [],
   selectedTemplate: 'code-review',
+  strategy: 'pipeline' as OrchestrationStrategy,
   isRunning: false,
   agentOutputs: {},
 
@@ -65,6 +69,7 @@ export const useSwarmStore = create<SwarmState>((set, get) => ({
   },
 
   setTemplate: (templateId) => set({ selectedTemplate: templateId }),
+  setStrategy: (strategy) => set({ strategy }),
 
   addAgent: async (role, x, y) => {
     const id = `agent-${Date.now()}`
@@ -155,6 +160,7 @@ export const useSwarmStore = create<SwarmState>((set, get) => ({
           task,
           modelId: bedrockModelId,
           credentials,
+          strategy: get().strategy,
         }),
       })
 

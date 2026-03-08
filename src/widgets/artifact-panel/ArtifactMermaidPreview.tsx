@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, useCallback } from 'react'
+import DOMPurify from 'dompurify'
 import { useTranslation } from '@/shared/i18n'
 
 interface ArtifactMermaidPreviewProps {
@@ -28,7 +29,7 @@ export function ArtifactMermaidPreview({ content }: ArtifactMermaidPreviewProps)
       const id = `mermaid-${Date.now()}`
       const { svg } = await mermaid.render(id, content)
       if (containerRef.current) {
-        containerRef.current.innerHTML = svg
+        containerRef.current.innerHTML = DOMPurify.sanitize(svg, { USE_PROFILES: { svg: true, svgFilters: true } })
       }
     } catch (err) {
       const msg = err instanceof Error ? err.message : 'Unknown error'

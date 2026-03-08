@@ -2,7 +2,7 @@ import modal
 
 image = (
     modal.Image.debian_slim(python_version="3.12")
-    .pip_install("boto3", "fastapi[standard]", "duckduckgo-search", "httpx", "openai", "google-genai")
+    .pip_install("boto3", "fastapi[standard]", "duckduckgo-search", "httpx", "openai", "google-genai", "numpy>=1.24.0")
     .add_local_python_source("backend")
 )
 
@@ -29,6 +29,7 @@ def api():
     from backend.routes.channels import router as channels_router
     from backend.routes.openai_proxy import router as openai_router
     from backend.routes.gemini_proxy import router as gemini_router
+    from backend.routes.research import router as research_router
 
     web_app = FastAPI(title="H Chat API")
 
@@ -37,8 +38,8 @@ def api():
         allow_origins=[
             "http://localhost:5173",
             "http://localhost:4173",
+            "https://hchat-desktop.vercel.app",
         ],
-        allow_origin_regex=r"https://.*\.(vercel\.app|github\.io)",
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],
@@ -53,5 +54,6 @@ def api():
     web_app.include_router(channels_router, prefix="/api")
     web_app.include_router(openai_router, prefix="/api")
     web_app.include_router(gemini_router, prefix="/api")
+    web_app.include_router(research_router, prefix="/api")
 
     return web_app

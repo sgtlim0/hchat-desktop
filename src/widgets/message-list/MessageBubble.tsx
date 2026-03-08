@@ -6,6 +6,7 @@ import type { Message } from '@/shared/types'
 import { CodeBlock } from './CodeBlock'
 import { ToolCallGroup } from './ToolCallGroup'
 import * as tts from '@/shared/lib/tts'
+import { useLearningStore, type FeedbackRating } from '@/entities/learning/learning.store'
 
 interface MessageBubbleProps {
   message: Message
@@ -156,6 +157,7 @@ export const MessageBubble = memo(function MessageBubble({
                 🔀 Fork
               </button>
             )}
+            <FeedbackButtons messageId={message.id} sessionId={message.sessionId} />
           </div>
         )}
       </div>
@@ -191,5 +193,53 @@ const MarkdownSegment = memo(function MarkdownSegment({
         rendered
       )}
     </div>
+  )
+})
+
+const FeedbackButtons = memo(function FeedbackButtons({
+  messageId,
+  sessionId,
+}: {
+  messageId: string
+  sessionId: string
+}) {
+  const existing = useLearningStore((s) => s.getFeedbackForMessage(messageId))
+  const submitFeedback = useLearningStore((s) => s.submitFeedback)
+
+  const handleFeedback = useCallback(
+    (rating: FeedbackRating) => {
+      if (existing) return
+      submitFeedback(messageId, sessionId, '', rating)
+    },
+    [messageId, sessionId, existing, submitFeedback],
+  )
+
+  return (
+    <>
+      <button
+        onClick={() => handleFeedback('good')}
+        className={`text-xs px-2 py-1 rounded transition-colors ${
+          existing?.rating === 'good'
+            ? 'text-green-500 bg-green-500/10'
+            : 'text-text-secondary hover:text-green-500 hover:bg-card'
+        }`}
+        aria-label="Good response"
+        disabled={!!existing}
+      >
+        👍
+      </button>
+      <button
+        onClick={() => handleFeedback('bad')}
+        className={`text-xs px-2 py-1 rounded transition-colors ${
+          existing?.rating === 'bad'
+            ? 'text-red-500 bg-red-500/10'
+            : 'text-text-secondary hover:text-red-500 hover:bg-card'
+        }`}
+        aria-label="Bad response"
+        disabled={!!existing}
+      >
+        👎
+      </button>
+    </>
   )
 })
