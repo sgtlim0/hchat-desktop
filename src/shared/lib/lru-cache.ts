@@ -3,11 +3,14 @@ export class LRUCache<K, V> {
   private readonly maxSize: number
 
   constructor(maxSize: number) {
-    this.maxSize = Math.max(1, maxSize)
+    // Handle edge cases: zero or negative size
+    this.maxSize = Math.max(0, maxSize)
   }
 
   get(key: K): V | undefined {
     if (!this.cache.has(key)) return undefined
+
+    // Promote to most recent
     const value = this.cache.get(key)!
     this.cache.delete(key)
     this.cache.set(key, value)
@@ -15,11 +18,23 @@ export class LRUCache<K, V> {
   }
 
   set(key: K, value: V): void {
-    if (this.cache.has(key)) this.cache.delete(key)
+    // Don't store if maxSize is 0
+    if (this.maxSize === 0) return
+
+    // If key exists, delete it first to ensure it's added as most recent
+    if (this.cache.has(key)) {
+      this.cache.delete(key)
+    }
+
+    // Add as most recent
     this.cache.set(key, value)
+
+    // Evict oldest if over capacity
     if (this.cache.size > this.maxSize) {
       const oldest = this.cache.keys().next().value
-      if (oldest !== undefined) this.cache.delete(oldest)
+      if (oldest !== undefined) {
+        this.cache.delete(oldest)
+      }
     }
   }
 
@@ -32,6 +47,7 @@ export class LRUCache<K, V> {
   }
 
   peek(key: K): V | undefined {
+    // Get without promoting
     return this.cache.get(key)
   }
 
@@ -44,6 +60,7 @@ export class LRUCache<K, V> {
   }
 
   keys(): K[] {
+    // Return keys in order from oldest to newest
     return Array.from(this.cache.keys())
   }
 }

@@ -41,19 +41,22 @@ export function paginate<T>(
 ): { items: T[]; pageInfo: PageInfo } {
   const totalItems = data.length
   const totalPages = Math.max(1, Math.ceil(totalItems / config.pageSize))
-  const page = Math.max(1, Math.min(config.page, totalPages))
-  const start = (page - 1) * config.pageSize
-  const items = data.slice(start, start + config.pageSize)
+  const start = (config.page - 1) * config.pageSize
+
+  // Return empty items if page is out of range
+  const items = config.page > totalPages || config.page < 1
+    ? []
+    : data.slice(start, start + config.pageSize)
 
   return {
     items,
     pageInfo: {
-      page,
+      page: config.page,
       pageSize: config.pageSize,
       totalItems,
       totalPages,
-      hasNext: page < totalPages,
-      hasPrev: page > 1,
+      hasNext: config.page < totalPages,
+      hasPrev: config.page > 1,
     },
   }
 }

@@ -1,12 +1,12 @@
 import { useState, useEffect, useRef, type RefObject } from 'react'
 
-interface UseIntersectionOptions {
+export interface UseIntersectionOptions {
   threshold?: number | number[]
   rootMargin?: string
   root?: Element | null
 }
 
-interface UseIntersectionResult {
+export interface UseIntersectionResult {
   ref: RefObject<Element | null>
   isIntersecting: boolean
   entry: IntersectionObserverEntry | null
@@ -20,12 +20,18 @@ export function useIntersectionObserver(
   const [entry, setEntry] = useState<IntersectionObserverEntry | null>(null)
 
   useEffect(() => {
-    if (typeof IntersectionObserver === 'undefined' || !ref.current) return
+    // SSR safety and check if IntersectionObserver is available
+    if (typeof IntersectionObserver === 'undefined') return
+
+    const element = ref.current
+    if (!element) return
 
     const observer = new IntersectionObserver(
       ([e]) => {
-        setIsIntersecting(e.isIntersecting)
-        setEntry(e)
+        if (e) {
+          setIsIntersecting(e.isIntersecting)
+          setEntry(e)
+        }
       },
       {
         threshold: options?.threshold,
@@ -34,9 +40,9 @@ export function useIntersectionObserver(
       },
     )
 
-    observer.observe(ref.current)
+    observer.observe(element)
     return () => observer.disconnect()
-  }, [options?.threshold, options?.rootMargin, options?.root])
+  }, [ref.current, options?.threshold, options?.rootMargin, options?.root])
 
   return { ref, isIntersecting, entry }
 }

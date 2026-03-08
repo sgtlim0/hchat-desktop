@@ -1,0 +1,123 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e4]:
+  - link "본문으로 건너뛰기" [ref=e5] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=e6]:
+    - generic [ref=e7]:
+      - generic [ref=e8]:
+        - button "업무 비서" [ref=e9] [cursor=pointer]:
+          - img [ref=e10]
+          - text: 업무 비서
+        - button "문서 번역" [ref=e12] [cursor=pointer]:
+          - img [ref=e13]
+          - text: 문서 번역
+        - button "문서 작성" [ref=e17] [cursor=pointer]:
+          - img [ref=e18]
+          - text: 문서 작성
+        - button "텍스트 추출" [ref=e21] [cursor=pointer]:
+          - img [ref=e22]
+          - text: 텍스트 추출
+      - 'generic "마지막 동기화: 1:38:51 PM" [ref=e27]': 동기화됨
+    - main [ref=e29]:
+      - generic [ref=e30]:
+        - generic [ref=e31]:
+          - generic [ref=e32]:
+            - heading "설정" [level=2] [ref=e33]
+            - button "닫기" [ref=e34] [cursor=pointer]:
+              - img [ref=e35]
+          - navigation [ref=e38]:
+            - button "API 설정" [ref=e39] [cursor=pointer]:
+              - img [ref=e40]
+              - generic [ref=e44]: API 설정
+            - button "사용량" [ref=e45] [cursor=pointer]:
+              - img [ref=e46]
+              - generic [ref=e48]: 사용량
+            - button "페르소나" [ref=e49] [cursor=pointer]:
+              - img [ref=e50]
+              - generic [ref=e54]: 페르소나
+            - button "프로필" [ref=e55] [cursor=pointer]:
+              - img [ref=e56]
+              - generic [ref=e59]: 프로필
+            - button "기능" [ref=e60] [cursor=pointer]:
+              - img [ref=e61]
+              - generic [ref=e64]: 기능
+            - button "사용자 지정" [ref=e65] [cursor=pointer]:
+              - img [ref=e66]
+              - generic [ref=e72]: 사용자 지정
+            - button "저장소 관리" [ref=e73] [cursor=pointer]:
+              - img [ref=e74]
+              - generic [ref=e76]: 저장소 관리
+            - button "확장" [ref=e77] [cursor=pointer]:
+              - img [ref=e78]
+              - generic [ref=e80]: 확장
+            - button "MCP" [ref=e81] [cursor=pointer]:
+              - img [ref=e82]
+              - generic [ref=e84]: MCP
+            - button "채널 연동" [ref=e85] [cursor=pointer]:
+              - img [ref=e86]
+              - generic [ref=e92]: 채널 연동
+            - button "데스크톱" [ref=e93] [cursor=pointer]:
+              - img [ref=e94]
+              - generic [ref=e96]: 데스크톱
+            - button "개인정보" [ref=e97] [cursor=pointer]:
+              - img [ref=e98]
+              - generic [ref=e100]: 개인정보
+            - button "개발자" [ref=e101] [cursor=pointer]:
+              - img [ref=e102]
+              - generic [ref=e105]: 개발자
+        - generic [ref=e108]:
+          - generic [ref=e109]:
+            - heading "API 설정" [level=2] [ref=e110]
+            - paragraph [ref=e111]: AI 모델 제공업체에 연결합니다.
+          - generic [ref=e112]:
+            - heading "모델 설정" [level=3] [ref=e113]
+            - generic [ref=e114]:
+              - text: 기본 모델
+              - combobox [ref=e116]:
+                - option "Claude Opus 4.6 (bedrock)"
+                - option "Claude Sonnet 4.6 (bedrock)" [selected]
+                - option "Claude Haiku 4.5 (bedrock)"
+                - option "GPT-4o (openai)"
+                - option "GPT-4o mini (openai)"
+                - option "Gemini 2.0 Flash (gemini)"
+                - option "Gemini 1.5 Pro (gemini)"
+            - generic [ref=e117]:
+              - generic [ref=e118]:
+                - paragraph [ref=e119]: 자동 라우팅
+                - paragraph [ref=e120]: 프롬프트 내용에 따라 최적 모델을 자동 선택합니다
+              - switch "자동 라우팅" [ref=e121] [cursor=pointer]
+          - generic [ref=e123]:
+            - heading "AWS 자격증명" [level=3] [ref=e124]
+            - generic [ref=e125]:
+              - text: AWS Access Key ID
+              - textbox "AKIA..." [ref=e127]
+            - generic [ref=e128]:
+              - text: AWS Secret Access Key
+              - textbox "시크릿 키를 입력하세요" [ref=e130]
+            - generic [ref=e131]:
+              - text: 리전
+              - combobox [ref=e133]:
+                - option "us-east-1 — US East (N. Virginia)" [selected]
+                - option "us-west-2 — US West (Oregon)"
+                - option "eu-west-1 — EU (Ireland)"
+                - option "ap-northeast-1 — Asia Pacific (Tokyo)"
+                - option "ap-southeast-1 — Asia Pacific (Singapore)"
+            - button "연결 테스트" [ref=e135] [cursor=pointer]
+            - paragraph [ref=e136]: 자격증명은 브라우저의 localStorage에 저장됩니다. 외부 서버로 전송되지 않으며, 로컬 Vite 프록시를 통해 AWS에 직접 연결합니다.
+          - generic [ref=e137]:
+            - heading "OpenAI" [level=3] [ref=e138]
+            - generic [ref=e139]:
+              - text: API Key
+              - textbox "sk-..." [ref=e141]
+            - button "연결 테스트" [ref=e143] [cursor=pointer]
+            - paragraph [ref=e144]: API 키는 브라우저에 저장되며 OpenAI API에 직접 연결합니다.
+          - generic [ref=e145]:
+            - heading "Google Gemini" [level=3] [ref=e146]
+            - generic [ref=e147]:
+              - text: API Key
+              - textbox "AIza..." [ref=e149]
+            - button "연결 테스트" [ref=e151] [cursor=pointer]
+            - paragraph [ref=e152]: API 키는 브라우저에 저장되며 Google API에 직접 연결합니다.
+```

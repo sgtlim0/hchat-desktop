@@ -1,0 +1,236 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e4]:
+  - link "본문으로 건너뛰기" [ref=e5] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=e6]:
+    - generic [ref=e7]:
+      - button "검색 (⌘K)" [ref=e8] [cursor=pointer]:
+        - img [ref=e9]
+        - generic [ref=e12]: 검색 (⌘K)
+      - button "새 채팅" [ref=e13] [cursor=pointer]:
+        - img [ref=e14]
+        - text: 새 채팅
+      - generic [ref=e15]:
+        - generic [ref=e16]: H
+        - generic [ref=e17]: H Chat
+    - generic [ref=e18]:
+      - generic [ref=e19]:
+        - button "폴더" [ref=e20] [cursor=pointer]:
+          - generic [ref=e21]:
+            - img [ref=e22]
+            - text: 폴더
+          - button "폴더 만들기" [ref=e24]:
+            - img [ref=e25]
+        - button "전체 0" [ref=e27] [cursor=pointer]:
+          - generic [ref=e28]: 전체
+          - generic [ref=e29]: "0"
+      - button "프로젝트" [ref=e31] [cursor=pointer]:
+        - img [ref=e32]
+        - text: 프로젝트
+      - generic [ref=e34]:
+        - generic [ref=e35]: 도구
+        - generic [ref=e36]:
+          - button "그룹 채팅" [ref=e37] [cursor=pointer]:
+            - img [ref=e38]
+            - generic [ref=e43]: 그룹 채팅
+          - button "메모리" [ref=e44] [cursor=pointer]:
+            - img [ref=e45]
+            - generic [ref=e53]: 메모리
+          - button "에이전트 스웜" [ref=e54] [cursor=pointer]:
+            - img [ref=e55]
+            - generic [ref=e60]: 에이전트 스웜
+          - button "스케줄러" [ref=e61] [cursor=pointer]:
+            - img [ref=e62]
+            - generic [ref=e66]: 스케줄러
+          - button "프롬프트 라이브러리" [ref=e67] [cursor=pointer]:
+            - img [ref=e68]
+            - generic [ref=e70]: 프롬프트 라이브러리
+          - button "모델 토론" [ref=e71] [cursor=pointer]:
+            - img [ref=e72]
+            - generic [ref=e81]: 모델 토론
+          - button "AI 도구" [ref=e82] [cursor=pointer]:
+            - img [ref=e83]
+            - generic [ref=e86]: AI 도구
+          - button "이미지 생성" [ref=e87] [cursor=pointer]:
+            - img [ref=e88]
+            - generic [ref=e92]: 이미지 생성
+          - button "AI 에이전트" [ref=e93] [cursor=pointer]:
+            - img [ref=e94]
+            - generic [ref=e97]: AI 에이전트
+          - button "문서 번역" [ref=e98] [cursor=pointer]:
+            - img [ref=e99]
+            - generic [ref=e103]: 문서 번역
+          - button "문서 작성" [ref=e104] [cursor=pointer]:
+            - img [ref=e105]
+            - generic [ref=e108]: 문서 작성
+          - button "텍스트 추출" [ref=e109] [cursor=pointer]:
+            - img [ref=e110]
+            - generic [ref=e115]: 텍스트 추출
+          - button "지식베이스" [ref=e116] [cursor=pointer]:
+            - img [ref=e117]
+            - generic [ref=e121]: 지식베이스
+          - button "프롬프트 체이닝" [ref=e122] [cursor=pointer]:
+            - img [ref=e123]
+            - generic [ref=e126]: 프롬프트 체이닝
+          - button "워크플로우 빌더" [ref=e127] [cursor=pointer]:
+            - img [ref=e128]
+            - generic [ref=e132]: 워크플로우 빌더
+          - button "실시간 협업" [ref=e133] [cursor=pointer]:
+            - img [ref=e134]
+            - generic [ref=e138]: 실시간 협업
+          - button "컨텍스트 매니저" [ref=e139] [cursor=pointer]:
+            - img [ref=e140]
+            - generic [ref=e144]: 컨텍스트 매니저
+          - button "AI 인사이트" [ref=e145] [cursor=pointer]:
+            - img [ref=e146]
+            - generic [ref=e148]: AI 인사이트
+          - button "플러그인" [ref=e149] [cursor=pointer]:
+            - img [ref=e150]
+            - generic [ref=e152]: 플러그인
+          - button "테마 빌더" [ref=e153] [cursor=pointer]:
+            - img [ref=e154]
+            - generic [ref=e160]: 테마 빌더
+          - button "배치 큐" [ref=e161] [cursor=pointer]:
+            - img [ref=e162]
+            - generic [ref=e165]: 배치 큐
+          - button "세션 인사이트" [ref=e166] [cursor=pointer]:
+            - img [ref=e167]
+            - generic [ref=e170]: 세션 인사이트
+          - button "캐시 관리" [ref=e171] [cursor=pointer]:
+            - img [ref=e172]
+            - generic [ref=e174]: 캐시 관리
+          - button "감사 로그" [ref=e175] [cursor=pointer]:
+            - img [ref=e176]
+            - generic [ref=e178]: 감사 로그
+          - button "AI 대시보드" [ref=e179] [cursor=pointer]:
+            - img [ref=e180]
+            - generic [ref=e185]: AI 대시보드
+          - button "팀 워크스페이스" [ref=e186] [cursor=pointer]:
+            - img [ref=e187]
+            - generic [ref=e191]: 팀 워크스페이스
+    - generic [ref=e192]:
+      - button "설정" [ref=e193] [cursor=pointer]:
+        - img [ref=e194]
+        - generic [ref=e197]: 설정
+      - generic [ref=e198]:
+        - generic [ref=e199]: DC
+        - generic [ref=e200]: 현대오토에버 사용자
+  - generic [ref=e201]:
+    - generic [ref=e202]:
+      - generic [ref=e203]:
+        - button "업무 비서" [ref=e204] [cursor=pointer]:
+          - img [ref=e205]
+          - text: 업무 비서
+        - button "문서 번역" [ref=e207] [cursor=pointer]:
+          - img [ref=e208]
+          - text: 문서 번역
+        - button "문서 작성" [ref=e212] [cursor=pointer]:
+          - img [ref=e213]
+          - text: 문서 작성
+        - button "텍스트 추출" [ref=e216] [cursor=pointer]:
+          - img [ref=e217]
+          - text: 텍스트 추출
+      - 'generic "마지막 동기화: 1:39:36 PM" [ref=e222]': 동기화됨
+    - main [ref=e224]:
+      - generic [ref=e225]:
+        - generic [ref=e226]:
+          - generic [ref=e227]:
+            - heading "설정" [level=2] [ref=e228]
+            - button "닫기" [ref=e229] [cursor=pointer]:
+              - img [ref=e230]
+          - navigation [ref=e233]:
+            - button "API 설정" [ref=e234] [cursor=pointer]:
+              - img [ref=e235]
+              - generic [ref=e239]: API 설정
+            - button "사용량" [ref=e240] [cursor=pointer]:
+              - img [ref=e241]
+              - generic [ref=e243]: 사용량
+            - button "페르소나" [ref=e244] [cursor=pointer]:
+              - img [ref=e245]
+              - generic [ref=e249]: 페르소나
+            - button "프로필" [ref=e250] [cursor=pointer]:
+              - img [ref=e251]
+              - generic [ref=e254]: 프로필
+            - button "기능" [ref=e255] [cursor=pointer]:
+              - img [ref=e256]
+              - generic [ref=e259]: 기능
+            - button "사용자 지정" [ref=e260] [cursor=pointer]:
+              - img [ref=e261]
+              - generic [ref=e267]: 사용자 지정
+            - button "저장소 관리" [ref=e268] [cursor=pointer]:
+              - img [ref=e269]
+              - generic [ref=e271]: 저장소 관리
+            - button "확장" [ref=e272] [cursor=pointer]:
+              - img [ref=e273]
+              - generic [ref=e275]: 확장
+            - button "MCP" [ref=e276] [cursor=pointer]:
+              - img [ref=e277]
+              - generic [ref=e279]: MCP
+            - button "채널 연동" [ref=e280] [cursor=pointer]:
+              - img [ref=e281]
+              - generic [ref=e287]: 채널 연동
+            - button "데스크톱" [ref=e288] [cursor=pointer]:
+              - img [ref=e289]
+              - generic [ref=e291]: 데스크톱
+            - button "개인정보" [ref=e292] [cursor=pointer]:
+              - img [ref=e293]
+              - generic [ref=e295]: 개인정보
+            - button "개발자" [ref=e296] [cursor=pointer]:
+              - img [ref=e297]
+              - generic [ref=e300]: 개발자
+        - generic [ref=e303]:
+          - generic [ref=e304]:
+            - heading "API 설정" [level=2] [ref=e305]
+            - paragraph [ref=e306]: AI 모델 제공업체에 연결합니다.
+          - generic [ref=e307]:
+            - heading "모델 설정" [level=3] [ref=e308]
+            - generic [ref=e309]:
+              - text: 기본 모델
+              - combobox [ref=e311]:
+                - option "Claude Opus 4.6 (bedrock)"
+                - option "Claude Sonnet 4.6 (bedrock)" [selected]
+                - option "Claude Haiku 4.5 (bedrock)"
+                - option "GPT-4o (openai)"
+                - option "GPT-4o mini (openai)"
+                - option "Gemini 2.0 Flash (gemini)"
+                - option "Gemini 1.5 Pro (gemini)"
+            - generic [ref=e312]:
+              - generic [ref=e313]:
+                - paragraph [ref=e314]: 자동 라우팅
+                - paragraph [ref=e315]: 프롬프트 내용에 따라 최적 모델을 자동 선택합니다
+              - switch "자동 라우팅" [ref=e316] [cursor=pointer]
+          - generic [ref=e318]:
+            - heading "AWS 자격증명" [level=3] [ref=e319]
+            - generic [ref=e320]:
+              - text: AWS Access Key ID
+              - textbox "AKIA..." [ref=e322]
+            - generic [ref=e323]:
+              - text: AWS Secret Access Key
+              - textbox "시크릿 키를 입력하세요" [ref=e325]
+            - generic [ref=e326]:
+              - text: 리전
+              - combobox [ref=e328]:
+                - option "us-east-1 — US East (N. Virginia)" [selected]
+                - option "us-west-2 — US West (Oregon)"
+                - option "eu-west-1 — EU (Ireland)"
+                - option "ap-northeast-1 — Asia Pacific (Tokyo)"
+                - option "ap-southeast-1 — Asia Pacific (Singapore)"
+            - button "연결 테스트" [ref=e330] [cursor=pointer]
+            - paragraph [ref=e331]: 자격증명은 브라우저의 localStorage에 저장됩니다. 외부 서버로 전송되지 않으며, 로컬 Vite 프록시를 통해 AWS에 직접 연결합니다.
+          - generic [ref=e332]:
+            - heading "OpenAI" [level=3] [ref=e333]
+            - generic [ref=e334]:
+              - text: API Key
+              - textbox "sk-..." [ref=e336]
+            - button "연결 테스트" [ref=e338] [cursor=pointer]
+            - paragraph [ref=e339]: API 키는 브라우저에 저장되며 OpenAI API에 직접 연결합니다.
+          - generic [ref=e340]:
+            - heading "Google Gemini" [level=3] [ref=e341]
+            - generic [ref=e342]:
+              - text: API Key
+              - textbox "AIza..." [ref=e344]
+            - button "연결 테스트" [ref=e346] [cursor=pointer]
+            - paragraph [ref=e347]: API 키는 브라우저에 저장되며 Google API에 직접 연결합니다.
+```

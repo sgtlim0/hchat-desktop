@@ -1,0 +1,227 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e4]:
+  - link "본문으로 건너뛰기" [ref=e5] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=e6]:
+    - generic [ref=e7]:
+      - button "검색 (⌘K)" [ref=e8] [cursor=pointer]:
+        - img [ref=e9]
+        - generic [ref=e12]: 검색 (⌘K)
+      - button "새 채팅" [ref=e13] [cursor=pointer]:
+        - img [ref=e14]
+        - text: 새 채팅
+      - generic [ref=e15]:
+        - generic [ref=e16]: H
+        - generic [ref=e17]: H Chat
+    - generic [ref=e18]:
+      - generic [ref=e19]:
+        - button "폴더" [ref=e20] [cursor=pointer]:
+          - generic [ref=e21]:
+            - img [ref=e22]
+            - text: 폴더
+          - button "폴더 만들기" [ref=e24]:
+            - img [ref=e25]
+        - button "전체 0" [ref=e27] [cursor=pointer]:
+          - generic [ref=e28]: 전체
+          - generic [ref=e29]: "0"
+      - button "프로젝트" [ref=e31] [cursor=pointer]:
+        - img [ref=e32]
+        - text: 프로젝트
+      - generic [ref=e34]:
+        - generic [ref=e35]: 도구
+        - generic [ref=e36]:
+          - button "그룹 채팅" [ref=e37] [cursor=pointer]:
+            - img [ref=e38]
+            - generic [ref=e43]: 그룹 채팅
+          - button "메모리" [ref=e44] [cursor=pointer]:
+            - img [ref=e45]
+            - generic [ref=e53]: 메모리
+          - button "에이전트 스웜" [ref=e54] [cursor=pointer]:
+            - img [ref=e55]
+            - generic [ref=e60]: 에이전트 스웜
+          - button "스케줄러" [ref=e61] [cursor=pointer]:
+            - img [ref=e62]
+            - generic [ref=e66]: 스케줄러
+          - button "프롬프트 라이브러리" [ref=e67] [cursor=pointer]:
+            - img [ref=e68]
+            - generic [ref=e70]: 프롬프트 라이브러리
+          - button "모델 토론" [ref=e71] [cursor=pointer]:
+            - img [ref=e72]
+            - generic [ref=e81]: 모델 토론
+          - button "AI 도구" [ref=e82] [cursor=pointer]:
+            - img [ref=e83]
+            - generic [ref=e86]: AI 도구
+          - button "이미지 생성" [ref=e87] [cursor=pointer]:
+            - img [ref=e88]
+            - generic [ref=e92]: 이미지 생성
+          - button "AI 에이전트" [ref=e93] [cursor=pointer]:
+            - img [ref=e94]
+            - generic [ref=e97]: AI 에이전트
+          - button "문서 번역" [ref=e98] [cursor=pointer]:
+            - img [ref=e99]
+            - generic [ref=e103]: 문서 번역
+          - button "문서 작성" [ref=e104] [cursor=pointer]:
+            - img [ref=e105]
+            - generic [ref=e108]: 문서 작성
+          - button "텍스트 추출" [ref=e109] [cursor=pointer]:
+            - img [ref=e110]
+            - generic [ref=e115]: 텍스트 추출
+          - button "지식베이스" [ref=e116] [cursor=pointer]:
+            - img [ref=e117]
+            - generic [ref=e121]: 지식베이스
+          - button "프롬프트 체이닝" [ref=e122] [cursor=pointer]:
+            - img [ref=e123]
+            - generic [ref=e126]: 프롬프트 체이닝
+          - button "워크플로우 빌더" [ref=e127] [cursor=pointer]:
+            - img [ref=e128]
+            - generic [ref=e132]: 워크플로우 빌더
+          - button "실시간 협업" [ref=e133] [cursor=pointer]:
+            - img [ref=e134]
+            - generic [ref=e138]: 실시간 협업
+          - button "컨텍스트 매니저" [ref=e139] [cursor=pointer]:
+            - img [ref=e140]
+            - generic [ref=e144]: 컨텍스트 매니저
+          - button "AI 인사이트" [ref=e145] [cursor=pointer]:
+            - img [ref=e146]
+            - generic [ref=e148]: AI 인사이트
+          - button "플러그인" [ref=e149] [cursor=pointer]:
+            - img [ref=e150]
+            - generic [ref=e152]: 플러그인
+          - button "테마 빌더" [ref=e153] [cursor=pointer]:
+            - img [ref=e154]
+            - generic [ref=e160]: 테마 빌더
+          - button "배치 큐" [ref=e161] [cursor=pointer]:
+            - img [ref=e162]
+            - generic [ref=e165]: 배치 큐
+          - button "세션 인사이트" [ref=e166] [cursor=pointer]:
+            - img [ref=e167]
+            - generic [ref=e170]: 세션 인사이트
+          - button "캐시 관리" [ref=e171] [cursor=pointer]:
+            - img [ref=e172]
+            - generic [ref=e174]: 캐시 관리
+          - button "감사 로그" [ref=e175] [cursor=pointer]:
+            - img [ref=e176]
+            - generic [ref=e178]: 감사 로그
+          - button "AI 대시보드" [ref=e179] [cursor=pointer]:
+            - img [ref=e180]
+            - generic [ref=e185]: AI 대시보드
+          - button "팀 워크스페이스" [ref=e186] [cursor=pointer]:
+            - img [ref=e187]
+            - generic [ref=e191]: 팀 워크스페이스
+    - generic [ref=e192]:
+      - button "설정" [ref=e193] [cursor=pointer]:
+        - img [ref=e194]
+        - generic [ref=e197]: 설정
+      - generic [ref=e198]:
+        - generic [ref=e199]: DC
+        - generic [ref=e200]: 현대오토에버 사용자
+  - generic [ref=e201]:
+    - generic [ref=e202]:
+      - generic [ref=e203]:
+        - button "업무 비서" [ref=e204] [cursor=pointer]:
+          - img [ref=e205]
+          - text: 업무 비서
+        - button "문서 번역" [ref=e207] [cursor=pointer]:
+          - img [ref=e208]
+          - text: 문서 번역
+        - button "문서 작성" [ref=e212] [cursor=pointer]:
+          - img [ref=e213]
+          - text: 문서 작성
+        - button "텍스트 추출" [ref=e216] [cursor=pointer]:
+          - img [ref=e217]
+          - text: 텍스트 추출
+      - 'generic "마지막 동기화: 1:38:39 PM" [ref=e222]': 동기화됨
+    - main [ref=e224]:
+      - generic [ref=e226]:
+        - generic [ref=e227]:
+          - img [ref=e228]
+          - generic [ref=e231]:
+            - paragraph [ref=e232]: AWS 자격증명이 설정되지 않았습니다.
+            - paragraph [ref=e233]: 채팅을 시작하려면 먼저 AWS Bedrock 자격증명을 입력해주세요.
+          - button "설정하기" [ref=e234] [cursor=pointer]
+        - paragraph [ref=e239]: 무엇을 도와드릴까요?
+        - generic [ref=e241]:
+          - generic [ref=e242]:
+            - button "페르소나 선택" [ref=e243] [cursor=pointer]:
+              - img [ref=e244]
+              - text: 페르소나 선택
+            - generic [ref=e247]:
+              - button "빠름" [ref=e248] [cursor=pointer]
+              - button "균형" [ref=e249] [cursor=pointer]
+              - button "깊이" [ref=e250] [cursor=pointer]
+          - generic [ref=e251]:
+            - button "파일 첨부" [ref=e252] [cursor=pointer]:
+              - img [ref=e253]
+            - button "음성 입력" [ref=e254] [cursor=pointer]:
+              - img [ref=e255]
+            - textbox "메시지를 입력하세요..." [ref=e258]
+            - generic [ref=e259]:
+              - button "Sonnet 4.6" [ref=e261] [cursor=pointer]:
+                - generic [ref=e263]: Sonnet 4.6
+                - img [ref=e264]
+              - button "메시지 전송" [disabled] [ref=e266]:
+                - img [ref=e267]
+        - generic [ref=e270]:
+          - button "공식 비서" [ref=e271] [cursor=pointer]
+          - button "내 비서" [ref=e272] [cursor=pointer]
+        - generic [ref=e273]:
+          - button "전체" [ref=e274] [cursor=pointer]
+          - button "대화" [ref=e275] [cursor=pointer]
+          - button "업무" [ref=e276] [cursor=pointer]
+          - button "번역" [ref=e277] [cursor=pointer]
+          - button "분석" [ref=e278] [cursor=pointer]
+          - button "보고" [ref=e279] [cursor=pointer]
+          - button "그림" [ref=e280] [cursor=pointer]
+          - button "글쓰기" [ref=e281] [cursor=pointer]
+        - generic [ref=e282]:
+          - button "신중한 분석가 복잡한 주제를 체계적으로 분석하고 근거 기반 답변을 제공합니다 Sonnet 4.6" [ref=e283] [cursor=pointer]:
+            - img [ref=e285]
+            - generic [ref=e288]:
+              - paragraph [ref=e289]: 신중한 분석가
+              - paragraph [ref=e290]: 복잡한 주제를 체계적으로 분석하고 근거 기반 답변을 제공합니다
+            - generic [ref=e293]: Sonnet 4.6
+          - button "빠른 대화 빠르고 간결한 일상 대화에 최적화된 비서입니다 Gemini Flash" [ref=e294] [cursor=pointer]:
+            - img [ref=e296]
+            - generic [ref=e298]:
+              - paragraph [ref=e299]: 빠른 대화
+              - paragraph [ref=e300]: 빠르고 간결한 일상 대화에 최적화된 비서입니다
+            - generic [ref=e303]: Gemini Flash
+          - button "문서 검토 문서의 정확성, 일관성, 구조를 분석하고 개선점을 제안합니다 Sonnet 4.6" [ref=e304] [cursor=pointer]:
+            - img [ref=e306]
+            - generic [ref=e311]:
+              - paragraph [ref=e312]: 문서 검토
+              - paragraph [ref=e313]: 문서의 정확성, 일관성, 구조를 분석하고 개선점을 제안합니다
+            - generic [ref=e316]: Sonnet 4.6
+          - button "문서 번역 의미와 뉘앙스를 보존하는 자연스러운 번역을 제공합니다 GPT-4o" [ref=e317] [cursor=pointer]:
+            - img [ref=e319]
+            - generic [ref=e323]:
+              - paragraph [ref=e324]: 문서 번역
+              - paragraph [ref=e325]: 의미와 뉘앙스를 보존하는 자연스러운 번역을 제공합니다
+            - generic [ref=e328]: GPT-4o
+          - button "보고서 작성 체계적이고 명확한 비즈니스 보고서를 작성합니다 Sonnet 4.6" [ref=e329] [cursor=pointer]:
+            - img [ref=e331]
+            - generic [ref=e334]:
+              - paragraph [ref=e335]: 보고서 작성
+              - paragraph [ref=e336]: 체계적이고 명확한 비즈니스 보고서를 작성합니다
+            - generic [ref=e339]: Sonnet 4.6
+          - button "코드 리뷰 버그, 성능, 보안, 모범 사례를 기준으로 코드를 분석합니다 Sonnet 4.6" [ref=e340] [cursor=pointer]:
+            - img [ref=e342]
+            - generic [ref=e345]:
+              - paragraph [ref=e346]: 코드 리뷰
+              - paragraph [ref=e347]: 버그, 성능, 보안, 모범 사례를 기준으로 코드를 분석합니다
+            - generic [ref=e350]: Sonnet 4.6
+          - button "데이터 분석 데이터 해석, 트렌드 파악, 인사이트를 구조화하여 제공합니다 GPT-4o" [ref=e351] [cursor=pointer]:
+            - img [ref=e353]
+            - generic [ref=e355]:
+              - paragraph [ref=e356]: 데이터 분석
+              - paragraph [ref=e357]: 데이터 해석, 트렌드 파악, 인사이트를 구조화하여 제공합니다
+            - generic [ref=e360]: GPT-4o
+          - button "이메일 작성 상황에 맞는 톤과 형식의 전문적인 이메일을 작성합니다 4o mini" [ref=e361] [cursor=pointer]:
+            - img [ref=e363]
+            - generic [ref=e366]:
+              - paragraph [ref=e367]: 이메일 작성
+              - paragraph [ref=e368]: 상황에 맞는 톤과 형식의 전문적인 이메일을 작성합니다
+            - generic [ref=e371]: 4o mini
+```

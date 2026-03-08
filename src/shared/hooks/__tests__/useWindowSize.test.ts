@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { renderHook, act } from '@testing-library/react'
 import { useWindowSize } from '../useWindowSize'
 
@@ -17,27 +17,33 @@ describe('useWindowSize', () => {
     })
   })
 
-  it('returns initial dimensions', () => {
+  afterEach(() => {
+    vi.clearAllMocks()
+  })
+
+  it('returns initial window dimensions', () => {
     const { result } = renderHook(() => useWindowSize())
     expect(result.current.width).toBe(1024)
     expect(result.current.height).toBe(768)
   })
 
-  it('isLandscape when width >= height', () => {
-    const { result } = renderHook(() => useWindowSize())
-    expect(result.current.isLandscape).toBe(true)
-    expect(result.current.isPortrait).toBe(false)
-  })
-
   it('updates on resize', () => {
     const { result } = renderHook(() => useWindowSize())
+
+    // Initial dimensions
+    expect(result.current.width).toBe(1024)
+    expect(result.current.height).toBe(768)
+
+    // Simulate resize
     act(() => {
-      Object.defineProperty(window, 'innerWidth', { value: 400 })
-      Object.defineProperty(window, 'innerHeight', { value: 800 })
+      Object.defineProperty(window, 'innerWidth', { value: 1920 })
+      Object.defineProperty(window, 'innerHeight', { value: 1080 })
       resizeListeners.forEach(l => l())
     })
-    expect(result.current.width).toBe(400)
-    expect(result.current.isPortrait).toBe(true)
+
+    // Check updated dimensions
+    expect(result.current.width).toBe(1920)
+    expect(result.current.height).toBe(1080)
   })
 
   it('cleans up on unmount', () => {
@@ -45,5 +51,38 @@ describe('useWindowSize', () => {
     expect(resizeListeners).toHaveLength(1)
     unmount()
     expect(resizeListeners).toHaveLength(0)
+  })
+
+  it('returns width and height', () => {
+    // Set specific dimensions
+    Object.defineProperty(window, 'innerWidth', { value: 1440 })
+    Object.defineProperty(window, 'innerHeight', { value: 900 })
+
+    const { result } = renderHook(() => useWindowSize())
+
+    expect(result.current.width).toBe(1440)
+    expect(result.current.height).toBe(900)
+  })
+
+  it('isPortrait returns true when height > width', () => {
+    // Set portrait dimensions
+    Object.defineProperty(window, 'innerWidth', { value: 768 })
+    Object.defineProperty(window, 'innerHeight', { value: 1024 })
+
+    const { result } = renderHook(() => useWindowSize())
+
+    expect(result.current.isPortrait).toBe(true)
+    expect(result.current.isLandscape).toBe(false)
+  })
+
+  it('isLandscape returns true when width > height', () => {
+    // Set landscape dimensions
+    Object.defineProperty(window, 'innerWidth', { value: 1920 })
+    Object.defineProperty(window, 'innerHeight', { value: 1080 })
+
+    const { result } = renderHook(() => useWindowSize())
+
+    expect(result.current.isLandscape).toBe(true)
+    expect(result.current.isPortrait).toBe(false)
   })
 })

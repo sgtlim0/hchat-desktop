@@ -20,8 +20,15 @@ export function encodeHtml(str: string): string {
 }
 
 export function decodeHtml(str: string): string {
-  const map: Record<string, string> = { '&amp;': '&', '&lt;': '<', '&gt;': '>', '&quot;': '"', '&#39;': "'" }
-  return str.replace(/&amp;|&lt;|&gt;|&quot;|&#39;/g, (m) => map[m] || m)
+  const map: Record<string, string> = {
+    '&amp;': '&',
+    '&lt;': '<',
+    '&gt;': '>',
+    '&quot;': '"',
+    '&#39;': "'",
+    '&#x27;': "'"  // Also handle hex notation for apostrophe
+  }
+  return str.replace(/&amp;|&lt;|&gt;|&quot;|&#39;|&#x27;/g, (m) => map[m] || m)
 }
 
 export function utf8ByteLength(str: string): number {

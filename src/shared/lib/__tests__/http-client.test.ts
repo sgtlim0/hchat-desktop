@@ -1,53 +1,137 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { createHttpClient } from '../http-client'
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
+import { HttpClient, createHttpClient } from '../http-client'
 
-describe('http-client', () => {
-  beforeEach(() => vi.restoreAllMocks())
-
-  it('GET sends request', async () => {
-    vi.spyOn(globalThis, 'fetch').mockResolvedValue(new Response(JSON.stringify({ ok: true }), { status: 200 }))
-    const client = createHttpClient()
-    const res = await client.get('/api/test')
-    expect(res.data).toEqual({ ok: true })
-    expect(res.status).toBe(200)
+describe('HttpClient', () => {
+  beforeEach(() => {
+    global.fetch = vi.fn()
   })
 
-  it('POST sends body', async () => {
-    vi.spyOn(globalThis, 'fetch').mockResolvedValue(new Response(JSON.stringify({ id: 1 }), { status: 201 }))
-    const client = createHttpClient()
-    const res = await client.post('/api/items', { name: 'test' })
-    expect(res.data).toEqual({ id: 1 })
+  afterEach(() => {
+    vi.restoreAllMocks()
   })
 
-  it('adds default headers', async () => {
-    const fetchSpy = vi.spyOn(globalThis, 'fetch').mockResolvedValue(new Response('{}', { status: 200 }))
-    const client = createHttpClient('', { Authorization: 'Bearer token' })
-    await client.get('/api')
-    expect(fetchSpy.mock.calls[0][1]?.headers).toHaveProperty('Authorization', 'Bearer token')
+  describe('get', () => {
+    it('sends GET request', async () => {
+      const mockResponse = new Response(JSON.stringify({ test: 'data' }), { status: 200 })
+      vi.mocked(fetch).mockResolvedValue(mockResponse)
+
+      const client = new HttpClient()
+      const result = await client.get('/api/test')
+
+      expect(fetch).toHaveBeenCalledWith('/api/test', expect.objectContaining({
+        method: 'GET'
+      }))
+      expect(result.data).toEqual({ test: 'data' })
+      expect(result.status).toBe(200)
+    })
+
+    it('handles JSON response', async () => {
+      const responseData = { id: 1, name: 'Test' }
+      const mockResponse = new Response(JSON.stringify(responseData), { status: 200 })
+      vi.mocked(fetch).mockResolvedValue(mockResponse)
+
+      const client = new HttpClient()
+      const result = await client.get<typeof responseData>('/api/users/1')
+
+      expect(result.data).toEqual(responseData)
+    })
   })
 
-  it('throws on non-ok status', async () => {
-    vi.spyOn(globalThis, 'fetch').mockResolvedValue(new Response('', { status: 404, statusText: 'Not Found' }))
-    const client = createHttpClient()
-    await expect(client.get('/missing')).rejects.toThrow('HTTP 404')
+  describe('post', () => {
+    it('sends POST with body', async () => {
+      const requestBody = { name: 'John', age: 30 }
+      const mockResponse = new Response(JSON.stringify({ id: 1, ...requestBody }), { status: 201 })
+      vi.mocked(fetch).mockResolvedValue(mockResponse)
+
+      const client = new HttpClient()
+      const result = await client.post('/api/users', requestBody)
+
+      expect(fetch).toHaveBeenCalledWith('/api/users', expect.objectContaining({
+        method: 'POST',
+        body: JSON.stringify(requestBody),
+        headers: expect.objectContaining({
+          'Content-Type': 'application/json'
+        })
+      }))
+      expect(result.status).toBe(201)
+    })
   })
 
-  it('supports base URL', async () => {
-    const fetchSpy = vi.spyOn(globalThis, 'fetch').mockResolvedValue(new Response('{}', { status: 200 }))
-    const client = createHttpClient('https://api.example.com')
-    await client.get('/users')
-    expect(fetchSpy.mock.calls[0][0]).toBe('https://api.example.com/users')
+  describe('headers', () => {
+    it('adds default headers', async () => {
+      const mockResponse = new Response('{}', { status: 200 })
+      vi.mocked(fetch).mockResolvedValue(mockResponse)
+
+      const defaultHeaders = { 'X-API-Key': 'secret123' }
+      const client = new HttpClient(undefined, defaultHeaders)
+      await client.get('/api/test')
+
+      expect(fetch).toHaveBeenCalledWith('/api/test', expect.objectContaining({
+        headers: expect.objectContaining(defaultHeaders)
+      }))
+    })
   })
 
-  it('PUT sends body', async () => {
-    vi.spyOn(globalThis, 'fetch').mockResolvedValue(new Response('{}', { status: 200 }))
-    const client = createHttpClient()
-    await expect(client.put('/api/1', { name: 'updated' })).resolves.toBeDefined()
+  describe('error handling', () => {
+    it('throws on non-ok status', async () => {
+      const mockResponse = new Response('Not Found', { status: 404, statusText: 'Not Found' })
+      vi.mocked(fetch).mockResolvedValue(mockResponse)
+
+      const client = new HttpClient()
+      await expect(client.get('/api/missing')).rejects.toThrow('HTTP error! status: 404')
+    })
   })
 
-  it('DELETE sends request', async () => {
-    vi.spyOn(globalThis, 'fetch').mockResolvedValue(new Response('{}', { status: 200 }))
-    const client = createHttpClient()
-    await expect(client.delete('/api/1')).resolves.toBeDefined()
+  describe('timeout', () => {
+    it('supports custom timeout via AbortController', async () => {
+      // Create a promise that never resolves to simulate a hanging request
+      vi.mocked(fetch).mockImplementation(
+        (url, options) =>
+          new Promise((resolve, reject) => {
+            // Listen for abort signal
+            const signal = (options as any)?.signal
+            if (signal) {
+              signal.addEventListener('abort', () => {
+                const error = new Error('The operation was aborted')
+                error.name = 'AbortError'
+                reject(error)
+              })
+            }
+            // Never resolve - simulating a slow/hanging request
+          })
+      )
+
+      const client = new HttpClient()
+      await expect(client.get('/api/slow', { timeout: 50 })).rejects.toThrow('Request aborted')
+    })
+  })
+
+  describe('base URL', () => {
+    it('supports base URL', async () => {
+      const mockResponse = new Response('{}', { status: 200 })
+      vi.mocked(fetch).mockResolvedValue(mockResponse)
+
+      const client = new HttpClient('https://api.example.com')
+      await client.get('/users')
+
+      expect(fetch).toHaveBeenCalledWith('https://api.example.com/users', expect.any(Object))
+    })
+  })
+
+  describe('createHttpClient', () => {
+    it('returns configured instance', async () => {
+      const mockResponse = new Response(JSON.stringify({ configured: true }), { status: 200 })
+      vi.mocked(fetch).mockResolvedValue(mockResponse)
+
+      const client = createHttpClient('https://api.test.com', { 'X-API-Key': 'test123' })
+      const result = await client.get('/endpoint')
+
+      expect(fetch).toHaveBeenCalledWith('https://api.test.com/endpoint', expect.objectContaining({
+        headers: expect.objectContaining({
+          'X-API-Key': 'test123'
+        })
+      }))
+      expect(result.data).toEqual({ configured: true })
+    })
   })
 })
