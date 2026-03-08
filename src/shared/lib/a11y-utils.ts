@@ -9,19 +9,75 @@ export function announceToScreenReader(
   priority: 'polite' | 'assertive' = 'polite',
 ): void {
   if (typeof document === 'undefined') return
-  const el = document.createElement('div')
-  el.setAttribute('role', 'status')
-  el.setAttribute('aria-live', priority)
-  el.setAttribute('aria-atomic', 'true')
-  el.className = 'sr-only'
-  el.style.cssText = 'position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)'
-  el.textContent = message
-  document.body.appendChild(el)
-  setTimeout(() => el.remove(), 1000)
+
+  let announcer = document.getElementById('aria-announcer')
+
+  if (!announcer) {
+    announcer = document.createElement('div')
+    announcer.id = 'aria-announcer'
+    announcer.setAttribute('role', 'status')
+    announcer.setAttribute('aria-atomic', 'true')
+    announcer.style.position = 'absolute'
+    announcer.style.left = '-10000px'
+    announcer.style.width = '1px'
+    announcer.style.height = '1px'
+    announcer.style.overflow = 'hidden'
+    document.body.appendChild(announcer)
+  }
+
+  announcer.setAttribute('aria-live', priority)
+  announcer.textContent = message
+
+  // Clear message after short delay to allow screen reader to announce
+  setTimeout(() => {
+    if (announcer) {
+      announcer.textContent = ''
+    }
+  }, 100)
 }
 
 export function getFocusableSelector(): string {
-  return 'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+  return [
+    'a[href]',
+    'button:not([disabled])',
+    'input:not([disabled])',
+    'select:not([disabled])',
+    'textarea:not([disabled])',
+    '[tabindex]:not([tabindex="-1"])',
+    '[contenteditable="true"]'
+  ].join(', ')
+}
+
+export function trapFocus(container: HTMLElement): () => void {
+  const handleKeydown = (event: KeyboardEvent) => {
+    if (event.key !== 'Tab') return
+
+    const focusableElements = container.querySelectorAll<HTMLElement>(getFocusableSelector())
+    if (focusableElements.length === 0) return
+
+    const firstElement = focusableElements[0]
+    const lastElement = focusableElements[focusableElements.length - 1]
+
+    if (event.shiftKey) {
+      // Shift+Tab: moving backwards
+      if (document.activeElement === firstElement) {
+        event.preventDefault()
+        lastElement.focus()
+      }
+    } else {
+      // Tab: moving forwards
+      if (document.activeElement === lastElement) {
+        event.preventDefault()
+        firstElement.focus()
+      }
+    }
+  }
+
+  container.addEventListener('keydown', handleKeydown)
+
+  return () => {
+    container.removeEventListener('keydown', handleKeydown)
+  }
 }
 
 export function isReducedMotion(): boolean {
