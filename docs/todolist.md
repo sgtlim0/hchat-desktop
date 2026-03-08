@@ -1,7 +1,44 @@
 # H Chat PWA — TODO List
 
-> ✅ **Phase 1-23 전체 완료** (115개 기능) |  | 마지막 업데이트: 2026-03-07
-> 1,632 tests, 156 suites | 100 stores, 107 pages, 67K lines
+> ✅ **Phase 1-35 전체 완료** | 마지막 업데이트: 2026-03-08
+> ~1,050+ tests | 33 stores, 35 pages, ~71K LOC
+
+## Phase 25-35 완료 항목 (2026-03-08)
+
+### Phase 25: Advanced RAG ✅
+벡터 임베딩 (TF-IDF 128D), BM25 하이브리드 검색, 인용 시스템 [출처 N], 핵심 포인트 추출, 슬라이딩 윈도우 청킹
+
+### Phase 26: Voice-First Interface ✅
+음성 명령 10종 (한/영), 회의 모드 (녹음→요약→액션아이템), 음성 노트 (자동 태그 6종)
+
+### Phase 27: Advanced Analytics ✅
+사용 히트맵 (7x24), 선형회귀 비용 예측, 모델 벤치마크, 주간/월간 리포트
+
+### Phase 28: Workflow Automation ✅
+크론 스케줄러 (hourly/daily/weekly), 웹훅 트리거, 조건 분기 5종, 루프 노드, YAML 내보내기/가져오기
+
+### Phase 29: Collaborative AI Canvas ✅
+마인드맵 생성 (방사형 레이아웃), 버전 스냅샷, 노드 충돌 감지 + 자동 배치, 멀티커서
+
+### Phase 30: Enterprise Security ✅
+PII 감지 8종 (이메일/전화/SSN/카드/IP/주민번호/여권/패턴), 자동 마스킹, 보존 정책, 컴플라이언스 리포트
+
+### Phase 31: Offline-First ✅
+Sync Queue (오프라인 큐잉→온라인 재시도), 충돌 해결 (last-write-wins), 스토리지 쿼터 모니터링
+
+### Phase 32: Accessibility ✅
+WCAG AA 색상 대비, 포커스 트랩, 스크린 리더 공지, 접근성 감사, prefers-reduced-motion
+
+### Phase 33: Performance ✅
+Core Web Vitals 수집, debounce/rafThrottle, lazyModule, 토큰 추정, 실행 시간 측정
+
+### Phase 34: Agent v2 ✅
+Tool Registry, ReAct 실행 루프, Safety Guards (step/cost 제한), XML Tool Call 파서, 3개 내장 도구
+
+### Phase 35: Collab v2 ✅
+CRDT (insert/delete/update + vector clock), Presence (online/idle/typing), 연산 병합, Activity Feed
+
+---
 
 ## 현재 상태 요약
 
