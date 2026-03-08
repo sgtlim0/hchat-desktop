@@ -30,6 +30,7 @@ def api():
     from backend.routes.openai_proxy import router as openai_router
     from backend.routes.gemini_proxy import router as gemini_router
     from backend.routes.research import router as research_router
+    from backend.routes.analyze import router as analyze_router
 
     web_app = FastAPI(title="H Chat API")
 
@@ -55,5 +56,6 @@ def api():
     web_app.include_router(openai_router, prefix="/api")
     web_app.include_router(gemini_router, prefix="/api")
     web_app.include_router(research_router, prefix="/api")
+    web_app.include_router(analyze_router, prefix="/api")
 
     return web_app

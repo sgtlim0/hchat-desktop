@@ -40,6 +40,13 @@ class ResearchRequest(BaseModel):
     maxSources: int = Field(default=5, ge=1, le=10)
 
 
+class QuickResearchRequest(BaseModel):
+    query: str
+    credentials: Credentials
+    modelId: str
+    maxSources: int = Field(default=3, ge=1, le=5)
+
+
 @router.post("/research/start")
 async def start_research(req: ResearchRequest):
     try:
@@ -61,6 +68,64 @@ async def start_research(req: ResearchRequest):
         media_type="text/event-stream",
         headers={"Cache-Control": "no-cache", "Connection": "keep-alive"},
     )
+
+
+@router.post("/research/quick")
+async def quick_research(req: QuickResearchRequest):
+    """Quick 3-step research: search -> extract -> summarize (no query expansion)."""
+    try:
+        validate_model(req.modelId)
+    except ValueError as e:
+        return StreamingResponse(
+            _error_stream(str(e)),
+            media_type="text/event-stream",
+        )
+
+    client = create_client(
+        access_key_id=req.credentials.accessKeyId,
+        secret_access_key=req.credentials.secretAccessKey,
+        region=req.credentials.region,
+    )
+
+    return StreamingResponse(
+        _quick_pipeline(client, req),
+        media_type="text/event-stream",
+        headers={"Cache-Control": "no-cache", "Connection": "keep-alive"},
+    )
+
+
+async def _quick_pipeline(client, req: QuickResearchRequest):
+    """3-step Quick Research pipeline."""
+    try:
+        yield _sse({"type": "research_start", "query": req.query, "mode": "quick"})
+
+        # Step 1: Direct search (no query expansion)
+        yield _sse({"type": "research_status", "step": "searching", "message": "Quick searching..."})
+        all_results = await _parallel_search([req.query], req.maxSources)
+        yield _sse({
+            "type": "research_search_done",
+            "totalResults": len(all_results),
+            "results": [{"title": r["title"], "url": r["url"], "snippet": r["snippet"]} for r in all_results[:5]],
+        })
+
+        # Step 2: Content extraction
+        evidence = await _extract_content(all_results, req.maxSources)
+        evidence.sort(key=lambda e: e["authority"], reverse=True)
+        yield _sse({
+            "type": "research_evidence",
+            "count": len(evidence),
+            "sources": [{"url": e["url"], "title": e["title"], "score": e["authority"]} for e in evidence],
+        })
+
+        # Step 3: Quick summarize
+        yield _sse({"type": "research_status", "step": "synthesizing", "message": "Generating quick summary..."})
+        report = await _synthesize_report(client, req.modelId, req.query, evidence)
+        yield _sse({"type": "research_report", "content": report})
+
+        yield _sse({"type": "done"})
+
+    except Exception as e:
+        yield _sse({"type": "error", "error": str(e)})
 
 
 async def _research_pipeline(client, req: ResearchRequest):

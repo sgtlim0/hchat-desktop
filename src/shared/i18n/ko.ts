@@ -1807,6 +1807,13 @@ const ko = {
   'movieScript.title': 'AI 영화 시나리오', 'movieScript.create': '새 시나리오', 'movieScript.empty': '시나리오가 없습니다',
   'neuroFeedback.title': '뉴로 피드백', 'neuroFeedback.create': '기록 추가', 'neuroFeedback.empty': '기록이 없습니다',
   'spaceExplorer.title': 'AI 우주 탐험가', 'spaceExplorer.create': '새 탐험', 'spaceExplorer.empty': '탐험이 없습니다',
+
+  // extension
+  'extension.fromExtension': 'Extension에서 전달됨',
+  'extension.analyzeStart': '이 페이지 분석 시작',
+  // Phase 40: PWA Install Banner
+  'pwa.installBanner': 'H Chat을 홈 화면에 추가하세요',
+  'pwa.install': '설치',
 } as const
 
 export default ko

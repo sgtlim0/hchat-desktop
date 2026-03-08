@@ -7,6 +7,7 @@ import { CodeBlock } from './CodeBlock'
 import { ToolCallGroup } from './ToolCallGroup'
 import * as tts from '@/shared/lib/tts'
 import { useLearningStore, type FeedbackRating } from '@/entities/learning/learning.store'
+import { useCompressionStore } from '@/entities/compression/compression.store'
 
 interface MessageBubbleProps {
   message: Message
@@ -157,6 +158,7 @@ export const MessageBubble = memo(function MessageBubble({
                 🔀 Fork
               </button>
             )}
+            <CompressionBadge />
             <FeedbackButtons messageId={message.id} sessionId={message.sessionId} />
           </div>
         )}
@@ -193,6 +195,17 @@ const MarkdownSegment = memo(function MarkdownSegment({
         rendered
       )}
     </div>
+  )
+})
+
+const CompressionBadge = memo(function CompressionBadge() {
+  const enabled = useCompressionStore((s) => s.enabled)
+  const stats = useCompressionStore((s) => s.stats)
+  if (!enabled || stats.totalSavedTokens <= 0) return null
+  return (
+    <span className="text-xs text-text-secondary px-2 py-1">
+      {stats.totalSavedTokens.toLocaleString()} tokens saved
+    </span>
   )
 })
 

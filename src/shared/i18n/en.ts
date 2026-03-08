@@ -1807,6 +1807,13 @@ const en = {
   'movieScript.title': 'AI Movie Script', 'movieScript.create': 'New Script', 'movieScript.empty': 'No scripts',
   'neuroFeedback.title': 'Neuro Feedback', 'neuroFeedback.create': 'Add Entry', 'neuroFeedback.empty': 'No entries',
   'spaceExplorer.title': 'AI Space Explorer', 'spaceExplorer.create': 'New Exploration', 'spaceExplorer.empty': 'No explorations',
+
+  // extension
+  'extension.fromExtension': 'From Extension',
+  'extension.analyzeStart': 'Start analyzing this page',
+  // Phase 40: PWA Install Banner
+  'pwa.installBanner': 'Add H Chat to your home screen',
+  'pwa.install': 'Install',
 } as const
 
 export default en

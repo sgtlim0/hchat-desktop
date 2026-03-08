@@ -31,6 +31,7 @@ import { ToastContainer } from '@/shared/ui/ToastContainer'
 import { useTranslation } from '@/shared/i18n'
 import { useOnlineStatus } from '@/shared/hooks/useOnlineStatus'
 import { ErrorBoundary } from '@/shared/ui/ErrorBoundary'
+import { InstallBanner } from '@/shared/ui/InstallBanner'
 import { useCopilotStore } from '@/entities/copilot/copilot.store'
 import { CopilotPanel } from '@/widgets/copilot/CopilotPanel'
 import { ROUTE_MAP, SettingsScreen, ChatPage } from './route-map'
@@ -165,6 +166,7 @@ export function MainLayout() {
             {t('offline.banner')}
           </div>
         )}
+        <InstallBanner />
         <HeaderTabs />
         <main id="main-content" className="flex-1 overflow-hidden">
           <ErrorBoundary>

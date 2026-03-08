@@ -35,10 +35,59 @@ vi.mock('@/shared/lib/tts', () => ({
   isSpeaking: vi.fn(() => false),
 }))
 
+// Mock compression store
+const mockCompressionState = {
+  enabled: false,
+  threshold: 0.3,
+  contextPruningEnabled: false,
+  maxContextTokens: 1000,
+  stats: {
+    totalCompressed: 0,
+    totalSavedTokens: 0,
+    totalSavedCost: 0,
+    averageRatio: 0,
+  },
+  setEnabled: vi.fn(),
+  setThreshold: vi.fn(),
+  setContextPruningEnabled: vi.fn(),
+  setMaxContextTokens: vi.fn(),
+  recordCompression: vi.fn(),
+  resetStats: vi.fn(),
+  compressPrompt: vi.fn(),
+  compressMessages: vi.fn(),
+  pruneMessages: vi.fn(),
+}
+
+vi.mock('@/entities/compression/compression.store', () => ({
+  useCompressionStore: (selector: (s: typeof mockCompressionState) => unknown) =>
+    selector(mockCompressionState),
+}))
+
+// Mock learning store
+const mockLearningState = {
+  feedbacks: {},
+  submitFeedback: vi.fn(),
+  getFeedbackForMessage: vi.fn(() => null),
+}
+
+vi.mock('@/entities/learning/learning.store', () => ({
+  useLearningStore: (selector: (s: typeof mockLearningState) => unknown) =>
+    selector(mockLearningState),
+}))
+
 describe('MessageBubble', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     vi.useFakeTimers()
+    // Reset mock states
+    mockCompressionState.enabled = false
+    mockCompressionState.stats = {
+      totalCompressed: 0,
+      totalSavedTokens: 0,
+      totalSavedCost: 0,
+      averageRatio: 0,
+    }
+    mockLearningState.feedbacks = {}
   })
 
   afterEach(() => {
@@ -259,5 +308,116 @@ describe('MessageBubble', () => {
 
     const cursor = container.querySelector('.animate-cursor-blink')
     expect(cursor).toBeInTheDocument()
+  })
+
+  describe('CompressionBadge', () => {
+    it('does not show badge when compression is disabled', () => {
+      mockCompressionState.enabled = false
+      mockCompressionState.stats.totalSavedTokens = 1000
+
+      const message: Message = {
+        id: 'msg-1',
+        sessionId: 'session-1',
+        role: 'assistant',
+        segments: [{ type: 'text', content: 'Test message' }],
+        createdAt: new Date().toISOString(),
+      }
+
+      render(<MessageBubble message={message} />)
+
+      expect(screen.queryByText(/tokens saved/)).not.toBeInTheDocument()
+    })
+
+    it('does not show badge when no tokens saved', () => {
+      mockCompressionState.enabled = true
+      mockCompressionState.stats.totalSavedTokens = 0
+
+      const message: Message = {
+        id: 'msg-1',
+        sessionId: 'session-1',
+        role: 'assistant',
+        segments: [{ type: 'text', content: 'Test message' }],
+        createdAt: new Date().toISOString(),
+      }
+
+      render(<MessageBubble message={message} />)
+
+      expect(screen.queryByText(/tokens saved/)).not.toBeInTheDocument()
+    })
+
+    it('shows badge when compression enabled and tokens saved', () => {
+      mockCompressionState.enabled = true
+      mockCompressionState.stats.totalSavedTokens = 1500
+
+      const message: Message = {
+        id: 'msg-1',
+        sessionId: 'session-1',
+        role: 'assistant',
+        segments: [{ type: 'text', content: 'Test message' }],
+        createdAt: new Date().toISOString(),
+      }
+
+      render(<MessageBubble message={message} />)
+
+      expect(screen.getByText('1,500 tokens saved')).toBeInTheDocument()
+    })
+
+    it('formats large numbers with commas', () => {
+      mockCompressionState.enabled = true
+      mockCompressionState.stats.totalSavedTokens = 1234567
+
+      const message: Message = {
+        id: 'msg-1',
+        sessionId: 'session-1',
+        role: 'assistant',
+        segments: [{ type: 'text', content: 'Test message' }],
+        createdAt: new Date().toISOString(),
+      }
+
+      render(<MessageBubble message={message} />)
+
+      expect(screen.getByText('1,234,567 tokens saved')).toBeInTheDocument()
+    })
+
+    it('only shows badge for assistant messages', () => {
+      mockCompressionState.enabled = true
+      mockCompressionState.stats.totalSavedTokens = 1000
+
+      const userMessage: Message = {
+        id: 'msg-1',
+        sessionId: 'session-1',
+        role: 'user',
+        segments: [{ type: 'text', content: 'User message' }],
+        createdAt: new Date().toISOString(),
+      }
+
+      render(<MessageBubble message={userMessage} />)
+
+      // CompressionBadge is only shown for assistant messages
+      expect(screen.queryByText(/tokens saved/)).not.toBeInTheDocument()
+    })
+
+    it('displays badge with different token values', () => {
+      // Test with small number
+      mockCompressionState.enabled = true
+      mockCompressionState.stats.totalSavedTokens = 10
+
+      const message: Message = {
+        id: 'msg-1',
+        sessionId: 'session-1',
+        role: 'assistant',
+        segments: [{ type: 'text', content: 'Test message' }],
+        createdAt: new Date().toISOString(),
+      }
+
+      const { unmount } = render(<MessageBubble message={message} />)
+      expect(screen.getByText('10 tokens saved')).toBeInTheDocument()
+      unmount()
+
+      // Test with larger number
+      mockCompressionState.stats.totalSavedTokens = 999
+      render(<MessageBubble message={message} />)
+      expect(screen.getByText('999 tokens saved')).toBeInTheDocument()
+    })
   })
 })
