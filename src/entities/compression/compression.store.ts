@@ -1,6 +1,5 @@
 import { create } from 'zustand'
-import { PromptCompressor, type CompressorOptions } from '@/shared/lib/compression/prompt-compressor'
-import { EntropyEncoder } from '@/shared/lib/compression/entropy-encoder'
+import { PromptCompressor } from '@/shared/lib/compression/prompt-compressor'
 import { pruneContext, type PruneOptions } from '@/shared/lib/compression/context-pruner'
 
 export interface CompressionStats {

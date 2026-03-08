@@ -17,7 +17,7 @@ export interface HistoryEntry<S extends string, E extends string> {
 }
 
 // Alias for internal use
-type TransitionRecord<S, E> = HistoryEntry<S, E>
+type TransitionRecord<S extends string, E extends string> = HistoryEntry<S, E>
 
 type TransitionListener<S extends string, E extends string> = (state: S, event: E) => void
 

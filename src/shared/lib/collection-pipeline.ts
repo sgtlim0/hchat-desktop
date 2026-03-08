@@ -16,7 +16,10 @@
  * The original array is never modified.
  */
 export class Pipeline<T> {
-  private constructor(private readonly items: T[]) {}
+  private readonly items: T[]
+  private constructor(items: T[]) {
+    this.items = items
+  }
 
   /**
    * Creates a new Pipeline from an array

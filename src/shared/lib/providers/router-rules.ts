@@ -1,4 +1,4 @@
-import type { ProviderModelDef } from '@/shared/types'
+import type { ProviderModelDef, ModelCapability } from '@/shared/types'
 
 export type IntentCategory =
   | 'code-generation'
@@ -93,7 +93,7 @@ const INTENT_RULES: Record<IntentCategory, IntentRule> = {
 interface ModelPreference {
   primary: string
   fallback: string
-  capability: string
+  capability: ModelCapability
 }
 
 const INTENT_MODEL_MAP: Record<IntentCategory, ModelPreference> = {

@@ -1,4 +1,4 @@
-import { memo, useCallback, useEffect, useState } from 'react'
+import { memo, useCallback, useEffect } from 'react'
 import { useTranslation } from '@/shared/i18n'
 
 const SHORTCUTS = [

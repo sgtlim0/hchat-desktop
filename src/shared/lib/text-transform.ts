@@ -7,7 +7,7 @@ export function toTitleCase(text: string): string {
   return text
     .toLowerCase()
     .split(/(\s+|[-@.])/)
-    .map((word, index, array) => {
+    .map((word, index) => {
       // Don't capitalize separators
       if (index % 2 === 1) return word
       // Skip Korean characters

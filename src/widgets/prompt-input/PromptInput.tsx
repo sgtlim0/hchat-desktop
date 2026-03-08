@@ -257,8 +257,8 @@ export function PromptInput({
     // Phase 37: Apply compression + context pruning
     const { compressMessages, pruneMessages, enabled: compressionEnabled, recordCompression } = useCompressionStore.getState()
     const preTokens = chatHistory.reduce((s, m) => s + estimateTokens(m.content), 0)
-    chatHistory = pruneMessages(chatHistory)
-    chatHistory = compressMessages(chatHistory)
+    chatHistory = pruneMessages(chatHistory) as typeof chatHistory
+    chatHistory = compressMessages(chatHistory) as typeof chatHistory
     if (compressionEnabled) {
       const postTokens = chatHistory.reduce((s, m) => s + estimateTokens(m.content), 0)
       const saved = preTokens - postTokens

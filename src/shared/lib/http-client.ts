@@ -10,10 +10,16 @@ interface HttpResponse<T> {
 }
 
 export class HttpClient {
+  private baseUrl?: string
+  private defaultHeaders?: Record<string, string>
+
   constructor(
-    private baseUrl?: string,
-    private defaultHeaders?: Record<string, string>
-  ) {}
+    baseUrl?: string,
+    defaultHeaders?: Record<string, string>
+  ) {
+    this.baseUrl = baseUrl
+    this.defaultHeaders = defaultHeaders
+  }
 
   private buildUrl(url: string): string {
     // If url is absolute, use it as-is

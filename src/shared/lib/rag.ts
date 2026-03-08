@@ -4,7 +4,7 @@
  */
 
 import type { KnowledgeDocument, KnowledgeChunk } from '@/shared/types'
-import { embedText, hybridScore, cosineSimilarity } from './embedding'
+import { embedText, hybridScore } from './embedding'
 
 export interface RAGSearchResult {
   chunk: KnowledgeChunk

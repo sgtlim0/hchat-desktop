@@ -1899,6 +1899,24 @@ const en = {
   'atlassian.tip.title': 'Search Tips',
   'atlassian.tip.cql': 'CQL syntax: text ~ "keyword" AND space = "SPACE_KEY"',
   'atlassian.tip.jql': 'JQL syntax: text ~ "keyword" AND project = "PROJECT_KEY"',
+
+  // tool integration
+  'toolIntegration.title': 'Tool Integration',
+  'toolIntegration.confluence': 'Confluence',
+  'toolIntegration.jira': 'Jira',
+  'toolIntegration.notConfigured': 'Not configured',
+  'toolIntegration.notConfigured.confluence': 'Confluence is not configured. Register in Settings.',
+  'toolIntegration.notConfigured.jira': 'Jira is not configured. Register in Settings.',
+  'toolIntegration.goToSettings': 'Go to Settings',
+
+  // internal search (additional keys)
+  'internalSearch.empty': 'Search your internal documents',
+  'internalSearch.searching': 'Searching internal documents...',
+
+  // research / common
+  'search': 'Search',
+  'cancel': 'Cancel',
+  'clearAll': 'Clear All',
 } as const
 
 export default en

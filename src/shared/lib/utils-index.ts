@@ -2,7 +2,7 @@
 // Usage: import { fuzzySearch, deepClone, formatCompact } from '@/shared/lib/utils-index'
 
 // Phase 41: Production Hardening
-export { RateLimiter, getRateLimiter, resetAllLimiters } from './rate-limiter'
+export { RateLimiter, getRateLimiter } from './rate-limiter'
 export { errorReporter } from './error-reporter'
 
 // Phase 42: Testing & Observability

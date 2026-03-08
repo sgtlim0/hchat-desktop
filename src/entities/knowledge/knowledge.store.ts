@@ -8,7 +8,6 @@ import {
   chunkWithOverlap,
   type RAGSearchResult,
   type RAGContext,
-  type Citation,
 } from '@/shared/lib/rag'
 
 interface KnowledgeState {

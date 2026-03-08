@@ -1,5 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
 
+declare const chrome: any
+
 export interface PageContext {
   url: string
   title: string

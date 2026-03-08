@@ -1,4 +1,5 @@
 import Dexie, { type EntityTable } from 'dexie'
+import { encrypt, decrypt } from './crypto'
 import type {
   Message, Session, Project, UsageEntry, SavedPrompt, Persona, Folder, Tag,
   MemoryEntry, Schedule, SwarmAgent, SwarmConnection, ChannelConfig, Artifact,
@@ -394,18 +395,49 @@ export async function deleteSessionFromDb(id: string): Promise<void> {
   })
 }
 
-// Message CRUD
+// Message CRUD — encrypted at rest
+
+const ENC_PREFIX = 'ENC:'
+
+async function encryptSegments(message: Message): Promise<Message> {
+  try {
+    const json = JSON.stringify(message.segments)
+    const encrypted = await encrypt(json)
+    return {
+      ...message,
+      segments: [{ type: 'text', content: ENC_PREFIX + encrypted }],
+    }
+  } catch {
+    return message
+  }
+}
+
+async function decryptSegments(message: Message): Promise<Message> {
+  const first = message.segments[0]
+  if (!first?.content?.startsWith(ENC_PREFIX)) return message
+
+  try {
+    const ciphertext = first.content.slice(ENC_PREFIX.length)
+    const json = await decrypt(ciphertext)
+    return { ...message, segments: JSON.parse(json) }
+  } catch {
+    return message
+  }
+}
 
 export async function getMessagesBySession(sessionId: string): Promise<Message[]> {
-  return db.messages.where('sessionId').equals(sessionId).sortBy('createdAt')
+  const messages = await db.messages.where('sessionId').equals(sessionId).sortBy('createdAt')
+  return Promise.all(messages.map(decryptSegments))
 }
 
 export async function putMessage(message: Message): Promise<void> {
-  await db.messages.put(message)
+  const encrypted = await encryptSegments(message)
+  await db.messages.put(encrypted)
 }
 
 export async function putMessages(messages: Message[]): Promise<void> {
-  await db.messages.bulkPut(messages)
+  const encrypted = await Promise.all(messages.map(encryptSegments))
+  await db.messages.bulkPut(encrypted)
 }
 
 // Project CRUD

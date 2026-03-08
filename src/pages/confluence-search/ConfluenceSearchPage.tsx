@@ -9,7 +9,7 @@ export function ConfluenceSearchPage() {
   const { t } = useTranslation()
   const isConfigured = useToolIntegrationStore((s) => s.isConfluenceConfigured)
 
-  const { pages, aiOverview, total, loading, error, search, summarize, clearResults } =
+  const { pages, aiOverview, total, loading, error, search, summarize } =
     useConfluenceSearchStore()
 
   const [query, setQuery] = useState('')

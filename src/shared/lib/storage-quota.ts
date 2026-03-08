@@ -135,7 +135,7 @@ export async function clearStorageType(type: 'localStorage' | 'sessionStorage' |
         break
 
       case 'indexedDB':
-        if (typeof window !== 'undefined' && window.indexedDB?.databases) {
+        if (typeof window !== 'undefined' && typeof window.indexedDB?.databases === 'function') {
           const databases = await indexedDB.databases()
           for (const db of databases) {
             if (db.name) {

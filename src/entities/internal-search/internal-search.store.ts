@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 
-interface SearchResult {
+export interface SearchResult {
   type: 'confluence' | 'jira'
   title: string
   url: string

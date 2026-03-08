@@ -6,7 +6,7 @@ export function compose<T>(...fns: Array<(arg: T) => T>): (arg: T) => T {
   return (arg: T) => fns.reduceRight((result, fn) => fn(result), arg)
 }
 
-export async function pipeAsync<T>(
+export function pipeAsync<T>(
   ...fns: Array<(arg: T) => T | Promise<T>>
 ): (arg: T) => Promise<T> {
   return async (arg: T) => {

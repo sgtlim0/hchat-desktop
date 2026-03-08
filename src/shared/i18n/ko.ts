@@ -1899,6 +1899,24 @@ const ko = {
   'atlassian.tip.title': '검색 팁',
   'atlassian.tip.cql': 'CQL 문법: text ~ "키워드" AND space = "SPACE_KEY"',
   'atlassian.tip.jql': 'JQL 문법: text ~ "키워드" AND project = "PROJECT_KEY"',
+
+  // tool integration
+  'toolIntegration.title': '도구 연동',
+  'toolIntegration.confluence': 'Confluence',
+  'toolIntegration.jira': 'Jira',
+  'toolIntegration.notConfigured': '미설정',
+  'toolIntegration.notConfigured.confluence': 'Confluence 연동이 설정되지 않았습니다. 설정에서 등록하세요.',
+  'toolIntegration.notConfigured.jira': 'Jira 연동이 설정되지 않았습니다. 설정에서 등록하세요.',
+  'toolIntegration.goToSettings': '설정으로 이동',
+
+  // internal search (additional keys)
+  'internalSearch.empty': '사내 문서를 검색해보세요',
+  'internalSearch.searching': '사내 문서 검색 중...',
+
+  // research / common
+  'search': '검색',
+  'cancel': '취소',
+  'clearAll': '모두 지우기',
 } as const
 
 export default ko

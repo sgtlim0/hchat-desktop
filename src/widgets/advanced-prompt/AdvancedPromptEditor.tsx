@@ -2,6 +2,7 @@ import { useState, useRef, useEffect, useCallback } from 'react'
 import { useTranslation } from '@/shared/i18n'
 import { Maximize2, Minimize2, Eye, EyeOff, History, X, Copy, Check, Hash } from 'lucide-react'
 import { Button } from '@/shared/ui/Button'
+import DOMPurify from 'dompurify'
 
 interface AdvancedPromptEditorProps {
   value: string
@@ -460,7 +461,7 @@ export function AdvancedPromptEditor({
           </div>
           <div
             className="prose prose-sm max-w-none text-text-primary"
-            dangerouslySetInnerHTML={{ __html: renderMarkdownPreview(value) }}
+            dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(renderMarkdownPreview(value)) }}
           />
         </div>
       )}

@@ -9,7 +9,7 @@ export function JiraSearchPage() {
   const { t } = useTranslation()
   const isConfigured = useToolIntegrationStore((s) => s.isConfluenceConfigured)
 
-  const { tickets, aiOverview, total, loading, error, search, analyze, clearResults } =
+  const { tickets, aiOverview, total, loading, error, search, analyze } =
     useJiraSearchStore()
 
   const [query, setQuery] = useState('')

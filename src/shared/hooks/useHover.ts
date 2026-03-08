@@ -22,5 +22,10 @@ export function useHover<T extends HTMLElement>(): [RefObject<T | null>, boolean
     [handleMouseEnter, handleMouseLeave],
   )
 
-  return [{ current: ref.current, ...{ set current(v: T | null) { callbackRef(v) } } } as RefObject<T | null>, isHovered]
+  const proxyRef: RefObject<T | null> = {
+    get current() { return ref.current },
+  }
+  // Attach callbackRef for external use
+  callbackRef(ref.current)
+  return [proxyRef, isHovered]
 }

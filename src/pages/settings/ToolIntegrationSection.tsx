@@ -44,15 +44,12 @@ export function ToolIntegrationSection() {
     try {
       const success = await testConnection('confluence')
       if (success) {
-        updateConfluence({ connected: true })
-        addToast('Confluence 연결 성공', 'success')
+        addToast({ message: 'Confluence 연결 성공', type: 'success' })
       } else {
-        updateConfluence({ connected: false })
-        addToast('Confluence 연결 실패: 입력 정보를 확인하세요', 'error')
+        addToast({ message: 'Confluence 연결 실패: 입력 정보를 확인하세요', type: 'error' })
       }
-    } catch (error) {
-      updateConfluence({ connected: false })
-      addToast('Confluence 연결 테스트 중 오류 발생', 'error')
+    } catch {
+      addToast({ message: 'Confluence 연결 테스트 중 오류 발생', type: 'error' })
     } finally {
       setTestingConfluence(false)
     }
@@ -63,15 +60,12 @@ export function ToolIntegrationSection() {
     try {
       const success = await testConnection('jira')
       if (success) {
-        updateJira({ connected: true })
-        addToast('Jira 연결 성공', 'success')
+        addToast({ message: 'Jira 연결 성공', type: 'success' })
       } else {
-        updateJira({ connected: false })
-        addToast('Jira 연결 실패: 입력 정보를 확인하세요', 'error')
+        addToast({ message: 'Jira 연결 실패: 입력 정보를 확인하세요', type: 'error' })
       }
-    } catch (error) {
-      updateJira({ connected: false })
-      addToast('Jira 연결 테스트 중 오류 발생', 'error')
+    } catch {
+      addToast({ message: 'Jira 연결 테스트 중 오류 발생', type: 'error' })
     } finally {
       setTestingJira(false)
     }

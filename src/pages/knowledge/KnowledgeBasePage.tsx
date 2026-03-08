@@ -215,9 +215,8 @@ export function KnowledgeBasePage() {
             <h2 className="text-sm font-semibold text-text-primary mb-2">
               {t('knowledge.searchResults', { count: searchResults.length })}
             </h2>
-            {searchResults.map((chunk) => {
-              const doc = documents.find((d) => d.id === chunk.documentId)
-              if (!doc) return null
+            {searchResults.map((result) => {
+              const doc = result.document
 
               const highlightText = (text: string, query: string) => {
                 const idx = text.toLowerCase().indexOf(query.toLowerCase())
@@ -243,7 +242,7 @@ export function KnowledgeBasePage() {
 
               return (
                 <div
-                  key={chunk.id}
+                  key={result.chunk.id}
                   role="button"
                   tabIndex={0}
                   className="bg-card border border-border rounded-xl p-4 hover:border-primary/30 transition cursor-pointer"
@@ -260,10 +259,10 @@ export function KnowledgeBasePage() {
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-semibold text-text-primary mb-1">{doc.title}</p>
                       <p className="text-xs text-text-secondary leading-relaxed">
-                        {highlightText(chunk.content, searchQuery)}
+                        {highlightText(result.chunk.content, searchQuery)}
                       </p>
                       <p className="text-[10px] text-text-tertiary mt-2">
-                        Chunk {chunk.index + 1} of {doc.chunks.length}
+                        Chunk {result.chunk.index + 1} of {doc.chunks.length}
                       </p>
                     </div>
                   </div>

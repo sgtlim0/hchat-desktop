@@ -107,7 +107,7 @@ export function whenIdle(callback: () => void, timeout = 2000): void {
 
 /** Measure execution time of an async function */
 export async function measureAsync<T>(
-  label: string,
+  _label: string,
   fn: () => Promise<T>,
 ): Promise<{ result: T; durationMs: number }> {
   const start = performance.now()
