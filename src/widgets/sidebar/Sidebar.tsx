@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { MessageSquare, Folder, Star, Search, Plus, Brain, Network, CalendarClock, Users, Settings, BookOpen, Swords, ChevronDown, ChevronRight, X, Wand2, Image, Bot, Languages, FileText, ScanLine, Database, Link2, Workflow, UserCheck, Layers, BarChart3, Puzzle, Palette, ListTodo, Sparkles, HardDrive, Shield, LayoutDashboard, Users2, Building2 } from 'lucide-react'
+import { MessageSquare, Folder, Star, Search, Plus, Brain, Network, CalendarClock, Users, Settings, BookOpen, Swords, ChevronDown, ChevronRight, X, Wand2, Image, Bot, Languages, FileText, ScanLine, Database, Link2, Workflow, UserCheck, Layers, BarChart3, Puzzle, Palette, ListTodo, Sparkles, HardDrive, Shield, LayoutDashboard, Users2, Building2, Bug } from 'lucide-react'
 import { useSessionStore } from '@/entities/session/session.store'
 import { useSettingsStore } from '@/entities/settings/settings.store'
 import { useFolderStore } from '@/entities/folder/folder.store'
@@ -288,6 +288,16 @@ export function Sidebar() {
               icon={Building2}
               label={t('sidebar.internalSearch')}
               onClick={() => handleViewChange('internalSearch')}
+            />
+            <SidebarItem
+              icon={FileText}
+              label={t('sidebar.confluenceSearch')}
+              onClick={() => handleViewChange('confluenceSearch')}
+            />
+            <SidebarItem
+              icon={Bug}
+              label={t('sidebar.jiraSearch')}
+              onClick={() => handleViewChange('jiraSearch')}
             />
             <SidebarItem
               icon={Wand2}

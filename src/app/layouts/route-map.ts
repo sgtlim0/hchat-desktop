@@ -113,6 +113,8 @@ const CanvasPage: LazyPage = lazy(() => import('@/pages/canvas/CanvasPage').then
 const AutoWorkflowPage: LazyPage = lazy(() => import('@/pages/auto-workflow/AutoWorkflowPage').then((m) => ({ default: m.AutoWorkflowPage })))
 const DeepResearchPage: LazyPage = lazy(() => import('@/pages/research/ResearchPage').then((m) => ({ default: m.ResearchPage })))
 const InternalSearchPage: LazyPage = lazy(() => import('@/pages/internal-search/InternalSearchPage').then((m) => ({ default: m.InternalSearchPage })))
+const ConfluenceSearchPage: LazyPage = lazy(() => import('@/pages/confluence-search/ConfluenceSearchPage').then((m) => ({ default: m.ConfluenceSearchPage })))
+const JiraSearchPage: LazyPage = lazy(() => import('@/pages/jira-search/JiraSearchPage').then((m) => ({ default: m.JiraSearchPage })))
 
 // ViewState → Component routing table
 export const ROUTE_MAP: Partial<Record<ViewState, LazyPage>> = {
@@ -221,4 +223,6 @@ export const ROUTE_MAP: Partial<Record<ViewState, LazyPage>> = {
   autoWorkflow: AutoWorkflowPage,
   deepResearch: DeepResearchPage,
   internalSearch: InternalSearchPage,
+  confluenceSearch: ConfluenceSearchPage,
+  jiraSearch: JiraSearchPage,
 }

@@ -2,7 +2,7 @@ import modal
 
 image = (
     modal.Image.debian_slim(python_version="3.12")
-    .pip_install("boto3", "fastapi[standard]", "duckduckgo-search", "httpx", "openai", "google-genai", "numpy>=1.24.0")
+    .pip_install("boto3", "fastapi[standard]", "duckduckgo-search", "httpx", "openai", "google-genai", "numpy>=1.24.0", "beautifulsoup4", "lxml")
     .add_local_python_source("backend")
 )
 
@@ -32,6 +32,9 @@ def api():
     from backend.routes.research import router as research_router
     from backend.routes.analyze import router as analyze_router
     from backend.routes.tools import router as tools_router
+    from backend.routes.verify import router as verify_router
+    from backend.routes.confluence import router as confluence_router
+    from backend.routes.jira_routes import router as jira_router
 
     web_app = FastAPI(title="H Chat API")
 
@@ -59,5 +62,8 @@ def api():
     web_app.include_router(research_router, prefix="/api")
     web_app.include_router(analyze_router, prefix="/api")
     web_app.include_router(tools_router, prefix="/api")
+    web_app.include_router(verify_router, prefix="/api")
+    web_app.include_router(confluence_router, prefix="/api")
+    web_app.include_router(jira_router, prefix="/api")
 
     return web_app

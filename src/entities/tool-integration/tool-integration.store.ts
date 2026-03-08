@@ -1,10 +1,14 @@
 import { create } from 'zustand'
+import { verifyAtlassian } from '@/shared/lib/api/atlassian-client'
+import { mapToAtlassianCreds } from '@/shared/lib/api/atlassian-creds-mapper'
 
 interface AtlassianConfig {
   baseUrl: string
   email: string
   apiToken: string
   connected: boolean
+  displayName?: string
+  accountId?: string
 }
 
 interface ActiveTools {
@@ -114,13 +118,24 @@ export const useToolIntegrationStore = create<ToolIntegrationState>((set, get) =
     const state = get()
     const config = type === 'confluence' ? state.confluence : state.jira
 
-    // 모든 필수 필드가 채워져 있는지 확인
     if (!config.baseUrl || !config.email || !config.apiToken) {
       return false
     }
 
-    // 실제 API 호출은 다른 곳에서 수행
-    // 여기서는 필드 검증만 수행
-    return true
+    try {
+      const creds = mapToAtlassianCreds(config)
+      const result = await verifyAtlassian(creds)
+      const updateFn = type === 'confluence' ? 'updateConfluence' : 'updateJira'
+      get()[updateFn]({
+        connected: result.valid,
+        displayName: result.display_name,
+        accountId: result.account_id,
+      })
+      return result.valid
+    } catch {
+      const updateFn = type === 'confluence' ? 'updateConfluence' : 'updateJira'
+      get()[updateFn]({ connected: false, displayName: undefined, accountId: undefined })
+      return false
+    }
   }
 }))

@@ -80,3 +80,21 @@ def converse_sync(
             parts.append(text)
 
     return "\n".join(parts)
+
+
+def invoke_text(
+    access_key_id: str,
+    secret_access_key: str,
+    region: str,
+    model_id: str,
+    prompt: str,
+    max_tokens: int = 2048,
+) -> str:
+    """Single prompt → text response. Used for Confluence/Jira AI summaries."""
+    client = create_client(access_key_id, secret_access_key, region)
+    return converse_sync(
+        client=client,
+        model_id=model_id,
+        messages=[{"role": "user", "content": prompt}],
+        max_tokens=max_tokens,
+    )
