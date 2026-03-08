@@ -1827,6 +1827,22 @@ const en = {
   'shortcuts.copilot': 'Toggle copilot',
   'shortcuts.close': 'Close / Cancel',
   'shortcuts.hint': 'Press ⌘ ? to open this help',
+  // Phase 54: Tool Integration
+  'tools.title': 'Tool Integration',
+  'tools.confluence': 'Confluence',
+  'tools.jira': 'Jira',
+  'tools.baseUrl': 'Base URL',
+  'tools.email': 'Email',
+  'tools.apiToken': 'API Token',
+  'tools.testConnection': 'Test Connection',
+  'tools.connected': 'Connected',
+  'tools.disconnected': 'Not Connected',
+  'tools.testing': 'Testing...',
+  'tools.shareCredentials': 'Use same account',
+  'tools.addTools': 'Add Tools',
+  'tools.enableConfluence': 'Enable Confluence search',
+  'tools.enableJira': 'Enable Jira search',
+  'tools.searchingInternal': 'Searching internal docs...',
 } as const
 
 export default en

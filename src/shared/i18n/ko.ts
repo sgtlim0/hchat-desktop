@@ -1827,6 +1827,22 @@ const ko = {
   'shortcuts.copilot': '코파일럿 토글',
   'shortcuts.close': '닫기 / 취소',
   'shortcuts.hint': '⌘ ? 를 눌러 이 도움말을 열 수 있습니다',
+  // Phase 54: Tool Integration
+  'tools.title': '도구 연동',
+  'tools.confluence': 'Confluence',
+  'tools.jira': 'Jira',
+  'tools.baseUrl': 'Base URL',
+  'tools.email': '이메일',
+  'tools.apiToken': 'API 토큰',
+  'tools.testConnection': '연결 테스트',
+  'tools.connected': '연결됨',
+  'tools.disconnected': '미연결',
+  'tools.testing': '테스트 중...',
+  'tools.shareCredentials': '같은 계정 사용',
+  'tools.addTools': '도구 추가',
+  'tools.enableConfluence': 'Confluence 검색 활성화',
+  'tools.enableJira': 'Jira 검색 활성화',
+  'tools.searchingInternal': '사내 문서 검색 중...',
 } as const
 
 export default ko
