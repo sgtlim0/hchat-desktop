@@ -1855,6 +1855,14 @@ const ko = {
   'internalSearch.source': '출처',
   'internalSearch.summary': 'AI 요약',
   'internalSearch.configNeeded': '도구 연동 설정에서 Atlassian 토큰을 등록하세요',
+  // Phase 56: Settings Tool Section
+  'settings.toolIntegration': '도구 연동',
+  'settings.tool.shareAccount': '같은 계정 사용',
+  'settings.tool.baseUrlPlaceholder': 'https://company.atlassian.net',
+  'settings.tool.emailPlaceholder': 'user@company.com',
+  'settings.tool.tokenPlaceholder': 'API 토큰을 입력하세요',
+  'settings.tool.connectionSuccess': '연결 성공',
+  'settings.tool.connectionFailed': '연결 실패',
 } as const
 
 export default ko

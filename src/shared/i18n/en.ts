@@ -1855,6 +1855,14 @@ const en = {
   'internalSearch.source': 'Source',
   'internalSearch.summary': 'AI Summary',
   'internalSearch.configNeeded': 'Register Atlassian token in Tool Integration settings',
+  // Phase 56: Settings Tool Section
+  'settings.toolIntegration': 'Tool Integration',
+  'settings.tool.shareAccount': 'Use same account',
+  'settings.tool.baseUrlPlaceholder': 'https://company.atlassian.net',
+  'settings.tool.emailPlaceholder': 'user@company.com',
+  'settings.tool.tokenPlaceholder': 'Enter API token',
+  'settings.tool.connectionSuccess': 'Connection successful',
+  'settings.tool.connectionFailed': 'Connection failed',
 } as const
 
 export default en
