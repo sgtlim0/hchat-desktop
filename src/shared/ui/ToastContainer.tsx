@@ -1,11 +1,24 @@
-import { useToastStore } from '@/entities/toast/toast.store'
 import { useTranslation } from '@/shared/i18n'
 import { useEffect, useState } from 'react'
 
-export function ToastContainer() {
+interface Toast {
+  id: string
+  type: 'success' | 'error' | 'warning' | 'info'
+  message: string
+  progress?: number
+  action?: {
+    label: string
+    onClick: () => void
+  }
+}
+
+interface ToastContainerProps {
+  toasts: Toast[]
+  removeToast: (id: string) => void
+}
+
+export function ToastContainer({ toasts, removeToast }: ToastContainerProps) {
   const { t } = useTranslation()
-  const toasts = useToastStore((s) => s.toasts)
-  const removeToast = useToastStore((s) => s.removeToast)
   const [exitingIds, setExitingIds] = useState<Set<string>>(new Set())
 
   useEffect(() => {

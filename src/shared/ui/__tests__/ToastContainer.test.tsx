@@ -5,11 +5,6 @@ import { ToastContainer } from '../ToastContainer'
 const mockToasts: Array<{ id: string; message: string; type: 'success' | 'error' | 'warning' | 'info' }> = []
 const mockRemoveToast = vi.fn()
 
-vi.mock('@/entities/toast/toast.store', () => ({
-  useToastStore: (selector: (s: Record<string, unknown>) => unknown) =>
-    selector({ toasts: mockToasts, removeToast: mockRemoveToast }),
-}))
-
 vi.mock('@/shared/i18n', () => ({
   useTranslation: () => ({ t: (key: string) => key }),
 }))
@@ -26,7 +21,7 @@ describe('ToastContainer', () => {
   })
 
   it('should render nothing when no toasts', () => {
-    const { container } = render(<ToastContainer />)
+    const { container } = render(<ToastContainer toasts={[]} removeToast={mockRemoveToast} />)
     expect(container.querySelectorAll('[class*="pointer-events-auto"]')).toHaveLength(0)
   })
 
@@ -36,7 +31,7 @@ describe('ToastContainer', () => {
       { id: '2', message: 'Error message', type: 'error' },
     )
 
-    render(<ToastContainer />)
+    render(<ToastContainer toasts={mockToasts} removeToast={mockRemoveToast} />)
 
     expect(screen.getByText('Success message')).toBeDefined()
     expect(screen.getByText('Error message')).toBeDefined()
@@ -50,7 +45,7 @@ describe('ToastContainer', () => {
       { id: '4', message: 'Info', type: 'info' },
     )
 
-    const { container } = render(<ToastContainer />)
+    const { container } = render(<ToastContainer toasts={mockToasts} removeToast={mockRemoveToast} />)
     const toastElements = container.querySelectorAll('[class*="pointer-events-auto"]')
 
     expect(toastElements[0].className).toContain('border-l-[#22C55E]')
@@ -62,7 +57,7 @@ describe('ToastContainer', () => {
   it('should call removeToast after close button click with delay', () => {
     mockToasts.push({ id: '1', message: 'Test toast', type: 'info' })
 
-    render(<ToastContainer />)
+    render(<ToastContainer toasts={mockToasts} removeToast={mockRemoveToast} />)
 
     const closeButton = screen.getByRole('button', { name: 'toast.close' })
     fireEvent.click(closeButton)
@@ -81,7 +76,7 @@ describe('ToastContainer', () => {
   it('should render close buttons with aria-label', () => {
     mockToasts.push({ id: '1', message: 'Test', type: 'success' })
 
-    render(<ToastContainer />)
+    render(<ToastContainer toasts={mockToasts} removeToast={mockRemoveToast} />)
 
     const button = screen.getByRole('button', { name: 'toast.close' })
     expect(button).toBeDefined()

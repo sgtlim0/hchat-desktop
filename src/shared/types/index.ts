@@ -96,7 +96,62 @@ export interface Skill {
   icon: string
 }
 
-export type ViewState = 'home' | 'chat' | 'settings' | 'allChats' | 'projects' | 'projectDetail' | 'quickChat' | 'memory' | 'agentSwarm' | 'schedule' | 'groupChat' | 'promptLibrary' | 'debate' | 'aiTools' | 'imageGen' | 'agent' | 'translate' | 'docWriter' | 'ocr' | 'promptChain' | 'knowledgeBase' | 'workflow' | 'collab' | 'contextManager' | 'insights' | 'plugins' | 'themeBuilder' | 'batchQueue' | 'sessionInsights' | 'cacheControl' | 'auditLog' | 'dashboard' | 'workspace' | 'snippets' | 'apiTester' | 'regexBuilder' | 'dataConverter' | 'diagramEditor' | 'voiceChat' | 'knowledgeGraph' | 'canvas' | 'autoWorkflow' | 'mcpServers' | 'autonomousAgent' | 'dataConnectors' | 'codeInterpreter' | 'mentoring' | 'dataPipeline' | 'codeReview' | 'notificationCenter' | 'visualPrompt' | 'meetingNotes' | 'reportGenerator' | 'learningPath' | 'bookmarks' | 'translationMemory' | 'presentation' | 'summaryFeed' | 'emailAssistant' | 'conversationTimeline' | 'mindMap' | 'pairProgramming' | 'dashboardBuilder' | 'docCompare' | 'multiAgentDebate' | 'portfolio' | 'liveTranslate' | 'docAnalyzer' | 'gamifiedLearning' | 'dataStory' | 'wellbeing' | 'whiteboard' | 'contract' | 'soundscape' | 'tutorialBuilder' | 'habitTracker' | 'travelPlanner' | 'recipe' | 'interviewCoach' | 'finance' | 'readingNote' | 'okr' | 'crm' | 'journal' | 'socialMedia' | 'projectTimeline' | 'videoMeeting' | 'apiMarketplace' | 'wiki' | 'codePlayground' | 'voiceClone' | 'virtualSpace' | 'gameScenario' | 'emotionAvatar' | 'data3d' | 'orchestra' | 'digitalTwin' | 'musicComposer' | 'dreamSim' | 'quantumViz' | 'philosopher' | 'simulation' | 'smartContract' | 'movieScript' | 'neuroFeedback' | 'spaceExplorer' | 'deepResearch' | 'internalSearch' | 'confluenceSearch' | 'jiraSearch'
+// Core navigation views
+export type CoreView =
+  | 'home' | 'chat' | 'settings' | 'allChats'
+  | 'projects' | 'projectDetail' | 'quickChat' | 'dashboard'
+
+// AI & chat feature views
+export type AiFeatureView =
+  | 'agent' | 'groupChat' | 'debate' | 'aiTools' | 'imageGen'
+  | 'promptLibrary' | 'promptChain' | 'memory' | 'agentSwarm'
+  | 'schedule' | 'voiceChat' | 'deepResearch' | 'multiAgentDebate'
+  | 'autonomousAgent' | 'pairProgramming' | 'codeReview'
+
+// Document & content tool views
+export type ToolView =
+  | 'translate' | 'docWriter' | 'ocr' | 'knowledgeBase'
+  | 'workflow' | 'snippets' | 'regexBuilder' | 'dataConverter'
+  | 'diagramEditor' | 'codeInterpreter' | 'codePlayground'
+  | 'docCompare' | 'docAnalyzer' | 'apiTester' | 'canvas'
+  | 'meetingNotes' | 'reportGenerator' | 'presentation'
+  | 'emailAssistant' | 'liveTranslate' | 'translationMemory'
+  | 'mindMap' | 'whiteboard' | 'wiki'
+
+// Workspace & collaboration views
+export type WorkspaceView =
+  | 'workspace' | 'collab' | 'contextManager' | 'insights'
+  | 'sessionInsights' | 'batchQueue' | 'cacheControl' | 'auditLog'
+  | 'plugins' | 'themeBuilder' | 'dashboardBuilder'
+  | 'notificationCenter' | 'bookmarks' | 'conversationTimeline'
+
+// Data & analytics views
+export type DataView =
+  | 'knowledgeGraph' | 'dataConnectors' | 'dataPipeline'
+  | 'dataStory' | 'summaryFeed' | 'portfolio' | 'visualPrompt'
+  | 'autoWorkflow' | 'mcpServers'
+
+// Search & integration views
+export type SearchView =
+  | 'internalSearch' | 'confluenceSearch' | 'jiraSearch'
+  | 'apiMarketplace'
+
+// Lifestyle & experimental views
+export type ExperimentalView =
+  | 'gamifiedLearning' | 'wellbeing' | 'mentoring' | 'learningPath'
+  | 'tutorialBuilder' | 'habitTracker' | 'travelPlanner' | 'recipe'
+  | 'interviewCoach' | 'finance' | 'readingNote' | 'okr' | 'crm'
+  | 'journal' | 'socialMedia' | 'projectTimeline' | 'videoMeeting'
+  | 'contract' | 'soundscape' | 'voiceClone' | 'virtualSpace'
+  | 'gameScenario' | 'emotionAvatar' | 'data3d' | 'orchestra'
+  | 'digitalTwin' | 'musicComposer' | 'dreamSim' | 'quantumViz'
+  | 'philosopher' | 'simulation' | 'smartContract' | 'movieScript'
+  | 'neuroFeedback' | 'spaceExplorer'
+
+// Combined type — backward compatible
+export type ViewState =
+  | CoreView | AiFeatureView | ToolView | WorkspaceView
+  | DataView | SearchView | ExperimentalView
 
 // Group Chat types
 

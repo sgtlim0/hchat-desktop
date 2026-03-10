@@ -3,6 +3,12 @@
  * Provides connectivity detection, sync queue, and conflict resolution.
  */
 
+// formatBytes is imported from number-format (consolidated utility)
+import { formatBytes } from './number-format'
+
+// Re-export for backward compatibility
+export { formatBytes }
+
 export interface SyncQueueItem {
   id: string
   url: string
@@ -195,13 +201,6 @@ export async function getStorageQuota(): Promise<StorageQuota> {
   }
 }
 
-/** Format bytes to human-readable string */
-export function formatBytes(bytes: number): string {
-  if (bytes === 0) return '0 B'
-  const units = ['B', 'KB', 'MB', 'GB']
-  const i = Math.floor(Math.log(bytes) / Math.log(1024))
-  return `${(bytes / 1024 ** i).toFixed(1)} ${units[i]}`
-}
 
 // Auto-detect connectivity if in browser
 if (typeof window !== 'undefined') {

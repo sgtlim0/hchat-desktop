@@ -1,34 +1,22 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest'
+import { describe, it, expect, beforeEach } from 'vitest'
 import { errorReporter } from '../error-reporter'
-import { useSessionStore } from '@/entities/session/session.store'
-
-// Mock the session store
-vi.mock('@/entities/session/session.store', () => ({
-  useSessionStore: {
-    getState: vi.fn(() => ({
-      view: 'home',
-      currentSessionId: 'test-session-123',
-    })),
-  },
-}))
 
 describe('ErrorReporter', () => {
   beforeEach(() => {
     // Clear reports before each test
     errorReporter.clearReports()
-    vi.clearAllMocks()
   })
 
   it('should report a basic error', () => {
     const error = new Error('Test error')
-    errorReporter.report(error)
+    errorReporter.report(error, undefined, { view: 'home', sessionId: 'test-session-123' })
 
     const reports = errorReporter.getReports()
     expect(reports).toHaveLength(1)
     expect(reports[0].message).toBe('Test error')
     expect(reports[0].stack).toBeDefined()
-    expect(reports[0].view).toBe('home')
-    expect(reports[0].sessionId).toBe('test-session-123')
+    expect(reports[0].context?.view).toBe('home')
+    expect(reports[0].context?.sessionId).toBe('test-session-123')
   })
 
   it('should auto-capture timestamp', () => {

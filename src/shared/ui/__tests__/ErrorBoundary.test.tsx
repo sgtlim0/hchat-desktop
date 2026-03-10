@@ -12,20 +12,16 @@ vi.mock('@/shared/i18n', () => ({
     }
     return map[key] ?? key
   },
-}))
-
-vi.mock('@/entities/settings/settings.store', () => ({
-  useSettingsStore: (selector: (s: Record<string, unknown>) => unknown) =>
-    selector({ language: 'en' }),
-}))
-
-vi.mock('@/entities/session/session.store', () => ({
-  useSessionStore: {
-    getState: vi.fn(() => ({
-      view: 'home',
-      currentSessionId: 'test-session',
-    })),
-  },
+  useTranslation: () => ({
+    t: (key: string) => {
+      const map: Record<string, string> = {
+        'error.boundary.title': 'Something went wrong',
+        'error.boundary.message': 'There was a problem loading the page.',
+        'error.boundary.retry': 'Try again',
+      }
+      return map[key] ?? key
+    }
+  })
 }))
 
 function ThrowingComponent({ shouldThrow }: { shouldThrow: boolean }) {
@@ -113,7 +109,7 @@ describe('ErrorBoundary', () => {
     const reportSpy = vi.spyOn(errorReporter, 'report')
 
     render(
-      <ErrorBoundary>
+      <ErrorBoundary sessionContext={{ view: 'test', sessionId: 'test-id' }}>
         <ThrowingComponent shouldThrow={true} />
       </ErrorBoundary>,
     )
@@ -126,6 +122,7 @@ describe('ErrorBoundary', () => {
       'critical',
       expect.objectContaining({
         componentStack: expect.any(String),
+        sessionContext: { view: 'test', sessionId: 'test-id' },
       }),
     )
   })

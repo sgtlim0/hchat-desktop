@@ -1,4 +1,3 @@
-import { useSettingsStore } from '@/entities/settings/settings.store'
 import ko from './ko'
 import en from './en'
 import type { Language, TFunction } from './types'
@@ -15,8 +14,15 @@ function interpolate(template: string, params?: Record<string, string | number>)
   )
 }
 
+// Module-level language getter to be injected from app layer
+let getLanguage: () => Language = () => 'ko'
+
+export function setLanguageProvider(getter: () => Language): void {
+  getLanguage = getter
+}
+
 export function useTranslation(): { t: TFunction; language: Language } {
-  const language = useSettingsStore((s) => s.language)
+  const language = getLanguage()
   const dict = translations[language]
 
   const t: TFunction = (key, params) => {

@@ -1,19 +1,16 @@
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect, beforeEach } from 'vitest'
 import { renderHook } from '@testing-library/react'
-import { getTranslation, useTranslation } from '../index'
-import { useSettingsStore } from '@/entities/settings/settings.store'
+import { getTranslation, useTranslation, setLanguageProvider } from '../index'
 import ko from '../ko'
 import en from '../en'
 
-// Mock settings store
-vi.mock('@/entities/settings/settings.store', () => ({
-  useSettingsStore: vi.fn((selector) => {
-    const state = {
-      language: 'ko',
-    }
-    return selector(state)
-  }),
-}))
+// Mock language state for tests
+let mockLanguage: 'ko' | 'en' = 'ko'
+
+beforeEach(() => {
+  mockLanguage = 'ko'
+  setLanguageProvider(() => mockLanguage)
+})
 
 describe('getTranslation', () => {
   it('returns Korean translation for ko language', () => {
@@ -84,11 +81,9 @@ describe('useTranslation', () => {
     expect(result.current.language).toBe('ko')
   })
 
-  it('uses language from settings store', () => {
-    vi.mocked(useSettingsStore).mockImplementation((selector) => {
-      const state = { language: 'en' as 'ko' | 'en' }
-      return selector(state)
-    })
+  it('uses language from provider', () => {
+    mockLanguage = 'en'
+    setLanguageProvider(() => mockLanguage)
 
     const { result } = renderHook(() => useTranslation())
     expect(result.current.language).toBe('en')

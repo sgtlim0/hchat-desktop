@@ -62,7 +62,8 @@ export function ChatHeader({ sessionId }: ChatHeaderProps) {
   }
 
   const handleExport = async (format: ExportFormat) => {
-    await exportChat({ session, messages }, format)
+    const language = useSettingsStore.getState().language
+    await exportChat({ session, messages, language }, format)
     setMenuOpen(false)
     setExportSubmenuOpen(false)
     setExportMenuOpen(false)

@@ -1,14 +1,15 @@
 import type { Session, Message, ExportFormat } from '../types'
 import { getTranslation } from '@/shared/i18n'
-import { useSettingsStore } from '@/entities/settings/settings.store'
+import type { Language } from '@/shared/i18n'
 
 interface ExportData {
   session: Session
   messages: Message[]
+  language?: Language  // Optional parameter with fallback
 }
 
 export function exportToMarkdown(data: ExportData): string {
-  const language = useSettingsStore.getState().language
+  const language = data.language ?? 'ko'
   const t = getTranslation(language)
   const locale = language === 'ko' ? 'ko-KR' : 'en-US'
 
@@ -61,7 +62,7 @@ export function exportToMarkdown(data: ExportData): string {
 }
 
 export function exportToHtml(data: ExportData): string {
-  const language = useSettingsStore.getState().language
+  const language = data.language ?? 'ko'
   const t = getTranslation(language)
   const locale = language === 'ko' ? 'ko-KR' : 'en-US'
   const { session, messages } = data
@@ -224,7 +225,7 @@ export function exportToJson(data: ExportData): string {
 }
 
 export function exportToTxt(data: ExportData): string {
-  const language = useSettingsStore.getState().language
+  const language = data.language ?? 'ko'
   const t = getTranslation(language)
   const locale = language === 'ko' ? 'ko-KR' : 'en-US'
   const { session, messages } = data
@@ -274,7 +275,7 @@ export function exportToTxt(data: ExportData): string {
 
 export async function exportToPdf(data: ExportData): Promise<void> {
   const { jsPDF } = await import('jspdf')
-  const language = useSettingsStore.getState().language
+  const language = data.language ?? 'ko'
   const t = getTranslation(language)
   const locale = language === 'ko' ? 'ko-KR' : 'en-US'
   const { session, messages } = data

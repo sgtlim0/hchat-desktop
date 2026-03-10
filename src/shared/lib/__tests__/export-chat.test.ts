@@ -2,11 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { exportToMarkdown, exportToHtml, exportToJson, exportToTxt } from '../export-chat'
 import type { Session, Message } from '@/shared/types'
 
-vi.mock('@/entities/settings/settings.store', () => ({
-  useSettingsStore: {
-    getState: vi.fn(() => ({ language: 'ko' }))
-  }
-}))
+// Removed mock for settings store as we no longer depend on it
 
 vi.mock('@/shared/i18n', () => ({
   getTranslation: vi.fn(() => (key: string) => {
@@ -93,7 +89,7 @@ describe('export-chat.ts', () => {
 
   describe('exportToMarkdown', () => {
     it('exports basic session and messages to markdown', () => {
-      const result = exportToMarkdown({ session: mockSession, messages: mockMessages })
+      const result = exportToMarkdown({ session: mockSession, messages: mockMessages, language: 'ko' })
 
       expect(result).toContain('# Test Chat')
       expect(result).toContain('**모델:** claude-3-5-sonnet-20241022')
@@ -106,14 +102,14 @@ describe('export-chat.ts', () => {
 
     it('exports session without tags', () => {
       const sessionNoTags = { ...mockSession, tags: [] }
-      const result = exportToMarkdown({ session: sessionNoTags, messages: mockMessages })
+      const result = exportToMarkdown({ session: sessionNoTags, messages: mockMessages, language: 'ko' })
 
       expect(result).not.toContain('**태그:**')
       expect(result).toContain('# Test Chat')
     })
 
     it('exports tool calls in markdown', () => {
-      const result = exportToMarkdown({ session: mockSession, messages: mockMessagesWithTools })
+      const result = exportToMarkdown({ session: mockSession, messages: mockMessagesWithTools, language: 'ko' })
 
       expect(result).toContain('**Tool:** calculator')
       expect(result).toContain('**Args:**')
@@ -123,7 +119,7 @@ describe('export-chat.ts', () => {
     })
 
     it('exports attachments in markdown', () => {
-      const result = exportToMarkdown({ session: mockSession, messages: mockMessagesWithAttachments })
+      const result = exportToMarkdown({ session: mockSession, messages: mockMessagesWithAttachments, language: 'ko' })
 
       expect(result).toContain('**첨부파일:**')
       expect(result).toContain('![test.png](http://example.com/test.png)')
@@ -145,7 +141,7 @@ describe('export-chat.ts', () => {
         }
       ]
 
-      const result = exportToMarkdown({ session: mockSession, messages: messagesNoArgs })
+      const result = exportToMarkdown({ session: mockSession, messages: messagesNoArgs, language: 'ko' })
 
       expect(result).toContain('**Tool:** ping')
       expect(result).not.toContain('**Args:**')
@@ -169,7 +165,7 @@ describe('export-chat.ts', () => {
         }
       ]
 
-      const result = exportToMarkdown({ session: mockSession, messages: messagesNoResult })
+      const result = exportToMarkdown({ session: mockSession, messages: messagesNoResult, language: 'ko' })
 
       expect(result).toContain('**Tool:** notify')
       expect(result).toContain('**Args:**')
@@ -179,7 +175,7 @@ describe('export-chat.ts', () => {
 
   describe('exportToHtml', () => {
     it('exports basic session and messages to HTML', () => {
-      const result = exportToHtml({ session: mockSession, messages: mockMessages })
+      const result = exportToHtml({ session: mockSession, messages: mockMessages, language: 'ko' })
 
       expect(result).toContain('<!DOCTYPE html>')
       expect(result).toContain('<title>Test Chat</title>')
@@ -191,7 +187,7 @@ describe('export-chat.ts', () => {
     })
 
     it('exports session with tags in HTML', () => {
-      const result = exportToHtml({ session: mockSession, messages: mockMessages })
+      const result = exportToHtml({ session: mockSession, messages: mockMessages, language: 'ko' })
 
       expect(result).toContain('태그:')
       expect(result).toContain('test, example')
@@ -199,13 +195,13 @@ describe('export-chat.ts', () => {
 
     it('exports session without tags in HTML', () => {
       const sessionNoTags = { ...mockSession, tags: [] }
-      const result = exportToHtml({ session: sessionNoTags, messages: mockMessages })
+      const result = exportToHtml({ session: sessionNoTags, messages: mockMessages, language: 'ko' })
 
       expect(result).not.toContain('태그:')
     })
 
     it('exports tool calls in HTML', () => {
-      const result = exportToHtml({ session: mockSession, messages: mockMessagesWithTools })
+      const result = exportToHtml({ session: mockSession, messages: mockMessagesWithTools, language: 'ko' })
 
       expect(result).toContain('Tool:')
       expect(result).toContain('calculator')
@@ -216,7 +212,7 @@ describe('export-chat.ts', () => {
     })
 
     it('exports attachments in HTML', () => {
-      const result = exportToHtml({ session: mockSession, messages: mockMessagesWithAttachments })
+      const result = exportToHtml({ session: mockSession, messages: mockMessagesWithAttachments, language: 'ko' })
 
       expect(result).toContain('<img src="http://example.com/test.png"')
       expect(result).toContain('alt="test.png"')
@@ -233,7 +229,7 @@ describe('export-chat.ts', () => {
         }
       ]
 
-      const result = exportToHtml({ session: mockSession, messages: messagesWithHtml })
+      const result = exportToHtml({ session: mockSession, messages: messagesWithHtml, language: 'ko' })
 
       expect(result).not.toContain('<script>')
       expect(result).toContain('&lt;script&gt;')
@@ -242,7 +238,7 @@ describe('export-chat.ts', () => {
 
   describe('exportToJson', () => {
     it('exports session and messages to JSON string', () => {
-      const result = exportToJson({ session: mockSession, messages: mockMessages })
+      const result = exportToJson({ session: mockSession, messages: mockMessages, language: 'ko' })
       const parsed = JSON.parse(result)
 
       expect(parsed.session.id).toBe('test-session')
@@ -253,14 +249,14 @@ describe('export-chat.ts', () => {
     })
 
     it('formats JSON with proper indentation', () => {
-      const result = exportToJson({ session: mockSession, messages: mockMessages })
+      const result = exportToJson({ session: mockSession, messages: mockMessages, language: 'ko' })
 
       expect(result).toContain('  "session": {')
       expect(result).toContain('  "messages": [')
     })
 
     it('preserves all data structures', () => {
-      const result = exportToJson({ session: mockSession, messages: mockMessagesWithTools })
+      const result = exportToJson({ session: mockSession, messages: mockMessagesWithTools, language: 'ko' })
       const parsed = JSON.parse(result)
 
       expect(parsed.messages[0].segments[0].type).toBe('tool')
@@ -271,7 +267,7 @@ describe('export-chat.ts', () => {
 
   describe('exportToTxt', () => {
     it('exports basic session and messages to plain text', () => {
-      const result = exportToTxt({ session: mockSession, messages: mockMessages })
+      const result = exportToTxt({ session: mockSession, messages: mockMessages, language: 'ko' })
 
       expect(result).toContain('Test Chat')
       expect(result).toContain('=========')
@@ -285,13 +281,13 @@ describe('export-chat.ts', () => {
 
     it('exports session without tags', () => {
       const sessionNoTags = { ...mockSession, tags: [] }
-      const result = exportToTxt({ session: sessionNoTags, messages: mockMessages })
+      const result = exportToTxt({ session: sessionNoTags, messages: mockMessages, language: 'ko' })
 
       expect(result).not.toContain('태그:')
     })
 
     it('exports tool calls in plain text', () => {
-      const result = exportToTxt({ session: mockSession, messages: mockMessagesWithTools })
+      const result = exportToTxt({ session: mockSession, messages: mockMessagesWithTools, language: 'ko' })
 
       expect(result).toContain('[Tool: calculator]')
       expect(result).toContain('Args: {"operation":"add","a":2,"b":3}')
@@ -299,14 +295,14 @@ describe('export-chat.ts', () => {
     })
 
     it('exports attachments in plain text', () => {
-      const result = exportToTxt({ session: mockSession, messages: mockMessagesWithAttachments })
+      const result = exportToTxt({ session: mockSession, messages: mockMessagesWithAttachments, language: 'ko' })
 
       expect(result).toContain('첨부파일:')
       expect(result).toContain('- test.png (http://example.com/test.png)')
     })
 
     it('uses underscores as separators', () => {
-      const result = exportToTxt({ session: mockSession, messages: mockMessages })
+      const result = exportToTxt({ session: mockSession, messages: mockMessages, language: 'ko' })
 
       expect(result).toMatch(/-{80}/)
     })

@@ -3,24 +3,18 @@ import TextareaAutosize from 'react-textarea-autosize'
 import { Plus, Send, Square, User, FileText, X, Mic, MicOff, Shield, AlertTriangle } from 'lucide-react'
 import { useSessionStore } from '@/entities/session/session.store'
 import { useSettingsStore } from '@/entities/settings/settings.store'
-import { useUsageStore, calculateCost } from '@/entities/usage/usage.store'
+import { useUsageStore } from '@/entities/usage/usage.store'
 import { usePersonaStore } from '@/entities/persona/persona.store'
 import { useTranslation } from '@/shared/i18n'
 import { ModelSelector } from './ModelSelector'
-import { createStream, getProviderConfig } from '@/shared/lib/providers/factory'
-import { routeModel } from '@/shared/lib/providers/router'
-import { putMessage } from '@/shared/lib/db'
-import type { Message, UsageEntry, PdfAttachment, SpreadsheetAttachment, ThinkingDepth } from '@/shared/types'
+import type { PdfAttachment, SpreadsheetAttachment, ThinkingDepth } from '@/shared/types'
 import { MODELS } from '@/shared/constants'
-import { useMemoryStore } from '@/entities/memory/memory.store'
-import { useArtifactStore } from '@/entities/artifact/artifact.store'
-import { detectArtifacts } from '@/shared/lib/artifact-detector'
 import { useOnlineStatus } from '@/shared/hooks/useOnlineStatus'
-import { estimateTokens } from '@/shared/lib/token-estimator'
 import * as stt from '@/shared/lib/stt'
 import { detectSensitiveData, getDetectionLabel } from '@/shared/lib/guardrail'
-import { createStreamThrottle } from '@/shared/lib/stream-throttle'
-import { useCompressionStore } from '@/entities/compression/compression.store'
+import { useMessageBuilder } from './hooks/useMessageBuilder'
+import { useStreamingChat } from './hooks/useStreamingChat'
+import { usePostProcessing } from './hooks/usePostProcessing'
 
 interface PromptInputProps {
   onSend?: (message: string) => void
@@ -35,24 +29,17 @@ export function PromptInput({
   const [input, setInput] = useState('')
   const [isComposing, setIsComposing] = useState(false)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
-  const abortRef = useRef<AbortController | null>(null)
 
   const currentSessionId = useSessionStore((s) => s.currentSessionId)
   const pendingPrompt = useSessionStore((s) => s.pendingPrompt)
   const setPendingPrompt = useSessionStore((s) => s.setPendingPrompt)
-  const createSession = useSessionStore((s) => s.createSession)
-  const addMessage = useSessionStore((s) => s.addMessage)
-  const updateLastMessage = useSessionStore((s) => s.updateLastMessage)
-  const setSessionStreaming = useSessionStore((s) => s.setSessionStreaming)
   const credentials = useSettingsStore((s) => s.credentials)
   const openaiApiKey = useSettingsStore((s) => s.openaiApiKey)
   const geminiApiKey = useSettingsStore((s) => s.geminiApiKey)
   const selectedModel = useSettingsStore((s) => s.selectedModel)
-  const autoRouting = useSettingsStore((s) => s.autoRouting)
   const monthlyBudget = useSettingsStore((s) => s.monthlyBudget)
   const budgetThreshold = useSettingsStore((s) => s.budgetThreshold)
 
-  const addUsage = useUsageStore((s) => s.addUsage)
   const getTotalCost = useUsageStore((s) => s.getTotalCost)
   const activePersona = usePersonaStore((s) => s.getActivePersona())
   const personas = usePersonaStore((s) => s.personas)
@@ -63,10 +50,9 @@ export function PromptInput({
   const setThinkingDepth = useSettingsStore((s) => s.setThinkingDepth)
   const guardrailEnabled = useSettingsStore((s) => s.guardrailEnabled)
 
-  const autoExtract = useMemoryStore((s) => s.autoExtract)
-  const extractFromMessages = useMemoryStore((s) => s.extractFromMessages)
-
-  const createArtifact = useArtifactStore((s) => s.createArtifact)
+  const { buildChatContext } = useMessageBuilder()
+  const { streamResponse, abortStream } = useStreamingChat()
+  const { processResponse } = usePostProcessing()
 
   const isOnline = useOnlineStatus()
   const [isSending, setIsSending] = useState(false)
@@ -210,200 +196,32 @@ export function PromptInput({
     setShowGuardrailWarning(false)
     setIsSending(true)
 
-    // Auto-route model if enabled
-    const effectiveModel = autoRouting
-      ? routeModel(messageText, MODELS)
-      : selectedModel
+    // Build chat context and messages
+    const { sessionId, assistantMessageId, chatHistory, systemPrompt, effectiveModel } =
+      buildChatContext(messageText, currentSessionId, pdfAttachment, spreadsheetAttachment)
 
-    // Create session if on home page
-    let sessionId = currentSessionId
-    if (!sessionId) {
-      createSession(messageText.slice(0, 50))
-      sessionId = useSessionStore.getState().currentSessionId!
-    }
-
-    // Add user message
-    const userMessage: Message = {
-      id: `msg-${Date.now()}`,
+    // Stream the response
+    const { fullText, inputTokens, outputTokens } = await streamResponse(
       sessionId,
-      role: 'user',
-      segments: [{ type: 'text', content: messageText }],
-      createdAt: new Date().toISOString(),
-    }
-    addMessage(sessionId, userMessage)
+      assistantMessageId,
+      chatHistory,
+      effectiveModel,
+      systemPrompt
+    )
 
-    // Create empty assistant message for streaming
-    const assistantMessageId = `msg-${Date.now()}-assistant`
-    const assistantMessage: Message = {
-      id: assistantMessageId,
+    // Post-process the response
+    await processResponse(
       sessionId,
-      role: 'assistant',
-      segments: [{ type: 'text', content: '' }],
-      createdAt: new Date().toISOString(),
-    }
-    addMessage(sessionId, assistantMessage)
-    setSessionStreaming(sessionId, true)
+      assistantMessageId,
+      messageText,
+      fullText,
+      chatHistory,
+      effectiveModel,
+      inputTokens,
+      outputTokens
+    )
 
-    // Build message history for context
-    const allMessages = useSessionStore.getState().messages[sessionId] ?? []
-    let chatHistory = allMessages
-      .filter((m) => m.id !== assistantMessageId)
-      .map((m) => ({
-        role: m.role,
-        content: m.segments.find((s) => s.type === 'text')?.content ?? '',
-      }))
-      .filter((m) => m.content.length > 0)
-
-    // Phase 37: Apply compression + context pruning
-    const { compressMessages, pruneMessages, enabled: compressionEnabled, recordCompression } = useCompressionStore.getState()
-    const preTokens = chatHistory.reduce((s, m) => s + estimateTokens(m.content), 0)
-    chatHistory = pruneMessages(chatHistory) as typeof chatHistory
-    chatHistory = compressMessages(chatHistory) as typeof chatHistory
-    if (compressionEnabled) {
-      const postTokens = chatHistory.reduce((s, m) => s + estimateTokens(m.content), 0)
-      const saved = preTokens - postTokens
-      if (saved > 0) {
-        const model = MODELS.find((m) => m.id === effectiveModel)
-        recordCompression(saved, model ? model.cost.input / 1_000_000 : 0)
-      }
-    }
-
-    // Get provider config
-    const config = getProviderConfig(effectiveModel, {
-      credentials,
-      openaiApiKey,
-      geminiApiKey,
-    })
-
-    // Stream response
-    const abortController = new AbortController()
-    abortRef.current = abortController
-    let fullText = ''
-    let actualInputTokens: number | null = null
-    let actualOutputTokens: number | null = null
-    const throttle = createStreamThrottle()
-
-    try {
-      // Build system prompt with optional PDF/Spreadsheet context
-      let systemPrompt = activePersona?.systemPrompt
-      if (pdfAttachment) {
-        const pdfContext = `[PDF Document: ${pdfAttachment.fileName} (${pdfAttachment.pageCount} pages)]\n\n${pdfAttachment.text}`
-        systemPrompt = systemPrompt
-          ? `${systemPrompt}\n\n${pdfContext}`
-          : pdfContext
-      }
-      if (spreadsheetAttachment) {
-        const spreadsheetContext = spreadsheetAttachment.summary
-        systemPrompt = systemPrompt
-          ? `${systemPrompt}\n\n${spreadsheetContext}`
-          : spreadsheetContext
-      }
-
-      const stream = createStream(config, {
-        modelId: effectiveModel,
-        messages: chatHistory,
-        signal: abortController.signal,
-        system: systemPrompt,
-      })
-
-      for await (const event of stream) {
-        if (event.type === 'text' && event.content) {
-          fullText += event.content
-          const sid = sessionId
-          const mid = assistantMessageId
-          throttle.update(fullText, (text) => {
-            updateLastMessage(sid, mid, (msg) => ({
-              ...msg,
-              segments: [{ type: 'text', content: text }],
-            }))
-          })
-        } else if (event.type === 'usage') {
-          actualInputTokens = event.inputTokens ?? null
-          actualOutputTokens = event.outputTokens ?? null
-        } else if (event.type === 'error') {
-          fullText = t('chat.errorOccurred', { error: event.error ?? 'Unknown' })
-          updateLastMessage(sessionId, assistantMessageId, (msg) => ({
-            ...msg,
-            segments: [{ type: 'text', content: fullText }],
-          }))
-        }
-      }
-    } catch (error) {
-      if (error instanceof DOMException && error.name === 'AbortError') {
-        // User cancelled - keep partial text
-      } else {
-        const errorMsg = error instanceof Error ? error.message : 'Unknown error'
-        fullText = fullText || t('chat.errorOccurred', { error: errorMsg })
-        updateLastMessage(sessionId, assistantMessageId, (msg) => ({
-          ...msg,
-          segments: [{ type: 'text', content: fullText }],
-        }))
-      }
-    } finally {
-      // Flush any pending throttled update
-      throttle.flush((text) => {
-        updateLastMessage(sessionId, assistantMessageId, (msg) => ({
-          ...msg,
-          segments: [{ type: 'text', content: text }],
-        }))
-      })
-      abortRef.current = null
-      setIsSending(false)
-      setSessionStreaming(sessionId, false)
-
-      // Persist final assistant message to IndexedDB
-      const finalMessages = useSessionStore.getState().messages[sessionId] ?? []
-      const finalAssistant = finalMessages.find((m) => m.id === assistantMessageId)
-      if (finalAssistant) {
-        putMessage(finalAssistant).catch(console.error)
-      }
-
-      // Auto-detect artifacts from completed response
-      if (fullText) {
-        const detected = detectArtifacts(fullText)
-        for (const det of detected) {
-          createArtifact({
-            sessionId,
-            messageId: assistantMessageId,
-            title: det.title,
-            language: det.language,
-            type: det.type,
-            content: det.content,
-          })
-        }
-      }
-
-      // Record usage — prefer actual token counts from backend, fall back to estimates
-      const model = MODELS.find((m) => m.id === effectiveModel)
-      if (model && fullText) {
-        const inputTokens = actualInputTokens ?? estimateTokens(messageText)
-        const outputTokens = actualOutputTokens ?? estimateTokens(fullText)
-        const cost = calculateCost(effectiveModel, inputTokens, outputTokens)
-        const usageEntry: UsageEntry = {
-          id: `usage-${Date.now()}`,
-          sessionId,
-          modelId: effectiveModel,
-          provider: model.provider,
-          inputTokens,
-          outputTokens,
-          cost,
-          createdAt: new Date().toISOString(),
-          category: 'chat',
-        }
-        addUsage(usageEntry)
-      }
-    }
-
-    // Auto-extract memories from recent messages
-    if (autoExtract && credentials && fullText) {
-      const recentMessages = chatHistory.slice(-6).concat([
-        { role: 'assistant' as const, content: fullText },
-      ])
-      extractFromMessages(recentMessages, credentials).catch(() => {
-        // Silent failure — memory extraction is best-effort
-      })
-    }
-
+    setIsSending(false)
     onSend?.(messageText)
   }
 
@@ -415,7 +233,7 @@ export function PromptInput({
   }
 
   function handleStop() {
-    abortRef.current?.abort()
+    abortStream()
     setIsSending(false)
   }
 

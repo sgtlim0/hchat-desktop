@@ -1,4 +1,9 @@
 import { db, getAllSessions } from './db'
+// formatBytes is imported from number-format (consolidated utility)
+import { formatBytes } from './number-format'
+
+// Re-export for backward compatibility
+export { formatBytes }
 
 export interface StorageInfo {
   totalSize: number // bytes
@@ -69,16 +74,6 @@ export async function analyzeStorage(): Promise<StorageInfo> {
   }
 }
 
-/**
- * Format bytes to human-readable string
- */
-export function formatBytes(bytes: number): string {
-  if (bytes < 1024) return `${bytes} B`
-  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`
-  if (bytes < 1024 * 1024 * 1024)
-    return `${(bytes / (1024 * 1024)).toFixed(1)} MB`
-  return `${(bytes / (1024 * 1024 * 1024)).toFixed(2)} GB`
-}
 
 /**
  * Get storage quota

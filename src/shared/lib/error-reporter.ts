@@ -1,16 +1,11 @@
-import type { ViewState } from '@/shared/types'
-import { useSessionStore } from '@/entities/session/session.store'
-
 export interface ErrorReport {
   id: string
   message: string
   stack?: string
-  view: ViewState          // current ViewState
-  sessionId?: string        // current session
   timestamp: string         // ISO string
   userAgent: string
   severity: 'low' | 'medium' | 'high' | 'critical'
-  context?: Record<string, unknown>  // arbitrary metadata
+  context?: Record<string, unknown>  // arbitrary metadata including view/sessionId
 }
 
 function detectSeverity(error: Error): ErrorReport['severity'] {
@@ -28,17 +23,10 @@ class ErrorReporter {
     severity?: ErrorReport['severity'],
     context?: Record<string, unknown>,
   ): void {
-    // Auto-capture view and sessionId from Zustand stores
-    const state = useSessionStore.getState()
-    const view = state.view
-    const sessionId = state.currentSessionId || undefined
-
     const report: ErrorReport = {
       id: `err-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
       message: error.message,
       stack: error.stack,
-      view,
-      sessionId,
       timestamp: new Date().toISOString(),
       userAgent: typeof navigator !== 'undefined' ? navigator.userAgent : 'unknown',
       severity: severity ?? detectSeverity(error),

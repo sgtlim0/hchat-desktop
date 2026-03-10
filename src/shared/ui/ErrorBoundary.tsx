@@ -1,11 +1,12 @@
 import { Component } from 'react'
 import type { ReactNode, ErrorInfo } from 'react'
-import { getTranslation } from '@/shared/i18n'
-import { useSettingsStore } from '@/entities/settings/settings.store'
+import { useTranslation } from '@/shared/i18n'
 import { errorReporter } from '@/shared/lib/error-reporter'
 
 interface ErrorBoundaryProps {
   children: ReactNode
+  language?: 'ko' | 'en'
+  sessionContext?: { view: string; sessionId?: string }
 }
 
 interface ErrorBoundaryState {
@@ -14,8 +15,7 @@ interface ErrorBoundaryState {
 }
 
 function ErrorFallback({ error, onReset }: { error: Error | null; onReset: () => void }) {
-  const language = useSettingsStore((s) => s.language)
-  const t = getTranslation(language)
+  const { t } = useTranslation()
 
   return (
     <div className="flex-1 flex items-center justify-center h-full p-6">
@@ -70,6 +70,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
   componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
     errorReporter.report(error, 'critical', {
       componentStack: errorInfo.componentStack,
+      sessionContext: this.props.sessionContext,
     })
   }
 

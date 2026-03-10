@@ -6,6 +6,7 @@ import { useKnowledgeStore } from '@/entities/knowledge/knowledge.store'
 import { useTranslation } from '@/shared/i18n'
 import { Button } from '@/shared/ui/Button'
 import { extractFileText } from '@/shared/lib/translate'
+import { formatBytes } from '@/shared/lib/number-format'
 
 const ACCEPT_TYPES = '.pdf,.txt,.md,.markdown,.text'
 
@@ -126,11 +127,6 @@ export function KnowledgeBasePage() {
     updateDocument(docId, { category })
   }
 
-  function formatBytes(bytes: number) {
-    if (bytes < 1024) return `${bytes} B`
-    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`
-    return `${(bytes / (1024 * 1024)).toFixed(1)} MB`
-  }
 
   return (
     <div className="h-full flex flex-col">

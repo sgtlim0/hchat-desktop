@@ -28,6 +28,7 @@ import { HeaderTabs } from '@/widgets/header-tabs/HeaderTabs'
 import { HomeScreen } from '@/pages/home/HomeScreen'
 import { SearchModal } from '@/widgets/search/SearchModal'
 import { ToastContainer } from '@/shared/ui/ToastContainer'
+import { useToastStore } from '@/entities/toast/toast.store'
 import { useTranslation } from '@/shared/i18n'
 import { useOnlineStatus } from '@/shared/hooks/useOnlineStatus'
 import { ErrorBoundary } from '@/shared/ui/ErrorBoundary'
@@ -43,6 +44,8 @@ export function MainLayout() {
   const toggleSidebar = useSettingsStore((s) => s.toggleSidebar)
   const settingsOpen = useSettingsStore((s) => s.settingsOpen)
   const setSettingsOpen = useSettingsStore((s) => s.setSettingsOpen)
+  const toasts = useToastStore((s) => s.toasts)
+  const removeToast = useToastStore((s) => s.removeToast)
 
   const view = useSessionStore((s) => s.view)
   const currentSessionId = useSessionStore((s) => s.currentSessionId)
@@ -179,7 +182,7 @@ export function MainLayout() {
           <SyncStatusBadge />
         </div>
         <main id="main-content" className="flex-1 overflow-hidden">
-          <ErrorBoundary>
+          <ErrorBoundary sessionContext={{ view, sessionId: currentSessionId || undefined }}>
             <Suspense fallback={
               <div className="flex-1 flex flex-col items-center justify-center h-full gap-3">
                 <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin" />
@@ -192,7 +195,7 @@ export function MainLayout() {
         </main>
       </div>
       {searchOpen && <SearchModal />}
-      <ToastContainer />
+      <ToastContainer toasts={toasts} removeToast={removeToast} />
       <CopilotPanel />
       <KeyboardShortcutsHelp open={shortcutsOpen} onClose={() => setShortcutsOpen(false)} />
     </>

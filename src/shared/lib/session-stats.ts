@@ -1,3 +1,9 @@
+// formatDuration is imported from number-format (consolidated utility)
+import { formatDuration } from './number-format'
+
+// Re-export for backward compatibility
+export { formatDuration }
+
 export interface SessionStats {
   messageCount: number
   userMessages: number
@@ -63,8 +69,3 @@ export function calculateSessionStats(messages: MessageLike[]): SessionStats {
   }
 }
 
-export function formatDuration(ms: number): string {
-  if (ms < 60000) return `${Math.round(ms / 1000)}s`
-  if (ms < 3600000) return `${Math.round(ms / 60000)}m`
-  return `${Math.round(ms / 3600000)}h ${Math.round((ms % 3600000) / 60000)}m`
-}
