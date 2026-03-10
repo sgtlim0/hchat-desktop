@@ -1,6 +1,9 @@
-import { createWorker, type Worker } from 'tesseract.js'
+interface OcrWorker {
+  recognize: (image: File) => Promise<{ data: { text: string } }>
+  terminate: () => Promise<unknown>
+}
 
-let worker: Worker | null = null
+let worker: OcrWorker | null = null
 
 export type OcrLang = 'kor+eng' | 'eng' | 'jpn+eng' | 'chi_sim+eng'
 
@@ -9,6 +12,7 @@ export async function initOcrWorker(langs: OcrLang = 'kor+eng'): Promise<void> {
     await worker.terminate()
     worker = null
   }
+  const { createWorker } = await import('tesseract.js')
   worker = await createWorker(langs)
 }
 

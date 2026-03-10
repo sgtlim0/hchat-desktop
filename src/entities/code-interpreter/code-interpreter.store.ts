@@ -2,6 +2,54 @@ import { create } from 'zustand'
 import type { Notebook, CodeCell, CodeLanguage, CellStatus } from '@/shared/types'
 import { getAllNotebooks, putNotebook, deleteNotebookFromDb } from '@/shared/lib/db'
 
+function executeInSandbox(code: string): Promise<string> {
+  if (typeof Worker === 'undefined' || typeof Blob === 'undefined') {
+    // Fallback for environments without Worker (e.g., test/SSR)
+    return Promise.reject(new Error('Code execution requires a browser environment'))
+  }
+
+  return new Promise((resolve, reject) => {
+    const workerCode = `
+      "use strict";
+      self.onmessage = function(e) {
+        try {
+          const fn = Function("use strict", e.data);
+          const result = fn();
+          self.postMessage({ ok: true, value: String(result ?? '(no output)') });
+        } catch (err) {
+          self.postMessage({ ok: false, value: err.message });
+        }
+      };
+    `
+    const blob = new Blob([workerCode], { type: 'application/javascript' })
+    const url = URL.createObjectURL(blob)
+    const w = new Worker(url)
+
+    const timer = setTimeout(() => {
+      w.terminate()
+      URL.revokeObjectURL(url)
+      reject(new Error('Execution timeout (5s)'))
+    }, 5000)
+
+    w.onmessage = (e: MessageEvent<{ ok: boolean; value: string }>) => {
+      clearTimeout(timer)
+      w.terminate()
+      URL.revokeObjectURL(url)
+      if (e.data.ok) resolve(e.data.value)
+      else reject(new Error(e.data.value))
+    }
+
+    w.onerror = (err) => {
+      clearTimeout(timer)
+      w.terminate()
+      URL.revokeObjectURL(url)
+      reject(new Error(err.message))
+    }
+
+    w.postMessage(code)
+  })
+}
+
 interface CodeInterpreterState {
   notebooks: Notebook[]
   currentNotebookId: string | null
@@ -99,9 +147,8 @@ export const useCodeInterpreterStore = create<CodeInterpreterState>()((set, get)
 
     try {
       if (cell.language === 'javascript') {
-        const fn = new Function(`"use strict";\n${cell.code}`)
-        const result = fn()
-        await get().updateCellOutput(cellId, String(result ?? '(no output)'), 'done')
+        const result = await executeInSandbox(cell.code)
+        await get().updateCellOutput(cellId, result, 'done')
       } else {
         // Python — requires Pyodide (lazy loaded)
         await get().updateCellOutput(cellId, 'Python execution requires Pyodide (loading...)', 'done')

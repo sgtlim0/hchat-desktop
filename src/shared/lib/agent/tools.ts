@@ -10,25 +10,104 @@ export interface AgentTool {
   available: boolean
 }
 
-// Safe math calculator (no eval)
+// Safe math calculator — recursive descent parser (no eval/Function)
 function safeCalculate(expression: string): string {
-  // Simple arithmetic parser supporting +, -, *, /, (), ^
-  const sanitized = expression.replace(/[^0-9+\-*/().^% ]/g, '')
-  if (!sanitized.trim()) return 'Invalid expression'
-
+  if (!expression || !expression.trim()) return 'Invalid expression'
   try {
-    // Replace ^ with ** for exponentiation
-    const expr = sanitized.replace(/\^/g, '**')
-    // Use Function constructor as a safer alternative to eval
-    const fn = new Function(`"use strict"; return (${expr})`)
-    const result = fn()
-    if (typeof result !== 'number' || !isFinite(result)) {
-      return 'Invalid result'
-    }
+    const result = evaluateMathExpression(expression)
+    if (typeof result !== 'number' || !isFinite(result)) return 'Invalid result'
     return String(result)
   } catch {
     return 'Calculation error'
   }
+}
+
+function tokenizeMath(expr: string): string[] {
+  const tokens: string[] = []
+  let i = 0
+  while (i < expr.length) {
+    if (expr[i] === ' ') { i++; continue }
+    if ('+-*/%^()'.includes(expr[i])) {
+      tokens.push(expr[i])
+      i++
+    } else if (/[0-9.]/.test(expr[i])) {
+      let num = ''
+      while (i < expr.length && /[0-9.]/.test(expr[i])) {
+        num += expr[i]
+        i++
+      }
+      tokens.push(num)
+    } else {
+      throw new Error(`Invalid character: ${expr[i]}`)
+    }
+  }
+  return tokens
+}
+
+function evaluateMathExpression(expr: string): number {
+  const tokens = tokenizeMath(expr)
+  let pos = 0
+
+  function peek(): string | undefined { return tokens[pos] }
+  function next(): string { return tokens[pos++] }
+
+  function parseAddSub(): number {
+    let result = parseMulDiv()
+    while (peek() === '+' || peek() === '-') {
+      const op = next()
+      result = op === '+' ? result + parseMulDiv() : result - parseMulDiv()
+    }
+    return result
+  }
+
+  function parseMulDiv(): number {
+    let result = parsePower()
+    while (peek() === '*' || peek() === '/' || peek() === '%') {
+      const op = next()
+      const right = parsePower()
+      if (op === '*') result *= right
+      else if (op === '%') result %= right
+      else {
+        if (right === 0) throw new Error('Division by zero')
+        result /= right
+      }
+    }
+    return result
+  }
+
+  function parsePower(): number {
+    const base = parseUnary()
+    if (peek() === '^') {
+      next()
+      return Math.pow(base, parsePower())
+    }
+    return base
+  }
+
+  function parseUnary(): number {
+    if (peek() === '-') { next(); return -parseAtom() }
+    if (peek() === '+') { next() }
+    return parseAtom()
+  }
+
+  function parseAtom(): number {
+    if (peek() === '(') {
+      next()
+      const val = parseAddSub()
+      if (peek() !== ')') throw new Error('Missing closing parenthesis')
+      next()
+      return val
+    }
+    const token = next()
+    if (token === undefined) throw new Error('Unexpected end of expression')
+    const num = Number(token)
+    if (isNaN(num)) throw new Error(`Invalid token: ${token}`)
+    return num
+  }
+
+  const result = parseAddSub()
+  if (pos < tokens.length) throw new Error('Unexpected token after expression')
+  return result
 }
 
 export const AGENT_TOOLS: AgentTool[] = [

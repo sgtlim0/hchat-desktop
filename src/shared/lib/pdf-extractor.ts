@@ -1,9 +1,10 @@
-import * as pdfjsLib from 'pdfjs-dist'
-
-// Configure worker
-pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.mjs`
-
 const MAX_TEXT_LENGTH = 10_000
+
+async function loadPdfjs() {
+  const pdfjsLib = await import('pdfjs-dist')
+  pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.mjs`
+  return pdfjsLib
+}
 
 interface PdfResult {
   text: string
@@ -11,6 +12,7 @@ interface PdfResult {
 }
 
 export async function extractPdfText(file: File): Promise<PdfResult> {
+  const pdfjsLib = await loadPdfjs()
   const arrayBuffer = await file.arrayBuffer()
   const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise
   const pageCount = pdf.numPages

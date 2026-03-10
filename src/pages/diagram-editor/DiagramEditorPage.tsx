@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
+import DOMPurify from 'dompurify'
 import { useShallow } from 'zustand/react/shallow'
 import { useSessionStore } from '@/entities/session/session.store'
 import { useDiagramEditorStore } from '@/entities/diagram-editor/diagram-editor.store'
@@ -327,7 +328,7 @@ export function DiagramEditorPage() {
                   {renderError ? (
                     <p className="text-sm text-danger">{renderError}</p>
                   ) : previewHtml ? (
-                    <div dangerouslySetInnerHTML={{ __html: previewHtml }} />
+                    <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(previewHtml, { USE_PROFILES: { svg: true, svgFilters: true } }) }} />
                   ) : (
                     <p className="text-sm text-text-tertiary">{t('diagram.codePlaceholder')}</p>
                   )}
