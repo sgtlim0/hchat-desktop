@@ -1,14 +1,55 @@
 // STT (Speech-to-Text) — Web Speech Recognition wrapper
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
+// Define proper types for SpeechRecognition API
+interface SpeechRecognitionResult {
+  isFinal: boolean
+  [index: number]: SpeechRecognitionAlternative
+}
 
-let recognition: any = null
+interface SpeechRecognitionAlternative {
+  transcript: string
+  confidence: number
+}
+
+interface SpeechRecognitionEvent extends Event {
+  results: SpeechRecognitionResultList
+  resultIndex: number
+}
+
+interface SpeechRecognitionResultList {
+  length: number
+  [index: number]: SpeechRecognitionResult
+}
+
+interface SpeechRecognition extends EventTarget {
+  continuous: boolean
+  interimResults: boolean
+  lang: string
+  onresult: ((event: SpeechRecognitionEvent) => void) | null
+  onend: (() => void) | null
+  onerror: ((event: Event) => void) | null
+  start(): void
+  stop(): void
+  abort(): void
+}
+
+interface SpeechRecognitionConstructor {
+  new(): SpeechRecognition
+}
+
+interface WindowWithSpeech extends Window {
+  SpeechRecognition?: SpeechRecognitionConstructor
+  webkitSpeechRecognition?: SpeechRecognitionConstructor
+}
+
+let recognition: SpeechRecognition | null = null
 
 export function isSupported(): boolean {
   if (typeof window === 'undefined') return false
+  const windowWithSpeech = window as WindowWithSpeech
   return Boolean(
-    (window as any).SpeechRecognition ||
-    (window as any).webkitSpeechRecognition
+    windowWithSpeech.SpeechRecognition ||
+    windowWithSpeech.webkitSpeechRecognition
   )
 }
 
@@ -20,9 +61,12 @@ export function startListening(
   if (!isSupported()) return
   stopListening()
 
+  const windowWithSpeech = window as WindowWithSpeech
   const SpeechRecognition =
-    (window as any).SpeechRecognition ||
-    (window as any).webkitSpeechRecognition
+    windowWithSpeech.SpeechRecognition ||
+    windowWithSpeech.webkitSpeechRecognition
+
+  if (!SpeechRecognition) return
 
   recognition = new SpeechRecognition()
   if (!recognition) return
@@ -31,7 +75,7 @@ export function startListening(
   recognition.interimResults = true
   recognition.lang = lang
 
-  recognition.onresult = (event: any) => {
+  recognition.onresult = (event: SpeechRecognitionEvent) => {
     let finalTranscript = ''
     let interimTranscript = ''
 

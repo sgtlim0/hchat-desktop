@@ -252,7 +252,7 @@ function StatusBadge({ status }: { status: BatchJob['status'] | 'pending' | 'pro
   const key = `batch.status.${status}` as const
   return (
     <span className={`px-2 py-0.5 text-xs rounded ${colors[status]}`}>
-      {t(key as any)}
+      {t(key as Parameters<typeof t>[0])}
     </span>
   )
 }

@@ -30,8 +30,8 @@ describe('StateMachine', () => {
   beforeEach(() => {
     // Reset all mocks before each test
     Object.values(config.states).forEach(state => {
-      if (state.onEnter) (state.onEnter as any).mockClear()
-      if (state.onExit) (state.onExit as any).mockClear()
+      if (state.onEnter) vi.mocked(state.onEnter).mockClear()
+      if (state.onExit) vi.mocked(state.onExit).mockClear()
     })
   })
 

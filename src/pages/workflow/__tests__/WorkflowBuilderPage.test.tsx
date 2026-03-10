@@ -83,7 +83,11 @@ vi.mock('@/entities/workflow/workflow.store', () => ({
 
 // Mock Button component
 vi.mock('@/shared/ui/Button', () => ({
-  Button: ({ children, onClick, disabled }: any) => (
+  Button: ({ children, onClick, disabled }: {
+    children: React.ReactNode
+    onClick?: () => void
+    disabled?: boolean
+  }) => (
     <button onClick={onClick} disabled={disabled}>
       {children}
     </button>

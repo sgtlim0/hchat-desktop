@@ -88,7 +88,7 @@ export function Sidebar() {
   }
 
   function handleViewChange(view: string) {
-    setView(view as any)
+    setView(view as Parameters<typeof setView>[0])
     if (isMobile) {
       toggleSidebar()
     }

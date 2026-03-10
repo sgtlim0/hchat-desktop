@@ -207,7 +207,7 @@ describe('RateLimiter', () => {
     })
 
     it('should handle unknown provider with default config', () => {
-      const limiter = getRateLimiter('unknown' as any)
+      const limiter = getRateLimiter('unknown' as 'bedrock' | 'openai' | 'gemini')
       expect(limiter).toBeInstanceOf(RateLimiter)
     })
   })

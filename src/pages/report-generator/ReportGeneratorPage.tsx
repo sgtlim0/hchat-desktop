@@ -130,7 +130,7 @@ export function ReportGeneratorPage() {
             <select value={template} onChange={(e) => setTemplate(e.target.value as ReportTemplate)}
               className="w-full text-sm rounded-lg bg-surface-secondary border border-border px-3 py-2">
               {TEMPLATE_OPTIONS.map((opt) => (
-                <option key={opt.value} value={opt.value}>{(t as any)(opt.label)}</option>
+                <option key={opt.value} value={opt.value}>{t(opt.label as Parameters<typeof t>[0])}</option>
               ))}
             </select>
             <div className="flex gap-2 justify-end">

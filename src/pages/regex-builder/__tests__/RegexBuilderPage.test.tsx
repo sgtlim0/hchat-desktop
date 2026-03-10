@@ -68,7 +68,12 @@ vi.mock('@/entities/regex-builder/regex-builder.store', () => ({
 
 // Mock Button component
 vi.mock('@/shared/ui/Button', () => ({
-  Button: ({ children, onClick, disabled, className }: any) => (
+  Button: ({ children, onClick, disabled, className }: {
+    children: React.ReactNode
+    onClick?: () => void
+    disabled?: boolean
+    className?: string
+  }) => (
     <button onClick={onClick} disabled={disabled} className={className}>
       {children}
     </button>

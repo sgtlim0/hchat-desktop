@@ -80,7 +80,7 @@ export function MeetingNotesPage() {
               className={`text-left px-4 py-3 border-b border-border hover:bg-surface-secondary transition-colors ${selectedId === note.id ? 'bg-surface-secondary' : ''}`}>
               <h3 className="font-semibold text-text-primary text-sm truncate">{note.title}</h3>
               <div className="flex items-center gap-2 text-xs mt-1">
-                <span className={TEMPLATE_COLORS[note.template]}>{(t as any)(`meetingNotes.${note.template}`)}</span>
+                <span className={TEMPLATE_COLORS[note.template]}>{t(`meetingNotes.${note.template}` as Parameters<typeof t>[0])}</span>
                 <span className="text-text-tertiary">{note.participants.length} {t('meetingNotes.participants')}</span>
               </div>
               <p className="text-xs text-text-tertiary mt-1">{new Date(note.createdAt).toLocaleDateString()}</p>
@@ -172,7 +172,7 @@ export function MeetingNotesPage() {
             <select value={template} onChange={(e) => setTemplate(e.target.value as MeetingTemplate)}
               className="w-full text-sm rounded-lg bg-surface-secondary border border-border px-3 py-2">
               {TEMPLATE_OPTIONS.map((opt) => (
-                <option key={opt.value} value={opt.value}>{(t as any)(opt.label)}</option>
+                <option key={opt.value} value={opt.value}>{t(opt.label as Parameters<typeof t>[0])}</option>
               ))}
             </select>
             <div className="flex gap-2 justify-end">

@@ -55,7 +55,13 @@ vi.mock('@/entities/data-converter/data-converter.store', () => ({
 
 // Mock Button component
 vi.mock('@/shared/ui/Button', () => ({
-  Button: ({ children, onClick, className, disabled, ...rest }: any) => (
+  Button: ({ children, onClick, className, disabled, ...rest }: {
+    children: React.ReactNode
+    onClick?: () => void
+    className?: string
+    disabled?: boolean
+    [key: string]: unknown
+  }) => (
     <button onClick={onClick} className={className} disabled={disabled} {...rest}>
       {children}
     </button>
@@ -146,7 +152,7 @@ describe('DataConverterPage', () => {
       await import('@/entities/data-converter/data-converter.store')
     )
 
-    useDataConverterStore.mockImplementation((selector: any) => {
+    useDataConverterStore.mockImplementation((selector: ((s: Record<string, unknown>) => unknown) | undefined) => {
       const state = {
         sourceContent: '',
         targetContent: '',

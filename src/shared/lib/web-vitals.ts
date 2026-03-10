@@ -79,7 +79,8 @@ export function initWebVitals(): void {
       const lastEntry = entries[entries.length - 1]
       if (lastEntry) {
         // LCP is the render time or load time, whichever is later
-        const value = (lastEntry as any).renderTime || (lastEntry as any).loadTime || lastEntry.startTime
+        const lcpEntry = lastEntry as PerformanceEntry & { renderTime?: number; loadTime?: number }
+        const value = lcpEntry.renderTime || lcpEntry.loadTime || lcpEntry.startTime
         recordMetric('LCP', value)
       }
     })
@@ -92,7 +93,8 @@ export function initWebVitals(): void {
       const firstEntry = entries[0]
       if (firstEntry) {
         // FID is the delay between input and processing
-        const value = (firstEntry as any).processingStart - firstEntry.startTime
+        const fidEntry = firstEntry as PerformanceEntry & { processingStart?: number }
+        const value = (fidEntry.processingStart || 0) - firstEntry.startTime
         recordMetric('FID', value)
       }
     })
@@ -104,8 +106,9 @@ export function initWebVitals(): void {
       const entries = list.getEntries()
       entries.forEach((entry) => {
         // Only count shifts without recent input
-        if (!(entry as any).hadRecentInput) {
-          clsValue += (entry as any).value || 0
+        const clsEntry = entry as PerformanceEntry & { hadRecentInput?: boolean; value?: number }
+        if (!clsEntry.hadRecentInput) {
+          clsValue += clsEntry.value || 0
           clsEntries.push(entry)
         }
       })
@@ -131,7 +134,7 @@ export function initWebVitals(): void {
     if (performance && performance.getEntriesByType) {
       const navEntries = performance.getEntriesByType('navigation')
       if (navEntries.length > 0) {
-        const navEntry = navEntries[0] as any
+        const navEntry = navEntries[0] as PerformanceNavigationTiming
         if (navEntry.responseStart) {
           recordMetric('TTFB', navEntry.responseStart)
         }

@@ -197,7 +197,7 @@ describe('factory with rate limiting', () => {
 
     it('should handle unknown provider with default rate limit', async () => {
       const config: ProviderConfig = {
-        provider: 'unknown' as any,
+        provider: 'unknown' as 'bedrock' | 'openai' | 'gemini',
       }
       const params: StreamParams = {
         model: 'unknown-model',

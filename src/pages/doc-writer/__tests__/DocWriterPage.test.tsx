@@ -25,7 +25,7 @@ vi.mock('lucide-react', () => ({
 
 // Mock Button component
 vi.mock('@/shared/ui/Button', () => ({
-  Button: ({ children, ...props }: any) => <button {...props}>{children}</button>,
+  Button: ({ children, ...props }: { children: React.ReactNode; [key: string]: unknown }) => <button {...props}>{children}</button>,
 }))
 
 // Mock constants
@@ -80,7 +80,7 @@ const mockExportText = vi.fn(() => 'Test Document\n\nTest content')
 const mockSetStep = vi.fn()
 const mockReset = vi.fn()
 
-let mockCurrentProject: any = null
+let mockCurrentProject: Record<string, unknown> | null = null
 let mockStep = 1
 let mockIsGenerating = false
 

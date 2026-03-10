@@ -75,9 +75,9 @@ export class HttpClient {
           status: response.status,
           headers: response.headers
         }
-      } catch (error: any) {
+      } catch (error: unknown) {
         clearTimeout(timeoutId)
-        if (error.name === 'AbortError') {
+        if (error instanceof Error && error.name === 'AbortError') {
           throw new Error('Request aborted')
         }
         throw error

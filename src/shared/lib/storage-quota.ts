@@ -102,7 +102,7 @@ export async function getStorageBreakdown(): Promise<StorageBreakdown> {
       const estimate = await navigator.storage.estimate()
       // Some browsers provide usageDetails
       if ('usageDetails' in estimate && estimate.usageDetails) {
-        const details = estimate.usageDetails as any
+        const details = estimate.usageDetails as Record<string, number>
         breakdown.indexedDB = details.indexedDB || 0
       } else if (estimate.usage) {
         // Estimate IndexedDB as total minus web storage

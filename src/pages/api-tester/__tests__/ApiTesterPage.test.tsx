@@ -72,7 +72,12 @@ vi.mock('@/entities/api-tester/api-tester.store', () => ({
 
 // Mock Button component
 vi.mock('@/shared/ui/Button', () => ({
-  Button: ({ children, onClick, disabled, className }: any) => (
+  Button: ({ children, onClick, disabled, className }: {
+    children: React.ReactNode
+    onClick?: () => void
+    disabled?: boolean
+    className?: string
+  }) => (
     <button onClick={onClick} disabled={disabled} className={className}>
       {children}
     </button>
@@ -169,7 +174,7 @@ describe('ApiTesterPage', () => {
   it('shows response when lastResponse is set', async () => {
     const { useApiTesterStore } = vi.mocked(await import('@/entities/api-tester/api-tester.store'))
 
-    useApiTesterStore.mockImplementation((selector: any) => {
+    useApiTesterStore.mockImplementation((selector: ((s: Record<string, unknown>) => unknown) | undefined) => {
       const state = {
         requests: mockRequests,
         selectedRequestId: 'req-1',
@@ -204,7 +209,7 @@ describe('ApiTesterPage', () => {
   it('shows empty state when no requests exist', async () => {
     const { useApiTesterStore } = vi.mocked(await import('@/entities/api-tester/api-tester.store'))
 
-    useApiTesterStore.mockImplementation((selector: any) => {
+    useApiTesterStore.mockImplementation((selector: ((s: Record<string, unknown>) => unknown) | undefined) => {
       const state = {
         requests: [],
         selectedRequestId: null,

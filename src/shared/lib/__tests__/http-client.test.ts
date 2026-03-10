@@ -86,10 +86,10 @@ describe('HttpClient', () => {
     it('supports custom timeout via AbortController', async () => {
       // Create a promise that never resolves to simulate a hanging request
       vi.mocked(fetch).mockImplementation(
-        (url, options) =>
-          new Promise((resolve, reject) => {
+        (_url, options) =>
+          new Promise((_resolve, reject) => {
             // Listen for abort signal
-            const signal = (options as any)?.signal
+            const signal = (options as RequestInit)?.signal
             if (signal) {
               signal.addEventListener('abort', () => {
                 const error = new Error('The operation was aborted')
@@ -114,7 +114,7 @@ describe('HttpClient', () => {
       const client = new HttpClient('https://api.example.com')
       await client.get('/users')
 
-      expect(fetch).toHaveBeenCalledWith('https://api.example.com/users', expect.any(Object))
+      expect(fetch).toHaveBeenCalledWith('https://api.example.com/users', expect.objectContaining({}))
     })
   })
 

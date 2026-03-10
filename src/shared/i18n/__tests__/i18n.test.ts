@@ -86,7 +86,7 @@ describe('useTranslation', () => {
 
   it('uses language from settings store', () => {
     vi.mocked(useSettingsStore).mockImplementation((selector) => {
-      const state = { language: 'en' } as any
+      const state = { language: 'en' as 'ko' | 'en' }
       return selector(state)
     })
 

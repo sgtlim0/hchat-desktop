@@ -20,7 +20,7 @@ describe('ToolSelector', () => {
   beforeEach(() => {
     vi.clearAllMocks()
 
-    ;(useToolIntegrationStore as any).mockImplementation((selector: any) => {
+    vi.mocked(useToolIntegrationStore).mockImplementation((selector) => {
       const store = {
         isConfluenceConfigured: mockIsConfluenceConfigured,
         isJiraConfigured: mockIsJiraConfigured,
@@ -30,14 +30,14 @@ describe('ToolSelector', () => {
       return selector(store)
     })
 
-    ;(useSessionStore as any).mockImplementation((selector: any) => {
+    vi.mocked(useSessionStore).mockImplementation((selector) => {
       const store = {
         setView: mockSetView,
       }
       return selector(store)
     })
 
-    ;(useTranslation as any).mockReturnValue({ t: mockT })
+    vi.mocked(useTranslation).mockReturnValue({ t: mockT })
 
     // Default return values
     mockIsConfluenceConfigured.mockReturnValue(true)

@@ -70,7 +70,12 @@ vi.mock('@/entities/session/session.store', () => ({
 
 // Mock Button component
 vi.mock('@/shared/ui/Button', () => ({
-  Button: ({ children, onClick, disabled, variant }: any) => (
+  Button: ({ children, onClick, disabled, variant }: {
+    children: React.ReactNode
+    onClick?: () => void
+    disabled?: boolean
+    variant?: string
+  }) => (
     <button onClick={onClick} disabled={disabled} data-variant={variant}>
       {children}
     </button>

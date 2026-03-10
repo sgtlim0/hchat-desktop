@@ -60,35 +60,35 @@ describe('getRelativeTime', () => {
   })
 
   it('returns translated hours ago with t function', () => {
-    const t = vi.fn((_key: string, params?: any) => `${params?.n} hours ago`)
+    const t = vi.fn((_key: string, params?: { n: number }) => `${params?.n} hours ago`)
     const result = getRelativeTime('2026-03-02T09:00:00Z', t)
     expect(result).toBe('3 hours ago')
     expect(t).toHaveBeenCalledWith('time.hoursAgo', { n: 3 })
   })
 
   it('returns translated days ago with t function', () => {
-    const t = vi.fn((_key: string, params?: any) => `${params?.n} days ago`)
+    const t = vi.fn((_key: string, params?: { n: number }) => `${params?.n} days ago`)
     const result = getRelativeTime('2026-02-28T12:00:00Z', t)
     expect(result).toBe('2 days ago')
     expect(t).toHaveBeenCalledWith('time.daysAgo', { n: 2 })
   })
 
   it('returns translated weeks ago with t function', () => {
-    const t = vi.fn((_key: string, params?: any) => `${params?.n} weeks ago`)
+    const t = vi.fn((_key: string, params?: { n: number }) => `${params?.n} weeks ago`)
     const result = getRelativeTime('2026-02-16T12:00:00Z', t)
     expect(result).toBe('2 weeks ago')
     expect(t).toHaveBeenCalledWith('time.weeksAgo', { n: 2 })
   })
 
   it('returns translated months ago with t function', () => {
-    const t = vi.fn((_key: string, params?: any) => `${params?.n} months ago`)
+    const t = vi.fn((_key: string, params?: { n: number }) => `${params?.n} months ago`)
     const result = getRelativeTime('2025-12-02T12:00:00Z', t)
     expect(result).toBe('3 months ago')
     expect(t).toHaveBeenCalledWith('time.monthsAgo', { n: 3 })
   })
 
   it('returns translated years ago with t function', () => {
-    const t = vi.fn((_key: string, params?: any) => `${params?.n} years ago`)
+    const t = vi.fn((_key: string, params?: { n: number }) => `${params?.n} years ago`)
     const result = getRelativeTime('2024-03-02T12:00:00Z', t)
     expect(result).toBe('2 years ago')
     expect(t).toHaveBeenCalledWith('time.yearsAgo', { n: 2 })

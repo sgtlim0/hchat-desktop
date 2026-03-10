@@ -9,8 +9,8 @@ import {
 } from '../web-vitals'
 
 describe('Web Vitals Monitor', () => {
-  let mockPerformanceObserver: any
-  let observerCallbacks: Map<string, Function>
+  let mockPerformanceObserver: typeof PerformanceObserver
+  let observerCallbacks: Map<string, PerformanceObserverCallback>
 
   beforeEach(() => {
     // Clear any existing metrics
@@ -19,9 +19,9 @@ describe('Web Vitals Monitor', () => {
     // Set up mock PerformanceObserver
     observerCallbacks = new Map()
 
-    mockPerformanceObserver = vi.fn().mockImplementation(function(this: any, callback: Function) {
+    mockPerformanceObserver = vi.fn().mockImplementation(function(this: PerformanceObserver, callback: PerformanceObserverCallback) {
       const observer = {
-        observe: vi.fn((options: any) => {
+        observe: vi.fn((options: PerformanceObserverInit) => {
           if (options.type) {
             observerCallbacks.set(options.type, callback)
           }
@@ -32,7 +32,7 @@ describe('Web Vitals Monitor', () => {
     })
 
     // Mock global PerformanceObserver
-    global.PerformanceObserver = mockPerformanceObserver as any
+    global.PerformanceObserver = mockPerformanceObserver as unknown as typeof PerformanceObserver
 
     // Mock performance.getEntriesByType for TTFB
     global.performance = {
@@ -44,11 +44,11 @@ describe('Web Vitals Monitor', () => {
             entryType: 'navigation',
             startTime: 0,
             responseStart: 850
-          }]
+          }] as PerformanceNavigationTiming[]
         }
         return []
       })
-    } as any
+    } as Performance
   })
 
   afterEach(() => {
@@ -378,7 +378,7 @@ describe('Web Vitals Monitor', () => {
 
   it('handles missing PerformanceObserver gracefully', () => {
     // Remove PerformanceObserver
-    global.PerformanceObserver = undefined as any
+    global.PerformanceObserver = undefined as unknown as typeof PerformanceObserver
 
     expect(() => initWebVitals()).not.toThrow()
     expect(getMetrics()).toEqual({})

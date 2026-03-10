@@ -77,7 +77,11 @@ vi.mock('@/entities/snippet/snippet.store', () => ({
 
 // Mock Button
 vi.mock('@/shared/ui/Button', () => ({
-  Button: ({ children, onClick, className }: any) => (
+  Button: ({ children, onClick, className }: {
+    children: React.ReactNode
+    onClick?: () => void
+    className?: string
+  }) => (
     <button onClick={onClick} className={className}>
       {children}
     </button>
@@ -150,7 +154,7 @@ describe('SnippetPage', () => {
   it('shows selected snippet detail', async () => {
     const { useSnippetStore } = vi.mocked(await import('@/entities/snippet/snippet.store'))
 
-    useSnippetStore.mockImplementation((selector: any) => {
+    useSnippetStore.mockImplementation((selector: ((s: Record<string, unknown>) => unknown) | undefined) => {
       const state = {
         snippets: mockSnippets,
         searchQuery: '',

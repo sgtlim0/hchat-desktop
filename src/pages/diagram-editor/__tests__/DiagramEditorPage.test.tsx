@@ -30,7 +30,13 @@ vi.mock('lucide-react', () => ({
 
 // Mock Button
 vi.mock('@/shared/ui/Button', () => ({
-  Button: ({ children, onClick, disabled, size, className }: any) => (
+  Button: ({ children, onClick, disabled, size, className }: {
+    children: React.ReactNode
+    onClick?: () => void
+    disabled?: boolean
+    size?: string
+    className?: string
+  }) => (
     <button onClick={onClick} disabled={disabled} data-size={size} className={className}>
       {children}
     </button>
@@ -41,7 +47,7 @@ vi.mock('@/shared/ui/Button', () => ({
 const mockSetView = vi.fn()
 
 vi.mock('@/entities/session/session.store', () => ({
-  useSessionStore: vi.fn((selector: any) => {
+  useSessionStore: vi.fn((selector: (state: { setView: typeof mockSetView }) => unknown) => {
     const state = { setView: mockSetView }
     return selector(state)
   }),
@@ -93,8 +99,10 @@ const createMockState = (overrides: Record<string, unknown> = {}) => ({
   ...overrides,
 })
 
+type DiagramEditorState = ReturnType<typeof createMockState>
+
 vi.mock('@/entities/diagram-editor/diagram-editor.store', () => ({
-  useDiagramEditorStore: vi.fn((selector: any) => {
+  useDiagramEditorStore: vi.fn((selector: (state: DiagramEditorState) => unknown) => {
     const state = createMockState()
     return selector(state)
   }),
@@ -103,7 +111,7 @@ vi.mock('@/entities/diagram-editor/diagram-editor.store', () => ({
 async function setMockState(overrides: Record<string, unknown> = {}) {
   const mod = await import('@/entities/diagram-editor/diagram-editor.store')
   const { useDiagramEditorStore } = vi.mocked(mod)
-  useDiagramEditorStore.mockImplementation((selector: any) => {
+  useDiagramEditorStore.mockImplementation((selector: (state: DiagramEditorState) => unknown) => {
     const state = createMockState(overrides)
     return selector(state)
   })

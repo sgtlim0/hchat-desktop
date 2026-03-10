@@ -18,15 +18,15 @@ describe('useOnlineStatus', () => {
       configurable: true
     })
 
-    window.addEventListener = vi.fn((event: string, handler: any) => {
+    window.addEventListener = vi.fn((event: string, handler: EventListenerOrEventListenerObject) => {
       if (event === 'online') {
-        onlineListeners.push(handler)
+        onlineListeners.push(handler as EventListener)
       } else if (event === 'offline') {
-        offlineListeners.push(handler)
+        offlineListeners.push(handler as EventListener)
       }
     })
 
-    window.removeEventListener = vi.fn((event: string, handler: any) => {
+    window.removeEventListener = vi.fn((event: string, handler: EventListenerOrEventListenerObject) => {
       if (event === 'online') {
         onlineListeners = onlineListeners.filter((h) => h !== handler)
       } else if (event === 'offline') {

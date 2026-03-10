@@ -17,7 +17,9 @@ describe('Result Type Utilities', () => {
     it('creates success result', () => {
       const result = ok(42)
       expect(result.ok).toBe(true)
-      expect((result as any).value).toBe(42)
+      if (isOk(result)) {
+        expect(result.value).toBe(42)
+      }
     })
 
     it('works with any type', () => {
@@ -25,9 +27,15 @@ describe('Result Type Utilities', () => {
       const objectResult = ok({ name: 'test' })
       const arrayResult = ok([1, 2, 3])
 
-      expect((stringResult as any).value).toBe('hello')
-      expect((objectResult as any).value).toEqual({ name: 'test' })
-      expect((arrayResult as any).value).toEqual([1, 2, 3])
+      if (isOk(stringResult)) {
+        expect(stringResult.value).toBe('hello')
+      }
+      if (isOk(objectResult)) {
+        expect(objectResult.value).toEqual({ name: 'test' })
+      }
+      if (isOk(arrayResult)) {
+        expect(arrayResult.value).toEqual([1, 2, 3])
+      }
     })
   })
 
@@ -35,15 +43,21 @@ describe('Result Type Utilities', () => {
     it('creates error result', () => {
       const result = err(new Error('failed'))
       expect(result.ok).toBe(false)
-      expect((result as any).error.message).toBe('failed')
+      if (isErr(result)) {
+        expect((result.error as Error).message).toBe('failed')
+      }
     })
 
     it('works with custom error types', () => {
       const stringError = err('error message')
       const objectError = err({ code: 404, message: 'Not found' })
 
-      expect((stringError as any).error).toBe('error message')
-      expect((objectError as any).error).toEqual({ code: 404, message: 'Not found' })
+      if (isErr(stringError)) {
+        expect(stringError.error).toBe('error message')
+      }
+      if (isErr(objectError)) {
+        expect(objectError.error).toEqual({ code: 404, message: 'Not found' })
+      }
     })
   })
 
@@ -135,7 +149,9 @@ describe('Result Type Utilities', () => {
       const mapped = map(result, x => x * 2)
 
       expect(isErr(mapped)).toBe(true)
-      expect((mapped as any).error).toBe('error')
+      if (isErr(mapped)) {
+        expect(mapped.error).toBe('error')
+      }
     })
 
     it('can change value type', () => {
@@ -161,7 +177,9 @@ describe('Result Type Utilities', () => {
       const chained = flatMap(result, x => ok(x * 2))
 
       expect(isErr(chained)).toBe(true)
-      expect((chained as any).error).toBe('first error')
+      if (isErr(chained)) {
+        expect(chained.error).toBe('first error')
+      }
     })
 
     it('returns Err from function', () => {
@@ -171,7 +189,9 @@ describe('Result Type Utilities', () => {
       )
 
       expect(isErr(chained)).toBe(true)
-      expect((chained as any).error).toBe('too large')
+      if (isErr(chained)) {
+        expect(chained.error).toBe('too large')
+      }
     })
 
     it('allows complex chaining', () => {
@@ -203,7 +223,9 @@ describe('Result Type Utilities', () => {
       })
 
       expect(isErr(result)).toBe(true)
-      expect((result as any).error.message).toBe('failed')
+      if (isErr(result)) {
+        expect((result.error as Error).message).toBe('failed')
+      }
     })
 
     it('handles JSON parsing', () => {
@@ -250,18 +272,22 @@ describe('Result Type Utilities', () => {
 
       const result2 = compute(100, 0)
       expect(isErr(result2)).toBe(true)
-      expect((result2 as any).error).toBe('division by zero')
+      if (isErr(result2)) {
+        expect(result2.error).toBe('division by zero')
+      }
 
       const result3 = compute(-100, 4)
       expect(isErr(result3)).toBe(true)
-      expect((result3 as any).error).toBe('negative number')
+      if (isErr(result3)) {
+        expect(result3.error).toBe('negative number')
+      }
     })
 
     it('works with pipeline pattern', () => {
       const pipeline = (input: string): Result<number, string | Error> => {
-        const parsed = tryCatch(() => JSON.parse(input))
-        const extracted = map(parsed, (obj: any) => obj.value)
-        const validated = flatMap(extracted, (val: any): Result<number, string | Error> =>
+        const parsed = tryCatch(() => JSON.parse(input) as { value: unknown })
+        const extracted = map(parsed, (obj) => obj.value)
+        const validated = flatMap(extracted, (val): Result<number, string | Error> =>
           typeof val === 'number' ? ok(val) : err('not a number' as string | Error)
         )
         const doubled = map(validated, x => x * 2)
@@ -274,7 +300,9 @@ describe('Result Type Utilities', () => {
 
       const result2 = pipeline('{"value": "not a number"}')
       expect(isErr(result2)).toBe(true)
-      expect((result2 as any).error).toBe('not a number')
+      if (isErr(result2)) {
+        expect(result2.error).toBe('not a number')
+      }
 
       const result3 = pipeline('invalid json')
       expect(isErr(result3)).toBe(true)

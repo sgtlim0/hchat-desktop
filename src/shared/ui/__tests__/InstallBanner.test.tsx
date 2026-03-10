@@ -2,6 +2,13 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import { act } from 'react'
 
+// Define BeforeInstallPromptEvent type for testing
+interface BeforeInstallPromptEvent extends Event {
+  preventDefault: () => void
+  prompt: () => Promise<void>
+  userChoice: Promise<{ outcome: 'accepted' | 'dismissed' }>
+}
+
 // Mock i18n
 vi.mock('@/shared/i18n', () => ({
   useTranslation: () => ({
@@ -88,7 +95,7 @@ describe('InstallBanner', () => {
     render(<InstallBanner />)
 
     // Create mock beforeinstallprompt event
-    const mockPromptEvent = new Event('beforeinstallprompt') as any
+    const mockPromptEvent = new Event('beforeinstallprompt') as BeforeInstallPromptEvent
     mockPromptEvent.preventDefault = vi.fn()
     mockPromptEvent.prompt = vi.fn()
     mockPromptEvent.userChoice = Promise.resolve({ outcome: 'accepted' })
@@ -116,7 +123,7 @@ describe('InstallBanner', () => {
     render(<InstallBanner />)
 
     // Create mock beforeinstallprompt event
-    const mockPromptEvent = new Event('beforeinstallprompt') as any
+    const mockPromptEvent = new Event('beforeinstallprompt') as BeforeInstallPromptEvent
     mockPromptEvent.preventDefault = vi.fn()
     mockPromptEvent.prompt = vi.fn().mockResolvedValue(undefined)
     mockPromptEvent.userChoice = Promise.resolve({ outcome: 'accepted' })
@@ -150,7 +157,7 @@ describe('InstallBanner', () => {
     const { container } = render(<InstallBanner />)
 
     // Create mock beforeinstallprompt event
-    const mockPromptEvent = new Event('beforeinstallprompt') as any
+    const mockPromptEvent = new Event('beforeinstallprompt') as BeforeInstallPromptEvent
     mockPromptEvent.preventDefault = vi.fn()
     mockPromptEvent.prompt = vi.fn()
 

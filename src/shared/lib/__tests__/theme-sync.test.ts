@@ -25,7 +25,7 @@ describe('syncThemeWithSystem', () => {
     // Setup mock settings store
     vi.mocked(useSettingsStore.getState).mockReturnValue({
       darkMode: false,
-    } as any)
+    } as ReturnType<typeof useSettingsStore.getState>)
     vi.mocked(useSettingsStore).setState = mockSetState
 
     // Setup mock matchMedia
@@ -61,7 +61,7 @@ describe('syncThemeWithSystem', () => {
     // Set store to dark mode so it needs to change to light
     vi.mocked(useSettingsStore.getState).mockReturnValue({
       darkMode: true,
-    } as any)
+    } as ReturnType<typeof useSettingsStore.getState>)
 
     syncThemeWithSystem()
     expect(mockSetState).toHaveBeenCalledWith({ darkMode: false })
@@ -72,7 +72,7 @@ describe('syncThemeWithSystem', () => {
     darkMode = false
     vi.mocked(useSettingsStore.getState).mockReturnValue({
       darkMode: false,
-    } as any)
+    } as ReturnType<typeof useSettingsStore.getState>)
 
     syncThemeWithSystem()
     expect(mockSetState).not.toHaveBeenCalled()
@@ -82,7 +82,7 @@ describe('syncThemeWithSystem', () => {
     darkMode = true
     vi.mocked(useSettingsStore.getState).mockReturnValue({
       darkMode: true,
-    } as any)
+    } as ReturnType<typeof useSettingsStore.getState>)
 
     syncThemeWithSystem()
     expect(mockSetState).not.toHaveBeenCalled()
@@ -97,8 +97,12 @@ describe('syncThemeWithSystem', () => {
   })
 
   it('works when matchMedia is not available', () => {
-    // @ts-ignore - Testing browser compatibility
-    window.matchMedia = undefined
+    // Testing browser compatibility
+    Object.defineProperty(window, 'matchMedia', {
+      writable: true,
+      configurable: true,
+      value: undefined
+    })
 
     const cleanup = syncThemeWithSystem()
     expect(mockSetState).not.toHaveBeenCalled()
@@ -111,7 +115,7 @@ describe('syncThemeWithSystem', () => {
     darkMode = false
     vi.mocked(useSettingsStore.getState).mockReturnValue({
       darkMode: false,
-    } as any)
+    } as ReturnType<typeof useSettingsStore.getState>)
 
     syncThemeWithSystem()
 
@@ -125,7 +129,7 @@ describe('syncThemeWithSystem', () => {
     // Update mock to reflect the new state
     vi.mocked(useSettingsStore.getState).mockReturnValue({
       darkMode: true,
-    } as any)
+    } as ReturnType<typeof useSettingsStore.getState>)
 
     // Simulate system change to light
     mockSetState.mockClear()
@@ -137,7 +141,7 @@ describe('syncThemeWithSystem', () => {
     darkMode = false
     vi.mocked(useSettingsStore.getState).mockReturnValue({
       darkMode: false,
-    } as any)
+    } as ReturnType<typeof useSettingsStore.getState>)
 
     syncThemeWithSystem()
     mockSetState.mockClear()
@@ -149,7 +153,7 @@ describe('syncThemeWithSystem', () => {
     // Now change store to dark
     vi.mocked(useSettingsStore.getState).mockReturnValue({
       darkMode: true,
-    } as any)
+    } as ReturnType<typeof useSettingsStore.getState>)
 
     // Simulate change to different value (dark to light)
     listeners.forEach((l) => l({ matches: false } as MediaQueryListEvent))

@@ -59,7 +59,7 @@ vi.mock('lucide-react', () => {
 // Mock session store
 const mockSetView = vi.fn()
 vi.mock('@/entities/session/session.store', () => ({
-  useSessionStore: (selector: (s: any) => any) =>
+  useSessionStore: (selector: (s: { setView: typeof mockSetView }) => unknown) =>
     selector({
       setView: mockSetView,
     }),
@@ -67,7 +67,12 @@ vi.mock('@/entities/session/session.store', () => ({
 
 // Mock settings store
 vi.mock('@/entities/settings/settings.store', () => ({
-  useSettingsStore: (selector: (s: any) => any) =>
+  useSettingsStore: (selector: (s: {
+    selectedModel: string
+    credentials: null
+    openaiApiKey: null
+    geminiApiKey: null
+  }) => unknown) =>
     selector({
       selectedModel: 'claude-sonnet-4.6',
       credentials: null,
@@ -81,7 +86,13 @@ const mockTranslateState = {
   engine: 'llm' as const,
   sourceLang: 'auto',
   targetLang: 'ko',
-  files: [] as any[],
+  files: [] as Array<{
+    id: string
+    name: string
+    content: string
+    status: 'pending' | 'processing' | 'done' | 'error'
+    result: string | null
+  }>,
   isProcessing: false,
   setEngine: vi.fn(),
   setSourceLang: vi.fn(),
@@ -95,7 +106,7 @@ const mockTranslateState = {
 
 vi.mock('@/entities/translate/translate.store', () => ({
   useTranslateStore: Object.assign(
-    (selector?: (s: any) => any) => selector ? selector(mockTranslateState) : mockTranslateState,
+    (selector?: (s: typeof mockTranslateState) => unknown) => selector ? selector(mockTranslateState) : mockTranslateState,
     {
       getState: () => mockTranslateState,
       setState: vi.fn(),
@@ -118,7 +129,12 @@ vi.mock('@/shared/lib/providers/factory', () => ({
 
 // Mock Button
 vi.mock('@/shared/ui/Button', () => ({
-  Button: ({ children, onClick, disabled, ...props }: any) => (
+  Button: ({ children, onClick, disabled, ...props }: {
+    children: React.ReactNode
+    onClick?: () => void
+    disabled?: boolean
+    [key: string]: unknown
+  }) => (
     <button onClick={onClick} disabled={disabled} {...props}>
       {children}
     </button>

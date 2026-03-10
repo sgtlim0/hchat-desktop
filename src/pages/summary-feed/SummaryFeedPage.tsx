@@ -54,7 +54,7 @@ export function SummaryFeedPage() {
         {(['all', 'daily', 'weekly', 'monthly'] as const).map((period) => (
           <button key={period} onClick={() => setPeriodFilter(period)}
             className={`px-3 py-1 text-xs rounded-full ${periodFilter === period ? 'bg-primary text-white' : 'bg-surface-secondary text-text-secondary hover:bg-surface-tertiary'}`}>
-            {period === 'all' ? t('summaryFeed.all') : (t as any)(PERIOD_LABELS[period])}
+            {period === 'all' ? t('summaryFeed.all') : t(PERIOD_LABELS[period] as Parameters<typeof t>[0])}
           </button>
         ))}
         <span className="ml-auto text-xs text-text-tertiary">{filtered.length} {t('summaryFeed.entries')}</span>
@@ -82,7 +82,7 @@ export function SummaryFeedPage() {
                     <div className="flex items-center justify-between mb-2">
                       <div className="flex items-center gap-2">
                         <span className={`px-2 py-0.5 text-xs rounded-full font-medium ${PERIOD_COLORS[entry.period]}`}>
-                          {(t as any)(PERIOD_LABELS[entry.period])}
+                          {t(PERIOD_LABELS[entry.period] as Parameters<typeof t>[0])}
                         </span>
                         <span className="flex items-center gap-1 text-xs text-text-tertiary">
                           <MessageSquare className="w-3 h-3" />{entry.sessionCount} {t('summaryFeed.sessions')}

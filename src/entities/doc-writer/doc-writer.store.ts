@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import { createStream, getProviderConfig } from '@/shared/lib/providers/factory'
 import type { ProviderConfig, StreamParams } from '@/shared/lib/providers/types'
+import type { AwsCredentials } from '@/shared/types'
 
 export type DocType = 'report' | 'proposal' | 'presentation' | 'manual'
 
@@ -29,11 +30,11 @@ interface DocWriterState {
 
   createProject: (name: string, type: DocType, modelId: string) => string
   setContext: (context: string) => void
-  generateOutline: (credentials: any, openaiApiKey?: string | null, geminiApiKey?: string | null) => Promise<void>
+  generateOutline: (credentials: AwsCredentials | null, openaiApiKey?: string | null, geminiApiKey?: string | null) => Promise<void>
   updateOutlineSection: (id: string, patch: Partial<OutlineSection>) => void
   addOutlineSection: (title: string, level: number) => void
   removeOutlineSection: (id: string) => void
-  generateSectionContent: (sectionId: string, credentials: any, openaiApiKey?: string | null, geminiApiKey?: string | null) => Promise<void>
+  generateSectionContent: (sectionId: string, credentials: AwsCredentials | null, openaiApiKey?: string | null, geminiApiKey?: string | null) => Promise<void>
   updateSectionContent: (sectionId: string, content: string) => void
   exportMarkdown: () => string
   exportText: () => string

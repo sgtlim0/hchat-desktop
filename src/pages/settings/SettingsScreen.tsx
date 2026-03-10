@@ -684,7 +684,7 @@ export function SettingsScreen() {
                   }`}
                 >
                   <span className="inline-block w-2 h-2 rounded-full mr-1.5" style={{ backgroundColor: cat.color }} />
-                  {t(cat.labelKey as any)}
+                  {t(cat.labelKey as Parameters<typeof t>[0])}
                 </button>
               ))}
             </div>
@@ -735,7 +735,7 @@ export function SettingsScreen() {
                         <div key={s.category} className="flex items-center gap-2 text-xs">
                           <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: CATEGORY_COLORS[s.category] ?? '#6B7280' }} />
                           <span className="text-text-secondary w-20">
-                            {t(`usage.category.${s.category === 'doc-write' ? 'docWrite' : s.category === 'image-gen' ? 'imageGen' : s.category === 'data-analysis' ? 'analysis' : s.category}` as any)}
+                            {t(`usage.category.${s.category === 'doc-write' ? 'docWrite' : s.category === 'image-gen' ? 'imageGen' : s.category === 'data-analysis' ? 'analysis' : s.category}` as Parameters<typeof t>[0])}
                           </span>
                           <span className="text-text-primary font-medium">${s.totalCost.toFixed(4)}</span>
                           <span className="text-text-tertiary">({(s.totalCost / categoryTotal * 100).toFixed(0)}%)</span>

@@ -44,7 +44,7 @@ export function HeaderTabs() {
             }`}
           >
             <Icon size={16} />
-            {t(tab.labelKey as any)}
+            {t(tab.labelKey as Parameters<typeof t>[0])}
           </button>
         )
       })}

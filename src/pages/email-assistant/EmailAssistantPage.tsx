@@ -72,7 +72,7 @@ export function EmailAssistantPage() {
                   </span>
                 </div>
                 <div className="flex items-center gap-2 text-xs mt-1">
-                  <span className={draftTone?.color}>{(t as any)(`emailAssistant.${draft.tone}`)}</span>
+                  <span className={draftTone?.color}>{t(`emailAssistant.${draft.tone}` as Parameters<typeof t>[0])}</span>
                   {draft.isReply && <span className="px-1.5 py-0.5 bg-amber-500/10 text-amber-500 rounded text-[10px]">{t('emailAssistant.reply')}</span>}
                 </div>
                 <p className="text-xs text-text-tertiary mt-1">{new Date(draft.createdAt).toLocaleDateString()}</p>
@@ -92,7 +92,7 @@ export function EmailAssistantPage() {
                 <h2 className="font-bold text-text-primary">{selected.subject}</h2>
                 <div className="flex items-center gap-3 text-xs text-text-secondary mt-1">
                   <span className="flex items-center gap-1"><User className="w-3 h-3" />{selected.recipient}</span>
-                  <span className={toneConfig?.color}>{(t as any)(`emailAssistant.${selected.tone}`)}</span>
+                  <span className={toneConfig?.color}>{t(`emailAssistant.${selected.tone}` as Parameters<typeof t>[0])}</span>
                 </div>
               </div>
               <div className="flex items-center gap-1.5">
@@ -117,7 +117,7 @@ export function EmailAssistantPage() {
               </div>
               <div className="flex gap-2">
                 <span className="text-text-tertiary w-12">{t('emailAssistant.tone')}:</span>
-                <span className={toneConfig?.color}>{(t as any)(`emailAssistant.${selected.tone}`)}</span>
+                <span className={toneConfig?.color}>{t(`emailAssistant.${selected.tone}` as Parameters<typeof t>[0])}</span>
               </div>
             </div>
 
@@ -156,7 +156,7 @@ export function EmailAssistantPage() {
             <select value={tone} onChange={(e) => setTone(e.target.value as EmailTone)}
               className="w-full text-sm rounded-lg bg-surface-secondary border border-border px-3 py-2">
               {TONE_OPTIONS.map((opt) => (
-                <option key={opt.value} value={opt.value}>{(t as any)(opt.label)}</option>
+                <option key={opt.value} value={opt.value}>{t(opt.label as Parameters<typeof t>[0])}</option>
               ))}
             </select>
             <div className="flex gap-2 justify-end">

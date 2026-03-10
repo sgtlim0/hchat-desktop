@@ -112,7 +112,7 @@ export function getStyle(element: Element, property: string): string {
 
   const styles = window.getComputedStyle(element)
   // Handle both kebab-case and camelCase property names
-  const value = styles.getPropertyValue(property) || (styles as any)[property]
+  const value = styles.getPropertyValue(property) || (styles as CSSStyleDeclaration)[property as keyof CSSStyleDeclaration] as string
 
   return value || ''
 }

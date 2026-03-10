@@ -157,7 +157,7 @@ describe('InsightsStore', () => {
     ]
 
     const { getAllInsightReports } = await import('@/shared/lib/db')
-    vi.mocked(getAllInsightReports).mockResolvedValueOnce(mockReports as any)
+    vi.mocked(getAllInsightReports).mockResolvedValueOnce(mockReports)
 
     hydrate()
 

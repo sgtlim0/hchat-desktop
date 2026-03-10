@@ -25,7 +25,7 @@ export function searchSessions(query: string, sessions: Session[]): Session[] {
 export function searchMessages(
   query: string,
   messages: Array<{ content: string; role: string }>
-): Array<{ message: any; score: number; highlights: Array<[number, number]> }> {
+): Array<{ message: { content: string; role: string }; score: number; highlights: Array<[number, number]> }> {
   const results = fuzzySearch(
     query,
     messages,
@@ -53,7 +53,7 @@ export function searchPromptTemplates(
   const contentResults = fuzzySearch(query, templates, t => t.content, { threshold: 0.3 })
 
   // Combine and deduplicate results
-  const combined = new Map<any, number>()
+  const combined = new Map<{ name: string; content: string; category: string }, number>()
 
   nameResults.forEach(r => {
     combined.set(r.item, Math.max(r.score * 1.5, combined.get(r.item) || 0)) // Name matches get bonus

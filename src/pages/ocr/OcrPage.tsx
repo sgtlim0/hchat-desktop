@@ -177,7 +177,7 @@ export function OcrPage() {
             className="px-3 py-2 border border-border rounded-lg bg-surface text-text-primary text-sm focus:outline-none focus:ring-2 focus:ring-primary"
           >
             {OCR_LANGUAGES.map((l) => (
-              <option key={l.id} value={l.id}>{t(l.labelKey as any)}</option>
+              <option key={l.id} value={l.id}>{t(l.labelKey as Parameters<typeof t>[0])}</option>
             ))}
           </select>
         </div>
@@ -234,7 +234,7 @@ export function OcrPage() {
                       f.status === 'processing' ? 'text-blue-500' :
                       'text-text-tertiary'
                     }`}>
-                      {t(`ocr.status.${f.status}` as any)}
+                      {t(`ocr.status.${f.status}` as Parameters<typeof t>[0])}
                     </span>
                     {f.status === 'processing' && (
                       <div className="flex-1 h-1.5 bg-hover rounded-full overflow-hidden">

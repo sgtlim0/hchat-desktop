@@ -5,7 +5,7 @@ import { DebatePage } from '../DebatePage'
 // Mock i18n
 vi.mock('@/shared/i18n', () => ({
   useTranslation: () => ({
-    t: (key: string, params?: any) => {
+    t: (key: string, params?: Record<string, string | number>) => {
       if (params) {
         return `${key} ${JSON.stringify(params)}`
       }
@@ -101,7 +101,14 @@ vi.mock('@/shared/lib/providers/factory', () => ({
 
 // Mock Button component
 vi.mock('@/shared/ui/Button', () => ({
-  Button: ({ children, onClick, disabled, variant, size, className }: any) => (
+  Button: ({ children, onClick, disabled, variant, size, className }: {
+    children: React.ReactNode
+    onClick?: () => void
+    disabled?: boolean
+    variant?: string
+    size?: string
+    className?: string
+  }) => (
     <button onClick={onClick} disabled={disabled} data-variant={variant} data-size={size} className={className}>
       {children}
     </button>
@@ -263,7 +270,7 @@ describe('DebatePage', () => {
   it('shows stop button when debate is running', async () => {
     const { useDebateStore } = vi.mocked(await import('@/entities/debate/debate.store'))
 
-    useDebateStore.mockImplementation((selector: any) => {
+    useDebateStore.mockImplementation((selector: ((s: Record<string, unknown>) => unknown) | undefined) => {
       const state = {
         session: mockDebateSession,
         isRunning: true,
