@@ -44,25 +44,13 @@ const RegexBuilderPage: LazyPage = lazy(() => import('@/pages/regex-builder/Rege
 const DataConverterPage: LazyPage = lazy(() => import('@/pages/data-converter/DataConverterPage').then((m) => ({ default: m.DataConverterPage })))
 const DiagramEditorPage: LazyPage = lazy(() => import('@/pages/diagram-editor/DiagramEditorPage').then((m) => ({ default: m.DiagramEditorPage })))
 const SimulationLabPage: LazyPage = lazy(() => import('@/pages/simulation/SimulationLabPage').then((m) => ({ default: m.SimulationLabPage })))
-const SmartContractPage: LazyPage = lazy(() => import('@/pages/smart-contract/SmartContractPage').then((m) => ({ default: m.SmartContractPage })))
-const MovieScriptPage: LazyPage = lazy(() => import('@/pages/movie-script/MovieScriptPage').then((m) => ({ default: m.MovieScriptPage })))
-const NeuroFeedbackPage: LazyPage = lazy(() => import('@/pages/neuro-feedback/NeuroFeedbackPage').then((m) => ({ default: m.NeuroFeedbackPage })))
-const SpaceExplorerPage: LazyPage = lazy(() => import('@/pages/space-explorer/SpaceExplorerPage').then((m) => ({ default: m.SpaceExplorerPage })))
 const DigitalTwinPage: LazyPage = lazy(() => import('@/pages/digital-twin/DigitalTwinPage').then((m) => ({ default: m.DigitalTwinPage })))
-const MusicComposerPage: LazyPage = lazy(() => import('@/pages/music-composer/MusicComposerPage').then((m) => ({ default: m.MusicComposerPage })))
-const DreamSimPage: LazyPage = lazy(() => import('@/pages/dream-sim/DreamSimPage').then((m) => ({ default: m.DreamSimPage })))
-const QuantumVizPage: LazyPage = lazy(() => import('@/pages/quantum-viz/QuantumVizPage').then((m) => ({ default: m.QuantumVizPage })))
-const PhilosopherPage: LazyPage = lazy(() => import('@/pages/philosopher/PhilosopherPage').then((m) => ({ default: m.PhilosopherPage })))
-const VirtualSpacePage: LazyPage = lazy(() => import('@/pages/virtual-space/VirtualSpacePage').then((m) => ({ default: m.VirtualSpacePage })))
 const GameScenarioPage: LazyPage = lazy(() => import('@/pages/game-scenario/GameScenarioPage').then((m) => ({ default: m.GameScenarioPage })))
-const EmotionAvatarPage: LazyPage = lazy(() => import('@/pages/emotion-avatar/EmotionAvatarPage').then((m) => ({ default: m.EmotionAvatarPage })))
-const Data3DPage: LazyPage = lazy(() => import('@/pages/data-3d/Data3DPage').then((m) => ({ default: m.Data3DPage })))
 const OrchestraPage: LazyPage = lazy(() => import('@/pages/orchestra/OrchestraPage').then((m) => ({ default: m.OrchestraPage })))
 const VideoMeetingPage: LazyPage = lazy(() => import('@/pages/video-meeting/VideoMeetingPage').then((m) => ({ default: m.VideoMeetingPage })))
 const ApiMarketplacePage: LazyPage = lazy(() => import('@/pages/api-marketplace/ApiMarketplacePage').then((m) => ({ default: m.ApiMarketplacePage })))
 const WikiPageComponent: LazyPage = lazy(() => import('@/pages/wiki/WikiPage').then((m) => ({ default: m.WikiPage })))
 const CodePlaygroundPage: LazyPage = lazy(() => import('@/pages/code-playground/CodePlaygroundPage').then((m) => ({ default: m.CodePlaygroundPage })))
-const VoiceClonePage: LazyPage = lazy(() => import('@/pages/voice-clone/VoiceClonePage').then((m) => ({ default: m.VoiceClonePage })))
 const OkrPage: LazyPage = lazy(() => import('@/pages/okr/OkrPage').then((m) => ({ default: m.OkrPage })))
 const CrmPage: LazyPage = lazy(() => import('@/pages/crm/CrmPage').then((m) => ({ default: m.CrmPage })))
 const JournalPage: LazyPage = lazy(() => import('@/pages/journal/JournalPage').then((m) => ({ default: m.JournalPage })))
@@ -75,7 +63,6 @@ const FinancePage: LazyPage = lazy(() => import('@/pages/finance/FinancePage').t
 const ReadingNotePage: LazyPage = lazy(() => import('@/pages/reading-note/ReadingNotePage').then((m) => ({ default: m.ReadingNotePage })))
 const WhiteboardPage: LazyPage = lazy(() => import('@/pages/whiteboard/WhiteboardPage').then((m) => ({ default: m.WhiteboardPage })))
 const ContractPage: LazyPage = lazy(() => import('@/pages/contract/ContractPage').then((m) => ({ default: m.ContractPage })))
-const SoundscapePage: LazyPage = lazy(() => import('@/pages/soundscape/SoundscapePage').then((m) => ({ default: m.SoundscapePage })))
 const TutorialBuilderPage: LazyPage = lazy(() => import('@/pages/tutorial-builder/TutorialBuilderPage').then((m) => ({ default: m.TutorialBuilderPage })))
 const HabitTrackerPage: LazyPage = lazy(() => import('@/pages/habit-tracker/HabitTrackerPage').then((m) => ({ default: m.HabitTrackerPage })))
 const LiveTranslatePage: LazyPage = lazy(() => import('@/pages/live-translate/LiveTranslatePage').then((m) => ({ default: m.LiveTranslatePage })))
@@ -154,25 +141,13 @@ export const ROUTE_MAP: Partial<Record<ViewState, LazyPage>> = {
   dataConverter: DataConverterPage,
   diagramEditor: DiagramEditorPage,
   simulation: SimulationLabPage,
-  smartContract: SmartContractPage,
-  movieScript: MovieScriptPage,
-  neuroFeedback: NeuroFeedbackPage,
-  spaceExplorer: SpaceExplorerPage,
   digitalTwin: DigitalTwinPage,
-  musicComposer: MusicComposerPage,
-  dreamSim: DreamSimPage,
-  quantumViz: QuantumVizPage,
-  philosopher: PhilosopherPage,
-  virtualSpace: VirtualSpacePage,
   gameScenario: GameScenarioPage,
-  emotionAvatar: EmotionAvatarPage,
-  data3d: Data3DPage,
   orchestra: OrchestraPage,
   videoMeeting: VideoMeetingPage,
   apiMarketplace: ApiMarketplacePage,
   wiki: WikiPageComponent,
   codePlayground: CodePlaygroundPage,
-  voiceClone: VoiceClonePage,
   okr: OkrPage,
   crm: CrmPage,
   journal: JournalPage,
@@ -185,7 +160,6 @@ export const ROUTE_MAP: Partial<Record<ViewState, LazyPage>> = {
   readingNote: ReadingNotePage,
   whiteboard: WhiteboardPage,
   contract: ContractPage,
-  soundscape: SoundscapePage,
   tutorialBuilder: TutorialBuilderPage,
   habitTracker: HabitTrackerPage,
   liveTranslate: LiveTranslatePage,

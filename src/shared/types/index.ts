@@ -142,11 +142,8 @@ export type ExperimentalView =
   | 'tutorialBuilder' | 'habitTracker' | 'travelPlanner' | 'recipe'
   | 'interviewCoach' | 'finance' | 'readingNote' | 'okr' | 'crm'
   | 'journal' | 'socialMedia' | 'projectTimeline' | 'videoMeeting'
-  | 'contract' | 'soundscape' | 'voiceClone' | 'virtualSpace'
-  | 'gameScenario' | 'emotionAvatar' | 'data3d' | 'orchestra'
-  | 'digitalTwin' | 'musicComposer' | 'dreamSim' | 'quantumViz'
-  | 'philosopher' | 'simulation' | 'smartContract' | 'movieScript'
-  | 'neuroFeedback' | 'spaceExplorer'
+  | 'contract' | 'gameScenario' | 'orchestra'
+  | 'digitalTwin' | 'simulation'
 
 // Combined type — backward compatible
 export type ViewState =
