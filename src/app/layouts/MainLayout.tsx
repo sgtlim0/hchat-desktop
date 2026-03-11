@@ -1,28 +1,6 @@
 import { useEffect, useState, Suspense } from 'react'
 import { useSessionStore } from '@/entities/session/session.store'
 import { useSettingsStore } from '@/entities/settings/settings.store'
-import { useProjectStore } from '@/entities/project/project.store'
-import { useUsageStore } from '@/entities/usage/usage.store'
-import { usePromptLibraryStore } from '@/entities/prompt-library/prompt-library.store'
-import { usePersonaStore } from '@/entities/persona/persona.store'
-import { useFolderStore } from '@/entities/folder/folder.store'
-import { useTagStore } from '@/entities/tag/tag.store'
-import { useMemoryStore } from '@/entities/memory/memory.store'
-import { useScheduleStore } from '@/entities/schedule/schedule.store'
-import { useSwarmStore } from '@/entities/swarm/swarm.store'
-import { useChannelStore } from '@/entities/channel/channel.store'
-import { useKnowledgeStore } from '@/entities/knowledge/knowledge.store'
-import { useWorkflowStore } from '@/entities/workflow/workflow.store'
-import { useCollabStore } from '@/entities/collab/collab.store'
-import { useAuditStore } from '@/entities/audit/audit.store'
-import { useBatchStore } from '@/entities/batch/batch.store'
-import { useCacheStore } from '@/entities/cache/cache.store'
-import { usePluginStore } from '@/entities/plugins/plugin.store'
-import { useThemeStore } from '@/entities/theme/theme.store'
-import { useContextManagerStore } from '@/entities/context-manager/context-manager.store'
-import { useInsightsStore } from '@/entities/insights/insights.store'
-import { useDashboardStore } from '@/entities/dashboard/dashboard.store'
-import { useWorkspaceStore } from '@/entities/workspace/workspace.store'
 import { Sidebar } from '@/widgets/sidebar/Sidebar'
 import { HeaderTabs } from '@/widgets/header-tabs/HeaderTabs'
 import { HomeScreen } from '@/pages/home/HomeScreen'
@@ -31,6 +9,7 @@ import { ToastContainer } from '@/shared/ui/ToastContainer'
 import { useToastStore } from '@/entities/toast/toast.store'
 import { useTranslation } from '@/shared/i18n'
 import { useOnlineStatus } from '@/shared/hooks/useOnlineStatus'
+import { useHydrateOnView } from '@/shared/hooks/useHydrateOnView'
 import { ErrorBoundary } from '@/shared/ui/ErrorBoundary'
 import { InstallBanner } from '@/shared/ui/InstallBanner'
 import { SyncStatusBadge } from '@/shared/ui/SyncStatusBadge'
@@ -52,58 +31,11 @@ export function MainLayout() {
   const searchOpen = useSessionStore((s) => s.searchOpen)
   const setSearchOpen = useSessionStore((s) => s.setSearchOpen)
   const hydrated = useSessionStore((s) => s.hydrated)
-  const hydrateSession = useSessionStore((s) => s.hydrate)
-  const hydrateProject = useProjectStore((s) => s.hydrate)
-  const hydrateUsage = useUsageStore((s) => s.hydrate)
-  const hydratePromptLibrary = usePromptLibraryStore((s) => s.hydrate)
-  const hydratePersona = usePersonaStore((s) => s.hydrate)
-  const hydrateFolder = useFolderStore((s) => s.hydrate)
-  const hydrateTag = useTagStore((s) => s.hydrate)
-  const hydrateMemory = useMemoryStore((s) => s.hydrate)
-  const hydrateSchedule = useScheduleStore((s) => s.hydrate)
-  const hydrateSwarm = useSwarmStore((s) => s.hydrate)
-  const hydrateChannel = useChannelStore((s) => s.hydrate)
-  const hydrateKnowledge = useKnowledgeStore((s) => s.hydrate)
-  const hydrateWorkflow = useWorkflowStore((s) => s.hydrate)
-  const hydrateCollab = useCollabStore((s) => s.hydrate)
-  const hydrateAudit = useAuditStore((s) => s.hydrate)
-  const hydrateBatch = useBatchStore((s) => s.hydrate)
-  const hydrateCache = useCacheStore((s) => s.hydrate)
-  const hydratePlugin = usePluginStore((s) => s.hydrate)
-  const hydrateTheme = useThemeStore((s) => s.hydrate)
-  const hydrateContextManager = useContextManagerStore((s) => s.hydrate)
-  const hydrateInsights = useInsightsStore((s) => s.hydrate)
-  const hydrateDashboard = useDashboardStore((s) => s.hydrate)
-  const hydrateWorkspace = useWorkspaceStore((s) => s.hydrate)
   const isOnline = useOnlineStatus()
   const [shortcutsOpen, setShortcutsOpen] = useState(false)
 
-  // Hydrate from IndexedDB on mount
-  useEffect(() => {
-    hydrateSession()
-    hydrateProject()
-    hydrateUsage()
-    hydratePromptLibrary()
-    hydratePersona()
-    hydrateFolder()
-    hydrateTag()
-    hydrateMemory()
-    hydrateSchedule()
-    hydrateSwarm()
-    hydrateChannel()
-    hydrateKnowledge()
-    hydrateWorkflow()
-    hydrateCollab()
-    hydrateAudit()
-    hydrateBatch()
-    hydrateCache()
-    hydratePlugin()
-    hydrateTheme()
-    hydrateContextManager()
-    hydrateInsights()
-    hydrateDashboard()
-    hydrateWorkspace()
-  }, [hydrateSession, hydrateProject, hydrateUsage, hydratePromptLibrary, hydratePersona, hydrateFolder, hydrateTag, hydrateMemory, hydrateSchedule, hydrateSwarm, hydrateChannel, hydrateKnowledge, hydrateWorkflow, hydrateCollab, hydrateAudit, hydrateBatch, hydrateCache, hydratePlugin, hydrateTheme, hydrateContextManager, hydrateInsights, hydrateDashboard, hydrateWorkspace])
+  // Lazy hydration based on view
+  useHydrateOnView(view)
 
   // Keyboard shortcuts
   useEffect(() => {

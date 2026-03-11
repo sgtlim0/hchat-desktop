@@ -14,7 +14,9 @@
     "test:coverage": "vitest run --coverage",
     "test:e2e": "playwright test",
     "bundle-report": "node scripts/bundle-report.js",
-    "i18n:validate": "node scripts/i18n-validate.js"
+    "i18n:validate": "node scripts/i18n-validate.js",
+    "audit": "npm audit --production",
+    "audit:check": "node scripts/security-check.js"
   },
   "dependencies": {
     "@aws-sdk/client-bedrock-runtime": "^3.1000.0",

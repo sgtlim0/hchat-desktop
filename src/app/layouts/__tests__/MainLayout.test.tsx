@@ -9,8 +9,8 @@ const mockSetSettingsOpen = vi.fn()
 const mockHydrate = vi.fn()
 const mockCopilotToggle = vi.fn()
 
-vi.mock('@/entities/session/session.store', () => ({
-  useSessionStore: vi.fn((selector) => {
+vi.mock('@/entities/session/session.store', () => {
+  const mockStore = vi.fn((selector) => {
     const state = {
       view: 'home',
       currentSessionId: null,
@@ -20,8 +20,15 @@ vi.mock('@/entities/session/session.store', () => ({
       hydrate: mockHydrate,
     }
     return typeof selector === 'function' ? selector(state) : state
-  }),
-}))
+  })
+  // Add getState method for the lazy hydration hook
+  ;(mockStore as any).getState = () => ({
+    hydrate: mockHydrate,
+  })
+  return {
+    useSessionStore: mockStore,
+  }
+})
 
 vi.mock('@/entities/settings/settings.store', () => ({
   useSettingsStore: vi.fn((selector) => {
@@ -81,19 +88,31 @@ vi.mock('@/entities/persona/persona.store', () => ({
   }),
 }))
 
-vi.mock('@/entities/folder/folder.store', () => ({
-  useFolderStore: vi.fn((selector) => {
+vi.mock('@/entities/folder/folder.store', () => {
+  const mockStore = vi.fn((selector) => {
     const state = { hydrate: mockHydrate }
     return typeof selector === 'function' ? selector(state) : state
-  }),
-}))
+  })
+  ;(mockStore as any).getState = () => ({
+    hydrate: mockHydrate,
+  })
+  return {
+    useFolderStore: mockStore,
+  }
+})
 
-vi.mock('@/entities/tag/tag.store', () => ({
-  useTagStore: vi.fn((selector) => {
+vi.mock('@/entities/tag/tag.store', () => {
+  const mockStore = vi.fn((selector) => {
     const state = { hydrate: mockHydrate }
     return typeof selector === 'function' ? selector(state) : state
-  }),
-}))
+  })
+  ;(mockStore as any).getState = () => ({
+    hydrate: mockHydrate,
+  })
+  return {
+    useTagStore: mockStore,
+  }
+})
 
 vi.mock('@/entities/memory/memory.store', () => ({
   useMemoryStore: vi.fn((selector) => {
@@ -522,7 +541,7 @@ describe('MainLayout', () => {
 
     it('hydrates session store on mount', async () => {
       const hydrate = vi.fn()
-      ;(useSessionStore as any).mockImplementation((selector: any) => {
+      const mockSessionStore = vi.fn((selector: any) => {
         const state = {
           view: 'home',
           currentSessionId: null,
@@ -533,6 +552,10 @@ describe('MainLayout', () => {
         }
         return typeof selector === 'function' ? selector(state) : state
       })
+      // Add getState for lazy hydration hook
+      ;(mockSessionStore as any).getState = () => ({ hydrate })
+      ;(useSessionStore as any).mockImplementation(mockSessionStore)
+      ;(useSessionStore as any).getState = mockSessionStore.getState
 
       render(<MainLayout />)
 
