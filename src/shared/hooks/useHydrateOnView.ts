@@ -171,25 +171,13 @@ const VIEW_STORE_MAP: Record<ViewState, (() => HydrateFn | null)[]> = {
   ],
   diagramEditor: [],  // diagram-editor store has no hydrate
   simulation: [],  // No specific store
-  smartContract: [],  // smart-contract store has no hydrate
-  movieScript: [],  // movie-script store has no hydrate
-  neuroFeedback: [],  // neuro-feedback store has no hydrate
-  spaceExplorer: [],  // space-explorer store has no hydrate
-  digitalTwin: [],  // digital-twin store has no hydrate
-  musicComposer: [],  // music-composer store has no hydrate
-  dreamSim: [],  // dream-sim store has no hydrate
-  quantumViz: [],  // quantum-viz store has no hydrate
-  philosopher: [],  // philosopher store has no hydrate
-  virtualSpace: [],  // virtual-space store has no hydrate
+  digitalTwin: [],  // No specific store
   gameScenario: [],  // game-scenario store has no hydrate
-  emotionAvatar: [],  // emotion-avatar store has no hydrate
-  data3d: [],  // data-3d store has no hydrate
   orchestra: [],  // orchestra store has no hydrate
   videoMeeting: [],  // video-meeting store has no hydrate
   apiMarketplace: [],  // api-marketplace store has no hydrate
   wiki: [],  // wiki store has no hydrate
   codePlayground: [],  // playground store has no hydrate
-  voiceClone: [],  // voice-clone store has no hydrate
   okr: [],  // okr store has no hydrate
   crm: [],  // crm store has no hydrate
   journal: [],  // journal store has no hydrate
@@ -202,7 +190,6 @@ const VIEW_STORE_MAP: Record<ViewState, (() => HydrateFn | null)[]> = {
   readingNote: [],  // reading store has no hydrate
   whiteboard: [],  // whiteboard store has no hydrate
   contract: [],  // contract store has no hydrate
-  soundscape: [],  // soundscape store has no hydrate
   tutorialBuilder: [],  // tutorial store has no hydrate
   habitTracker: [],  // habit store has no hydrate
   liveTranslate: [],  // live-translate store has no hydrate
