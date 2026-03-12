@@ -1,5 +1,3 @@
-import type { ProviderType } from '../types'
-
 export type AssistantCategory =
   | 'all'
   | 'chat'
@@ -17,7 +15,6 @@ export interface AssistantPreset {
   descKey: string
   category: AssistantCategory
   modelId: string
-  provider: ProviderType
   systemPrompt: string
 }
 
@@ -40,7 +37,6 @@ export const ASSISTANT_PRESETS: AssistantPreset[] = [
     descKey: 'assistant.preset.analyst.desc',
     category: 'analyze',
     modelId: 'claude-sonnet-4.6',
-    provider: 'bedrock',
     systemPrompt:
       'You are a meticulous analyst. Break down complex topics systematically, verify facts through web search when needed, and provide well-structured, evidence-based answers.',
   },
@@ -50,8 +46,7 @@ export const ASSISTANT_PRESETS: AssistantPreset[] = [
     titleKey: 'assistant.preset.quickChat.title',
     descKey: 'assistant.preset.quickChat.desc',
     category: 'chat',
-    modelId: 'gemini-2.0-flash',
-    provider: 'gemini',
+    modelId: 'claude-haiku-4.5',
     systemPrompt:
       'You are a fast, friendly conversational assistant. Keep responses concise and natural. Prioritize speed and clarity.',
   },
@@ -62,7 +57,6 @@ export const ASSISTANT_PRESETS: AssistantPreset[] = [
     descKey: 'assistant.preset.docReview.desc',
     category: 'work',
     modelId: 'claude-sonnet-4.6',
-    provider: 'bedrock',
     systemPrompt:
       'You are a document review specialist. Analyze documents for accuracy, consistency, structure, and clarity. Highlight issues and suggest improvements.',
   },
@@ -72,8 +66,7 @@ export const ASSISTANT_PRESETS: AssistantPreset[] = [
     titleKey: 'assistant.preset.translator.title',
     descKey: 'assistant.preset.translator.desc',
     category: 'translate',
-    modelId: 'gpt-4o',
-    provider: 'openai',
+    modelId: 'claude-sonnet-4.6',
     systemPrompt:
       'You are a professional translator. Provide accurate, natural-sounding translations that preserve meaning, tone, and cultural nuances. Always ask for the target language if not specified.',
   },
@@ -84,7 +77,6 @@ export const ASSISTANT_PRESETS: AssistantPreset[] = [
     descKey: 'assistant.preset.reportWriter.desc',
     category: 'report',
     modelId: 'claude-sonnet-4.6',
-    provider: 'bedrock',
     systemPrompt:
       'You are a professional report writer. Create well-structured, clear, and comprehensive reports. Use headings, bullet points, and data tables when appropriate.',
   },
@@ -95,7 +87,6 @@ export const ASSISTANT_PRESETS: AssistantPreset[] = [
     descKey: 'assistant.preset.codeReviewer.desc',
     category: 'work',
     modelId: 'claude-sonnet-4.6',
-    provider: 'bedrock',
     systemPrompt:
       'You are a senior code reviewer. Analyze code for bugs, performance issues, security vulnerabilities, and best practices. Provide actionable suggestions with code examples.',
   },
@@ -105,8 +96,7 @@ export const ASSISTANT_PRESETS: AssistantPreset[] = [
     titleKey: 'assistant.preset.dataAnalyst.title',
     descKey: 'assistant.preset.dataAnalyst.desc',
     category: 'analyze',
-    modelId: 'gpt-4o',
-    provider: 'openai',
+    modelId: 'claude-sonnet-4.6',
     systemPrompt:
       'You are a data analyst. Interpret datasets, identify trends and patterns, create visualizations suggestions, and provide data-driven insights in clear, structured formats.',
   },
@@ -116,8 +106,7 @@ export const ASSISTANT_PRESETS: AssistantPreset[] = [
     titleKey: 'assistant.preset.emailWriter.title',
     descKey: 'assistant.preset.emailWriter.desc',
     category: 'writing',
-    modelId: 'gpt-4o-mini',
-    provider: 'openai',
+    modelId: 'claude-haiku-4.5',
     systemPrompt:
       'You are a professional email writer. Craft clear, concise, and appropriately toned emails. Adapt formality based on context. Always suggest a subject line.',
   },

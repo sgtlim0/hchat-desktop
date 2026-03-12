@@ -1,6 +1,6 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { FileText, List, HelpCircle } from 'lucide-react'
-import { DEFAULT_MODEL_ID, MODELS } from '@hchat/shared'
+import { DEFAULT_MODEL_ID } from '@hchat/shared'
 import { usePageContext } from '../hooks/usePageContext'
 import { useStreamingChat } from '../hooks/useStreamingChat'
 import { useMessageBuilder } from '../hooks/useMessageBuilder'
@@ -21,9 +21,23 @@ export function PageAnalysisView() {
   const [result, setResult] = useState('')
   const [showInput, setShowInput] = useState(false)
 
+  const credentialsRef = useRef<{ accessKeyId: string; secretAccessKey: string }>({
+    accessKeyId: '',
+    secretAccessKey: '',
+  })
+
   useEffect(() => {
     fetchPageContent()
   }, [fetchPageContent])
+
+  useEffect(() => {
+    chrome.storage.sync.get(['accessKeyId', 'secretAccessKey'], (r) => {
+      credentialsRef.current = {
+        accessKeyId: r.accessKeyId || '',
+        secretAccessKey: r.secretAccessKey || '',
+      }
+    })
+  }, [])
 
   // Collect result when streaming ends
   useEffect(() => {
@@ -36,14 +50,14 @@ export function PageAnalysisView() {
     (prompt: string) => {
       setResult('')
       const modelId = localStorage.getItem('hchat-model') || DEFAULT_MODEL_ID
-      const model = MODELS.find(m => m.id === modelId)
       const system = buildSystemPrompt(undefined, pageData?.content)
 
       sendMessage({
         modelId,
         messages: [{ role: 'user', content: prompt }],
         system,
-        provider: model?.provider || 'bedrock',
+        accessKeyId: credentialsRef.current.accessKeyId,
+        secretAccessKey: credentialsRef.current.secretAccessKey,
       })
     },
     [pageData, buildSystemPrompt, sendMessage],

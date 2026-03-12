@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react'
 import { Trash2, Search, MessageCircle } from 'lucide-react'
-import { MODELS, PROVIDER_COLORS } from '@hchat/shared'
+import { MODELS } from '@hchat/shared'
 
 interface HistorySession {
   id: string
@@ -74,8 +74,6 @@ export function HistoryView({ onResume }: HistoryViewProps) {
       <div className="flex-1 overflow-y-auto">
         {filtered.map(session => {
           const model = MODELS.find(m => m.id === session.modelId)
-          const color = model ? PROVIDER_COLORS[model.provider] : '#888'
-
           return (
             <button
               key={session.id}
@@ -89,10 +87,7 @@ export function HistoryView({ onResume }: HistoryViewProps) {
                 </p>
                 <div className="mt-0.5 flex items-center gap-2">
                   {model && (
-                    <span
-                      className="rounded-full px-1.5 py-0.5 text-[9px] font-medium text-white"
-                      style={{ backgroundColor: color }}
-                    >
+                    <span className="rounded-full bg-amber-500 px-1.5 py-0.5 text-[9px] font-medium text-white">
                       {model.shortLabel}
                     </span>
                   )}
