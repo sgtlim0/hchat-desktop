@@ -116,6 +116,7 @@ export function ProjectsScreen() {
                   onChange={(e) => setNewProjectName(e.target.value)}
                   placeholder={t('project.namePlaceholder')}
                   className="w-full bg-input border border-border-input rounded-lg px-4 py-2.5 text-sm text-text-primary placeholder:text-text-tertiary outline-none focus:border-primary transition"
+                  // eslint-disable-next-line jsx-a11y/no-autofocus
                   autoFocus
                 />
               </div>

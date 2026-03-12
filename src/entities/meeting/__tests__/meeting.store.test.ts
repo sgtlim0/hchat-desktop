@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { useMeetingStore } from '../meeting.store'
-import type { MeetingTranscriptEntry, MeetingActionItem } from '../meeting.store'
+import type { MeetingTranscriptEntry } from '../meeting.store'
 
 describe('MeetingStore', () => {
   beforeEach(() => {

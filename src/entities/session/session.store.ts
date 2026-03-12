@@ -55,7 +55,7 @@ export const useSessionStore = create<SessionState>((set, get) => ({
 
   hydrate: async () => {
     try {
-      const { sessions, projects: _, messagesMap } = await hydrateFromDb()
+      const { sessions, messagesMap } = await hydrateFromDb()
       set({
         sessions,
         messages: messagesMap,
@@ -97,7 +97,7 @@ export const useSessionStore = create<SessionState>((set, get) => ({
 
   deleteSession: (id) => {
     set((state) => {
-      const { [id]: _, ...restMessages } = state.messages
+      const { [id]: _deleted, ...restMessages } = state.messages
       return {
         sessions: state.sessions.filter((s) => s.id !== id),
         messages: restMessages,

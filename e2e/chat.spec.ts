@@ -63,7 +63,6 @@ test.describe('Chat Flow', () => {
     // Check for common model names
     const claudeOption = page.getByText(/claude/i)
     const gptOption = page.getByText(/gpt/i)
-    const geminiOption = page.getByText(/gemini/i)
 
     const hasClaudeOrGpt = await claudeOption.or(gptOption).isVisible()
     expect(hasClaudeOrGpt).toBe(true)

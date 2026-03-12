@@ -217,7 +217,14 @@ function ArtifactSelector({
 }) {
   return (
     <>
-      <div className="fixed inset-0 z-40" onClick={onClose} />
+      <div
+        className="fixed inset-0 z-40"
+        onClick={onClose}
+        onKeyDown={(e) => { if (e.key === 'Escape') onClose() }}
+        role="button"
+        tabIndex={0}
+        aria-label="Close artifact selector"
+      />
       <div className="absolute top-full left-0 mt-1 bg-surface border border-border rounded-lg shadow-lg py-1 z-50 min-w-[200px] max-h-[300px] overflow-y-auto">
         {artifacts.map((a) => (
           <button

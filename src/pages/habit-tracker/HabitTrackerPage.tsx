@@ -43,10 +43,19 @@ export function HabitTrackerPage() {
         })}
       </div>
       {showAdd && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40" onClick={() => setShowAdd(false)}>
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/40"
+          onClick={() => setShowAdd(false)}
+          onKeyDown={(e) => { if (e.key === 'Escape') setShowAdd(false) }}
+          role="button"
+          tabIndex={0}
+          aria-label="Close modal"
+        >
           <div className="bg-surface rounded-xl p-6 w-80 space-y-4" onClick={(e) => e.stopPropagation()}>
             <h3 className="font-semibold">{t('habit.create')}</h3>
-            <input value={name} onChange={(e) => setName(e.target.value)} placeholder={t('habit.habitName')} className="w-full px-3 py-2 text-sm rounded-lg bg-surface-secondary border border-border" autoFocus onKeyDown={(e) => { if (e.key === 'Enter' && name.trim()) { createHabit(name.trim(), 'daily', '✅', '#3b82f6'); setName(''); setShowAdd(false) }}} />
+            <input value={name} onChange={(e) => setName(e.target.value)} placeholder={t('habit.habitName')} className="w-full px-3 py-2 text-sm rounded-lg bg-surface-secondary border border-border"
+              // eslint-disable-next-line jsx-a11y/no-autofocus
+              autoFocus onKeyDown={(e) => { if (e.key === 'Enter' && name.trim()) { createHabit(name.trim(), 'daily', '✅', '#3b82f6'); setName(''); setShowAdd(false) }}} />
             <div className="flex gap-2 justify-end">
               <button onClick={() => setShowAdd(false)} className="px-3 py-1.5 text-sm rounded-lg bg-surface-secondary">{t('common.cancel')}</button>
               <button onClick={() => { if (name.trim()) { createHabit(name.trim(), 'daily', '✅', '#3b82f6'); setName(''); setShowAdd(false) }}} className="px-3 py-1.5 text-sm rounded-lg bg-primary text-white">{t('common.create')}</button>

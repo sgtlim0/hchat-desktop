@@ -1,6 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { usePluginStore } from '../plugin.store'
-import type { Plugin } from '@/shared/types'
 
 // Mock the db module
 vi.mock('@/shared/lib/db', () => ({

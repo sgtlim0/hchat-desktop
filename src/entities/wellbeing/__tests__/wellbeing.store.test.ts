@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { useWellbeingStore } from '../wellbeing.store'
-import type { MoodEntry, WellbeingReport } from '@/shared/types'
+import type { MoodEntry } from '@/shared/types'
 
 vi.mock('@/shared/lib/db', () => ({
   getAllMoodEntries: vi.fn(() => Promise.resolve([])),

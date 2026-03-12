@@ -24,9 +24,6 @@ test.describe('Home Screen', () => {
   })
 
   test('should toggle sidebar with Cmd+B', async ({ page }) => {
-    // Sidebar should be visible initially (default state)
-    const sidebar = page.locator('[data-testid="sidebar"]').or(page.locator('aside'))
-
     // Toggle sidebar closed
     await page.keyboard.press('Meta+KeyB')
     await page.waitForTimeout(300) // Wait for animation

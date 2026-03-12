@@ -68,10 +68,19 @@ export function MentoringPage() {
         ))}
       </div>
       {showAdd && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40" onClick={() => setShowAdd(false)}>
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/40"
+          onClick={() => setShowAdd(false)}
+          onKeyDown={(e) => { if (e.key === 'Escape') setShowAdd(false) }}
+          role="button"
+          tabIndex={0}
+          aria-label="Close modal"
+        >
           <div className="bg-surface rounded-xl p-6 w-80 space-y-4" onClick={(e) => e.stopPropagation()}>
             <h3 className="font-semibold text-text-primary">{t('mentoring.addGoal')}</h3>
-            <input value={topic} onChange={(e) => setTopic(e.target.value)} placeholder={t('mentoring.topicPlaceholder')} className="w-full px-3 py-2 text-sm rounded-lg bg-surface-secondary border border-border" autoFocus onKeyDown={(e) => e.key === 'Enter' && handleAdd()} />
+            <input value={topic} onChange={(e) => setTopic(e.target.value)} placeholder={t('mentoring.topicPlaceholder')} className="w-full px-3 py-2 text-sm rounded-lg bg-surface-secondary border border-border"
+              // eslint-disable-next-line jsx-a11y/no-autofocus
+              autoFocus onKeyDown={(e) => e.key === 'Enter' && handleAdd()} />
             <select value={difficulty} onChange={(e) => setDifficulty(e.target.value as MentoringDifficulty)} className="w-full text-sm rounded-lg bg-surface-secondary border border-border px-3 py-2">
               <option value="beginner">{t('mentoring.beginner')}</option>
               <option value="intermediate">{t('mentoring.intermediate')}</option>

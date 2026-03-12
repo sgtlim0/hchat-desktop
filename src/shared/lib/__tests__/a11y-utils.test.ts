@@ -218,7 +218,7 @@ describe('a11y-utils', () => {
 
     it('returns false when matchMedia is not supported', () => {
       const originalMatchMedia = window.matchMedia
-      // @ts-ignore - Testing unsupported browser scenario
+      // @ts-expect-error - Testing unsupported browser scenario
       delete window.matchMedia
 
       expect(isReducedMotion()).toBe(false)

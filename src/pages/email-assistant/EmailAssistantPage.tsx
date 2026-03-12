@@ -145,11 +145,20 @@ export function EmailAssistantPage() {
 
       {/* Create Modal */}
       {showCreate && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40" onClick={() => setShowCreate(false)}>
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/40"
+          onClick={() => setShowCreate(false)}
+          onKeyDown={(e) => { if (e.key === 'Escape') setShowCreate(false) }}
+          role="button"
+          tabIndex={0}
+          aria-label="Close modal"
+        >
           <div className="bg-surface rounded-xl p-6 w-80 space-y-4" onClick={(e) => e.stopPropagation()}>
             <h3 className="font-semibold text-text-primary">{t('emailAssistant.create')}</h3>
             <input value={recipient} onChange={(e) => setRecipient(e.target.value)}
-              placeholder={t('emailAssistant.recipientPlaceholder')} className="w-full px-3 py-2 text-sm rounded-lg bg-surface-secondary border border-border" autoFocus />
+              placeholder={t('emailAssistant.recipientPlaceholder')} className="w-full px-3 py-2 text-sm rounded-lg bg-surface-secondary border border-border"
+              // eslint-disable-next-line jsx-a11y/no-autofocus
+              autoFocus />
             <input value={subject} onChange={(e) => setSubject(e.target.value)}
               placeholder={t('emailAssistant.subjectPlaceholder')} className="w-full px-3 py-2 text-sm rounded-lg bg-surface-secondary border border-border"
               onKeyDown={(e) => e.key === 'Enter' && handleCreate()} />

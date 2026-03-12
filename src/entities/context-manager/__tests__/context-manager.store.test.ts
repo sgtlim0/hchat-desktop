@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { useContextManagerStore } from '../context-manager.store'
-import type { PinnedMessage, ContextTemplate } from '@/shared/types'
+import type { ContextTemplate } from '@/shared/types'
 
 // Mock the db module
 vi.mock('@/shared/lib/db', () => ({

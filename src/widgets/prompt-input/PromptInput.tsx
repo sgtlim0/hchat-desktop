@@ -296,12 +296,14 @@ export function PromptInput({
             </p>
             <div className="flex gap-2 mt-2">
               <button
+                type="button"
                 onClick={() => { setShowGuardrailWarning(false) }}
                 className="px-3 py-1 text-xs rounded bg-hover text-text-secondary hover:bg-border transition"
               >
                 {t('common.cancel')}
               </button>
               <button
+                type="button"
                 onClick={() => handleSend(true)}
                 className="px-3 py-1 text-xs rounded bg-yellow-500 text-white hover:bg-yellow-600 transition"
               >
@@ -315,6 +317,7 @@ export function PromptInput({
       {/* Persona chip + Thinking Depth */}
       <div className="relative flex items-center gap-2">
         <button
+          type="button"
           onClick={() => setShowPersonaMenu(!showPersonaMenu)}
           className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium transition border ${
             activePersona
@@ -328,6 +331,7 @@ export function PromptInput({
         {showPersonaMenu && (
           <div className="absolute bottom-full left-0 mb-1 bg-surface border border-border rounded-lg shadow-lg py-1 z-50 min-w-[200px]">
             <button
+              type="button"
               onClick={() => { setActivePersona(null); setShowPersonaMenu(false) }}
               className={`w-full text-left px-3 py-1.5 text-sm hover:bg-hover transition ${
                 !activePersonaId ? 'text-primary font-medium' : 'text-text-secondary'
@@ -338,6 +342,7 @@ export function PromptInput({
             {personas.map((p) => (
               <button
                 key={p.id}
+                type="button"
                 onClick={() => { setActivePersona(p.id); setShowPersonaMenu(false) }}
                 className={`w-full text-left px-3 py-1.5 text-sm hover:bg-hover transition ${
                   activePersonaId === p.id ? 'text-primary font-medium' : 'text-text-secondary'
@@ -354,6 +359,7 @@ export function PromptInput({
           {depthOptions.map((opt) => (
             <button
               key={opt.value}
+              type="button"
               onClick={() => setThinkingDepth(opt.value)}
               className={`px-2.5 py-0.5 rounded-full text-[11px] font-medium transition ${
                 thinkingDepth === opt.value
@@ -374,8 +380,10 @@ export function PromptInput({
           <span className="text-primary font-medium truncate max-w-[200px]">{pdfAttachment.fileName}</span>
           <span className="text-text-tertiary">{t('pdf.pages', { count: String(pdfAttachment.pageCount) })}</span>
           <button
+            type="button"
             onClick={() => setPdfAttachment(null)}
             className="p-0.5 hover:bg-primary/20 rounded transition"
+            aria-label="Remove PDF"
           >
             <X size={12} className="text-primary" />
           </button>
@@ -393,8 +401,10 @@ export function PromptInput({
           <span className="text-text-tertiary">{t('spreadsheet.sheets', { count: String(spreadsheetAttachment.sheetCount) })}</span>
           <span className="text-text-tertiary">{t('spreadsheet.rows', { count: String(spreadsheetAttachment.totalRows) })}</span>
           <button
+            type="button"
             onClick={() => setSpreadsheetAttachment(null)}
             className="p-0.5 hover:bg-primary/20 rounded transition"
+            aria-label="Remove spreadsheet"
           >
             <X size={12} className="text-primary" />
           </button>
@@ -414,6 +424,7 @@ export function PromptInput({
         className="hidden"
       />
       <button
+        type="button"
         onClick={() => fileInputRef.current?.click()}
         aria-label={t('chat.attach')}
         className="p-2 hover:bg-hover rounded-lg transition flex-shrink-0 focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"

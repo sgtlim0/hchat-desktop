@@ -80,7 +80,14 @@ export function DataConnectorsPage() {
       </div>
 
       {showAdd && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40" onClick={() => setShowAdd(false)}>
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/40"
+          onClick={() => setShowAdd(false)}
+          onKeyDown={(e) => { if (e.key === 'Escape') setShowAdd(false) }}
+          role="button"
+          tabIndex={0}
+          aria-label="Close modal"
+        >
           <div className="bg-surface rounded-xl p-6 w-96 space-y-4" onClick={(e) => e.stopPropagation()}>
             <h3 className="font-semibold text-text-primary">{t('dataConnector.add')}</h3>
             <select value={newType} onChange={(e) => setNewType(e.target.value as ConnectorType)} className="w-full text-sm rounded-lg bg-surface-secondary border border-border px-3 py-2">

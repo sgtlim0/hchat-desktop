@@ -181,7 +181,14 @@ export function TranslationMemoryPage() {
 
       {/* Add Modal */}
       {showAdd && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40" onClick={() => setShowAdd(false)}>
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/40"
+          onClick={() => setShowAdd(false)}
+          onKeyDown={(e) => { if (e.key === 'Escape') setShowAdd(false) }}
+          role="button"
+          tabIndex={0}
+          aria-label="Close modal"
+        >
           <div className="bg-surface rounded-xl p-6 w-96 space-y-4" onClick={(e) => e.stopPropagation()}>
             <h3 className="font-semibold text-text-primary">
               {tab === 'pairs' ? t('translationMemory.addPair') : t('translationMemory.addTerm')}
@@ -189,7 +196,9 @@ export function TranslationMemoryPage() {
             {tab === 'pairs' ? (
               <>
                 <textarea value={source} onChange={(e) => setSource(e.target.value)}
-                  placeholder={t('translationMemory.sourcePlaceholder')} className="w-full px-3 py-2 text-sm rounded-lg bg-surface-secondary border border-border" rows={2} autoFocus />
+                  placeholder={t('translationMemory.sourcePlaceholder')} className="w-full px-3 py-2 text-sm rounded-lg bg-surface-secondary border border-border" rows={2}
+                  // eslint-disable-next-line jsx-a11y/no-autofocus
+                  autoFocus />
                 <textarea value={target} onChange={(e) => setTarget(e.target.value)}
                   placeholder={t('translationMemory.targetPlaceholder')} className="w-full px-3 py-2 text-sm rounded-lg bg-surface-secondary border border-border" rows={2} />
                 <div className="flex gap-2">
@@ -208,7 +217,9 @@ export function TranslationMemoryPage() {
             ) : (
               <>
                 <input value={gTerm} onChange={(e) => setGTerm(e.target.value)}
-                  placeholder={t('translationMemory.termPlaceholder')} className="w-full px-3 py-2 text-sm rounded-lg bg-surface-secondary border border-border" autoFocus />
+                  placeholder={t('translationMemory.termPlaceholder')} className="w-full px-3 py-2 text-sm rounded-lg bg-surface-secondary border border-border"
+                  // eslint-disable-next-line jsx-a11y/no-autofocus
+                  autoFocus />
                 <input value={gTranslation} onChange={(e) => setGTranslation(e.target.value)}
                   placeholder={t('translationMemory.translationPlaceholder')} className="w-full px-3 py-2 text-sm rounded-lg bg-surface-secondary border border-border" />
                 <input value={gDomain} onChange={(e) => setGDomain(e.target.value)}

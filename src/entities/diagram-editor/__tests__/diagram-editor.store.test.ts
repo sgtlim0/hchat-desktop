@@ -123,7 +123,7 @@ describe('DiagramEditorStore', () => {
     addDiagram('Sequence Diagram', 'sequence', 'code')
     addDiagram('ER Model', 'er', 'code')
 
-    const { setSearchQuery, getFilteredDiagrams } = useDiagramEditorStore.getState()
+    const { setSearchQuery } = useDiagramEditorStore.getState()
 
     setSearchQuery('diagram')
 
@@ -150,7 +150,7 @@ describe('DiagramEditorStore', () => {
 
     addDiagram('Selected', 'flowchart', 'code')
 
-    const { getSelectedDiagram, diagrams } = useDiagramEditorStore.getState()
+    const { getSelectedDiagram } = useDiagramEditorStore.getState()
     const selected = getSelectedDiagram()
     expect(selected).not.toBeNull()
     expect(selected?.title).toBe('Selected')

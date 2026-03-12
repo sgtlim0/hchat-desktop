@@ -294,7 +294,6 @@ vi.mock('../route-map', () => ({
 // Import mocked modules for dynamic changes
 import { useSessionStore } from '@/entities/session/session.store'
 import { useSettingsStore } from '@/entities/settings/settings.store'
-import { useCopilotStore } from '@/entities/copilot/copilot.store'
 
 describe('MainLayout', () => {
   beforeEach(() => {

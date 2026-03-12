@@ -27,7 +27,7 @@ describe('ToolIntegrationStore', () => {
   })
 
   it('updateConfluence가 config를 설정한다', () => {
-    const { updateConfluence, confluence } = useToolIntegrationStore.getState()
+    const { updateConfluence } = useToolIntegrationStore.getState()
 
     updateConfluence({
       baseUrl: 'https://test.atlassian.net',

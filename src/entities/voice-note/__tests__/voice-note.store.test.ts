@@ -37,7 +37,6 @@ describe('VoiceNoteStore', () => {
     const { startRecording, stopAndSave } = useVoiceNoteStore.getState()
 
     startRecording()
-    const startTime = useVoiceNoteStore.getState().recordingStartTime
 
     const rawText = '음 안녕하세요 어 오늘 회의 내용 정리해야 합니다'
     stopAndSave(rawText)

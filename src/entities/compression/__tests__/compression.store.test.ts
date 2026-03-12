@@ -17,7 +17,7 @@ vi.mock('@/shared/lib/compression/prompt-compressor', () => ({
 }))
 
 vi.mock('@/shared/lib/compression/context-pruner', () => ({
-  pruneContext: vi.fn((messages: any[], options: any) => ({
+  pruneContext: vi.fn((messages: any[]) => ({
     messages: messages.slice(-5), // Keep last 5 messages
     prunedCount: Math.max(0, messages.length - 5),
   })),
@@ -119,7 +119,7 @@ describe('CompressionStore', () => {
   })
 
   it('should record compression statistics', () => {
-    const { recordCompression, stats } = useCompressionStore.getState()
+    const { recordCompression } = useCompressionStore.getState()
 
     recordCompression(100, 0.001)
     let currentStats = useCompressionStore.getState().stats

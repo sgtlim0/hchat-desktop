@@ -146,10 +146,19 @@ export function KnowledgeGraphPage() {
 
       {/* Add modal */}
       {showAddModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40" onClick={() => setShowAddModal(false)}>
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/40"
+          onClick={() => setShowAddModal(false)}
+          onKeyDown={(e) => { if (e.key === 'Escape') setShowAddModal(false) }}
+          role="button"
+          tabIndex={0}
+          aria-label="Close modal"
+        >
           <div className="bg-surface rounded-xl p-6 w-80 space-y-4" onClick={(e) => e.stopPropagation()}>
             <h3 className="font-semibold text-text-primary">{t('knowledgeGraph.addNode')}</h3>
-            <input value={newLabel} onChange={(e) => setNewLabel(e.target.value)} placeholder={t('knowledgeGraph.nodeName')} className="w-full px-3 py-2 text-sm rounded-lg bg-surface-secondary border border-border focus:outline-none focus:ring-1 focus:ring-primary" autoFocus onKeyDown={(e) => e.key === 'Enter' && handleAdd()} />
+            <input value={newLabel} onChange={(e) => setNewLabel(e.target.value)} placeholder={t('knowledgeGraph.nodeName')} className="w-full px-3 py-2 text-sm rounded-lg bg-surface-secondary border border-border focus:outline-none focus:ring-1 focus:ring-primary"
+              // eslint-disable-next-line jsx-a11y/no-autofocus
+              autoFocus onKeyDown={(e) => e.key === 'Enter' && handleAdd()} />
             <select value={newType} onChange={(e) => setNewType(e.target.value as GraphNode['type'])} className="w-full text-sm rounded-lg bg-surface-secondary border border-border px-3 py-2">
               {(['topic', 'session', 'document', 'knowledge', 'snippet'] as const).map((t) => <option key={t} value={t}>{t}</option>)}
             </select>

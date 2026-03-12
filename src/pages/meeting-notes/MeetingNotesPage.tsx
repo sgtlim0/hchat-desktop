@@ -163,11 +163,20 @@ export function MeetingNotesPage() {
 
       {/* Create Modal */}
       {showCreate && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40" onClick={() => setShowCreate(false)}>
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/40"
+          onClick={() => setShowCreate(false)}
+          onKeyDown={(e) => { if (e.key === 'Escape') setShowCreate(false) }}
+          role="button"
+          tabIndex={0}
+          aria-label="Close modal"
+        >
           <div className="bg-surface rounded-xl p-6 w-80 space-y-4" onClick={(e) => e.stopPropagation()}>
             <h3 className="font-semibold text-text-primary">{t('meetingNotes.create')}</h3>
             <input value={title} onChange={(e) => setTitle(e.target.value)}
-              placeholder={t('meetingNotes.titlePlaceholder')} className="w-full px-3 py-2 text-sm rounded-lg bg-surface-secondary border border-border" autoFocus
+              placeholder={t('meetingNotes.titlePlaceholder')} className="w-full px-3 py-2 text-sm rounded-lg bg-surface-secondary border border-border"
+              // eslint-disable-next-line jsx-a11y/no-autofocus
+              autoFocus
               onKeyDown={(e) => e.key === 'Enter' && handleCreate()} />
             <select value={template} onChange={(e) => setTemplate(e.target.value as MeetingTemplate)}
               className="w-full text-sm rounded-lg bg-surface-secondary border border-border px-3 py-2">

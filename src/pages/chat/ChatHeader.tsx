@@ -136,6 +136,7 @@ export function ChatHeader({ sessionId }: ChatHeaderProps) {
                 if (e.key === 'Escape') setIsEditing(false)
               }}
               className="bg-transparent text-sm font-semibold text-text-primary outline-none border-b border-primary px-1"
+              // eslint-disable-next-line jsx-a11y/no-autofocus
               autoFocus
             />
           ) : (

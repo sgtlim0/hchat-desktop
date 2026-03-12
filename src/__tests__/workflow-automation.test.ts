@@ -143,7 +143,6 @@ describe('workflow-automation', () => {
     })
 
     it('should execute while loop with condition', () => {
-      let counter = 0
       const results = executeLoop(
         {
           type: 'while',
@@ -152,7 +151,6 @@ describe('workflow-automation', () => {
         },
         ['ab'],
         (input) => {
-          counter++
           return input + 'x'
         },
       )
