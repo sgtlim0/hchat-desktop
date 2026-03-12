@@ -1,13 +1,19 @@
+// Config
+export { setConfig, getConfig, type AppConfig } from './lib/config'
+
 // Types
 export * from './types'
 
 // Constants
-export { MODELS, DEFAULT_MODEL_ID, BEDROCK_MODEL_MAP, AWS_REGIONS, DEFAULT_AWS_REGION, DEFAULT_PERSONAS, QUICK_ACTIONS } from './constants'
+export { MODELS, DEFAULT_MODEL_ID, PROVIDER_COLORS, PROVIDER_LABELS, BEDROCK_MODEL_MAP, AWS_REGIONS, DEFAULT_AWS_REGION, DEFAULT_PERSONAS, QUICK_ACTIONS } from './constants'
 export { ASSISTANT_PRESETS, ASSISTANT_CATEGORIES, type AssistantPreset, type AssistantCategory } from './constants/assistants'
 
 // Providers
-export { createStream } from './lib/providers/factory'
-export type { StreamParams, ProviderConfig } from './lib/providers/types'
+export { createStream, getProviderConfig } from './lib/providers/factory'
+export { parseProxySSE } from './lib/providers/proxy-sse'
+export { routeModel, routeModelAdvanced, analyzeIntent } from './lib/providers/router'
+export type { StreamParams, ProviderConfig, ProviderStreamParams, BedrockStreamParams } from './lib/providers/types'
+export type { RoutingDecision } from './lib/providers/router-rules'
 
 // Core libs
 export { streamChat, testConnection } from './lib/bedrock-client'
@@ -16,6 +22,7 @@ export { RateLimiter, getRateLimiter } from './lib/rate-limiter'
 export { estimateTokens } from './lib/token-estimator'
 export { detectSensitiveData, maskSensitiveData, getDetectionLabel } from './lib/guardrail'
 export { escapeHtml, stripHtmlTags, sanitizeUrl, sanitizeFilename, preventXss, isCleanText } from './lib/sanitize-utils'
+export { webSearch, formatSearchResults } from './lib/web-search'
 export { encrypt, decrypt, decryptWithMigration } from './lib/crypto'
 export { extractVariables, fillTemplate } from './lib/prompt-template'
 export { createStreamThrottle } from './lib/stream-throttle'

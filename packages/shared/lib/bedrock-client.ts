@@ -1,101 +1,92 @@
-import { BedrockRuntimeClient, InvokeModelWithResponseStreamCommand } from '@aws-sdk/client-bedrock-runtime'
 import type { AwsCredentials, ChatStreamEvent } from '../types'
 import { BEDROCK_MODEL_MAP } from '../constants'
+import { getConfig } from './config'
 
 interface StreamChatParams {
   credentials: AwsCredentials
-  region?: string
   modelId: string
-  messages: Array<{ role: 'user' | 'assistant'; content: string }>
+  messages: Array<{
+    role: 'user' | 'assistant'
+    content: string
+  }>
   system?: string
   signal?: AbortSignal
 }
 
 export async function* streamChat(params: StreamChatParams): AsyncGenerator<ChatStreamEvent> {
-  const client = new BedrockRuntimeClient({
-    region: params.region || 'us-east-1',
-    credentials: {
-      accessKeyId: params.credentials.accessKeyId,
-      secretAccessKey: params.credentials.secretAccessKey,
-    },
-  })
-
+  const API_BASE = getConfig().apiBaseUrl
   const bedrockModelId = BEDROCK_MODEL_MAP[params.modelId] ?? params.modelId
 
-  const command = new InvokeModelWithResponseStreamCommand({
-    modelId: bedrockModelId,
-    contentType: 'application/json',
+  const response = await fetch(`${API_BASE}/api/chat`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      anthropic_version: 'bedrock-2023-05-31',
-      max_tokens: 4096,
-      system: params.system,
+      credentials: params.credentials,
+      modelId: bedrockModelId,
       messages: params.messages,
+      system: params.system,
     }),
+    signal: params.signal,
   })
 
+  if (!response.ok) {
+    yield { type: 'error', error: `HTTP ${response.status}: ${response.statusText}` }
+    return
+  }
+
+  const reader = response.body?.getReader()
+  if (!reader) {
+    yield { type: 'error', error: 'No response body' }
+    return
+  }
+
+  const decoder = new TextDecoder()
+  let buffer = ''
+
   try {
-    const response = await client.send(command, {
-      abortSignal: params.signal,
-    })
+    while (true) {
+      const { done, value } = await reader.read()
+      if (done) break
 
-    let inputTokens = 0
-    let outputTokens = 0
+      buffer += decoder.decode(value, { stream: true })
 
-    if (response.body) {
-      for await (const event of response.body) {
-        if (event.chunk?.bytes) {
-          const text = new TextDecoder().decode(event.chunk.bytes)
-          const data = JSON.parse(text)
+      const lines = buffer.split('\n')
+      buffer = lines.pop() ?? ''
 
-          if (data.type === 'content_block_delta' && data.delta?.text) {
-            yield { type: 'text', content: data.delta.text }
-          } else if (data.type === 'message_delta' && data.usage) {
-            outputTokens = data.usage.output_tokens || 0
-          } else if (data.type === 'message_start' && data.message?.usage) {
-            inputTokens = data.message.usage.input_tokens || 0
-          } else if (data.type === 'message_stop') {
-            if (inputTokens || outputTokens) {
-              yield { type: 'usage', usage: { inputTokens, outputTokens } }
-            }
-            yield { type: 'done' }
-            return
-          }
+      for (const line of lines) {
+        const trimmed = line.trim()
+        if (!trimmed.startsWith('data: ')) continue
+
+        const jsonStr = trimmed.slice(6)
+        try {
+          const event = JSON.parse(jsonStr) as ChatStreamEvent
+          yield event
+          if (event.type === 'done' || event.type === 'error') return
+        } catch {
+          // Skip malformed JSON lines
         }
       }
     }
-
-    yield { type: 'done' }
-  } catch (error) {
-    const message = error instanceof Error ? error.message : 'Bedrock API call failed'
-    yield { type: 'error', error: message }
+  } finally {
+    reader.releaseLock()
   }
 }
 
-export async function testConnection(
-  credentials: AwsCredentials,
-  region?: string,
-): Promise<{ success: boolean; error?: string }> {
-  try {
-    const client = new BedrockRuntimeClient({
-      region: region || 'us-east-1',
-      credentials: {
-        accessKeyId: credentials.accessKeyId,
-        secretAccessKey: credentials.secretAccessKey,
-      },
-    })
+export async function testConnection(credentials: AwsCredentials, modelId: string): Promise<{ success: boolean; error?: string }> {
+  const API_BASE = getConfig().apiBaseUrl
+  const bedrockModelId = BEDROCK_MODEL_MAP[modelId] ?? modelId
 
-    const command = new InvokeModelWithResponseStreamCommand({
-      modelId: 'us.anthropic.claude-haiku-4-5-20251001-v1:0',
-      contentType: 'application/json',
+  try {
+    const response = await fetch(`${API_BASE}/api/chat/test`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        anthropic_version: 'bedrock-2023-05-31',
-        max_tokens: 10,
-        messages: [{ role: 'user', content: 'Hi' }],
+        credentials,
+        modelId: bedrockModelId,
       }),
     })
 
-    await client.send(command)
-    return { success: true }
+    return await response.json()
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Connection failed'
     return { success: false, error: message }

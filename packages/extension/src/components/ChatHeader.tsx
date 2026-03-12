@@ -1,5 +1,5 @@
 import { Plus } from 'lucide-react'
-import { MODELS } from '@hchat/shared'
+import { MODELS, PROVIDER_COLORS } from '@hchat/shared'
 
 interface ChatHeaderProps {
   title: string
@@ -9,6 +9,7 @@ interface ChatHeaderProps {
 
 export function ChatHeader({ title, modelId, onNewChat }: ChatHeaderProps) {
   const model = MODELS.find(m => m.id === modelId)
+  const color = model ? PROVIDER_COLORS[model.provider] : '#888'
 
   return (
     <div className="flex h-10 items-center gap-2 border-b border-slate-200 px-3 dark:border-slate-700">
@@ -16,7 +17,10 @@ export function ChatHeader({ title, modelId, onNewChat }: ChatHeaderProps) {
         {title}
       </span>
       {model && (
-        <span className="rounded-full bg-amber-500 px-2 py-0.5 text-[10px] font-medium text-white">
+        <span
+          className="rounded-full px-2 py-0.5 text-[10px] font-medium text-white"
+          style={{ backgroundColor: color }}
+        >
           {model.shortLabel}
         </span>
       )}

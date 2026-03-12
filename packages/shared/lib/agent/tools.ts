@@ -1,5 +1,7 @@
 // Agent tools that run locally in the browser
 
+import { webSearch, formatSearchResults } from '../web-search'
+
 export interface AgentTool {
   name: string
   description: string
@@ -128,6 +130,30 @@ export const AGENT_TOOLS: AgentTool[] = [
       return `Current date/time: ${now.toISOString()} (${now.toLocaleString()})`
     },
     available: true,
+  },
+  {
+    name: 'web_search',
+    description: 'Search the web for current information, news, facts, or any topic.',
+    parameters: { query: 'The search query' },
+    execute: async (args) => {
+      try {
+        const results = await webSearch(args.query ?? '', 5)
+        return formatSearchResults(results)
+      } catch (error) {
+        const message = error instanceof Error ? error.message : 'Search failed'
+        return `Web search error: ${message}`
+      }
+    },
+    available: true,
+  },
+  {
+    name: 'fetch_url',
+    description: 'Fetch and extract text content from a URL. Requires backend proxy.',
+    parameters: { url: 'The URL to fetch' },
+    execute: async (args) => {
+      return `[Fetching "${args.url}" requires backend proxy. Feature not yet connected.]`
+    },
+    available: false,
   },
 ]
 

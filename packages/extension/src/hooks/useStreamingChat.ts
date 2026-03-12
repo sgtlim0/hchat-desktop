@@ -4,9 +4,9 @@ interface StreamParams {
   modelId: string
   messages: Array<{ role: 'user' | 'assistant'; content: string }>
   system?: string
-  accessKeyId: string
-  secretAccessKey: string
-  region?: string
+  provider: string
+  credentials?: { accessKeyId: string; secretAccessKey: string; region: string }
+  apiKey?: string
 }
 
 interface StreamEvent {
@@ -42,6 +42,7 @@ export function useStreamingChat() {
 
     const listener = (message: { type?: string; payload?: { streamId?: string; event?: StreamEvent; error?: string } }) => {
       if (!message?.payload || message.payload.streamId !== streamId) return
+
       switch (message.type) {
         case 'STREAM_CHUNK': {
           const event = message.payload.event
@@ -71,7 +72,10 @@ export function useStreamingChat() {
 
   const stopStreaming = useCallback(() => {
     if (streamIdRef.current) {
-      chrome.runtime.sendMessage({ type: 'STOP_STREAM', payload: { streamId: streamIdRef.current } })
+      chrome.runtime.sendMessage({
+        type: 'STOP_STREAM',
+        payload: { streamId: streamIdRef.current },
+      })
       setIsStreaming(false)
     }
   }, [])

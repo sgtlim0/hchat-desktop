@@ -4,7 +4,8 @@
   "version": "1.0.0",
   "description": "__MSG_extDescription__",
   "default_locale": "ko",
-  "permissions": ["activeTab", "contextMenus", "sidePanel", "storage"],
+  "permissions": ["activeTab", "contextMenus", "sidePanel", "storage", "offscreen"],
+  "host_permissions": ["https://sgtlim0--hchat-api-api.modal.run/*"],
   "background": {
     "service_worker": "background/service-worker.js",
     "type": "module"

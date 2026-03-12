@@ -1,5 +1,5 @@
-import { useState, useCallback, useEffect, useRef } from 'react'
-import { DEFAULT_MODEL_ID } from '@hchat/shared'
+import { useState, useCallback, useEffect } from 'react'
+import { DEFAULT_MODEL_ID, MODELS } from '@hchat/shared'
 import { useStreamingChat } from '../hooks/useStreamingChat'
 import { ChatHeader } from '../components/ChatHeader'
 import { MessageList } from '../components/MessageList'
@@ -25,19 +25,8 @@ export function ChatView({ initialAction }: ChatViewProps) {
   const [sessionTitle, setSessionTitle] = useState('New Chat')
   const { isStreaming, streamingText, sendMessage, stopStreaming } = useStreamingChat()
 
-  const credentialsRef = useRef<{ accessKeyId: string; secretAccessKey: string }>({
-    accessKeyId: '',
-    secretAccessKey: '',
-  })
-
-  useEffect(() => {
-    chrome.storage.sync.get(['accessKeyId', 'secretAccessKey'], (result) => {
-      credentialsRef.current = {
-        accessKeyId: result.accessKeyId || '',
-        secretAccessKey: result.secretAccessKey || '',
-      }
-    })
-  }, [])
+  const model = MODELS.find(m => m.id === modelId)
+  const provider = model?.provider || 'bedrock'
 
   function handleModelChange(id: string) {
     setModelId(id)
@@ -64,14 +53,9 @@ export function ChatView({ initialAction }: ChatViewProps) {
         content: m.segments[0]?.content || '',
       }))
 
-      sendMessage({
-        modelId,
-        messages: history,
-        accessKeyId: credentialsRef.current.accessKeyId,
-        secretAccessKey: credentialsRef.current.secretAccessKey,
-      })
+      sendMessage({ modelId, messages: history, provider })
     },
-    [messages, modelId, sendMessage],
+    [messages, modelId, provider, sendMessage],
   )
 
   // Collect streaming text into a message when streaming ends

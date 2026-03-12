@@ -1,31 +1,41 @@
 import { useState, useEffect } from 'react'
 import { Eye, EyeOff, Save } from 'lucide-react'
-import { MODELS, DEFAULT_MODEL_ID } from '@hchat/shared'
+import { MODELS, AWS_REGIONS, DEFAULT_MODEL_ID } from '@hchat/shared'
 import { Button } from '../components/Button'
 import { toast, ToastContainer } from '../components/ToastContainer'
 
-const BEDROCK_MODELS = MODELS.filter(m => m.provider === 'bedrock')
+const DEFAULT_API_BASE = 'https://sgtlim0--hchat-api-api.modal.run'
 
 interface Settings {
-  accessKeyId: string
-  secretAccessKey: string
+  bedrockAccessKeyId: string
+  bedrockSecretAccessKey: string
+  bedrockRegion: string
+  openaiApiKey: string
+  geminiApiKey: string
   selectedModel: string
   darkMode: boolean
   language: string
+  apiBaseUrl: string
 }
 
 const defaultSettings: Settings = {
-  accessKeyId: '',
-  secretAccessKey: '',
+  bedrockAccessKeyId: '',
+  bedrockSecretAccessKey: '',
+  bedrockRegion: 'us-east-1',
+  openaiApiKey: '',
+  geminiApiKey: '',
   selectedModel: DEFAULT_MODEL_ID,
   darkMode: false,
   language: 'ko',
+  apiBaseUrl: DEFAULT_API_BASE,
 }
 
 export function OptionsApp() {
   const [settings, setSettings] = useState<Settings>(defaultSettings)
   const [loading, setLoading] = useState(false)
-  const [showKeys, setShowKeys] = useState(false)
+  const [showBedrock, setShowBedrock] = useState(false)
+  const [showOpenai, setShowOpenai] = useState(false)
+  const [showGemini, setShowGemini] = useState(false)
 
   useEffect(() => {
     chrome.storage.sync.get(null, (result) => {
@@ -79,24 +89,66 @@ export function OptionsApp() {
         </div>
 
         <div className="space-y-6">
-          {/* AWS Bedrock Credentials */}
-          <Section title="AWS Bedrock">
-            <PasswordField
-              label="Access Key ID"
-              value={settings.accessKeyId}
-              onChange={v => updateField('accessKeyId', v)}
-              show={showKeys}
-              onToggle={() => setShowKeys(!showKeys)}
-              placeholder="AKIA..."
-            />
-            <PasswordField
-              label="Secret Access Key"
-              value={settings.secretAccessKey}
-              onChange={v => updateField('secretAccessKey', v)}
-              show={showKeys}
-              onToggle={() => setShowKeys(!showKeys)}
-              placeholder="wJal..."
-            />
+          {/* API Configuration */}
+          <Section title="API Configuration">
+            {/* Bedrock */}
+            <FieldGroup label="AWS Bedrock">
+              <PasswordField
+                label="Access Key ID"
+                value={settings.bedrockAccessKeyId}
+                onChange={v => updateField('bedrockAccessKeyId', v)}
+                show={showBedrock}
+                onToggle={() => setShowBedrock(!showBedrock)}
+                placeholder="AKIA..."
+              />
+              <PasswordField
+                label="Secret Access Key"
+                value={settings.bedrockSecretAccessKey}
+                onChange={v => updateField('bedrockSecretAccessKey', v)}
+                show={showBedrock}
+                onToggle={() => setShowBedrock(!showBedrock)}
+                placeholder="wJal..."
+              />
+              <div>
+                <label className="mb-1 block text-xs text-slate-600 dark:text-slate-400">
+                  Region
+                </label>
+                <select
+                  value={settings.bedrockRegion}
+                  onChange={e => updateField('bedrockRegion', e.target.value)}
+                  className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm
+                    dark:border-slate-600 dark:bg-slate-800 dark:text-slate-200"
+                >
+                  {AWS_REGIONS.map(r => (
+                    <option key={r.id} value={r.id}>{r.name}</option>
+                  ))}
+                </select>
+              </div>
+            </FieldGroup>
+
+            {/* OpenAI */}
+            <FieldGroup label="OpenAI">
+              <PasswordField
+                label="API Key"
+                value={settings.openaiApiKey}
+                onChange={v => updateField('openaiApiKey', v)}
+                show={showOpenai}
+                onToggle={() => setShowOpenai(!showOpenai)}
+                placeholder="sk-proj-..."
+              />
+            </FieldGroup>
+
+            {/* Gemini */}
+            <FieldGroup label="Google Gemini">
+              <PasswordField
+                label="API Key"
+                value={settings.geminiApiKey}
+                onChange={v => updateField('geminiApiKey', v)}
+                show={showGemini}
+                onToggle={() => setShowGemini(!showGemini)}
+                placeholder="AIza..."
+              />
+            </FieldGroup>
           </Section>
 
           {/* Model */}
@@ -107,7 +159,7 @@ export function OptionsApp() {
               className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm
                 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-200"
             >
-              {BEDROCK_MODELS.map(m => (
+              {MODELS.map(m => (
                 <option key={m.id} value={m.id}>{m.label}</option>
               ))}
             </select>
@@ -141,6 +193,21 @@ export function OptionsApp() {
             </div>
           </Section>
 
+          {/* API Base URL */}
+          <Section title="API Base URL">
+            <input
+              type="text"
+              value={settings.apiBaseUrl}
+              onChange={e => updateField('apiBaseUrl', e.target.value)}
+              placeholder={DEFAULT_API_BASE}
+              className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm
+                dark:border-slate-600 dark:bg-slate-800 dark:text-slate-200"
+            />
+            <p className="mt-1 text-[10px] text-slate-400">
+              Default: {DEFAULT_API_BASE}
+            </p>
+          </Section>
+
           {/* Save */}
           <div className="flex justify-end pt-2">
             <Button onClick={handleSave} loading={loading}>
@@ -163,6 +230,15 @@ function Section({ title, children }: { title: string; children: React.ReactNode
         {title}
       </h2>
       <div className="space-y-3">{children}</div>
+    </div>
+  )
+}
+
+function FieldGroup({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <div className="space-y-2">
+      <p className="text-xs font-medium text-slate-500 dark:text-slate-400">{label}</p>
+      {children}
     </div>
   )
 }
