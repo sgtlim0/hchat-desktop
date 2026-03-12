@@ -1,7 +1,7 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { resolve } from 'path'
-import { cpSync, copyFileSync } from 'fs'
+import { cpSync, copyFileSync, readFileSync, writeFileSync } from 'fs'
 
 export default defineConfig({
   plugins: [
@@ -10,10 +10,14 @@ export default defineConfig({
       name: 'copy-extension-files',
       closeBundle() {
         const dist = resolve(__dirname, 'dist')
-        copyFileSync(
-          resolve(__dirname, 'manifest.json'),
-          resolve(dist, 'manifest.json'),
-        )
+
+        // Copy and patch manifest — Vite outputs HTML under src/, so fix paths
+        const manifest = JSON.parse(readFileSync(resolve(__dirname, 'manifest.json'), 'utf-8'))
+        manifest.side_panel.default_path = 'src/sidepanel/index.html'
+        manifest.action.default_popup = 'src/popup/index.html'
+        manifest.options_page = 'src/options/index.html'
+        writeFileSync(resolve(dist, 'manifest.json'), JSON.stringify(manifest, null, 2))
+
         cpSync(resolve(__dirname, '_locales'), resolve(dist, '_locales'), {
           recursive: true,
         })
