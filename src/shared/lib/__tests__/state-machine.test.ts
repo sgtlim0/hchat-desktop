@@ -215,7 +215,7 @@ describe('StateMachine', () => {
       initial: 'idle' as 'idle' | 'done',
       states: {
         idle: {
-          on: { FINISH: 'done' as 'done' }
+          on: { FINISH: 'done' as const }
         },
         done: {
           // Terminal state with no transitions

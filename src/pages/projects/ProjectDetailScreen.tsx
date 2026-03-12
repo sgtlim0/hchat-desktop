@@ -119,7 +119,7 @@ export function ProjectDetailScreen() {
               placeholder={t('project.instructionsPlaceholder')}
               rows={6}
               className="w-full bg-input border border-border-input rounded-lg px-4 py-3 text-sm text-text-primary placeholder:text-text-tertiary outline-none focus:border-primary transition resize-none"
-              // eslint-disable-next-line jsx-a11y/no-autofocus
+               
               autoFocus
             />
           </div>
@@ -237,7 +237,7 @@ export function ProjectDetailScreen() {
                   onChange={(e) => setNewMemoryKey(e.target.value)}
                   placeholder={t('project.memoryKeyPlaceholder')}
                   className="w-full bg-input border border-border-input rounded-lg px-4 py-2.5 text-sm text-text-primary placeholder:text-text-tertiary outline-none focus:border-primary transition"
-                  // eslint-disable-next-line jsx-a11y/no-autofocus
+                   
                   autoFocus
                 />
               </div>

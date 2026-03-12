@@ -157,7 +157,7 @@ export function EmailAssistantPage() {
             <h3 className="font-semibold text-text-primary">{t('emailAssistant.create')}</h3>
             <input value={recipient} onChange={(e) => setRecipient(e.target.value)}
               placeholder={t('emailAssistant.recipientPlaceholder')} className="w-full px-3 py-2 text-sm rounded-lg bg-surface-secondary border border-border"
-              // eslint-disable-next-line jsx-a11y/no-autofocus
+               
               autoFocus />
             <input value={subject} onChange={(e) => setSubject(e.target.value)}
               placeholder={t('emailAssistant.subjectPlaceholder')} className="w-full px-3 py-2 text-sm rounded-lg bg-surface-secondary border border-border"

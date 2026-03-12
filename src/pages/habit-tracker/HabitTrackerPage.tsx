@@ -54,7 +54,7 @@ export function HabitTrackerPage() {
           <div className="bg-surface rounded-xl p-6 w-80 space-y-4" onClick={(e) => e.stopPropagation()}>
             <h3 className="font-semibold">{t('habit.create')}</h3>
             <input value={name} onChange={(e) => setName(e.target.value)} placeholder={t('habit.habitName')} className="w-full px-3 py-2 text-sm rounded-lg bg-surface-secondary border border-border"
-              // eslint-disable-next-line jsx-a11y/no-autofocus
+               
               autoFocus onKeyDown={(e) => { if (e.key === 'Enter' && name.trim()) { createHabit(name.trim(), 'daily', '✅', '#3b82f6'); setName(''); setShowAdd(false) }}} />
             <div className="flex gap-2 justify-end">
               <button onClick={() => setShowAdd(false)} className="px-3 py-1.5 text-sm rounded-lg bg-surface-secondary">{t('common.cancel')}</button>

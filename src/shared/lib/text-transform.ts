@@ -118,7 +118,7 @@ export function countSentences(text: string): number {
   if (!text || !text.trim()) return 0
 
   // Handle common abbreviations by temporarily replacing them
-  let processedText = text
+  const processedText = text
     .replace(/Dr\./g, 'Dr')
     .replace(/Mr\./g, 'Mr')
     .replace(/Mrs\./g, 'Mrs')

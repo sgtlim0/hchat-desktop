@@ -23,7 +23,7 @@ const THRESHOLDS = {
 let metrics: Record<string, WebVitalMetric> = {}
 
 // Store subscribers
-let subscribers: Set<(metric: WebVitalMetric) => void> = new Set()
+const subscribers: Set<(metric: WebVitalMetric) => void> = new Set()
 
 // Store observer instances for cleanup
 let observers: PerformanceObserver[] = []

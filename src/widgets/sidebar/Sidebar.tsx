@@ -220,7 +220,7 @@ export function Sidebar() {
                     }}
                     placeholder={t('folder.namePlaceholder')}
                     className="flex-1 bg-transparent text-[13px] text-text-primary outline-none border-b border-primary"
-                    // eslint-disable-next-line jsx-a11y/no-autofocus
+                     
                     autoFocus
                   />
                   <button

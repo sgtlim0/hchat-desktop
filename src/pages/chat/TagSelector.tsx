@@ -139,7 +139,7 @@ export function TagSelector({ sessionId }: TagSelectorProps) {
                 }}
                 placeholder={t('tag.namePlaceholder')}
                 className="w-full bg-transparent text-sm text-text-primary outline-none border-b border-primary py-1"
-                // eslint-disable-next-line jsx-a11y/no-autofocus
+                 
                 autoFocus
               />
             </div>

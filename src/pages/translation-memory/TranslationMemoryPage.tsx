@@ -197,7 +197,7 @@ export function TranslationMemoryPage() {
               <>
                 <textarea value={source} onChange={(e) => setSource(e.target.value)}
                   placeholder={t('translationMemory.sourcePlaceholder')} className="w-full px-3 py-2 text-sm rounded-lg bg-surface-secondary border border-border" rows={2}
-                  // eslint-disable-next-line jsx-a11y/no-autofocus
+                   
                   autoFocus />
                 <textarea value={target} onChange={(e) => setTarget(e.target.value)}
                   placeholder={t('translationMemory.targetPlaceholder')} className="w-full px-3 py-2 text-sm rounded-lg bg-surface-secondary border border-border" rows={2} />
@@ -218,7 +218,7 @@ export function TranslationMemoryPage() {
               <>
                 <input value={gTerm} onChange={(e) => setGTerm(e.target.value)}
                   placeholder={t('translationMemory.termPlaceholder')} className="w-full px-3 py-2 text-sm rounded-lg bg-surface-secondary border border-border"
-                  // eslint-disable-next-line jsx-a11y/no-autofocus
+                   
                   autoFocus />
                 <input value={gTranslation} onChange={(e) => setGTranslation(e.target.value)}
                   placeholder={t('translationMemory.translationPlaceholder')} className="w-full px-3 py-2 text-sm rounded-lg bg-surface-secondary border border-border" />

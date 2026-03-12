@@ -46,7 +46,7 @@ export function QuickChatPage() {
             onKeyDown={handleKeyDown}
             placeholder={t('quickChat.placeholder')}
             className="flex-1 bg-transparent text-text-primary text-sm outline-none placeholder:text-text-tertiary"
-            // eslint-disable-next-line jsx-a11y/no-autofocus
+             
             autoFocus
           />
           <div className="flex items-center gap-2">

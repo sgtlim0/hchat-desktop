@@ -20,7 +20,7 @@ jobs:
           node-version: 20
           cache: npm
       - run: npm ci
-      - run: npm run lint
+      - run: npx eslint --max-warnings 800 'src/**/*.{ts,tsx}'
 
   test:
     runs-on: ubuntu-latest

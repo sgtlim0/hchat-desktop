@@ -156,7 +156,7 @@ export function LearningPathPage() {
             <h3 className="font-semibold text-text-primary">{t('learningPath.create')}</h3>
             <input value={title} onChange={(e) => setTitle(e.target.value)}
               placeholder={t('learningPath.titlePlaceholder')} className="w-full px-3 py-2 text-sm rounded-lg bg-surface-secondary border border-border"
-              // eslint-disable-next-line jsx-a11y/no-autofocus
+               
               autoFocus />
             <input value={topic} onChange={(e) => setTopic(e.target.value)}
               placeholder={t('learningPath.topicPlaceholder')} className="w-full px-3 py-2 text-sm rounded-lg bg-surface-secondary border border-border"

@@ -194,7 +194,7 @@ export function MindMapPage() {
             <h3 className="font-semibold text-text-primary">{t('mindMap.create')}</h3>
             <input value={title} onChange={(e) => setTitle(e.target.value)}
               placeholder={t('mindMap.titlePlaceholder')} className="w-full px-3 py-2 text-sm rounded-lg bg-surface-secondary border border-border"
-              // eslint-disable-next-line jsx-a11y/no-autofocus
+               
               autoFocus
               onKeyDown={(e) => e.key === 'Enter' && handleCreate()} />
             <div className="flex gap-2 justify-end">
