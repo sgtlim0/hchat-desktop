@@ -1,0 +1,10 @@
+{
+  "extName": {
+    "message": "H Chat 문서 분석",
+    "description": "확장 프로그램 이름"
+  },
+  "extDescription": {
+    "message": "현대차그룹 AI 기반 문서 분석 도구",
+    "description": "확장 프로그램 설명"
+  }
+}

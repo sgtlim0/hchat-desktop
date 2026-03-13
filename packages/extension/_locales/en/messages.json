@@ -1,0 +1,10 @@
+{
+  "extName": {
+    "message": "H Chat Doc Analyzer",
+    "description": "Extension name"
+  },
+  "extDescription": {
+    "message": "AI-powered document analysis tool",
+    "description": "Extension description"
+  }
+}
