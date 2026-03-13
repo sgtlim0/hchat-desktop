@@ -1896,6 +1896,24 @@ const en = {
   'search': 'Search',
   'cancel': 'Cancel',
   'clearAll': 'Clear All',
+
+  // Geo Intelligence
+  'sidebar.geoIntelligence': 'Geo Intelligence',
+  'geoIntel.title': 'Geo Intelligence',
+  'geoIntel.flights': 'Flights',
+  'geoIntel.earthquakes': 'Earthquakes',
+  'geoIntel.fires': 'Wildfires',
+  'geoIntel.layers': 'Layers',
+  'geoIntel.enableLayer': 'Enable layer',
+  'geoIntel.disableLayer': 'Disable layer',
+  'geoIntel.loading': 'Loading data...',
+  'geoIntel.error': 'Failed to load data',
+  'geoIntel.lastUpdated': 'Last updated',
+  'geoIntel.noData': 'No data available',
+  'geoIntel.autoRefresh': 'Auto Refresh',
+  'geoIntel.refreshInterval': 'Refresh Interval',
+  'geoIntel.featureCount': '{count} features',
+  'geoIntel.refreshNow': 'Refresh Now',
 } as const
 
 export default en

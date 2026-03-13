@@ -129,7 +129,7 @@ export type WorkspaceView =
 export type DataView =
   | 'knowledgeGraph' | 'dataConnectors' | 'dataPipeline'
   | 'dataStory' | 'summaryFeed' | 'portfolio' | 'visualPrompt'
-  | 'autoWorkflow' | 'mcpServers'
+  | 'autoWorkflow' | 'mcpServers' | 'geoIntelligence'
 
 // Search & integration views
 export type SearchView =
@@ -149,6 +149,37 @@ export type ExperimentalView =
 export type ViewState =
   | CoreView | AiFeatureView | ToolView | WorkspaceView
   | DataView | SearchView | ExperimentalView
+
+// Geo Intelligence types
+
+export type GeoLayerType = 'flights' | 'earthquakes' | 'fires'
+
+export interface GeoFeature {
+  id: string
+  layerType: GeoLayerType
+  coordinates: [number, number]
+  properties: Record<string, unknown>
+  timestamp?: string
+}
+
+export interface GeoAlert {
+  id: string
+  layerType: GeoLayerType
+  severity: 'low' | 'medium' | 'high' | 'critical'
+  title: string
+  description: string
+  coordinates: [number, number]
+  timestamp: string
+}
+
+export interface GeoBookmark {
+  id: string
+  name: string
+  center: [number, number]
+  zoom: number
+  enabledLayers: GeoLayerType[]
+  createdAt: string
+}
 
 // Group Chat types
 

@@ -98,6 +98,10 @@ export default defineConfig({
             if (id.includes('zustand') || id.includes('dexie')) {
               return 'vendor-state'
             }
+            // Map rendering (lazy-loaded)
+            if (id.includes('maplibre-gl')) {
+              return 'vendor-maplibre'
+            }
           }
         },
       },

@@ -1896,6 +1896,24 @@ const ko = {
   'search': '검색',
   'cancel': '취소',
   'clearAll': '모두 지우기',
+
+  // Geo Intelligence
+  'sidebar.geoIntelligence': '지리 인텔리전스',
+  'geoIntel.title': '지리 인텔리전스',
+  'geoIntel.flights': '항공기',
+  'geoIntel.earthquakes': '지진',
+  'geoIntel.fires': '산불',
+  'geoIntel.layers': '레이어',
+  'geoIntel.enableLayer': '레이어 활성화',
+  'geoIntel.disableLayer': '레이어 비활성화',
+  'geoIntel.loading': '데이터 로딩 중...',
+  'geoIntel.error': '데이터 로드 실패',
+  'geoIntel.lastUpdated': '마지막 업데이트',
+  'geoIntel.noData': '데이터 없음',
+  'geoIntel.autoRefresh': '자동 새로고침',
+  'geoIntel.refreshInterval': '새로고침 간격',
+  'geoIntel.featureCount': '{count}개 피처',
+  'geoIntel.refreshNow': '지금 새로고침',
 } as const
 
 export default ko

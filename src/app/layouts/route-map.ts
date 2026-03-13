@@ -102,6 +102,7 @@ const DeepResearchPage: LazyPage = lazy(() => import('@/pages/research/ResearchP
 const InternalSearchPage: LazyPage = lazy(() => import('@/pages/internal-search/InternalSearchPage').then((m) => ({ default: m.InternalSearchPage })))
 const ConfluenceSearchPage: LazyPage = lazy(() => import('@/pages/confluence-search/ConfluenceSearchPage').then((m) => ({ default: m.ConfluenceSearchPage })))
 const JiraSearchPage: LazyPage = lazy(() => import('@/pages/jira-search/JiraSearchPage').then((m) => ({ default: m.JiraSearchPage })))
+const GeoIntelligencePage: LazyPage = lazy(() => import('@/pages/geo-intelligence/GeoIntelligencePage').then((m) => ({ default: m.GeoIntelligencePage })))
 
 // ViewState → Component routing table
 export const ROUTE_MAP: Partial<Record<ViewState, LazyPage>> = {
@@ -199,4 +200,5 @@ export const ROUTE_MAP: Partial<Record<ViewState, LazyPage>> = {
   internalSearch: InternalSearchPage,
   confluenceSearch: ConfluenceSearchPage,
   jiraSearch: JiraSearchPage,
+  geoIntelligence: GeoIntelligencePage,
 }

@@ -47,6 +47,7 @@ RATE_LIMITS = {
     "/api/search": 20,
     "/api/extract-memory": 10,
     "/api/swarm/execute": 5,
+    "/api/geo": 15,
     # Default for all other endpoints
     "default": 60
 }
@@ -76,6 +77,7 @@ def api():
     from backend.routes.verify import router as verify_router
     from backend.routes.confluence import router as confluence_router
     from backend.routes.jira_routes import router as jira_router
+    from backend.routes.geo_intel import router as geo_intel_router
 
     # Initialize rate limiter
     rate_limiter = SimpleRateLimiter()
@@ -159,5 +161,6 @@ def api():
     web_app.include_router(verify_router, prefix="/api")
     web_app.include_router(confluence_router, prefix="/api")
     web_app.include_router(jira_router, prefix="/api")
+    web_app.include_router(geo_intel_router, prefix="/api")
 
     return web_app

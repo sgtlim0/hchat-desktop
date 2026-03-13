@@ -263,6 +263,7 @@ const VIEW_STORE_MAP: Record<ViewState, (() => HydrateFn | null)[]> = {
   internalSearch: [],  // No specific store
   confluenceSearch: [],  // No specific store
   jiraSearch: [],  // No specific store
+  geoIntelligence: [],  // geo-intelligence store uses ephemeral data, bookmarks hydrate on demand
 }
 
 /**
