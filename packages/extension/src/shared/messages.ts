@@ -1,7 +1,8 @@
-import type { PageContext } from './types'
+import type { PageContext, PageIntelligence } from './types'
 
 export type BackgroundMessage =
   | { readonly type: 'EXTRACT_PAGE'; readonly tabId?: number }
+  | { readonly type: 'EXTRACT_INTELLIGENCE'; readonly tabId?: number }
   | { readonly type: 'OPEN_SIDEPANEL' }
   | { readonly type: 'NEW_CHAT' }
   | { readonly type: 'CONTEXT_MENU_ACTION'; readonly action: 'summarize' | 'translate' | 'ask'; readonly text?: string }
@@ -11,6 +12,8 @@ export type BackgroundMessage =
 export type ContentMessage =
   | { readonly type: 'EXTRACT_PAGE_CONTENT' }
   | { readonly type: 'PAGE_CONTENT_RESULT'; readonly data: PageContext }
+  | { readonly type: 'EXTRACT_PAGE_INTELLIGENCE' }
+  | { readonly type: 'PAGE_INTELLIGENCE_RESULT'; readonly data: PageIntelligence }
   | { readonly type: 'SELECTED_TEXT'; readonly text: string }
 
 export type SidePanelMessage =
