@@ -1,4 +1,4 @@
-export type ExtPage = 'chat' | 'history' | 'settings' | 'promptLibrary' | 'pageContext'
+export type ExtPage = 'chat' | 'history' | 'settings' | 'promptLibrary' | 'pageContext' | 'data'
 
 export interface PageContext {
   readonly url: string

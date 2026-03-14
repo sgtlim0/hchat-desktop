@@ -9,6 +9,7 @@ import { HistoryPage } from '@ext/pages/HistoryPage'
 import { SettingsPage } from '@ext/pages/SettingsPage'
 import { PromptLibraryPage } from '@ext/pages/PromptLibraryPage'
 import { PageContextPage } from '@ext/pages/PageContextPage'
+import { DataPage } from '@ext/pages/DataPage'
 import type { ExtPage } from '@ext/shared/types'
 
 function renderPage(page: ExtPage) {
@@ -23,6 +24,8 @@ function renderPage(page: ExtPage) {
       return <PromptLibraryPage />
     case 'pageContext':
       return <PageContextPage />
+    case 'data':
+      return <DataPage />
     default:
       return <ChatPage />
   }
