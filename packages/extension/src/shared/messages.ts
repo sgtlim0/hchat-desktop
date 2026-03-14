@@ -1,28 +1,20 @@
-import type { ExtMessage, MessageType } from './types'
+import type { PageContext } from './types'
 
-export const MSG = {
-  ANALYZE: 'ANALYZE' as MessageType,
-  ANALYZE_STREAM: 'ANALYZE_STREAM' as MessageType,
-  TEST_CONNECTION: 'TEST_CONNECTION' as MessageType,
-  EXTRACT_TEXT: 'EXTRACT_TEXT' as MessageType,
-  ANALYSIS_CHUNK: 'ANALYSIS_CHUNK' as MessageType,
-  ANALYSIS_DONE: 'ANALYSIS_DONE' as MessageType,
-  ANALYSIS_ERROR: 'ANALYSIS_ERROR' as MessageType,
-} as const
+export type BackgroundMessage =
+  | { readonly type: 'EXTRACT_PAGE'; readonly tabId?: number }
+  | { readonly type: 'OPEN_SIDEPANEL' }
+  | { readonly type: 'NEW_CHAT' }
+  | { readonly type: 'CONTEXT_MENU_ACTION'; readonly action: 'summarize' | 'translate' | 'ask'; readonly text?: string }
+  | { readonly type: 'GET_PAGE_CONTEXT' }
+  | { readonly type: 'ABORT_STREAM'; readonly sessionId: string }
 
-export function sendMessage<T = unknown>(
-  type: MessageType,
-  payload?: unknown,
-): Promise<T> {
-  const message: ExtMessage = { type, payload }
-  return chrome.runtime.sendMessage(message)
-}
+export type ContentMessage =
+  | { readonly type: 'EXTRACT_PAGE_CONTENT' }
+  | { readonly type: 'PAGE_CONTENT_RESULT'; readonly data: PageContext }
+  | { readonly type: 'SELECTED_TEXT'; readonly text: string }
 
-export function sendTabMessage<T = unknown>(
-  tabId: number,
-  type: MessageType,
-  payload?: unknown,
-): Promise<T> {
-  const message: ExtMessage = { type, payload }
-  return chrome.tabs.sendMessage(tabId, message)
-}
+export type SidePanelMessage =
+  | { readonly type: 'PAGE_CONTEXT_UPDATED'; readonly context: PageContext }
+  | { readonly type: 'CONTEXT_MENU_ACTION'; readonly action: string; readonly text?: string }
+
+export type ExtMessage = BackgroundMessage | ContentMessage | SidePanelMessage

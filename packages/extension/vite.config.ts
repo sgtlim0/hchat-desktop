@@ -1,4 +1,5 @@
 import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
 import { resolve } from 'path'
 import { copyFileSync, mkdirSync, readdirSync, existsSync } from 'fs'
 
@@ -55,7 +56,8 @@ function buildIIFEPlugin(name: string, entry: string) {
         },
         resolve: {
           alias: {
-            '@': resolve(__dirname, 'src'),
+            '@ext': resolve(__dirname, 'src'),
+            '@hchat/shared': resolve(__dirname, '../shared/src'),
           },
         },
       })
@@ -80,13 +82,15 @@ export default defineConfig({
     },
   },
   plugins: [
+    react(),
     copyStaticPlugin(),
     buildIIFEPlugin('background', resolve(__dirname, 'src/background/service-worker.ts')),
     buildIIFEPlugin('content', resolve(__dirname, 'src/content/content-script.ts')),
   ],
   resolve: {
     alias: {
-      '@': resolve(__dirname, 'src'),
+      '@ext': resolve(__dirname, 'src'),
+      '@hchat/shared': resolve(__dirname, '../shared/src'),
     },
   },
 })

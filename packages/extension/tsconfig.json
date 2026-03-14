@@ -15,7 +15,9 @@
     "types": ["chrome"],
     "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"]
+      "@ext/*": ["src/*"],
+      "@hchat/shared": ["../shared/src/index.ts"],
+      "@hchat/shared/*": ["../shared/src/*"]
     }
   },
   "include": ["src/**/*.ts", "src/**/*.tsx"],

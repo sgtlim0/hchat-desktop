@@ -1,44 +1,44 @@
-import type { Credentials, HistoryEntry, Settings } from './types'
-
-const KEYS = {
-  CREDENTIALS: 'hchat_credentials',
-  HISTORY: 'hchat_history',
-  SETTINGS: 'hchat_settings',
-} as const
-
-export async function getCredentials(): Promise<Credentials | null> {
-  const result = await chrome.storage.local.get(KEYS.CREDENTIALS)
-  return result[KEYS.CREDENTIALS] ?? null
+export interface ExtSettings {
+  readonly selectedModel: string
+  readonly darkMode: boolean
+  readonly language: 'ko' | 'en'
+  readonly awsRegion: string
+  readonly awsAccessKeyId: string
+  readonly awsSecretAccessKey: string
+  readonly openaiApiKey: string
+  readonly geminiApiKey: string
 }
 
-export async function saveCredentials(credentials: Credentials): Promise<void> {
-  await chrome.storage.local.set({ [KEYS.CREDENTIALS]: credentials })
+const DEFAULTS: ExtSettings = {
+  selectedModel: 'claude-sonnet-4.6',
+  darkMode: false,
+  language: 'ko',
+  awsRegion: 'us-east-1',
+  awsAccessKeyId: '',
+  awsSecretAccessKey: '',
+  openaiApiKey: '',
+  geminiApiKey: '',
 }
 
-export async function getHistory(): Promise<readonly HistoryEntry[]> {
-  const result = await chrome.storage.local.get(KEYS.HISTORY)
-  return result[KEYS.HISTORY] ?? []
+export async function getSettings(): Promise<ExtSettings> {
+  const stored = await chrome.storage.local.get(Object.keys(DEFAULTS))
+  return { ...DEFAULTS, ...stored } as ExtSettings
 }
 
-export async function addHistory(entry: HistoryEntry): Promise<void> {
-  const history = await getHistory()
-  const updated = [entry, ...history].slice(0, 100)
-  await chrome.storage.local.set({ [KEYS.HISTORY]: updated })
+export async function updateSettings(partial: Partial<ExtSettings>): Promise<void> {
+  await chrome.storage.local.set(partial)
 }
 
-export async function clearHistory(): Promise<void> {
-  await chrome.storage.local.set({ [KEYS.HISTORY]: [] })
-}
-
-export async function getSettings(): Promise<Settings> {
-  const result = await chrome.storage.local.get(KEYS.SETTINGS)
-  return result[KEYS.SETTINGS] ?? {
-    model: 'sonnet-4',
-    language: 'ko',
-    darkMode: false,
+export function onSettingsChanged(cb: (changes: Partial<ExtSettings>) => void): () => void {
+  const listener = (changes: Record<string, chrome.storage.StorageChange>) => {
+    const updated: Partial<ExtSettings> = {}
+    for (const [key, change] of Object.entries(changes)) {
+      if (key in DEFAULTS) {
+        ;(updated as Record<string, unknown>)[key] = change.newValue
+      }
+    }
+    if (Object.keys(updated).length > 0) cb(updated)
   }
-}
-
-export async function saveSettings(settings: Settings): Promise<void> {
-  await chrome.storage.local.set({ [KEYS.SETTINGS]: settings })
+  chrome.storage.onChanged.addListener(listener)
+  return () => chrome.storage.onChanged.removeListener(listener)
 }

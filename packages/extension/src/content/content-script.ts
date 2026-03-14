@@ -1,37 +1,16 @@
-const MAX_TEXT_LENGTH = 100_000
-
-interface ExtractedContent {
-  title: string
-  url: string
-  textContent: string
-  charCount: number
-}
-
-function extractPageContent(): ExtractedContent {
-  const rawText = document.body.innerText || ''
-  const truncated =
-    rawText.length > MAX_TEXT_LENGTH
-      ? rawText.slice(0, MAX_TEXT_LENGTH) + '\n\n[...truncated]'
-      : rawText
-
-  return {
-    title: document.title,
-    url: location.href,
-    textContent: truncated,
-    charCount: rawText.length,
-  }
-}
+import { extractPageContent } from './page-extractor'
+import { setupFloatingButton } from './floating-button'
 
 chrome.runtime.onMessage.addListener(
   (
     message: { type: string },
     _sender: chrome.runtime.MessageSender,
-    sendResponse: (response: ExtractedContent | { error: string }) => void
+    sendResponse: (response: unknown) => void,
   ) => {
-    if (message.type === 'EXTRACT_TEXT') {
+    if (message.type === 'EXTRACT_PAGE_CONTENT') {
       try {
         const content = extractPageContent()
-        sendResponse(content)
+        sendResponse({ type: 'PAGE_CONTENT_RESULT', data: content })
       } catch (error) {
         const errorMessage =
           error instanceof Error
@@ -41,5 +20,7 @@ chrome.runtime.onMessage.addListener(
       }
     }
     return true
-  }
+  },
 )
+
+setupFloatingButton()
