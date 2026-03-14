@@ -362,6 +362,39 @@ const ko = {
   'tag.noTags': '태그 없음',
   'tag.create': '새 태그 만들기',
   'tag.namePlaceholder': '태그 이름',
+
+  // prompt library
+  'promptLib.title': '프롬프트 라이브러리',
+  'promptLib.new': '새 프롬프트',
+  'promptLib.searchPlaceholder': '프롬프트 검색...',
+  'promptLib.empty': '저장된 프롬프트가 없습니다',
+  'promptLib.emptyHint': '자주 쓰는 프롬프트를 저장하고 재사용하세요.',
+  'promptLib.titlePlaceholder': '프롬프트 제목',
+  'promptLib.contentPlaceholder': '프롬프트 내용 ({{variable}} 형태로 변수 사용 가능)',
+  'promptLib.tagsPlaceholder': '태그 (쉼표로 구분)',
+  'promptLib.use': '사용',
+  'promptLib.apply': '적용',
+  'promptLib.fillVariables': '변수 입력',
+  'promptLib.usedCount': '{count}회 사용',
+  'promptLib.category.general': '일반',
+  'promptLib.category.coding': '코딩',
+  'promptLib.category.writing': '글쓰기',
+  'promptLib.category.analysis': '분석',
+  'promptLib.category.translation': '번역',
+  'promptLib.category.custom': '커스텀',
+
+  // extension-specific
+  'ext.pageContext': '페이지 컨텍스트',
+  'ext.pageContextDesc': '현재 페이지 내용을 AI에 전송',
+  'ext.openSidePanel': '사이드 패널 열기',
+  'ext.summarizePage': '이 페이지 요약',
+  'ext.translatePage': '번역',
+  'ext.askAboutPage': 'H Chat에 질문',
+  'ext.recentSessions': '최근 세션',
+  'ext.noSessions': '세션 없음',
+  'ext.connectionStatus': '연결 상태',
+  'ext.connected': '연결됨',
+  'ext.disconnected': '연결 해제됨',
 } as const
 
 export default ko

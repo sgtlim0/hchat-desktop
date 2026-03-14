@@ -42,12 +42,12 @@ const en: Record<keyof typeof ko, string> = {
   'sidebar.rename': 'Rename',
   'sidebar.addFavorite': 'Add to Favorites',
   'sidebar.removeFavorite': 'Remove from Favorites',
+  'sidebar.promptLibrary': 'Prompt Library',
+  'sidebar.debate': 'Model Debate',
   'sidebar.aiTools': 'AI Tools',
   'sidebar.imageGen': 'Image Generation',
   'sidebar.agent': 'AI Agent',
   'sidebar.translate': 'Document Translation',
-  'sidebar.promptLibrary': 'Prompt Library',
-  'sidebar.debate': 'Model Debate',
 
   // home
   'home.heading': 'How can I help you?',
@@ -99,36 +99,6 @@ const en: Record<keyof typeof ko, string> = {
   'tool.statusDone': '— Done',
   'tool.statusError': '— Error',
 
-  // all chats (history)
-  'allChats.title': 'All Chats',
-  'allChats.searchPlaceholder': 'Search sessions...',
-  'allChats.all': 'All',
-  'allChats.favorites': 'Favorites',
-  'allChats.pinned': 'Pinned',
-  'allChats.byProject': 'By Project',
-  'allChats.noSessions': 'No sessions',
-  'allChats.exportAll': 'Export All',
-  'allChats.exported': 'Exported {count} conversations',
-
-  // search
-  'search.placeholder': 'Search conversations, projects...',
-  'search.conversations': 'Conversations',
-  'search.recentConversations': 'Recent Conversations',
-  'search.projects': 'Projects',
-  'search.messages': 'Messages',
-  'search.navigate': 'Navigate',
-  'search.open': 'Open',
-
-  // export
-  'export.model': 'Model:',
-  'export.createdAt': 'Created:',
-  'export.updatedAt': 'Modified:',
-  'export.tags': 'Tags:',
-  'export.attachments': 'Attachments:',
-
-  // session
-  'session.newChat': 'New Chat',
-
   // settings
   'settings.title': 'Settings',
   'settings.tab.apiKeys': 'API Settings',
@@ -144,8 +114,6 @@ const en: Record<keyof typeof ko, string> = {
   'settings.tab.usage': 'Usage',
   'settings.tab.personas': 'Personas',
   'settings.notReady': '{tab} settings are not ready yet.',
-
-  // settings - api
   'settings.api.title': 'API Settings',
   'settings.api.description': 'Connect to AI model providers.',
   'settings.api.modelSettings': 'Model Settings',
@@ -163,8 +131,6 @@ const en: Record<keyof typeof ko, string> = {
   'settings.api.credentialsNote': 'Credentials are stored in the browser. They are not sent to any external server.',
   'settings.api.openaiNote': 'API key is stored in the browser and connects directly to the OpenAI API.',
   'settings.api.geminiNote': 'API key is stored in the browser and connects directly to the Google API.',
-
-  // settings - customization
   'settings.custom.title': 'Customization',
   'settings.custom.description': 'Configure app appearance.',
   'settings.custom.theme': 'Theme',
@@ -173,6 +139,9 @@ const en: Record<keyof typeof ko, string> = {
   'settings.custom.darkModeOff': 'Light mode is enabled',
   'settings.custom.language': 'Language',
   'settings.custom.languageDesc': 'Select interface language',
+
+  // toast
+  'toast.close': 'Close',
 
   // time
   'time.justNow': 'Just now',
@@ -194,6 +163,90 @@ const en: Record<keyof typeof ko, string> = {
   'greeting.evening': 'Good evening',
   'greeting.subtitle': 'Ask me anything',
 
+  // import
+  'import.button': 'Import',
+  'import.failed': 'Import failed: {error}',
+  'import.success': 'Conversation imported',
+  'import.formatDetected': '{format} format detected',
+
+  // offline
+  'offline.banner': 'You are offline. Please check your internet connection.',
+
+  // session
+  'session.newChat': 'New Chat',
+
+  // search
+  'search.placeholder': 'Search conversations, projects...',
+  'search.conversations': 'Conversations',
+  'search.recentConversations': 'Recent Conversations',
+  'search.projects': 'Projects',
+  'search.messages': 'Messages',
+  'search.navigate': 'Navigate',
+  'search.open': 'Open',
+
+  // export
+  'export.model': 'Model:',
+  'export.createdAt': 'Created:',
+  'export.updatedAt': 'Modified:',
+  'export.tags': 'Tags:',
+  'export.attachments': 'Attachments:',
+
+  // project
+  'project.title': 'Projects',
+  'project.new': 'New Project',
+  'project.empty': 'No projects yet',
+  'project.createFirst': 'Create First Project',
+  'project.sessionCount': '{count} sessions',
+  'project.notFound': 'Project not found',
+  'project.deleteConfirm': 'Are you sure you want to delete this project?',
+  'project.deleteProject': 'Delete Project',
+  'project.instructions': 'Project Instructions',
+  'project.instructionsPlaceholder': 'Enter project instructions...',
+  'project.instructionsEmpty': 'Click to add project instructions...',
+  'project.memory': 'Project Memory',
+  'project.noMemory': 'No memories yet',
+  'project.relatedSessions': 'Related Sessions',
+  'project.noRelatedSessions': 'No related sessions',
+  'project.addMemory': 'Add Memory',
+  'project.memoryKey': 'Key',
+  'project.memoryKeyPlaceholder': 'e.g. API Endpoint',
+  'project.memoryValue': 'Value',
+  'project.memoryValuePlaceholder': 'e.g. https://api.example.com/v1',
+  'project.name': 'Project Name',
+  'project.namePlaceholder': 'Enter project name...',
+  'project.description': 'Description (optional)',
+  'project.descriptionPlaceholder': 'Project description...',
+
+  // all chats
+  'allChats.title': 'All Chats',
+  'allChats.searchPlaceholder': 'Search sessions...',
+  'allChats.all': 'All',
+  'allChats.favorites': 'Favorites',
+  'allChats.pinned': 'Pinned',
+  'allChats.byProject': 'By Project',
+  'allChats.noSessions': 'No sessions',
+  'allChats.exportAll': 'Export All',
+  'allChats.exported': 'Exported {count} conversations',
+
+  // group chat
+  'groupChat.title': 'Group Chat',
+  'groupChat.modelsSelected': '{count} models selected',
+  'groupChat.selectModels': 'Select 2-4 models to compare',
+  'groupChat.emptyState': 'Select models and send a message to compare responses in parallel',
+  'groupChat.selectFirst': 'Select at least 2 models first',
+  'groupChat.placeholder': 'Type a message to send to all models...',
+
+  // quick chat
+  'quickChat.title': 'H Chat Quick',
+  'quickChat.placeholder': 'Ask anything...',
+  'quickChat.hint': 'to send · Continues in main window ·',
+
+  // header tabs
+  'headerTab.assistant': 'Assistant',
+  'headerTab.translate': 'Translate',
+  'headerTab.docWriter': 'Doc Writer',
+  'headerTab.ocr': 'OCR',
+
   // usage
   'usage.title': 'Usage Tracking',
   'usage.description': 'Monitor token usage and estimated costs.',
@@ -211,6 +264,106 @@ const en: Record<keyof typeof ko, string> = {
   'usage.chart.daily': 'Daily',
   'usage.chart.weekly': 'Weekly',
   'usage.chart.last30': 'Last 30 Days',
+
+  // thinking depth
+  'thinking.fast': 'Fast',
+  'thinking.balanced': 'Balanced',
+  'thinking.deep': 'Deep',
+
+  // features
+  'features.description': 'Manage AI feature settings.',
+  'features.thinkingDepth': 'Thinking Depth',
+  'features.thinkingFastDesc': 'Fast responses, suitable for simple questions',
+  'features.thinkingBalancedDesc': 'Balanced speed and depth',
+  'features.thinkingDeepDesc': 'Deep analysis, suitable for complex problems',
+
+  // tts/stt
+  'tts.read': 'Read',
+  'tts.stop': 'Stop',
+  'stt.start': 'Voice input',
+  'stt.stop': 'Stop voice input',
+  'stt.listening': 'Listening...',
+
+  // guardrail
+  'guardrail.warning': 'Sensitive information detected',
+  'guardrail.detected': 'Detected',
+  'guardrail.sendAnyway': 'Send anyway',
+
+  // fork
+  'fork.button': 'Fork',
+  'fork.created': 'Conversation forked',
+
+  // budget
+  'budget.warning': 'You have reached {percent}% of your monthly budget',
+  'budget.exceeded': 'Monthly budget exceeded!',
+  'budget.current': 'Current {current} / {budget}',
+
+  // persona
+  'persona.title': 'Persona Management',
+  'persona.description': 'Configure AI assistant roles and personalities.',
+  'persona.new': 'New Persona',
+  'persona.select': 'Select Persona',
+  'persona.none': 'Default (No Persona)',
+  'persona.preset': 'Preset',
+  'persona.namePlaceholder': 'Persona name',
+  'persona.descPlaceholder': 'Short description',
+  'persona.promptPlaceholder': 'System prompt content',
+
+  // settings - channels
+  'settings.channels.title': 'Channels',
+  'settings.channels.description': 'Connect with external messaging services to receive notifications.',
+  'settings.channels.channel': 'Channel',
+  'settings.channels.notifyRules': 'Notification Rules',
+  'settings.channels.onComplete': 'On task completion',
+  'settings.channels.onError': 'On error',
+  'settings.channels.onSchedule': 'On schedule execution',
+  'settings.channels.connectionSuccess': 'Connection successful',
+  'settings.channels.messagePreview': 'Message Preview',
+  'settings.channels.sampleMessage': '[Schedule Complete] Daily code review summary is complete. 3 commits analyzed, no major issues.',
+
+  // privacy
+  'privacy.title': 'Privacy',
+  'privacy.description': 'Manage sensitive data protection settings.',
+  'privacy.guardrail': 'AI Guardrail',
+  'privacy.guardrailDesc': 'Detect sensitive information like emails, phone numbers, credit cards before sending messages.',
+
+  // storage
+  'storage.title': 'Storage Management',
+  'storage.totalUsed': 'Used',
+  'storage.sessions': 'Sessions',
+  'storage.messages': 'Messages',
+  'storage.clearAll': 'Clear All Data',
+  'storage.clearConfirm': 'All conversations and settings will be deleted. Continue?',
+  'storage.deleteOld': 'Delete Old Sessions',
+  'storage.olderThan': 'Older than {days} days',
+  'storage.quota': 'Quota',
+  'storage.description': 'Monitor and manage app storage usage.',
+  'storage.deleteOldConfirm': 'Delete {count} sessions older than {days} days?',
+  'storage.deleted': 'Deleted {count} sessions',
+  'storage.cleared': 'All data cleared',
+  'storage.analyzing': 'Analyzing...',
+  'storage.backup': 'Export Backup',
+  'storage.restore': 'Import Backup',
+  'storage.backupSuccess': 'Backup file downloaded',
+  'storage.restoreSuccess': 'Data restored',
+  'storage.restoreConfirm': 'Existing data will be overwritten. Continue?',
+
+  // folders & tags
+  'folder.title': 'Folders',
+  'folder.all': 'All',
+  'folder.create': 'Create folder',
+  'folder.delete': 'Delete folder',
+  'folder.rename': 'Rename',
+  'folder.namePlaceholder': 'Folder name',
+  'folder.moveToFolder': 'Move to folder',
+  'folder.noFolder': 'No folder',
+  'tag.title': 'Tags',
+  'tag.add': 'Add tag',
+  'tag.manage': 'Manage tags',
+  'tag.selectTags': 'Select tags',
+  'tag.noTags': 'No tags',
+  'tag.create': 'Create new tag',
+  'tag.namePlaceholder': 'Tag name',
 
   // prompt library
   'promptLib.title': 'Prompt Library',
@@ -231,63 +384,6 @@ const en: Record<keyof typeof ko, string> = {
   'promptLib.category.analysis': 'Analysis',
   'promptLib.category.translation': 'Translation',
   'promptLib.category.custom': 'Custom',
-
-  // persona
-  'persona.title': 'Persona Management',
-  'persona.description': 'Configure AI assistant roles and personalities.',
-  'persona.new': 'New Persona',
-  'persona.select': 'Select Persona',
-  'persona.none': 'Default (No Persona)',
-  'persona.preset': 'Preset',
-  'persona.namePlaceholder': 'Persona name',
-  'persona.descPlaceholder': 'Short description',
-  'persona.promptPlaceholder': 'System prompt content',
-
-  // offline
-  'offline.banner': 'You are offline. Please check your internet connection.',
-
-  // import
-  'import.button': 'Import',
-  'import.failed': 'Import failed: {error}',
-  'import.success': 'Conversation imported',
-  'import.formatDetected': '{format} format detected',
-
-  // tts
-  'tts.read': 'Read',
-  'tts.stop': 'Stop',
-
-  // stt
-  'stt.start': 'Voice input',
-  'stt.stop': 'Stop voice input',
-  'stt.listening': 'Listening...',
-
-  // thinking depth
-  'thinking.fast': 'Fast',
-  'thinking.balanced': 'Balanced',
-  'thinking.deep': 'Deep',
-
-  // guardrail
-  'guardrail.warning': 'Sensitive information detected',
-  'guardrail.detected': 'Detected',
-  'guardrail.sendAnyway': 'Send anyway',
-
-  // budget
-  'budget.warning': 'You have reached {percent}% of your monthly budget',
-  'budget.exceeded': 'Monthly budget exceeded!',
-  'budget.current': 'Current {current} / {budget}',
-
-  // toast
-  'toast.close': 'Close',
-
-  // storage
-  'storage.title': 'Storage Management',
-  'storage.totalUsed': 'Used',
-  'storage.sessions': 'Sessions',
-  'storage.messages': 'Messages',
-  'storage.clearAll': 'Clear All Data',
-  'storage.clearConfirm': 'All conversations and settings will be deleted. Continue?',
-  'storage.description': 'Monitor and manage app storage usage.',
-  'storage.cleared': 'All data cleared',
 
   // extension-specific
   'ext.pageContext': 'Page Context',
