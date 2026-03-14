@@ -1,10 +1,10 @@
 import { useState, useRef, useCallback, type KeyboardEvent } from 'react'
-import { ArrowUp, Square, FileText, X } from 'lucide-react'
+import { ArrowUp, Square, FileText, Globe } from 'lucide-react'
 import { useTranslation } from '@hchat/shared'
 import { useExtSessionStore } from '@ext/stores/session.store'
 import { useExtSettingsStore } from '@ext/stores/settings.store'
+import { usePageIntelligenceStore } from '@ext/stores/page-intelligence.store'
 import { useChat } from '@ext/hooks/useChat'
-import { usePageContext } from '@ext/hooks/usePageContext'
 import { ExtPageContextBanner } from './ExtPageContextBanner'
 
 export function ExtPromptInput() {
@@ -18,9 +18,16 @@ export function ExtPromptInput() {
     currentSessionId ? (s.messages[currentSessionId] ?? []) : [],
   )
   const createSession = useExtSessionStore((s) => s.createSession)
+  const setPage = useExtSessionStore((s) => s.setPage)
   const selectedModel = useExtSettingsStore((s) => s.selectedModel)
   const { sendMessage, stopStreaming, isStreaming } = useChat()
-  const { pageContext, isLoading: pageLoading, extractPage, clearContext } = usePageContext()
+
+  const intelligence = usePageIntelligenceStore((s) => s.intelligence)
+  const isLoadingIntel = usePageIntelligenceStore((s) => s.isLoading)
+  const selected = usePageIntelligenceStore((s) => s.selected)
+  const extractIntel = usePageIntelligenceStore((s) => s.extract)
+  const clearIntel = usePageIntelligenceStore((s) => s.clear)
+  const buildContextPrompt = usePageIntelligenceStore((s) => s.buildContextPrompt)
 
   const handleSend = useCallback(() => {
     const text = input.trim()
@@ -31,16 +38,19 @@ export function ExtPromptInput() {
       sessionId = createSession(selectedModel)
     }
 
-    // Build system prompt with page context if available
+    // Build system prompt with page intelligence context
     let systemPrompt: string | undefined
-    if (pageContext) {
-      systemPrompt = `The user is currently viewing a web page.\nTitle: ${pageContext.title}\nURL: ${pageContext.url}\n\nPage content:\n${pageContext.text.slice(0, 4000)}`
+    if (intelligence) {
+      const contextStr = buildContextPrompt()
+      if (contextStr) {
+        systemPrompt = `The user is currently viewing a web page. Use the following page context to answer their question.\n\n${contextStr}`
+      }
     }
 
     sendMessage(sessionId, text, messages, systemPrompt)
     setInput('')
     textareaRef.current?.focus()
-  }, [input, isStreaming, currentSessionId, selectedModel, createSession, sendMessage, messages, pageContext])
+  }, [input, isStreaming, currentSessionId, selectedModel, createSession, sendMessage, messages, intelligence, buildContextPrompt])
 
   function handleKeyDown(e: KeyboardEvent<HTMLTextAreaElement>) {
     if (e.key === 'Enter' && (e.metaKey || e.ctrlKey) && !isComposing) {
@@ -55,23 +65,37 @@ export function ExtPromptInput() {
     }
   }
 
+  function handleContextToggle() {
+    if (intelligence) {
+      clearIntel()
+    } else {
+      extractIntel()
+    }
+  }
+
   return (
     <div className="border-t border-[var(--border)] bg-[var(--bg-page)]">
-      {pageContext && (
-        <ExtPageContextBanner pageContext={pageContext} onRemove={clearContext} />
+      {intelligence && (
+        <ExtPageContextBanner
+          intelligence={intelligence}
+          selectedSections={selected.sections.length}
+          selectedTables={selected.tables.length}
+          onRemove={clearIntel}
+          onConfigure={() => setPage('pageContext')}
+        />
       )}
       <div className="flex items-end gap-1.5 px-3 py-2">
         <button
-          onClick={extractPage}
-          disabled={pageLoading}
+          onClick={handleContextToggle}
+          disabled={isLoadingIntel}
           className={`p-1.5 rounded-lg transition-colors ${
-            pageContext
+            intelligence
               ? 'text-[var(--primary)] bg-[var(--primary)]/10'
               : 'text-[var(--text-secondary)] hover:bg-[var(--bg-hover)]'
-          }`}
-          title={t('ext.pageContext')}
+          } ${isLoadingIntel ? 'animate-pulse' : ''}`}
+          title={intelligence ? 'Remove page context' : t('ext.pageContext')}
         >
-          {pageContext ? <X size={16} onClick={(e) => { e.stopPropagation(); clearContext() }} /> : <FileText size={16} />}
+          {intelligence ? <Globe size={16} /> : <FileText size={16} />}
         </button>
         <textarea
           ref={textareaRef}
@@ -80,7 +104,11 @@ export function ExtPromptInput() {
           onKeyDown={handleKeyDown}
           onCompositionStart={() => setIsComposing(true)}
           onCompositionEnd={() => setIsComposing(false)}
-          placeholder={t('chat.placeholder')}
+          placeholder={
+            intelligence
+              ? `Ask about "${intelligence.title.slice(0, 30)}..."`
+              : t('chat.placeholder')
+          }
           rows={1}
           className="flex-1 resize-none bg-[var(--bg-input)] border border-[var(--border-input)] rounded-xl px-3 py-2 text-sm outline-none focus:ring-1 focus:ring-[var(--primary)] max-h-[120px] overflow-y-auto"
           style={{ minHeight: '36px' }}
