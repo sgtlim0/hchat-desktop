@@ -35,21 +35,33 @@
 - **Effort**: 1h
 - **Files**: `src/widgets/geo-intelligence/GeoMap.tsx:40`
 - **Issue**: `mapRef = useRef<any>(null)` loses all type information
-- **Fix**: `import type { Map as MapLibreMap } from 'maplibre-gl'` → `useRef<MapLibreMap | null>(null)`
+- **Fix**:
+  1. `import type maplibregl from 'maplibre-gl'`
+  2. `const mapRef = useRef<maplibregl.Map | null>(null)`
+  3. Update all `mapRef.current` usages to respect null checks
+  4. Add type guards for method calls (`mapRef.current?.getSource()`)
 
 #### TODO-GEO-07: Map Event Listener Cleanup
 - **Priority**: P1
 - **Effort**: 2h
 - **Files**: `src/widgets/geo-intelligence/GeoMap.tsx:105-118`
-- **Issue**: Click/mouseenter/mouseleave listeners registered but never cleaned up on unmount
-- **Fix**: Store handler refs in `useRef`, call `map.off()` in cleanup function
+- **Issue**: Click/mouseenter/mouseleave listeners registered but never cleaned up on unmount. Memory leak on layer re-initialization
+- **Fix**:
+  1. Store handler functions in `useRef<Array<{ layer, event, handler }>>([])`
+  2. In cleanup (line 139-145), iterate and call `map.off(event, layer, handler)`
+  3. Ensure handlers added only once by checking if already registered
+  4. Test: Toggle layers 10 times, verify no duplicate handlers
 
 #### TODO-GEO-08: Map Error UI
 - **Priority**: P1
 - **Effort**: 2h
 - **Files**: `src/widgets/geo-intelligence/GeoMap.tsx:132-134`
 - **Issue**: MapLibre init failure → infinite loading spinner, no error feedback
-- **Fix**: Add `mapError` state, render error card with retry button
+- **Fix**:
+  1. Add `const [mapError, setMapError] = useState<string | null>(null)`
+  2. In catch block: `setMapError(error instanceof Error ? error.message : 'Map load failed')`
+  3. Render error card with `AlertCircle` icon + retry button (`window.location.reload()`)
+  4. Add i18n key `geoIntel.retryMap`
 
 #### TODO-GEO-09: LayerPanel i18n Type Safety
 - **Priority**: P2
@@ -77,7 +89,11 @@
 - **Effort**: 3h
 - **Files**: `backend/routes/geo_intel.py:63-67`
 - **Issue**: Concurrent requests with expired cache trigger duplicate upstream API calls
-- **Fix**: Add `asyncio.Lock()` per cache key with double-check pattern
+- **Fix**:
+  1. Add per-key locks: `_cache_locks = { 'flights': asyncio.Lock(), ... }`
+  2. Wrap fetch logic: `async with _cache_locks[key]: if not valid: fetch()`
+  3. Double-check after acquiring lock (another request may have filled cache)
+  4. Test: 5 concurrent requests with empty cache → verify 1 upstream call
 
 #### TODO-GEO-13: Backend Error Response Structure
 - **Priority**: P1
@@ -90,8 +106,15 @@
 - **Priority**: P2
 - **Effort**: 30min
 - **Files**: `backend/routes/geo_intel.py:259`
-- **Issue**: `"2024-03-14T1430"` is invalid ISO 8601 (missing colon/seconds)
-- **Fix**: `f"{acq_date}T{acq_time[:2]}:{acq_time[2:]}:00Z"`
+- **Issue**: `"2024-03-14T1430"` is invalid ISO 8601 (missing colon/seconds). `acq_time` is HHMM format
+- **Fix**:
+  ```python
+  def format_firms_timestamp(acq_date: str, acq_time: str) -> str:
+      try:
+          return f"{acq_date}T{acq_time[:2]}:{acq_time[2:4]}:00Z"
+      except (ValueError, IndexError):
+          return f"{acq_date}T00:00:00Z"
+  ```
 
 #### TODO-GEO-15: Auto-Refresh Interval Validation
 - **Priority**: P2
@@ -229,32 +252,50 @@
 #### TODO-ONB-01: Fix `<a` Tag JSX Error
 - **Priority**: P0
 - **Effort**: 5min
-- **Issue**: `ApiKeyStep.tsx` — `<a` opening tag missing, same bug as Settings chapter
-- **Fix**: Add `<a` before `href={consoleUrl}`, add `target="_blank" rel="noopener noreferrer"`
+- **Issue**: `ApiKeyStep.tsx` — `<a` opening tag missing, same bug as Settings chapter. Entire component unrenderable
+- **Fix**:
+  1. Find line: `href={consoleUrl}` without opening `<a`
+  2. Add `<a` before `href=`, add `target="_blank" rel="noopener noreferrer"`
+  3. Add ESLint rule `react/jsx-no-unclosed` to prevent recurrence
 
 #### TODO-ONB-02: Error Type Validation in FirstDigest
-- **Priority**: P1
+- **Priority**: P0
 - **Effort**: 1h
-- **Issue**: `chrome.runtime.sendMessage` result `.error` field has no runtime type check
-- **Fix**: `deserializePrismError()` with `VALID_CODES` set validation (from Ch4 errors.ts)
+- **Issue**: `chrome.runtime.sendMessage` result `.error` field has no runtime type check — TypeError on unexpected shape
+- **Fix**:
+  1. Define response type: `interface DigestResponse { success: boolean; error?: string; digest?: string }`
+  2. Add type guard with fallback: `response.error ?? 'Unknown error'`
+  3. Use `deserializePrismError()` with `VALID_CODES` set validation (from Ch4)
+  4. Test: Mock backend returning `{ success: false }` (no error field), assert graceful fallback
 
 #### TODO-ONB-03: Storage/UI Sync in advance()
-- **Priority**: P1
+- **Priority**: P0
 - **Effort**: 2h
-- **Issue**: `advance()` calls `setOnboardingStep()` + `setStep()` — storage fail leaves UI ahead
-- **Fix**: `await` storage write, only `setStep()` on success. Add try-catch with toast
+- **Issue**: `advance()` calls `setOnboardingStep()` + `setStep()` — storage failure leaves UI/storage out of sync. User sees "Complete" but flag not saved, forced to repeat on reload
+- **Fix**:
+  1. Refactor: `await chrome.storage.local.set(...)` → only `setStep()` on success
+  2. Add `isAdvancing` loading state, disable buttons during transition
+  3. Add try-catch with error toast
+  4. Test: Mock `chrome.storage.local.set` to throw, assert step unchanged
 
 #### TODO-ONB-04: Double-Click Guard on ProviderStep
 - **Priority**: P2
 - **Effort**: 30min
-- **Issue**: `setTimeout(onNext, 300)` — rapid double-click calls `advance` twice
-- **Fix**: `useRef(false)` advancing guard, disable buttons during transition
+- **Issue**: `setTimeout(onNext, 300)` — rapid double-click calls `advance` twice, may skip validation
+- **Fix**:
+  1. Add `isTransitioning` ref/state
+  2. Disable provider buttons when `isTransitioning === true`
+  3. Test: Simulate double-click, assert `onNext` called once
 
-#### TODO-ONB-05: Unreachable `validating` Step
+#### TODO-ONB-05: Unreachable `validating` Step + Missing Complete Button
 - **Priority**: P2
 - **Effort**: 1h
-- **Issue**: `validating` defined in `OnboardingStep` union but never set via `advance()`
-- **Fix**: Either remove from union or integrate into `ApiKeyStep` as internal state
+- **Issue**: `validating` step defined but never reachable. `CompleteStep` has no explicit "Start Using" button
+- **Fix**:
+  1. Remove `validating` from `OnboardingStep` union and `STEPS` array
+  2. Remove `ValidatingStep` component
+  3. Add "Start Using Prism" button to `CompleteStep` (replace auto-advance timeout)
+  4. Extract shared `Spinner` to `components/Spinner.tsx` (duplicated in 2 files)
 
 ---
 
