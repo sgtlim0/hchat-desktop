@@ -10,12 +10,17 @@ import { SettingsPage } from '@ext/pages/SettingsPage'
 import { PromptLibraryPage } from '@ext/pages/PromptLibraryPage'
 import { PageContextPage } from '@ext/pages/PageContextPage'
 import { DataPage } from '@ext/pages/DataPage'
+import { ResearchPage } from '@ext/pages/ResearchPage'
 import type { ExtPage } from '@ext/shared/types'
 
 function renderPage(page: ExtPage) {
   switch (page) {
     case 'chat':
       return <ChatPage />
+    case 'data':
+      return <DataPage />
+    case 'research':
+      return <ResearchPage />
     case 'history':
       return <HistoryPage />
     case 'settings':
@@ -24,8 +29,6 @@ function renderPage(page: ExtPage) {
       return <PromptLibraryPage />
     case 'pageContext':
       return <PageContextPage />
-    case 'data':
-      return <DataPage />
     default:
       return <ChatPage />
   }

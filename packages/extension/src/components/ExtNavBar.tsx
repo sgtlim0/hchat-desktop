@@ -1,4 +1,4 @@
-import { MessageSquare, Clock, BookOpen, Settings, Database } from 'lucide-react'
+import { MessageSquare, Clock, Settings, Database, Search } from 'lucide-react'
 import { useTranslation } from '@hchat/shared'
 import { useExtSessionStore } from '@ext/stores/session.store'
 import type { ExtPage } from '@ext/shared/types'
@@ -6,8 +6,8 @@ import type { ExtPage } from '@ext/shared/types'
 const tabs: Array<{ page: ExtPage; icon: typeof MessageSquare; labelKey: string }> = [
   { page: 'chat', icon: MessageSquare, labelKey: 'sidebar.newChat' },
   { page: 'data', icon: Database, labelKey: 'ext.pageContext' },
+  { page: 'research', icon: Search, labelKey: 'common.search' },
   { page: 'history', icon: Clock, labelKey: 'allChats.title' },
-  { page: 'promptLibrary', icon: BookOpen, labelKey: 'promptLib.title' },
   { page: 'settings', icon: Settings, labelKey: 'settings.title' },
 ]
 
