@@ -1,7 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
-import { Loader2 } from 'lucide-react'
+import { AlertCircle, Loader2 } from 'lucide-react'
 import { useGeoIntelligenceStore } from '@/entities/geo-intelligence/geo-intelligence.store'
+import { useTranslation } from '@/shared/i18n'
 import type { GeoLayerType, GeoFeature } from '@/shared/types'
+import type { Map as MapLibreMapType, GeoJSONSource as MapLibreGeoJSONSource } from 'maplibre-gl'
 
 const LAYER_COLORS: Record<GeoLayerType, string> = {
   flights: '#3b82f6',
@@ -35,10 +37,19 @@ function toGeoJSON(features: GeoFeature[]): GeoJSON.FeatureCollection {
 
 const LAYER_TYPES: GeoLayerType[] = ['flights', 'earthquakes', 'fires']
 
+interface LayerHandler {
+  layer: string
+  event: string
+  handler: (...args: unknown[]) => void
+}
+
 export function GeoMap() {
+  const { t } = useTranslation()
   const containerRef = useRef<HTMLDivElement>(null)
-  const mapRef = useRef<any>(null)
+  const mapRef = useRef<MapLibreMapType | null>(null)
+  const handlersRef = useRef<LayerHandler[]>([])
   const [mapLoaded, setMapLoaded] = useState(false)
+  const [mapError, setMapError] = useState<string | null>(null)
 
   const center = useGeoIntelligenceStore((s) => s.center)
   const zoom = useGeoIntelligenceStore((s) => s.zoom)
@@ -81,7 +92,6 @@ export function GeoMap() {
         map.on('load', () => {
           if (!mounted) return
 
-          // Add empty GeoJSON sources for each layer type
           for (const layer of LAYER_TYPES) {
             map.addSource(layer, {
               type: 'geojson',
@@ -101,27 +111,34 @@ export function GeoMap() {
               },
             })
 
-            // Click handler for feature selection
-            map.on('click', layer, (e: any) => {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const clickHandler = (e: any) => {
               const feature = e.features?.[0]
               if (feature?.properties?.id) {
-                selectFeature(feature.properties.id)
+                selectFeature(String(feature.properties.id))
               }
-            })
-
-            // Pointer cursor on hover
-            map.on('mouseenter', layer, () => {
+            }
+            const mouseenterHandler = () => {
               map.getCanvas().style.cursor = 'pointer'
-            })
-            map.on('mouseleave', layer, () => {
+            }
+            const mouseleaveHandler = () => {
               map.getCanvas().style.cursor = ''
-            })
+            }
+
+            map.on('click', layer, clickHandler)
+            map.on('mouseenter', layer, mouseenterHandler)
+            map.on('mouseleave', layer, mouseleaveHandler)
+
+            handlersRef.current.push(
+              { layer, event: 'click', handler: clickHandler },
+              { layer, event: 'mouseenter', handler: mouseenterHandler },
+              { layer, event: 'mouseleave', handler: mouseleaveHandler },
+            )
           }
 
           setMapLoaded(true)
         })
 
-        // Sync center/zoom back to store on move end
         map.on('moveend', () => {
           const mapCenter = map.getCenter()
           setCenter([mapCenter.lng, mapCenter.lat])
@@ -130,7 +147,10 @@ export function GeoMap() {
 
         mapRef.current = map
       } catch (error) {
-        console.error('Failed to initialize MapLibre GL:', error)
+        if (mounted) {
+          const message = error instanceof Error ? error.message : 'Failed to load map'
+          setMapError(message)
+        }
       }
     }
 
@@ -139,11 +159,15 @@ export function GeoMap() {
     return () => {
       mounted = false
       if (mapRef.current) {
+        handlersRef.current.forEach(({ layer, event, handler }) => {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          ;(mapRef.current as any)?.off(event, layer, handler)
+        })
+        handlersRef.current = []
         mapRef.current.remove()
         mapRef.current = null
       }
     }
-    // Only run on mount/unmount — center/zoom handled via moveend
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -152,20 +176,40 @@ export function GeoMap() {
     if (!mapRef.current || !mapLoaded) return
 
     for (const layer of LAYER_TYPES) {
-      const source = mapRef.current.getSource(layer)
+      const source = mapRef.current.getSource(layer) as MapLibreGeoJSONSource | undefined
       if (!source) continue
 
       const isEnabled = enabledLayers.includes(layer)
       const layerFeatures = isEnabled ? features[layer] : []
       source.setData(toGeoJSON(layerFeatures))
 
-      // Toggle layer visibility
       const visibility = isEnabled ? 'visible' : 'none'
       if (mapRef.current.getLayer(layer)) {
         mapRef.current.setLayoutProperty(layer, 'visibility', visibility)
       }
     }
   }, [features, enabledLayers, mapLoaded])
+
+  if (mapError) {
+    return (
+      <div className="flex-1 flex items-center justify-center bg-surface">
+        <div className="flex flex-col items-center gap-3 text-text-secondary">
+          <AlertCircle className="w-8 h-8 text-red-500" />
+          <p className="text-sm font-medium">{t('geoIntel.error')}</p>
+          <p className="text-xs text-text-tertiary max-w-64 text-center">{mapError}</p>
+          <button
+            onClick={() => {
+              setMapError(null)
+              setMapLoaded(false)
+            }}
+            className="px-4 py-1.5 text-sm rounded-lg bg-primary text-white hover:bg-primary/90 transition"
+          >
+            {t('geoIntel.refreshNow')}
+          </button>
+        </div>
+      </div>
+    )
+  }
 
   if (!mapLoaded && !mapRef.current) {
     return (

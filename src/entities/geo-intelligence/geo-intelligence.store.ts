@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import type { GeoLayerType, GeoFeature, GeoBookmark } from '@/shared/types'
 import { geoIntelApi } from '@/shared/lib/geo-intel-api'
+import { useToastStore } from '@/entities/toast/toast.store'
 
 function createLayerRecord<T>(value: T): Record<GeoLayerType, T> {
   return {
@@ -55,7 +56,7 @@ export const useGeoIntelligenceStore = create<GeoIntelligenceState>((set, get) =
       const bookmarks = await db.geoBookmarks.toArray()
       set({ bookmarks })
     } catch (error) {
-      console.error('Failed to hydrate geo bookmarks:', error)
+      useToastStore.getState().addToast({ type: 'error', message: 'Failed to load geo bookmarks' })
     }
   },
 
@@ -125,7 +126,7 @@ export const useGeoIntelligenceStore = create<GeoIntelligenceState>((set, get) =
   addBookmark: async (name) => {
     const { center, zoom, enabledLayers } = get()
     const bookmark: GeoBookmark = {
-      id: `geo-bm-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+      id: `geo-bm-${crypto.randomUUID()}`,
       name,
       center: [...center] as [number, number],
       zoom,
@@ -140,7 +141,7 @@ export const useGeoIntelligenceStore = create<GeoIntelligenceState>((set, get) =
         bookmarks: [...state.bookmarks, bookmark],
       }))
     } catch (error) {
-      console.error('Failed to add geo bookmark:', error)
+      useToastStore.getState().addToast({ type: 'error', message: 'Failed to save bookmark' })
     }
   },
 
@@ -152,7 +153,7 @@ export const useGeoIntelligenceStore = create<GeoIntelligenceState>((set, get) =
         bookmarks: state.bookmarks.filter((b) => b.id !== id),
       }))
     } catch (error) {
-      console.error('Failed to delete geo bookmark:', error)
+      useToastStore.getState().addToast({ type: 'error', message: 'Failed to delete bookmark' })
     }
   },
 }))

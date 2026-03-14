@@ -89,15 +89,19 @@ async def get_flights(
 ):
     """Fetch live flight positions from OpenSky Network."""
     cache_key = "flights"
+    error = None
 
     if not _is_cache_valid(cache_key, FLIGHTS_TTL):
-        features = await _fetch_flights()
+        features, error = await _fetch_flights()
         _cache[cache_key] = (time.time(), features)
     else:
         _, features = _cache[cache_key]
 
     filtered = _filter_by_bounds(features, bounds)
-    return {"type": "flights", "count": len(filtered), "features": filtered}
+    result: dict = {"type": "flights", "count": len(filtered), "features": filtered}
+    if error:
+        result["error"] = error
+    return result
 
 
 @router.get("/geo/earthquakes")
@@ -106,15 +110,19 @@ async def get_earthquakes(
 ):
     """Fetch recent earthquakes from USGS."""
     cache_key = "earthquakes"
+    error = None
 
     if not _is_cache_valid(cache_key, EARTHQUAKES_TTL):
-        features = await _fetch_earthquakes()
+        features, error = await _fetch_earthquakes()
         _cache[cache_key] = (time.time(), features)
     else:
         _, features = _cache[cache_key]
 
     filtered = _filter_by_bounds(features, bounds)
-    return {"type": "earthquakes", "count": len(filtered), "features": filtered}
+    result: dict = {"type": "earthquakes", "count": len(filtered), "features": filtered}
+    if error:
+        result["error"] = error
+    return result
 
 
 @router.get("/geo/fires")
@@ -123,15 +131,19 @@ async def get_fires(
 ):
     """Fetch active fire data from NASA FIRMS."""
     cache_key = "fires"
+    error = None
 
     if not _is_cache_valid(cache_key, FIRES_TTL):
-        features = await _fetch_fires()
+        features, error = await _fetch_fires()
         _cache[cache_key] = (time.time(), features)
     else:
         _, features = _cache[cache_key]
 
     filtered = _filter_by_bounds(features, bounds)
-    return {"type": "fires", "count": len(filtered), "features": filtered}
+    result: dict = {"type": "fires", "count": len(filtered), "features": filtered}
+    if error:
+        result["error"] = error
+    return result
 
 
 @router.get("/geo/health")
@@ -163,8 +175,11 @@ async def geo_health():
     return {"status": "ok", "cache": status}
 
 
-async def _fetch_flights() -> list[dict]:
-    """Fetch and normalize flight data from OpenSky Network."""
+async def _fetch_flights() -> tuple[list[dict], str | None]:
+    """Fetch and normalize flight data from OpenSky Network.
+
+    Returns (features, error_message).
+    """
     try:
         async with httpx.AsyncClient(timeout=15.0, follow_redirects=False) as client:
             resp = await client.get(OPENSKY_URL)
@@ -172,7 +187,7 @@ async def _fetch_flights() -> list[dict]:
             data = resp.json()
     except Exception as exc:
         logger.error("Failed to fetch flights from OpenSky: %s", exc)
-        return []
+        return [], f"OpenSky API error: {exc}"
 
     states = data.get("states") or []
     features: list[dict] = []
@@ -206,11 +221,14 @@ async def _fetch_flights() -> list[dict]:
             "timestamp": state[4],
         })
 
-    return features
+    return features, None
 
 
-async def _fetch_earthquakes() -> list[dict]:
-    """Fetch and normalize earthquake data from USGS GeoJSON feed."""
+async def _fetch_earthquakes() -> tuple[list[dict], str | None]:
+    """Fetch and normalize earthquake data from USGS GeoJSON feed.
+
+    Returns (features, error_message).
+    """
     try:
         async with httpx.AsyncClient(timeout=15.0, follow_redirects=False) as client:
             resp = await client.get(USGS_URL)
@@ -218,7 +236,7 @@ async def _fetch_earthquakes() -> list[dict]:
             data = resp.json()
     except Exception as exc:
         logger.error("Failed to fetch earthquakes from USGS: %s", exc)
-        return []
+        return [], f"USGS API error: {exc}"
 
     raw_features = data.get("features") or []
     features: list[dict] = []
@@ -245,14 +263,17 @@ async def _fetch_earthquakes() -> list[dict]:
             "timestamp": props.get("time"),
         })
 
-    return features
+    return features, None
 
 
-async def _fetch_fires() -> list[dict]:
-    """Fetch and normalize active fire data from NASA FIRMS CSV."""
+async def _fetch_fires() -> tuple[list[dict], str | None]:
+    """Fetch and normalize active fire data from NASA FIRMS CSV.
+
+    Returns (features, error_message).
+    """
     if not FIRMS_MAP_KEY:
         logger.warning("FIRMS_MAP_KEY not configured, fires endpoint disabled")
-        return []
+        return [], "FIRMS_MAP_KEY not configured"
 
     try:
         async with httpx.AsyncClient(timeout=15.0, follow_redirects=False) as client:
@@ -261,7 +282,7 @@ async def _fetch_fires() -> list[dict]:
             text = resp.text
     except Exception as exc:
         logger.error("Failed to fetch fires from NASA FIRMS: %s", exc)
-        return []
+        return [], f"NASA FIRMS API error: {exc}"
 
     features: list[dict] = []
     reader = csv.DictReader(StringIO(text))
@@ -290,7 +311,7 @@ async def _fetch_fires() -> list[dict]:
                 "satellite": row.get("satellite"),
                 "frp": row.get("frp"),
             },
-            "timestamp": f"{acq_date}T{acq_time}",
+            "timestamp": f"{acq_date}T{acq_time[:2]}:{acq_time[2:4]}:00Z" if len(acq_time) >= 4 else f"{acq_date}T00:00:00Z",
         })
 
-    return features
+    return features, None
