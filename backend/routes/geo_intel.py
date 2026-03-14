@@ -1,3 +1,4 @@
+import asyncio
 import os
 import time
 import logging
@@ -11,8 +12,13 @@ from typing import Optional
 router = APIRouter()
 logger = logging.getLogger(__name__)
 
-# In-memory TTL cache
+# In-memory TTL cache with per-key locks
 _cache: dict[str, tuple[float, list[dict]]] = {}
+_cache_locks: dict[str, asyncio.Lock] = {
+    "flights": asyncio.Lock(),
+    "earthquakes": asyncio.Lock(),
+    "fires": asyncio.Lock(),
+}
 
 OPENSKY_URL = "https://opensky-network.org/api/states/all"
 USGS_URL = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson"
@@ -92,8 +98,12 @@ async def get_flights(
     error = None
 
     if not _is_cache_valid(cache_key, FLIGHTS_TTL):
-        features, error = await _fetch_flights()
-        _cache[cache_key] = (time.time(), features)
+        async with _cache_locks[cache_key]:
+            if not _is_cache_valid(cache_key, FLIGHTS_TTL):
+                features, error = await _fetch_flights()
+                _cache[cache_key] = (time.time(), features)
+            else:
+                _, features = _cache[cache_key]
     else:
         _, features = _cache[cache_key]
 
@@ -113,8 +123,12 @@ async def get_earthquakes(
     error = None
 
     if not _is_cache_valid(cache_key, EARTHQUAKES_TTL):
-        features, error = await _fetch_earthquakes()
-        _cache[cache_key] = (time.time(), features)
+        async with _cache_locks[cache_key]:
+            if not _is_cache_valid(cache_key, EARTHQUAKES_TTL):
+                features, error = await _fetch_earthquakes()
+                _cache[cache_key] = (time.time(), features)
+            else:
+                _, features = _cache[cache_key]
     else:
         _, features = _cache[cache_key]
 
@@ -134,8 +148,12 @@ async def get_fires(
     error = None
 
     if not _is_cache_valid(cache_key, FIRES_TTL):
-        features, error = await _fetch_fires()
-        _cache[cache_key] = (time.time(), features)
+        async with _cache_locks[cache_key]:
+            if not _is_cache_valid(cache_key, FIRES_TTL):
+                features, error = await _fetch_fires()
+                _cache[cache_key] = (time.time(), features)
+            else:
+                _, features = _cache[cache_key]
     else:
         _, features = _cache[cache_key]
 

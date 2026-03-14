@@ -1,13 +1,14 @@
 import { Plane, Activity, Flame, Loader2 } from 'lucide-react'
 import { useGeoIntelligenceStore } from '@/entities/geo-intelligence/geo-intelligence.store'
 import { useTranslation } from '@/shared/i18n'
+import type { TranslationKey } from '@/shared/i18n'
 import type { GeoLayerType } from '@/shared/types'
 
 const LAYER_CONFIG: {
   type: GeoLayerType
   icon: typeof Plane
   color: string
-  labelKey: string
+  labelKey: TranslationKey
 }[] = [
   { type: 'flights', icon: Plane, color: '#3b82f6', labelKey: 'geoIntel.flights' },
   { type: 'earthquakes', icon: Activity, color: '#ef4444', labelKey: 'geoIntel.earthquakes' },
@@ -65,7 +66,7 @@ export function LayerPanel() {
                   />
                   <Icon className="w-4 h-4 text-text-secondary" />
                   <span className="text-sm font-medium text-text-primary">
-                    {t(labelKey as any)}
+                    {t(labelKey)}
                   </span>
                 </div>
 

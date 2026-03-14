@@ -120,7 +120,8 @@ export const useGeoIntelligenceStore = create<GeoIntelligenceState>((set, get) =
   },
 
   setRefreshInterval: (interval) => {
-    set({ refreshInterval: interval })
+    const clamped = Math.max(30, Math.min(3600, interval))
+    set({ refreshInterval: clamped })
   },
 
   addBookmark: async (name) => {

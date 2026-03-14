@@ -230,6 +230,16 @@ describe('GeoIntelligenceStore', () => {
       useGeoIntelligenceStore.getState().setRefreshInterval(300)
       expect(useGeoIntelligenceStore.getState().refreshInterval).toBe(300)
     })
+
+    it('should clamp refresh interval to minimum 30s', () => {
+      useGeoIntelligenceStore.getState().setRefreshInterval(1)
+      expect(useGeoIntelligenceStore.getState().refreshInterval).toBe(30)
+    })
+
+    it('should clamp refresh interval to maximum 3600s', () => {
+      useGeoIntelligenceStore.getState().setRefreshInterval(9999)
+      expect(useGeoIntelligenceStore.getState().refreshInterval).toBe(3600)
+    })
   })
 
   describe('hydrate', () => {
