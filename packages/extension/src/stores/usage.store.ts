@@ -33,7 +33,9 @@ function calculateCost(modelId: string, inputTokens: number, outputTokens: numbe
 }
 
 function persistRecords(records: UsageRecord[]): void {
-  chrome.storage.local.set({ [STORAGE_KEY]: records }).catch(console.error)
+  if (typeof chrome !== 'undefined' && chrome.storage?.local) {
+    chrome.storage.local.set({ [STORAGE_KEY]: records }).catch(console.error)
+  }
 }
 
 export const useExtUsageStore = create<ExtUsageState>((set, get) => ({
@@ -66,9 +68,11 @@ export const useExtUsageStore = create<ExtUsageState>((set, get) => ({
 }))
 
 // Load records from chrome.storage on init
-chrome.storage.local.get(STORAGE_KEY).then((result) => {
-  const stored = result[STORAGE_KEY]
-  if (Array.isArray(stored)) {
-    useExtUsageStore.setState({ records: stored })
-  }
-}).catch(console.error)
+if (typeof chrome !== 'undefined' && chrome.storage?.local) {
+  chrome.storage.local.get(STORAGE_KEY).then((result) => {
+    const stored = result[STORAGE_KEY]
+    if (Array.isArray(stored)) {
+      useExtUsageStore.setState({ records: stored })
+    }
+  }).catch(console.error)
+}
