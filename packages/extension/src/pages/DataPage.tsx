@@ -1,13 +1,21 @@
-import { RefreshCw, Database, Table2, List, Link, Image, FileText, Send } from 'lucide-react'
+import { useState } from 'react'
+import { RefreshCw, Database, Table2, List, Link, Image, FileText, Send, Search } from 'lucide-react'
 import { useTranslation } from '@hchat/shared'
 import { useDataExtraction } from '@ext/hooks/useDataExtraction'
+import { useDatasetDiscovery } from '@ext/hooks/useDatasetDiscovery'
 import { ExtDataTable } from '@ext/components/ExtDataTable'
+import { DatasetPage } from '@ext/pages/DatasetPage'
 import { useExtSessionStore } from '@ext/stores/session.store'
 import { useExtSettingsStore } from '@ext/stores/settings.store'
+import type { DatasetCandidate } from '@ext/content/dataset-candidate'
+
+type DataTab = 'extract' | 'discover'
 
 export function DataPage() {
   const { t } = useTranslation()
+  const [tab, setTab] = useState<DataTab>('extract')
   const { data, isExtracting, error, extract, exportCsv } = useDataExtraction()
+  const discovery = useDatasetDiscovery()
   const createSession = useExtSessionStore((s) => s.createSession)
   const setPage = useExtSessionStore((s) => s.setPage)
   const selectedModel = useExtSettingsStore((s) => s.selectedModel)
@@ -18,28 +26,105 @@ export function DataPage() {
     setPage('chat')
   }
 
+  function handleExtractDataset(_candidate: DatasetCandidate) {
+    // Switch to extract tab and run extraction
+    setTab('extract')
+    extract()
+  }
+
   return (
     <div className="flex flex-col h-full">
-      {/* Header */}
-      <header className="px-3 py-2.5 border-b border-[var(--border)]">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-1.5">
-            <Database size={14} className="text-[var(--primary)]" />
-            <h1 className="text-sm font-bold text-[var(--text-primary)]">Data</h1>
-          </div>
-          <button
-            onClick={extract}
-            disabled={isExtracting}
-            className="flex items-center gap-1 px-2.5 py-1 text-[10px] bg-[var(--primary)] text-white rounded-lg hover:bg-[var(--primary-hover)] transition-colors disabled:opacity-40"
-          >
-            <RefreshCw size={11} className={isExtracting ? 'animate-spin' : ''} />
-            {isExtracting ? t('common.loading') : 'Extract'}
-          </button>
-        </div>
-      </header>
+      {/* Tab header */}
+      <div className="flex border-b border-[var(--border)]">
+        <button
+          onClick={() => setTab('extract')}
+          className={`flex-1 flex items-center justify-center gap-1 py-2 text-[10px] font-medium transition-colors ${
+            tab === 'extract'
+              ? 'text-[var(--primary)] border-b-2 border-[var(--primary)]'
+              : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
+          }`}
+        >
+          <Database size={12} />
+          Extract
+        </button>
+        <button
+          onClick={() => setTab('discover')}
+          className={`flex-1 flex items-center justify-center gap-1 py-2 text-[10px] font-medium transition-colors ${
+            tab === 'discover'
+              ? 'text-[var(--primary)] border-b-2 border-[var(--primary)]'
+              : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
+          }`}
+        >
+          <Search size={12} />
+          Discover
+          {discovery.candidates.length > 0 && (
+            <span className="px-1 py-0.5 text-[8px] bg-[var(--primary)]/10 text-[var(--primary)] rounded-full">
+              {discovery.candidates.length}
+            </span>
+          )}
+        </button>
+      </div>
 
-      {/* Content */}
-      <div className="flex-1 overflow-y-auto px-3 py-3">
+      {/* Tab content */}
+      {tab === 'discover' ? (
+        <DatasetPage
+          candidates={discovery.candidates}
+          isScanning={discovery.isScanning}
+          onScan={discovery.scan}
+          onHighlight={discovery.highlight}
+          onClearHighlight={discovery.clearHighlight}
+          onExtract={handleExtractDataset}
+        />
+      ) : (
+        <ExtractTab
+          data={data}
+          isExtracting={isExtracting}
+          error={error}
+          extract={extract}
+          exportCsv={exportCsv}
+          onSendToChat={handleSendToChat}
+          t={t}
+        />
+      )}
+    </div>
+  )
+}
+
+function ExtractTab({
+  data,
+  isExtracting,
+  error,
+  extract,
+  exportCsv,
+  onSendToChat,
+  t,
+}: {
+  data: ReturnType<typeof useDataExtraction>['data']
+  isExtracting: boolean
+  error: string | null
+  extract: () => void
+  exportCsv: (idx: number) => void
+  onSendToChat: () => void
+  t: ReturnType<typeof useTranslation>['t']
+}) {
+  return (
+    <div className="flex-1 overflow-y-auto">
+      {/* Header */}
+      <div className="flex items-center justify-between px-3 py-2 border-b border-[var(--border)]">
+        <span className="text-[10px] text-[var(--text-secondary)]">
+          Structured data from current page
+        </span>
+        <button
+          onClick={extract}
+          disabled={isExtracting}
+          className="flex items-center gap-1 px-2.5 py-1 text-[10px] bg-[var(--primary)] text-white rounded-lg hover:bg-[var(--primary-hover)] transition-colors disabled:opacity-40"
+        >
+          <RefreshCw size={11} className={isExtracting ? 'animate-spin' : ''} />
+          {isExtracting ? t('common.loading') : 'Extract'}
+        </button>
+      </div>
+
+      <div className="px-3 py-3">
         {error && (
           <div className="px-3 py-2 mb-3 text-[10px] text-red-600 bg-red-50 dark:bg-red-900/20 dark:text-red-400 rounded-lg">
             {error}
@@ -87,7 +172,7 @@ export function DataPage() {
                   <p>Author: {data.intelligence.metadata.author}</p>
                 )}
                 <p>
-                  Reading time: ~{data.intelligence.readingTime} min |
+                  ~{data.intelligence.readingTime} min |
                   Density: {(data.intelligence.contentDensity * 100).toFixed(0)}% |
                   Sections: {data.intelligence.sections.length}
                 </p>
@@ -141,7 +226,7 @@ export function DataPage() {
 
             {/* Send to chat */}
             <button
-              onClick={handleSendToChat}
+              onClick={onSendToChat}
               className="w-full flex items-center justify-center gap-1.5 px-3 py-2 bg-[var(--primary)] text-white text-xs font-medium rounded-lg hover:bg-[var(--primary-hover)] transition-colors"
             >
               <Send size={12} />
