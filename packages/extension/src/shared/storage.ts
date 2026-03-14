@@ -20,21 +20,37 @@ const DEFAULTS: ExtSettings = {
   geminiApiKey: '',
 }
 
-const hasChromeStorage = typeof chrome !== 'undefined' && chrome.storage?.local
+function getChromeStorage(): typeof chrome.storage.local | null {
+  try {
+    return typeof chrome !== 'undefined' && chrome?.storage?.local ? chrome.storage.local : null
+  } catch {
+    return null
+  }
+}
 
 export async function getSettings(): Promise<ExtSettings> {
-  if (!hasChromeStorage) return { ...DEFAULTS }
-  const stored = await chrome.storage.local.get(Object.keys(DEFAULTS))
-  return { ...DEFAULTS, ...stored } as ExtSettings
+  const storage = getChromeStorage()
+  if (!storage) return { ...DEFAULTS }
+  try {
+    const stored = await storage.get(Object.keys(DEFAULTS))
+    return { ...DEFAULTS, ...stored } as ExtSettings
+  } catch {
+    return { ...DEFAULTS }
+  }
 }
 
 export async function updateSettings(partial: Partial<ExtSettings>): Promise<void> {
-  if (!hasChromeStorage) return
-  await chrome.storage.local.set(partial)
+  const storage = getChromeStorage()
+  if (!storage) return
+  await storage.set(partial)
 }
 
 export function onSettingsChanged(cb: (changes: Partial<ExtSettings>) => void): () => void {
-  if (!hasChromeStorage) return () => {}
+  try {
+    if (typeof chrome === 'undefined' || !chrome?.storage?.onChanged) return () => {}
+  } catch {
+    return () => {}
+  }
   const listener = (changes: Record<string, chrome.storage.StorageChange>) => {
     const updated: Partial<ExtSettings> = {}
     for (const [key, change] of Object.entries(changes)) {

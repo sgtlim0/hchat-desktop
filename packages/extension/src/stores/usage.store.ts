@@ -32,9 +32,18 @@ function calculateCost(modelId: string, inputTokens: number, outputTokens: numbe
   return (inputTokens * rate.input + outputTokens * rate.output) / 1_000_000
 }
 
+function getChromeStorage(): typeof chrome.storage.local | null {
+  try {
+    return typeof chrome !== 'undefined' && chrome?.storage?.local ? chrome.storage.local : null
+  } catch {
+    return null
+  }
+}
+
 function persistRecords(records: UsageRecord[]): void {
-  if (typeof chrome !== 'undefined' && chrome.storage?.local) {
-    chrome.storage.local.set({ [STORAGE_KEY]: records }).catch(console.error)
+  const storage = getChromeStorage()
+  if (storage) {
+    storage.set({ [STORAGE_KEY]: records }).catch(console.error)
   }
 }
 
@@ -68,11 +77,16 @@ export const useExtUsageStore = create<ExtUsageState>((set, get) => ({
 }))
 
 // Load records from chrome.storage on init
-if (typeof chrome !== 'undefined' && chrome.storage?.local) {
-  chrome.storage.local.get(STORAGE_KEY).then((result) => {
-    const stored = result[STORAGE_KEY]
-    if (Array.isArray(stored)) {
-      useExtUsageStore.setState({ records: stored })
-    }
-  }).catch(console.error)
+try {
+  const storage = getChromeStorage()
+  if (storage) {
+    storage.get(STORAGE_KEY).then((result) => {
+      const stored = result[STORAGE_KEY]
+      if (Array.isArray(stored)) {
+        useExtUsageStore.setState({ records: stored })
+      }
+    }).catch(() => {})
+  }
+} catch {
+  // chrome.storage not available
 }
