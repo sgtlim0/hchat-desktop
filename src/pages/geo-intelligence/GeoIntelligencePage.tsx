@@ -18,19 +18,17 @@ export function GeoIntelligencePage() {
   const refreshInterval = useGeoIntelligenceStore((s) => s.refreshInterval)
   const setAutoRefresh = useGeoIntelligenceStore((s) => s.setAutoRefresh)
   const setRefreshInterval = useGeoIntelligenceStore((s) => s.setRefreshInterval)
-  const hydrate = useGeoIntelligenceStore((s) => s.hydrate)
-  const refreshAll = useGeoIntelligenceStore((s) => s.refreshAll)
-
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
   // Hydrate store and fetch initial data on mount
   useEffect(() => {
+    const store = useGeoIntelligenceStore.getState()
     const init = async () => {
-      await hydrate()
-      await refreshAll()
+      await store.hydrate()
+      await store.refreshAll()
     }
     init()
-  }, [hydrate, refreshAll])
+  }, [])
 
   // Auto-refresh timer
   useEffect(() => {
@@ -41,7 +39,7 @@ export function GeoIntelligencePage() {
 
     if (autoRefresh) {
       intervalRef.current = setInterval(() => {
-        refreshAll()
+        useGeoIntelligenceStore.getState().refreshAll()
       }, refreshInterval * 1000)
     }
 
@@ -51,7 +49,7 @@ export function GeoIntelligencePage() {
         intervalRef.current = null
       }
     }
-  }, [autoRefresh, refreshInterval, refreshAll])
+  }, [autoRefresh, refreshInterval])
 
   const handleIntervalChange = (value: string) => {
     const parsed = Number(value)
@@ -61,7 +59,7 @@ export function GeoIntelligencePage() {
   }
 
   const handleRefreshNow = () => {
-    refreshAll()
+    useGeoIntelligenceStore.getState().refreshAll()
   }
 
   return (

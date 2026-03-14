@@ -1,3 +1,4 @@
+import os
 import time
 import logging
 from io import StringIO
@@ -11,16 +12,16 @@ router = APIRouter()
 logger = logging.getLogger(__name__)
 
 # In-memory TTL cache
-_cache: dict[str, tuple[float, list]] = {}
+_cache: dict[str, tuple[float, list[dict]]] = {}
 
 OPENSKY_URL = "https://opensky-network.org/api/states/all"
 USGS_URL = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson"
-FIRMS_MAP_KEY = "e8c1eb5d1769afab3e1e180794e3443d"
-FIRMS_URL = f"https://firms.modaps.eosdis.nasa.gov/api/area/csv/{FIRMS_MAP_KEY}/VIIRS_SNPP_NRT/world/1"
+FIRMS_MAP_KEY = os.environ.get("FIRMS_MAP_KEY", "")
+FIRMS_URL = f"https://firms.modaps.eosdis.nasa.gov/api/area/csv/{FIRMS_MAP_KEY}/VIIRS_SNPP_NRT/world/1" if FIRMS_MAP_KEY else ""
 
-FLIGHTS_TTL = 60
-EARTHQUAKES_TTL = 1800
-FIRES_TTL = 1800
+FLIGHTS_TTL = 60        # 1 minute — high update frequency
+EARTHQUAKES_TTL = 1800  # 30 minutes — relatively stable
+FIRES_TTL = 1800        # 30 minutes — NASA FIRMS updates hourly
 
 
 def _is_cache_valid(key: str, ttl: int) -> bool:
@@ -31,25 +32,54 @@ def _is_cache_valid(key: str, ttl: int) -> bool:
     return (time.time() - cached_time) < ttl
 
 
+def _parse_bounds(bounds: Optional[str]) -> Optional[tuple[float, float, float, float]]:
+    """Parse and validate geographic bounds (west,south,east,north).
+
+    Returns None if bounds are absent or invalid.
+    """
+    if not bounds:
+        return None
+    try:
+        parts = [float(p) for p in bounds.split(",")]
+    except (ValueError, TypeError):
+        return None
+    if len(parts) != 4:
+        return None
+
+    west, south, east, north = parts
+
+    if not (-180 <= west <= 180 and -180 <= east <= 180):
+        return None
+    if not (-90 <= south <= 90 and -90 <= north <= 90):
+        return None
+    if north < south:
+        return None
+
+    return (west, south, east, north)
+
+
 def _filter_by_bounds(
     features: list[dict],
     bounds: Optional[str],
 ) -> list[dict]:
     """Filter features to those within geographic bounds (west,south,east,north)."""
-    if not bounds:
+    parsed = _parse_bounds(bounds)
+    if parsed is None:
         return features
-    try:
-        parts = [float(p) for p in bounds.split(",")]
-        if len(parts) != 4:
-            return features
-        west, south, east, north = parts
-    except (ValueError, TypeError):
-        return features
+
+    west, south, east, north = parsed
+
+    def in_bounds(lon: float, lat: float) -> bool:
+        if not (south <= lat <= north):
+            return False
+        # Handle antimeridian crossing (e.g. west=170, east=-170)
+        if west <= east:
+            return west <= lon <= east
+        return lon >= west or lon <= east
 
     return [
         f for f in features
-        if west <= f["coordinates"][0] <= east
-        and south <= f["coordinates"][1] <= north
+        if in_bounds(f["coordinates"][0], f["coordinates"][1])
     ]
 
 
@@ -136,7 +166,7 @@ async def geo_health():
 async def _fetch_flights() -> list[dict]:
     """Fetch and normalize flight data from OpenSky Network."""
     try:
-        async with httpx.AsyncClient(timeout=15.0) as client:
+        async with httpx.AsyncClient(timeout=15.0, follow_redirects=False) as client:
             resp = await client.get(OPENSKY_URL)
             resp.raise_for_status()
             data = resp.json()
@@ -182,7 +212,7 @@ async def _fetch_flights() -> list[dict]:
 async def _fetch_earthquakes() -> list[dict]:
     """Fetch and normalize earthquake data from USGS GeoJSON feed."""
     try:
-        async with httpx.AsyncClient(timeout=15.0) as client:
+        async with httpx.AsyncClient(timeout=15.0, follow_redirects=False) as client:
             resp = await client.get(USGS_URL)
             resp.raise_for_status()
             data = resp.json()
@@ -220,8 +250,12 @@ async def _fetch_earthquakes() -> list[dict]:
 
 async def _fetch_fires() -> list[dict]:
     """Fetch and normalize active fire data from NASA FIRMS CSV."""
+    if not FIRMS_MAP_KEY:
+        logger.warning("FIRMS_MAP_KEY not configured, fires endpoint disabled")
+        return []
+
     try:
-        async with httpx.AsyncClient(timeout=15.0) as client:
+        async with httpx.AsyncClient(timeout=15.0, follow_redirects=False) as client:
             resp = await client.get(FIRMS_URL)
             resp.raise_for_status()
             text = resp.text
